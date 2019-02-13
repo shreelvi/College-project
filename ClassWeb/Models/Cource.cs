@@ -10,9 +10,7 @@ namespace ClassWeb.Models
         private int _CourseID;
         private string _Name;
         private int _Number;
-        private DateTime _Year;
-        private DateTime _DateStart;
-        private DateTime _DateEnd;
+        private int _ClassID;
 
         public int CourseID
         {
@@ -29,20 +27,12 @@ namespace ClassWeb.Models
             get { return _Number; }
             set { _Number = value; }
         }
-        public DateTime Year
+        public int ClassID
         {
-            get { return _Year; }
-            set { _Year = value; }
+            get { return _ClassID; }
+            set { _ClassID = value; }
         }
-        public DateTime DateStart
-        {
-            get { return _DateStart; }
-            set { _DateStart = value; }
-        }
-        public DateTime DateEnd
-        {
-            get { return _DateEnd; }
-            set { _DateEnd = value; }
-        }
+        //For foreign key.
+        //public virtual Class _Class { get; set; }
     }
 }
