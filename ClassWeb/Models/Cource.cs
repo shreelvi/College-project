@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace ClassWeb.Models
         private int _Number;
         private int _ClassID;
 
+        [Key]
         public int CourseID
         {
             get { return _CourseID; }
