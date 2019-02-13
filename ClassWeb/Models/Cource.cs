@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+//Courses => A course is like 4430, 3307, etc.
+//Each course can be accessible to one to many users.
+//Each course can be taught by multiple professors, hence multiple classes.
+
+
 namespace ClassWeb.Models
 {
     public class Cource
