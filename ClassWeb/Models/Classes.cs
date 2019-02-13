@@ -7,6 +7,9 @@ namespace ClassWeb.Models
 {
     public class Classes
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private int _ID;
         private nvarchar _Title;
         private bool _Available;
