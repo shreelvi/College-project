@@ -32,7 +32,5 @@ namespace ClassWeb.Models
             get { return _ClassID; }
             set { _ClassID = value; }
         }
-        //For foreign key.
-        //public virtual Class _Class { get; set; }
     }
 }
