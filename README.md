@@ -1,9 +1,7 @@
 Class-Web 	
 WebMasters. 
-This is where you describe your project and what it does.
-
-This is a markdown file.
-test
- 
-Any additional stuffs. 
-You can learn more at: https://www.markdowntutorial.com/
+We are currently working on our ClassWeb Project where we are desining student portfolio and assignment management system. 
+Thank you. 
+----------
+Go Bengals! 
+WebMasters, ISU
