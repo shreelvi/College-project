@@ -6,50 +6,42 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Groups
+    /// <summary>
+    /// Groups are a team of student members for a projects in class
+    /// </summary>
+    public class Groups: DatabaseNamedObject 
     {
-        private int _GroupID;
-        private string _GroupName;
+       
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
         private Assignments _AssignmentID;
  
-
-
-        [Key]
-        public int GroupID
-        {
-            get { return _GroupID; }
-            set { _GroupID = value; }
-        }
-
-
-        public string GroupName
-        {
-            get { return _GroupName; }
-            set { _GroupName = value; }
-        }
-
+        [Display(Name ="Group's Email-address",
+            Description = "Email-address used to contact the group; which all members will have access.")]
         public string EmailAddress
         {
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
 
+        [Display(Name = "Group's Login Username",
+            Description = "Username to login to group's account profile.")]
         public string Username
         {
             get { return _UserName; }
             set { _UserName = value; }
         }
 
-
+        [Display(Name = "Group's Login Password",
+            Description = "Password to login to group's account profile.")]
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
 
+        //Foreign Key
         public Assignments AssignmentID
         {
             get { return _AssignmentID; }
