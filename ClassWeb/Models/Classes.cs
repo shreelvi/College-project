@@ -5,19 +5,25 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Classes
+    /// <summary>
+    /// By: Ganesh Sapkota 
+    /// Creating  classes model for our project.
+    /// Class is like Fall 2018, Spring 2019
+    /// Course will have classes and classes will have sections. 
+    /// Start date and end date are the first and last day of the semester respectively.
+    /// </summary>
+    public abstract class Classes:DatabaseObject
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        #region private variable
         private int _ID;
-        private nvarchar _Title;
+        private string  _Title;
         private bool _Available;
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
+        #endregion
 
-
+        #region public class
         [Key]
         public int ID
         {
@@ -30,7 +36,7 @@ namespace ClassWeb.Models
                 _ID = value;
             }
         }
-        public nvarchar Title
+        public string Title
         {
             get
             {
@@ -84,8 +90,6 @@ namespace ClassWeb.Models
                 _SectionID = value;
             }
         }
-
-
-
+        #endregion
     }
 }
