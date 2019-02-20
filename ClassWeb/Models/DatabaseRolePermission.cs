@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace ClassWeb.Models
 {
     /// <summary>
-    /// 
+    /// Created By: Kishor Simkhada
+    /// Object for database of Role and Permission that can be inherited by other object.
     /// </summary>
     public abstract class DatabaseRolePermission
     {
@@ -20,6 +21,10 @@ namespace ClassWeb.Models
         private DateTime _DateDeleted;
         #endregion
         #region Public properties
+        /// <summary>
+        /// Public properties for the Role Permission Object
+        /// </summary>
+        //Primary Key for database
         [Key]
         public int ID
         {

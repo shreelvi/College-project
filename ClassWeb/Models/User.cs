@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace ClassWeb.Models
 {
     /// <summary>
+    /// Created By: Kishor Simkhada
     /// Everyone is a user when they sign up except Admin.
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
