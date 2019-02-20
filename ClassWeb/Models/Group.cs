@@ -6,24 +6,13 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Groups
+    public class Group:DatabaseObject
     {
-        private int _GroupID;
         private string _GroupName;
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
-        private Assignments _AssignmentID;
- 
-
-
-        [Key]
-        public int GroupID
-        {
-            get { return _GroupID; }
-            set { _GroupID = value; }
-        }
-
+        private Assignment _AssignmentID;
 
         public string GroupName
         {
@@ -50,7 +39,7 @@ namespace ClassWeb.Models
             set { _Password = value; }
         }
 
-        public Assignments AssignmentID
+        public Assignment AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }

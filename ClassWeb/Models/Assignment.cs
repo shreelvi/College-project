@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Assignment
+    public class Assignment:DatabaseObject
     {
-        private int _ID;
         private string _Title;
         private string _Description;
         private DateTime _StartDate;
@@ -16,13 +15,6 @@ namespace ClassWeb.Models
         private DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback; 
-
-        [Key]
-        public int ID
-        {
-            get { return _ID; }
-            set { _ID = value; }
-        }
 
         public string Title
         {

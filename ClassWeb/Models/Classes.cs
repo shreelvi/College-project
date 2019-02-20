@@ -10,27 +10,13 @@ namespace ClassWeb.Models
         /// <summary>
         /// 
         /// </summary>
-        private int _ID;
-        private nvarchar _Title;
+        private string _Title;
         private bool _Available;
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
 
-
-        [Key]
-        public int ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                _ID = value;
-            }
-        }
-        public nvarchar Title
+        public string Title
         {
             get
             {

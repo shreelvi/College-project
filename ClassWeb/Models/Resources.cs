@@ -8,10 +8,10 @@ using ClassWeb.Models;
 
 namespace classWeb.Models
 {
-    public class Actor
+    public class Resource:DatabaseObject
     {
-        private int _ResourceID;
-        private string _ResourceName;
+
+        private string _Name;
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
@@ -19,19 +19,10 @@ namespace classWeb.Models
         private User _UserID;
         private Assignment _AssignmentID;
 
-        
-        [Key]
-        public int ResourceID
+        public string Name
         {
-            get { return _ResourceID; }
-            set { _ResourceID = value; }
-        }
-
-
-        public string ResourceName
-        {
-            get { return _ResourceName; }
-            set { _ResourceName = value; }
+            get { return _Name; }
+            set { _Name = value; }
         }
         
         public DateTime DateModified

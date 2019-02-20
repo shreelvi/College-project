@@ -10,10 +10,9 @@ namespace ClassWeb.Models
     /// Created By: Kishor Simkhada
     /// Object for database of Role and Permission that can be inherited by other object.
     /// </summary>
-    public abstract class DatabaseRolePermission
+    public abstract class DatabaseRolePermission:DatabaseObject
     {
         #region Private Variable
-        private int _ID;
         private string _Title;
         private string _Description;
         private DateTime _DateCreated;
@@ -25,12 +24,6 @@ namespace ClassWeb.Models
         /// Public properties for the Role Permission Object
         /// </summary>
         //Primary Key for database
-        [Key]
-        public int ID
-        {
-            get { return _ID; }
-            set { _ID = value; }
-        }
 
         public string Title
         {

@@ -5,27 +5,11 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Sections
+    public class Section:DatabaseObject
     {
-        private int _ID;
         private int _SectionNumber;
         private int _ClassID;
         private int _UserID;
-
-        [Key]
-        public int ID
-        {
-            get
-            {
-                return _ID;
-            }
-
-            set
-            {
-                _ID = value;
-            }
-        }
-
         public int SectionNumber
         {
             get
