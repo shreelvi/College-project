@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations; 
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:DatabaseObject
+    public class Assignment:AssignmentResources
+        ///summary 
+        ///Created by: Sakshi Khetan
+        ///Every assignment is a type of resource
+        ///Every user can upload one to many assignments
+        ///this class inherits everything from AssignmentResource class
+
     {
         private string _Title;
         private string _Description;
