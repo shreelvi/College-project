@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,13 +16,21 @@ namespace ClassWeb.Models
         private DateTime _DueDate;
         private DateTime _SubmissionDate;
         private int _Grade;
-        private string _Feedback; 
+        private string _Feedback;
+        private Stream _File;
 
         public string Title
         {
             get { return _Title; }
             set { _Title = value; }
         }
+
+        public Stream File
+        {
+            get { return _File; }
+            set { _File = value; }
+        }
+
 
         public string Description
         {

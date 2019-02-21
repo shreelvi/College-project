@@ -12,9 +12,9 @@ namespace ClassWeb.Data
         {
             new Assignment(){ID=1,Title="Test",Description="Test",DueDate=DateTime.Now,Grade=98,Feedback="Test"},
             new Assignment(){ID = 2,Title = "Freak", Description = "Monkey" },
-            new Assignment(){ ID = 3,Description = "Doom", Title = "Slayer" },
-            new Assignment(){ ID = 4, Description = "Stabby", Title = "McStabberson" },
-            new Assignment(){ ID = 5, Description = "Jane", Title = "Doe" },
+            new Assignment(){ ID = 3,Title = "Slayer",Description = "Doom",  },
+            new Assignment(){ ID = 4,Title = "McStabberson", Description = "Stabby",  },
+            new Assignment(){ ID = 5,Title = "Doe", Description = "Jane",  },
         };
         public static List<Assignment> GetAsignments()
         {

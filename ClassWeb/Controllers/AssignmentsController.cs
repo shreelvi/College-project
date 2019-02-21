@@ -7,16 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using ClassWeb.Data;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace ClassWeb.Controllers
 {
+    /// <summary>
+    /// Created By: Kishor Simkhada
+    /// </summary>
     public class AssignmentsController : Controller
     {
-      //  private readonly ClassWebContext _context;
+        //  private readonly ClassWebContext _context;
 
         public AssignmentsController(ClassWebContext context)
         {
-          //  _context = context;
+            //  _context = context;
         }
 
         // GET: Assignments
@@ -34,7 +41,7 @@ namespace ClassWeb.Controllers
             }
 
             var assignment = FakeDAL.GetAsignment((int)id); //await _context.Assignment
-                //.FirstOrDefaultAsync(m => m.ID == id);
+                                                            //.FirstOrDefaultAsync(m => m.ID == id);
             if (assignment == null)
             {
                 return NotFound();
@@ -54,14 +61,34 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,StartDate,DueDate,SubmisionDate,Grade,Feedback,ID")] Assignment assignment)
+        // For Information about Upload file https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
+        public async Task<IActionResult> Create(IFormFile file, Assignment assignment)
         {
+            var filePath = Path.GetTempFileName();
             if (ModelState.IsValid)
             {
-                //  _context.Add(assignment);
-                //await _context.SaveChangesAsync();
-                FakeDAL.Add(assignment);
-                return RedirectToAction(nameof(Index));
+                if (file == null || file.Length == 0 || file.Length > 4000000)
+                {
+                    ViewBag.error = "File Either empty or Too Large to Upload";
+                    return View();
+                }
+                else
+                {
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                       
+                    {
+                        assignment.ID = 1;
+                        assignment.Description = file.FileName;
+                        assignment.StartDate = DateTime.Now;
+                        assignment.SubmisionDate = DateTime.Now;
+
+                    }
+                    FakeDAL.Add(assignment);
+                   // return Ok(new { filePath });
+                    return RedirectToAction(nameof(Index));
+
+                }
+
             }
             return View(assignment);
         }
