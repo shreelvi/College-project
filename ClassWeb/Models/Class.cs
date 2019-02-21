@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Classes
+    public class Class
     {
         /// <summary>
         /// 

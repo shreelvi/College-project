@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class DatabaseObject
+    public abstract class DatabaseObject
     {
         /// <summary>
         /// Created By: Kishor Simkhada
