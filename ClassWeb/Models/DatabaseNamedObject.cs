@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
+    //Summary
+    // Code by Elvis
+    // DatabaseNamed Object includes all of the class name or title
+
+
     public abstract class DatabaseNamedObject :DatabaseObject
     {
         private string _Name;

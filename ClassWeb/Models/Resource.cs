@@ -14,6 +14,7 @@ namespace ClassWeb.Models
     /// </summary>
     public class Resource: DatabaseNamedObject
     {
+
         #region Private Variables
         private DateTime _DateModified;
         private DateTime _DateUploaded;

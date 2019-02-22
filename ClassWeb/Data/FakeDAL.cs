@@ -10,11 +10,11 @@ namespace ClassWeb.Data
     {
         private static List<Assignment> _Assignments = new List<Assignment>()
         {
-            new Assignment(){ID=1,Title="Test",Description="Test",DueDate=DateTime.Now,Grade=98,Feedback="Test"},
-            new Assignment(){ID = 2,Title = "Freak", Description = "Monkey" },
-            new Assignment(){ ID = 3,Title = "Slayer",Description = "Doom",  },
-            new Assignment(){ ID = 4,Title = "McStabberson", Description = "Stabby",  },
-            new Assignment(){ ID = 5,Title = "Doe", Description = "Jane",  },
+            new Assignment(){ID=1,Name="Test",Description="Test",DueDate=DateTime.Now,Grade=98,Feedback="Test"},
+            new Assignment(){ID = 2,Name = "Freak", Description = "Monkey" },
+            new Assignment(){ ID = 3,Name = "Slayer",Description = "Doom",  },
+            new Assignment(){ ID = 4,Name = "McStabberson", Description = "Stabby",  },
+            new Assignment(){ ID = 5,Name = "Doe", Description = "Jane",  },
         };
         public static List<Assignment> GetAsignments()
         {
@@ -44,7 +44,7 @@ namespace ClassWeb.Data
             if (a2Edit != null)
             {
                 a2Edit.Description = a.Description;
-                a2Edit.Title = a.Title;
+                a2Edit.Name = a.Name;
                 return 1;
             }
             return -1;

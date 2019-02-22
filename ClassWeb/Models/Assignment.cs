@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:DatabaseObject
+    public class Assignment:Resource
     {
-        private string _Title;
         private string _Description;
         private DateTime _StartDate;
         private DateTime _DueDate;
@@ -20,12 +19,7 @@ namespace ClassWeb.Models
         private string _Feedback;
         private Stream _File;
 
-        [Display(Name ="Assignment Name")]
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
+       
 
         public Stream File
         {

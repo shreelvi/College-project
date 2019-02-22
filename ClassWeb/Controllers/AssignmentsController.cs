@@ -27,13 +27,13 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Assignments
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View(FakeDAL.GetAsignments());
         }
 
         // GET: Assignments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -78,7 +78,7 @@ namespace ClassWeb.Controllers
                        
                     {
                         assignment.ID = 1;
-                        assignment.Title = file.FileName;
+                        assignment.Name = file.FileName;
                         assignment.File = file.OpenReadStream();
                         assignment.SubmisionDate = DateTime.Now;
 
