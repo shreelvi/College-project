@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class DatabaseObject
+    public abstract class DatabaseObject
     {
+        /// <summary>
+        /// Created By: Kishor Simkhada
+        /// Object for database that can be inherited by other object.
+        /// </summary>
         #region Private Variable
         private int _ID;
         #endregion
         #region Public Class
+        //Primary Key for database
         [Key]
         public int ID
         {
