@@ -10,7 +10,7 @@ namespace ClassWeb.Models
     {
         /// <summary>
         /// Created By: Kishor Simkhada
-        /// Object for database that can be inherited by other object.
+        /// Object for database that can be inherited by other DatabaseNamed object for ID to all classes.
         /// </summary>
 
         #region Private Variable
@@ -24,5 +24,6 @@ namespace ClassWeb.Models
             get { return _ID; }
             set { _ID = value; }
         }
+        #endregion
     }
 }
