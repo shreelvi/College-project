@@ -5,12 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace classWeb.Models
+namespace ClassWeb.Models
 {
-    public class Actor
+    public class Resources: DatabaseNamedObject
     {
-        private int _ResourceID;
-        private string _ResourceName;
+        
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
@@ -19,20 +18,7 @@ namespace classWeb.Models
         private Assignments _AssignmentID;
 
         
-        [Key]
-        public int ResourceID
-        {
-            get { return _ResourceID; }
-            set { _ResourceID = value; }
-        }
-
-
-        public string ResourceName
-        {
-            get { return _ResourceName; }
-            set { _ResourceName = value; }
-        }
-        
+       
         public DateTime DateModified
         {
             get { return _DateModified; }
@@ -58,12 +44,14 @@ namespace classWeb.Models
             set { _MaxSize = value; }
         }
 
+        //Foreign Key 
         public Users UserID
         {
             get { return _UserID; }
             set { _UserID = value; }
         }
 
+        //Foreign Key
         public Assignments AssignmentID
         {
             get { return _AssignmentID; }
