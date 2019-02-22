@@ -1,0 +1,57 @@
+﻿@model ClassWeb.Models.Assignment
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+<h4>Assignment</h4>
+<hr />
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6 ">
+                <ol class="breadcrumb float-sm-left">
+                    <li class="breadcrumb-item"><a asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item">Document </li>
+                    <li class="breadcrumb-item active">upload </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post"
+              enctype="multipart/form-data">
+            @if (!string.IsNullOrEmpty(ViewBag.success))
+            {
+                <div class="alert alert-success" role="alert">
+                    <strong>Success!</strong> @ViewBag.success.
+                </div>}
+            @if (!string.IsNullOrEmpty(ViewBag.error))
+            {
+                <div class="alert alert-warning" role="alert">
+                    <strong>Failed!</strong> @ViewBag.error.
+                </div>}
+
+            <div class="row">
+                <div class="col-md-6">
+                    Choose a Document:<input type="file" name="file" required />
+                </div>
+            </div><br>
+  
+            <br>
+            <div class="row col-md-6">
+                <button type="submit" class="btn btn-info">Upload</button>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

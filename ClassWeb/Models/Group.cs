@@ -9,13 +9,14 @@ namespace ClassWeb.Models
     /// <summary>
     /// Groups are a team of student members for a projects in class
     /// </summary>
-    public class Groups: DatabaseNamedObject 
+
+    public class Group: DatabaseNamedObject 
     {
        
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
-        private Assignments _AssignmentID;
+        private Assignment _AssignmentID;
  
         [Display(Name ="Group's Email-address",
             Description = "Email-address used to contact the group; which all members will have access.")]
@@ -42,7 +43,7 @@ namespace ClassWeb.Models
         }
 
         //Foreign Key
-        public Assignments AssignmentID
+        public Assignment AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }

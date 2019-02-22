@@ -4,21 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
+
     public class Resources: DatabaseNamedObject
     {
         
+    public class Resource:DatabaseObject
+    {
+
+ 
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
         private int _MaxSize;
-        private Users _UserID;
-        private Assignments _AssignmentID;
+        private User _UserID;
+        private Assignment _AssignmentID;
 
         
-       
         public DateTime DateModified
         {
             get { return _DateModified; }
@@ -44,15 +49,13 @@ namespace ClassWeb.Models
             set { _MaxSize = value; }
         }
 
-        //Foreign Key 
-        public Users UserID
+        public User UserID
         {
             get { return _UserID; }
             set { _UserID = value; }
         }
 
-        //Foreign Key
-        public Assignments AssignmentID
+        public Assignment AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }

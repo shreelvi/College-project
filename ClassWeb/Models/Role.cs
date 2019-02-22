@@ -6,49 +6,14 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Role
+ /// <summary>
+ /// Created By: Kishor Simkhada
+ /// Role is a designated position for each user.
+ /// Each role can be assigned to zero to many users.
+ /// Each role user can have one to multiple permissions. 
+ /// </summary>
+    public class Role:DatabaseRolePermission
     {
-        private int _ID;
-        private int _Title;
-        private int _Description;
-        private DateTime _DateCreated;
-        private DateTime _DateModified;
-        private DateTime _DateDeleted;
-        [Key]
-        public int ID
-        {
-            get { return _ID; }
-            set { _ID = value; }
-        }
-        public int Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
-
-        public int Description
-        {
-            get { return _Description; }
-            set { _Description = value; }
-        }
-        public DateTime DateCreated
-        {
-            get { return _DateCreated; }
-            set { _DateCreated = value; }
-        }
-
-
-        public DateTime DateModified
-        {
-            get { return _DateModified; }
-            set { _DateModified = value; }
-        }
-
-        public DateTime DateDeleted
-        {
-            get { return _DateDeleted; }
-            set { _DateDeleted = value; }
-        }
-
+      
     }
 }
