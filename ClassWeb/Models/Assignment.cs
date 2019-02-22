@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Antiforgery.Internal;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -14,11 +15,12 @@ namespace ClassWeb.Models
         private string _Description;
         private DateTime _StartDate;
         private DateTime _DueDate;
-        private DateTime _SubmissionDate;
+        private  DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback;
         private Stream _File;
 
+        [Display(Name ="Assignment Name")]
         public string Title
         {
             get { return _Title; }
@@ -44,22 +46,33 @@ namespace ClassWeb.Models
             set { _StartDate = value; }
         }
 
+        [Display(Name = "Assignment Due")]
         public DateTime DueDate
         {
             get { return _DueDate; }
             set { _DueDate = value; }
         }
-
+        [Display(Name = "Assignment Subbmittion")]
         public DateTime SubmisionDate
         {
             get { return _SubmissionDate; }
-            set { _SubmissionDate = value; }
+            set { _SubmissionDate = value;}
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set { _Grade = value; }
+            set {
+                if (value > 100)
+                {
+                    _Grade = 100;
+                }
+                if (value < 0)
+                {
+                    _Grade = 0;
+                }
+                _Grade = value;
+            }
         }
 
         public string Feedback

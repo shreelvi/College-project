@@ -78,8 +78,8 @@ namespace ClassWeb.Controllers
                        
                     {
                         assignment.ID = 1;
-                        assignment.Description = file.FileName;
-                        assignment.StartDate = DateTime.Now;
+                        assignment.Title = file.FileName;
+                        assignment.File = file.OpenReadStream();
                         assignment.SubmisionDate = DateTime.Now;
 
                     }
@@ -107,6 +107,11 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
             return View(assignment);
+        }
+        public IActionResult Download(int? id)
+        {
+            ViewBag.Message = "Download clicked!";
+            return View();
         }
 
         // POST: Assignments/Edit/5
