@@ -46,13 +46,13 @@ namespace ClassWeb.Models
             set { _StartDate = value; }
         }
 
-        [Display(Name = "Assignment Due")]
+        [Display(Name = "Due Date")]
         public DateTime DueDate
         {
             get { return _DueDate; }
             set { _DueDate = value; }
         }
-        [Display(Name = "Assignment Subbmittion")]
+        [Display(Name = "Subbmittion Date")]
         public DateTime SubmisionDate
         {
             get { return _SubmissionDate; }

@@ -82,6 +82,7 @@ namespace ClassWeb.Controllers
                         assignment.File = file.OpenReadStream();
                         assignment.SubmisionDate = DateTime.Now;
 
+
                     }
                     FakeDAL.Add(assignment);
                    // return Ok(new { filePath });
