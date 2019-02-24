@@ -21,9 +21,14 @@
         </div>
     </div>
 </div>
+
+<p><strong>Select Multiple files to Upload:</strong></p>
+
+
+
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create" method="post"
+        <form asp-action="/Assignments" method="post"
               enctype="multipart/form-data">
             @if (!string.IsNullOrEmpty(ViewBag.success))
             {
@@ -36,22 +41,16 @@
                     <strong>Failed!</strong> @ViewBag.error.
                 </div>}
 
-            <div class="row">
-                <div class="col-md-6">
-                    Choose a Document:<input type="file" name="file" required />
-                </div>
-            </div><br>
-  
-            <br>
-            <div class="row col-md-6">
-                <button type="submit" class="btn btn-info">Upload</button>
 
-            </div>
+            <input id="files" name="files" type="file" multiple onchange="fileUpload('files');" />
         </form>
-    </div>
+    </div> <a asp-action="Index" class="active">Submit Assignment</a>
 
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="~/js/file.js"></script>
+

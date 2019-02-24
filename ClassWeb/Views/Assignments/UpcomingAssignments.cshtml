@@ -1,13 +1,8 @@
 ﻿@model IEnumerable<ClassWeb.Models.Assignment>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "Upcoming Assignments";
 }
 
-<h2>Upcoming Assignments</h2>
-<input type="button" value="Click here to see Assignments that are due soon" onclick="@("window.location.href='" + @Url.Action("UpcomingAssignments", "Assignments") + "'");" />
-
-<h2>Your Submissions:</h2>
 <table class="table">
     <thead>
         <tr>
@@ -17,18 +12,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-
             <th>
                 @Html.DisplayNameFor(model => model.DueDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Grade)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Feedback)
-            </th>
-
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -45,19 +31,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.DueDate)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Grade)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Feedback)
-                </td>
+              
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Create" asp-route-id="@item.ID">Upload</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

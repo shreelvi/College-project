@@ -5,28 +5,20 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Class
+    public class Class : DatabaseNamedObject
     {
         /// <summary>
         /// 
         /// </summary>
-        private string _Title;
+
+        #region Private Variables
         private bool _Available;
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
+        #endregion
 
-        public string Title
-        {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                _Title = value;
-            }
-        }
+        #region Public Variables
         public bool Available
         {
             get
@@ -38,6 +30,7 @@ namespace ClassWeb.Models
                 _Available = value;
             }
         }
+
         public DateTime DateStart
         {
             get
@@ -49,7 +42,9 @@ namespace ClassWeb.Models
                 _DateStart = value;
             }
         }
-        public DateTime DateEnd        {
+
+        public DateTime DateEnd
+        {
             get
             {
                 return _DateEnd;
@@ -59,6 +54,7 @@ namespace ClassWeb.Models
                 _DateEnd = value;
             }
         }
+
         public int SectionId
         {
             get
@@ -70,8 +66,10 @@ namespace ClassWeb.Models
                 _SectionID = value;
             }
         }
-
-
-
+        #endregion
     }
 }
+
+
+
+    

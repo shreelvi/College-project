@@ -9,29 +9,23 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:DatabaseObject
+    public class Assignment:DatabaseNamedObject
     {
-        private string _Title;
         private string _Description;
         private DateTime _StartDate;
         private DateTime _DueDate;
         private  DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback;
-        private Stream _File;
+        //private Stream _File;
 
-        [Display(Name ="Assignment Name")]
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
+       
 
-        public Stream File
-        {
-            get { return _File; }
-            set { _File = value; }
-        }
+        //public Stream File
+        //{
+        //    get { return _File; }
+        //    set { _File = value; }
+        //}
 
 
         public string Description
@@ -46,13 +40,13 @@ namespace ClassWeb.Models
             set { _StartDate = value; }
         }
 
-        [Display(Name = "Due Date")]
+        [Display(Name = "Date Due")]
         public DateTime DueDate
         {
             get { return _DueDate; }
             set { _DueDate = value; }
         }
-        [Display(Name = "Subbmittion Date")]
+        [Display(Name = "Date Submitted")]
         public DateTime SubmisionDate
         {
             get { return _SubmissionDate; }
