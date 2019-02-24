@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    //Summary
+    // <Summary>
     // Code by Elvis
-    // DatabaseNamed Object includes all of the class name or title
+    // DatabaseNamed Object inherits DatabaseObject includes the name or title of a class
+    // Other Classes can inherit this class to use primary ID and Name property
+    // </Summary>
+
 
 
     public abstract class DatabaseNamedObject :DatabaseObject

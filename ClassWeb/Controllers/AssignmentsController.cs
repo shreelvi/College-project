@@ -5,49 +5,95 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Models;
 using ClassWeb.Data;
+using ClassWeb.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 using System.IO;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Http.Internal;
 
 namespace ClassWeb.Controllers
 {
-    /// <summary>
-    /// Created By: Kishor Simkhada
-    /// </summary>
     public class AssignmentsController : Controller
     {
-        //  private readonly ClassWebContext _context;
+        //IHosting Envrironment is used to upload file in the web root directory path (wwwroot)
+        private IHostingEnvironment _hostingEnvironment;
 
-        public AssignmentsController(ClassWebContext context)
+        //Access the data from the database
+        private readonly ClassWebContext _context;
+
+        public AssignmentsController(IHostingEnvironment hostingEnvironment, ClassWebContext context)
         {
-            //  _context = context;
+            _hostingEnvironment = hostingEnvironment;
+            _context = context;
         }
 
         // GET: Assignments
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(FakeDAL.GetAsignments());
+            return View(await _context.Assignment.ToListAsync());
         }
 
         // GET: Assignments/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var assignment = FakeDAL.GetAsignment((int)id); //await _context.Assignment
-                                                            //.FirstOrDefaultAsync(m => m.ID == id);
+            var assignment = await _context.Assignment
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (assignment == null)
             {
                 return NotFound();
             }
 
             return View(assignment);
+        }
+
+        [HttpPost]
+        public IActionResult Index(IList<IFormFile> files)
+        {
+            //Save files in the directory
+            foreach (IFormFile item in files)
+            {
+                string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
+                fileName = this.EnsureFilename(fileName);
+                using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
+                {
+                   
+                    //assignment.ID += 1;
+                    //assignment.Name = fileName;
+                    ////assignment.File = files.OpenReadStream();
+                    //assignment.SubmisionDate = DateTime.Now;
+                    //assignment.Feedback = "Not Graded";
+                }
+                //context.Add(assignment);
+            }
+            return RedirectToAction(nameof(Index));
+
+            //return this.Content("Upload Successful");
+        }
+
+        private string EnsureFilename(string fileName)
+        {
+            //throw new NotImplementedException();
+            if (fileName.Contains("\\"))
+            {
+                fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
+            }
+            return fileName;
+        }
+
+        private string GetPath(string fileName)
+        {
+            string path = _hostingEnvironment.WebRootPath + "\\upload\\";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path + fileName;
+
+
         }
 
         // GET: Assignments/Create
@@ -61,34 +107,13 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // For Information about Upload file https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
-        public async Task<IActionResult> Create(IFormFile file, Assignment assignment)
+        public async Task<IActionResult> Create([Bind("Description,StartDate,DueDate,SubmisionDate,Grade,Feedback,Name,ID")] Assignment assignment)
         {
-            var filePath = Path.GetTempFileName();
             if (ModelState.IsValid)
             {
-                if (file == null || file.Length == 0 || file.Length > 4000000)
-                {
-                    ViewBag.error = "File Either empty or Too Large to Upload";
-                    return View();
-                }
-                else
-                {
-                    using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                       
-                    {
-                        assignment.ID = 1;
-                        assignment.Name = file.FileName;
-                        assignment.File = file.OpenReadStream();
-                        assignment.SubmisionDate = DateTime.Now;
-
-                    }
-                    FakeDAL.Add(assignment);
-                   // return Ok(new { filePath });
-                    return RedirectToAction(nameof(Index));
-
-                }
-
+                _context.Add(assignment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(assignment);
         }
@@ -101,17 +126,12 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var assignment = FakeDAL.GetAsignment((int)id);// await _context.Assignment.FindAsync(id);
+            var assignment = await _context.Assignment.FindAsync(id);
             if (assignment == null)
             {
                 return NotFound();
             }
             return View(assignment);
-        }
-        public IActionResult Download(int? id)
-        {
-            ViewBag.Message = "Download clicked!";
-            return View();
         }
 
         // POST: Assignments/Edit/5
@@ -119,7 +139,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,StartDate,DueDate,SubmisionDate,Grade,Feedback,ID")] Assignment assignment)
+        public async Task<IActionResult> Edit(int id, [Bind("Description,StartDate,DueDate,SubmisionDate,Grade,Feedback,Name,ID")] Assignment assignment)
         {
             if (id != assignment.ID)
             {
@@ -130,9 +150,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    // _context.Update(assignment);
-                    // await _context.SaveChangesAsync();
-                    FakeDAL.Edit(assignment);
+                    _context.Update(assignment);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,37 +170,43 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Assignments/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var assignment = await _context.Assignment
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (assignment == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var assignment = await _context.Assignment
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (assignment == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(assignment);
-        //}
+            return View(assignment);
+        }
 
         // POST: Assignments/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var assignment = await _context.Assignment.FindAsync(id);
-        //    _context.Assignment.Remove(assignment);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var assignment = await _context.Assignment.FindAsync(id);
+            _context.Assignment.Remove(assignment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
         private bool AssignmentExists(int id)
         {
-            return FakeDAL.GetAsignments().Any(e => e.ID == id);
+            return _context.Assignment.Any(e => e.ID == id);
+        }
+
+        // GET: Assignments/Create
+        public async Task<IActionResult> UpcomingAssignments()
+        {
+            return View(await _context.Assignment.ToListAsync());
         }
     }
 }
