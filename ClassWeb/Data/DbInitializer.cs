@@ -5,6 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClassWeb.Data
+//<summary>
+//code by: Elvis
+//Initialize DB with test data
+//Reference: https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-2.2
+//</summary>
 {
     public static class DbInitializer
     {

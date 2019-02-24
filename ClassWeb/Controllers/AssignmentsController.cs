@@ -52,6 +52,10 @@ namespace ClassWeb.Controllers
             return View(assignment);
         }
 
+        //<summary>
+        //Post method to save the file
+        //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
+        //</summary>
         [HttpPost]
         public IActionResult Index(IList<IFormFile> files)
         {
@@ -60,6 +64,8 @@ namespace ClassWeb.Controllers
             {
                 string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
                 fileName = this.EnsureFilename(fileName);
+
+                //Create the file
                 using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
                 {
                    
@@ -76,6 +82,10 @@ namespace ClassWeb.Controllers
             //return this.Content("Upload Successful");
         }
 
+        //<summary>
+        //Verify the file Name
+        //</summary>
+
         private string EnsureFilename(string fileName)
         {
             //throw new NotImplementedException();
@@ -86,6 +96,9 @@ namespace ClassWeb.Controllers
             return fileName;
         }
 
+        //<summary>
+        //Get the Path of the File
+        //</summary>
         private string GetPath(string fileName)
         {
             string path = _hostingEnvironment.WebRootPath + "\\upload\\";
@@ -96,6 +109,7 @@ namespace ClassWeb.Controllers
 
         }
 
+       
         // GET: Assignments/Create
         public IActionResult Create()
         {
@@ -203,9 +217,14 @@ namespace ClassWeb.Controllers
             return _context.Assignment.Any(e => e.ID == id);
         }
 
-        // GET: Assignments/Create
+
+        // GET: Assignments/UpcomingAssignments
+        // Currently gets list of assignments from the database
+        // We need to add method to only get assignments that have 
+        // Date more than today
         public async Task<IActionResult> UpcomingAssignments()
         {
+            
             return View(await _context.Assignment.ToListAsync());
         }
     }
