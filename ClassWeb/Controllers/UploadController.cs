@@ -40,7 +40,7 @@ namespace ClassWeb.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
-            ViewBag.Message = "File Succesfully Uploaded";
+            ViewBag.Message = "File Succesfully Uploaded!!!";
             }
             var items = GetFiles();
 
@@ -51,6 +51,17 @@ namespace ClassWeb.Controllers
         {
             var FileVirtualPath = "~/Upload/" + FileName;
             return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
+        }
+        public IActionResult Delete(string FileName)
+        {
+            string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
+            string path=dir_Path+ FileName;
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+                ViewBag.Message = "File Succesfully Deleted!!!";
+            }
+            return RedirectToAction("Index", "Upload");
         }
 
         private List<string> GetFiles()

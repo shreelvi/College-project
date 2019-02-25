@@ -1,28 +1,55 @@
 ﻿@model List<string>
-    <h2>Basic File Upload</h2>
-    <form asp-controller="Upload" asp-action="Index" method="post" enctype="multipart/form-data">
-        <label for="file">Upload Assignment:</label>
-        <input type="file" name="file" id="file" />
+<h4 class="text-info font-weight-bold">Upload Assignment</h4>
+<div class="input-group">
+    <form asp-controller="Upload" asp-action="index" method="post" enctype="multipart/form-data">
+        <div class="custom-file">
+            <input type="file" name="file" id="file" class="custom-file-input" aria-describedby="inputGroupFileAddon01" />
+            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+        </div>
         <br /><br />
-        <input type="submit" value="Upload" />
+        <input type="submit" class="btn btn-outline-success" value="Upload" />
         <br /><br />
-        @ViewBag.Message
+        <p class="info alert-warning">  @ViewBag.Message</p>
+
         <br />
     </form>
-
-    <br />
-    <br />
-    <h2>Document List</h2>
-    <table>
+</div>
+<br />
+<br />
+<h2 class="text-success text-center">Document List</h2>
+<table class="table table-striped bg-light">
+    <thead>
         <tr>
-            <th>File Name</th>
-            <th>Link</th>
+            <th scope="col">File Name</th>
+            <th scope="col">File Size</th>
+            <th scope="col">Download</th>
+            <th scope="col">Delete</th>
         </tr>
+    </thead>
+    <tbody>
+
         @for (var i = 0; i <= Model.Count - 1; i++)
-    {
-        <tr>
+        {
+            <tr class="mt-5">
             <td>@Model[i].ToString()</td>
-            <td>@Html.ActionLink("Download", "Download", new { FileName = Model[i].ToString() })</td>
+            <td>2.01</td>
+            <td class="btn-outline-success btn">@Html.ActionLink("Download", "Download", new { FileName = Model[i].ToString() }) <span class="glyphicon glyphicon-download" ></span></td>
+            <td class=" btn-outline-danger btn">@Html.ActionLink("Delete", "Delete", new { FileName = Model[i].ToString() })<span class="glyphicon glyphicon-trash"></span></td>
         </tr>
     }
-    </table>
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
