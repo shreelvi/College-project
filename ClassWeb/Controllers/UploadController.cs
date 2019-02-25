@@ -19,6 +19,7 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
+            
             var items = GetFiles();
             return View(items);
         }
@@ -43,7 +44,6 @@ namespace ClassWeb.Controllers
             ViewBag.Message = "File Succesfully Uploaded!!!";
             }
             var items = GetFiles();
-
             return View(items);
         }
 
@@ -67,6 +67,10 @@ namespace ClassWeb.Controllers
         private List<string> GetFiles()
         {
             string filepath = _appEnvironment.WebRootPath + "\\Upload\\";
+            if (!Directory.Exists(filepath))
+            {
+                Directory.CreateDirectory(filepath);
+            }
             var dir = new DirectoryInfo(filepath);
             FileInfo[] fileNames = dir.GetFiles("*.*");
             List<string> items = new List<string>();
