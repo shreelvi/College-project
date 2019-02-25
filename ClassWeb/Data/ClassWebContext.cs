@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
-namespace ClassWeb.Models
+namespace ClassWeb.Data
 {
-    public class ClassWebContext : DbContext
+    public class ClassWebContext: DbContext
     {
-        public ClassWebContext (DbContextOptions<ClassWebContext> options)
-            : base(options)
+        public ClassWebContext(DbContextOptions<ClassWebContext> options)
+           : base(options)
         {
         }
 
