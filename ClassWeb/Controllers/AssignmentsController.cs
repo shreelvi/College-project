@@ -11,17 +11,23 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Server;
+using System.Web;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClassWeb.Controllers
 {
-    public class AssignmentsController : Controller
+    public class AssignmentsController : Controller 
     {
+        #region Private variable
         //IHosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-
         //Access the data from the database
         private readonly ClassWebContext _context;
-
+        #endregion
         public AssignmentsController(IHostingEnvironment hostingEnvironment, ClassWebContext context)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -31,9 +37,9 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Assignment.ToListAsync());
+            
+            return View();
         }
-
         // GET: Assignments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -51,31 +57,6 @@ namespace ClassWeb.Controllers
 
             return View(assignment);
         }
-
-        [HttpPost]
-        public IActionResult Index(IList<IFormFile> files)
-        {
-            //Save files in the directory
-            foreach (IFormFile item in files)
-            {
-                string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
-                fileName = this.EnsureFilename(fileName);
-                using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
-                {
-                   
-                    //assignment.ID += 1;
-                    //assignment.Name = fileName;
-                    ////assignment.File = files.OpenReadStream();
-                    //assignment.SubmisionDate = DateTime.Now;
-                    //assignment.Feedback = "Not Graded";
-                }
-                //context.Add(assignment);
-            }
-            return RedirectToAction(nameof(Index));
-
-            //return this.Content("Upload Successful");
-        }
-
         private string EnsureFilename(string fileName)
         {
             //throw new NotImplementedException();
@@ -97,20 +78,18 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Assignments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+       
 
         // POST: Assignments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Description,StartDate,DueDate,SubmisionDate,Grade,Feedback,Name,ID")] Assignment assignment)
+        public async Task<IActionResult> Create(Assignment assignment)
         {
             if (ModelState.IsValid)
             {
+                var ass=assignment;
                 _context.Add(assignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -208,5 +187,17 @@ namespace ClassWeb.Controllers
         {
             return View(await _context.Assignment.ToListAsync());
         }
+        public IActionResult GetAllFiles()
+        {
+            string path = _hostingEnvironment.WebRootPath + "\\upload\\";
+            
+            var provider = new PhysicalFileProvider(path);
+            var contents = provider.GetDirectoryContents(string.Empty);
+
+            string[] arr = Directory.GetFiles(path);
+            string[] test = arr;
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

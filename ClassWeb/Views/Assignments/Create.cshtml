@@ -28,7 +28,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="/Assignments" method="post"
+        <form method="post" asp-controller="Assignment"
               enctype="multipart/form-data">
             @if (!string.IsNullOrEmpty(ViewBag.success))
             {
@@ -40,8 +40,6 @@
                 <div class="alert alert-warning" role="alert">
                     <strong>Failed!</strong> @ViewBag.error.
                 </div>}
-
-
             <input id="files" name="files" type="file" multiple onchange="fileUpload('files');" />
         </form>
     </div> <a asp-action="Index" class="active">Submit Assignment</a>
