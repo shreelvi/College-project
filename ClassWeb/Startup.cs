@@ -63,7 +63,7 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Upload}/{action=Index}/{id?}");
             });
         }
     }

@@ -8,6 +8,7 @@
 <input type="button" value="Click here to see Assignments that are due soon" onclick="@("window.location.href='" + @Url.Action("UpcomingAssignments", "Assignments") + "'");" />
 
 <h2>Your Submissions:</h2>
+ <a asp-action="GetAllFiles">Get all files</a>
 <table class="table">
     <thead>
         <tr>
@@ -36,7 +37,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <img src="~/u/banner1.svg" alt="ASP.NET" class="img-responsive" />
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
