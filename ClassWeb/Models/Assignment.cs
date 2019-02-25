@@ -1,33 +1,32 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:AssignmentResources
-        ///summary 
-        ///Created by: Sakshi Khetan
-        ///Every assignment is a type of resource
-        ///Every user can upload one to many assignments
-        ///this class inherits everything from AssignmentResource class
-
+    public class Assignment:DatabaseNamedObject
     {
-        private string _Title;
         private string _Description;
         private DateTime _StartDate;
         private DateTime _DueDate;
-        private DateTime _SubmissionDate;
+        private  DateTime _SubmissionDate;
         private int _Grade;
-        private string _Feedback; 
+        private string _Feedback;
+        //private Stream _File;
 
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
+       
+
+        //public Stream File
+        //{
+        //    get { return _File; }
+        //    set { _File = value; }
+        //}
+
 
         public string Description
         {
@@ -41,22 +40,33 @@ namespace ClassWeb.Models
             set { _StartDate = value; }
         }
 
+        [Display(Name = "Date Due")]
         public DateTime DueDate
         {
             get { return _DueDate; }
             set { _DueDate = value; }
         }
-
+        [Display(Name = "Date Submitted")]
         public DateTime SubmisionDate
         {
             get { return _SubmissionDate; }
-            set { _SubmissionDate = value; }
+            set { _SubmissionDate = value;}
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set { _Grade = value; }
+            set {
+                if (value > 100)
+                {
+                    _Grade = 100;
+                }
+                if (value < 0)
+                {
+                    _Grade = 0;
+                }
+                _Grade = value;
+            }
         }
 
         public string Feedback

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Section:DatabaseObject
+    public class Section:DatabaseNamedObject
     {
         private int _SectionNumber;
         private int _ClassID;

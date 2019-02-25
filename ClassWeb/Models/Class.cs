@@ -5,48 +5,20 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    /// <summary>
-    /// By: Ganesh Sapkota 
-    /// Creating  classes model for our project.
-    /// Class is like Fall 2018, Spring 2019
-    /// Course will have classes and classes will have sections. 
-    /// Start date and end date are the first and last day of the semester respectively.
-    /// </summary>
-    public abstract class Classes:DatabaseObject
+    public class Class : DatabaseNamedObject
     {
-        #region private variable
-        private int _ID;
-        private string  _Title;
+        /// <summary>
+        /// 
+        /// </summary>
+
+        #region Private Variables
         private bool _Available;
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
         #endregion
 
-        #region public class
-        [Key]
-        public int ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                _ID = value;
-            }
-        }
-        public string Title
-        {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                _Title = value;
-            }
-        }
+        #region Public Variables
         public bool Available
         {
             get
@@ -58,6 +30,7 @@ namespace ClassWeb.Models
                 _Available = value;
             }
         }
+
         public DateTime DateStart
         {
             get
@@ -69,7 +42,9 @@ namespace ClassWeb.Models
                 _DateStart = value;
             }
         }
-        public DateTime DateEnd        {
+
+        public DateTime DateEnd
+        {
             get
             {
                 return _DateEnd;
@@ -79,6 +54,7 @@ namespace ClassWeb.Models
                 _DateEnd = value;
             }
         }
+
         public int SectionId
         {
             get
@@ -93,3 +69,7 @@ namespace ClassWeb.Models
         #endregion
     }
 }
+
+
+
+    
