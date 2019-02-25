@@ -2,12 +2,15 @@
 
 @{
     ViewData["Title"] = "Index";
+    var Url1 = @ViewData["Message"]; //Gets the url of index page
 }
+
 
 <h2>Upcoming Assignments</h2>
 <input type="button" value="Click here to see Assignments that are due soon" onclick="@("window.location.href='" + @Url.Action("UpcomingAssignments", "Assignments") + "'");" />
 
 <h2>Your Submissions for all courses:</h2>
+<p>Click the link to download assignment</p>
 <table class="table">
     <thead>
         <tr>
@@ -19,7 +22,7 @@
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.DueDate)
+                @Html.DisplayNameFor(model => model.SubmisionDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Grade)
@@ -34,16 +37,18 @@
     <tbody>
         @foreach (var item in Model)
         {
+            var url2 = Url1 + "/upload/" + item.Name;
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <a href="@url2">@item.Name</a>
+                    @*@Html.ActionLink(item.Name, "upload/"+ @item.Name)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.DueDate)
+                    @Html.DisplayFor(modelItem => item.SubmisionDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Grade)
@@ -56,6 +61,8 @@
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a href=@Url1+"/upload/"+ @item.Name >Download</a>
+
                 </td>
             </tr>
         }

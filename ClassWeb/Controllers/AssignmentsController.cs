@@ -31,6 +31,8 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
+            ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+
             return View(await _context.Assignment.ToListAsync());
         }
 
@@ -57,7 +59,7 @@ namespace ClassWeb.Controllers
         //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
         //</summary>
         [HttpPost]
-        public IActionResult Index(IList<IFormFile> files)
+        public IActionResult Index(IList<IFormFile> files, Assignment assignment)
         {
             //Save files in the directory
             foreach (IFormFile item in files)
@@ -65,16 +67,28 @@ namespace ClassWeb.Controllers
                 string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
                 fileName = this.EnsureFilename(fileName);
 
-                //Create the file
+
                 using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
                 {
-                   
+
                     //assignment.ID += 1;
                     //assignment.Name = fileName;
                     ////assignment.File = files.OpenReadStream();
                     //assignment.SubmisionDate = DateTime.Now;
                     //assignment.Feedback = "Not Graded";
                 }
+
+                if (ModelState.IsValid)
+                {
+                    assignment.Name = fileName;
+                    assignment.SubmisionDate = DateTime.Now;
+                    assignment.Feedback = "Not Graded";
+
+                    _context.Assignment.Add(assignment);
+                    _context.SaveChanges();
+                }
+
+
                 //context.Add(assignment);
             }
             return RedirectToAction(nameof(Index));
