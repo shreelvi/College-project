@@ -89,7 +89,7 @@ namespace ClassWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ass=assignment;
+                var assign=assignment;
                 _context.Add(assignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

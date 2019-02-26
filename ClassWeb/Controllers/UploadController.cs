@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 namespace ClassWeb.Controllers
 {
     public class UploadController : Controller
@@ -20,8 +20,12 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
+<<<<<<< HEAD
             
             var items = GetFiles();
+=======
+            List<Assignment>items=GetFiles();
+>>>>>>> Kishor
             return View(items);
         }
         /// <summary>
@@ -111,7 +115,7 @@ namespace ClassWeb.Controllers
             Byte[] FileBuffer = User.DownloadData(path);
             string fileBase64Data = Convert.ToBase64String(FileBuffer);
             string t = GetContentType(path);
-            if(t== "application/vnd.ms-word")
+            if (t == "application/vnd.ms-word")
             {
                 //Download the file
                 return File(FileBuffer, GetContentType(path), Path.GetFileName(path));
@@ -121,8 +125,8 @@ namespace ClassWeb.Controllers
                 string imageDataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
                 ViewBag.ImageData = imageDataURL;
             }
-                return View();
-           
+            return View();
+
         }
         #region Codeplay
         //public IActionResult View(string FileName)
@@ -141,7 +145,7 @@ namespace ClassWeb.Controllers
         //    return View();
         //}
         #endregion
-        private List<string> GetFiles()
+        private List<Assignment> GetFiles()
         {
             string filepath = _appEnvironment.WebRootPath + "\\Upload\\";
             if (!Directory.Exists(filepath))
@@ -150,10 +154,15 @@ namespace ClassWeb.Controllers
             }
             var dir = new DirectoryInfo(filepath);
             FileInfo[] fileNames = dir.GetFiles("*.*");
-            List<string> items = new List<string>();
+            List<Assignment> items = new List<Assignment>();
             foreach (var file in fileNames)
             {
-                items.Add(file.Name);
+                Assignment assign = new Assignment();
+                assign.Name=file.Name;
+                double filesize = (double)(file.Length / 1024);
+                assign.FileSize = String.Format("{0:0.00}", filesize);
+                assign.Description = file.Name;
+                items.Add(assign);
             }
             return items;
         }
