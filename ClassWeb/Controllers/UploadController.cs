@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -41,21 +42,59 @@ namespace ClassWeb.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
-            ViewBag.Message = "File Succesfully Uploaded!!!";
+                ViewBag.Message = "File Succesfully Uploaded!!!";
             }
             var items = GetFiles();
             return View(items);
         }
 
-        public FileResult Download(string FileName)
+        public async Task<FileResult> Download(string FileName)
         {
-            var FileVirtualPath = "~/Upload/" + FileName;
-            return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
+            string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
+            var FileVirtualPath = dir_Path + FileName;
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(FileVirtualPath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
+
+
+            // return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
+        }
+
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        //mime types
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".html","text/html" },
+                {".js","text/javascript"},
+                {".css","text/css"},
+                {".mpeg","audio/mpeg"},
+            };
         }
         public IActionResult Delete(string FileName)
         {
             string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
-            string path=dir_Path+ FileName;
+            string path = dir_Path + FileName;
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
@@ -63,7 +102,45 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Index", "Upload");
         }
+        public async Task<IActionResult> View(string FileName)
+        {
+            string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
+            string path = dir_Path + FileName;
 
+            WebClient User = new WebClient();
+            Byte[] FileBuffer = User.DownloadData(path);
+            string fileBase64Data = Convert.ToBase64String(FileBuffer);
+            string t = GetContentType(path);
+            if(t== "application/vnd.ms-word")
+            {
+                //Download the file
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(path));
+            }
+            else
+            {
+                string imageDataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
+                ViewBag.ImageData = imageDataURL;
+            }
+                return View();
+           
+        }
+        #region Codeplay
+        //public IActionResult View(string FileName)
+        //{
+        //    string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
+        //    string path = dir_Path + FileName;
+
+        //    WebClient User = new WebClient();
+        //    Byte[] FileBuffer = User.DownloadData(path);
+        //    //if(FileBuffer.GetType==MiEM)
+        //    string imageBase64Data = Convert.ToBase64String(FileBuffer);
+
+        //    string imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
+        //    ViewBag.ImageData = imageDataURL;
+        //    ViewBag.SrcUrl = path;
+        //    return View();
+        //}
+        #endregion
         private List<string> GetFiles()
         {
             string filepath = _appEnvironment.WebRootPath + "\\Upload\\";
