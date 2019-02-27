@@ -1,10 +1,8 @@
 ﻿@model ClassWeb.Models.Assignment
-
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Create</h2>
 <h4>Assignment</h4>
 <hr />
@@ -21,11 +19,7 @@
         </div>
     </div>
 </div>
-
 <p><strong>Select Multiple files to Upload:</strong></p>
-
-
-
 <div class="row">
     <div class="col-md-12">
         <form method="post" asp-controller="Assignment"
@@ -43,9 +37,7 @@
             <input id="files" name="files" type="file" multiple onchange="fileUpload('files');" />
         </form><br/>
     </div> <a asp-action="Index" class="active">Submit Assignment</a>
-
 </div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
