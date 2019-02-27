@@ -11,7 +11,7 @@ namespace ClassWeb.Models
         /// 
         /// </summary>
         private int _ID;
-        private nvarchar _Title;
+        private string _Title;
         private bool _Available;
         private DateTime _DateStart;
         private DateTime _DateEnd;
@@ -30,7 +30,7 @@ namespace ClassWeb.Models
                 _ID = value;
             }
         }
-        public nvarchar Title
+        public string Title
         {
             get
             {
