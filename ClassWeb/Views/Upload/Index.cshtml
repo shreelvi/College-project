@@ -1,17 +1,15 @@
-﻿@model List<string>
+﻿@model List<Assignment>
 <h4 class="text-info font-weight-bold">Upload Assignment</h4>
 <div class="input-group">
     <form asp-controller="Upload" asp-action="index" method="post" enctype="multipart/form-data">
-        <div class="custom-file">
-            <input type="file" name="file" id="file" class="custom-file-input" aria-describedby="inputGroupFileAddon01" />
-            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Select File:</span>
+                <input type="file" id="file" name="file" class="input-group-text">
+                <input type="submit" class="btn btn-outline-success" value="Upload" />
+            </div>
         </div>
-        <br /><br />
-        <input type="submit" class="btn btn-outline-success" value="Upload" />
-        <br /><br />
         <p class="info alert-warning">  @ViewBag.Message</p>
-
-        <br />
     </form>
 </div>
 <br />
@@ -24,6 +22,7 @@
             <th scope="col">File Size</th>
             <th scope="col">Download</th>
             <th scope="col">Delete</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -31,12 +30,13 @@
         @for (var i = 0; i <= Model.Count - 1; i++)
         {
             <tr class="mt-5">
-            <td>@Model[i].ToString()</td>
-            <td>2.01</td>
-            <td class="btn-outline-success btn">@Html.ActionLink("Download", "Download", new { FileName = Model[i].ToString() }) <span class="glyphicon glyphicon-download" ></span></td>
-            <td class=" btn-outline-danger btn">@Html.ActionLink("Delete", "Delete", new { FileName = Model[i].ToString() })<span class="glyphicon glyphicon-trash"></span></td>
-        </tr>
-    }
+                <td>@Model[i].Name</td>
+                <td>@Model[i].FileSize KB</td>
+                <td ><span class="btn-outline-success btn glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
+                <td ><span class=" btn-outline-danger btn glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span> </td>
+                <td ><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open" >  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -52,4 +52,3 @@
 
 
 
-  
