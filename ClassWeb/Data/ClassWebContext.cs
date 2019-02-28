@@ -13,6 +13,10 @@ namespace ClassWeb.Data
     //</summary>
     public class ClassWebContext: DbContext
     {
+        public ClassWebContext()
+        {
+        }
+
         public ClassWebContext(DbContextOptions<ClassWebContext> options)
            : base(options)
         {
