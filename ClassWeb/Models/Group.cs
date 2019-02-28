@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 namespace ClassWeb.Models
 {
     /// <summary>
+    /// Code by Elvis
     /// Groups are a team of student members for a projects in class
     /// </summary>
-    public class Groups: DatabaseNamedObject 
+
+    public class Group : DatabaseNamedObject
     {
-       
+        #region Private Variables
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
-        private Assignments _AssignmentID;
- 
-        [Display(Name ="Group's Email-address",
+        private Assignment _AssignmentID;
+        #endregion
+
+        #region Public Variables
+        [Display(Name = "Group's Email-address",
             Description = "Email-address used to contact the group; which all members will have access.")]
         public string EmailAddress
         {
@@ -42,10 +46,11 @@ namespace ClassWeb.Models
         }
 
         //Foreign Key
-        public Assignments AssignmentID
+        public Assignment AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
+        #endregion
     }
 }
