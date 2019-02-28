@@ -40,8 +40,7 @@ namespace ClassWeb
             services.AddDbContext<ClassWebContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<UserContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
+   
 
         }
 
