@@ -34,7 +34,7 @@
                 <td>@Model[i].FileSize KB</td>
                 <td ><span class="btn-outline-success btn glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
                 <td ><span class=" btn-outline-danger btn glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span> </td>
-                <td ><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open" >  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
+                <td ><span class="btn btn-outline-primary glyphicon glyphicon-eye-open" >  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
             </tr>
         }
     </tbody>
