@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class User
+    /// <summary>
+    /// Created By: Kishor Simkhada
+    /// Everyone is a user when they sign up except Admin.
+    /// Special permission will be provided based on the roles assigned to them on the system.
+    /// Every user can login to the system unless deleted.
+    /// </summary>
+    public class User:DatabaseObject
     {
-        private int _ID;
+        #region private variable
         private string _FirstName;
         private string _MiddleName;
         private string _LastName;
         private string _EmailAddress;
         private string _Address;
         private string _Password;
+        private string _ConfirmPassword;
         private string _UserName;
         private long _PhoneNumber;
         private DateTime _DateCreated;
@@ -24,20 +31,17 @@ namespace ClassWeb.Models
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
+        private Role _Role;
+        private int _RoleID;
+        #endregion
+        #region public Properites
 
-        [Key]
-        public int ID
-        {
-            get { return _ID; }
-            set { _ID = value; }
-        }
-
-
+        [Required(ErrorMessage ="Please provide First Name", AllowEmptyStrings =false)]
         public string FirstName
         {
             get { return _FirstName; }
             set { _FirstName = value; }
-            
+
         }
         public string MiddleName
         {
@@ -45,13 +49,13 @@ namespace ClassWeb.Models
             set { _MiddleName = value; }
         }
 
-
+        [Required(ErrorMessage ="Please provide Last Name", AllowEmptyStrings =false)]
         public string LastName
         {
             get { return _LastName; }
             set { _LastName = value; }
         }
-
+        [Required(ErrorMessage ="Please provide valid email address", AllowEmptyStrings =false)]
         public string EmailAddress
         {
             get { return _EmailAddress; }
@@ -64,22 +68,48 @@ namespace ClassWeb.Models
             set { _Address = value; }
         }
 
+        [Required(ErrorMessage ="Please provide password", AllowEmptyStrings =false)]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
+        [StringLength(50, MinimumLength =8, ErrorMessage ="Password must be 8 character long.")]
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
 
+        [Compare("Password", ErrorMessage = "Confirm Password does not match")]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
+        public string ConfirmPassword
+        {
+            get { return _ConfirmPassword; }
+            set { _ConfirmPassword = value; }
+        }
+
+        [Required(ErrorMessage ="Please provide username", AllowEmptyStrings =false)]
         public string UserName
         {
             get { return _UserName; }
-            set { _UserName = value; }
+            set { _UserName = value;}
         }
 
+        
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
             set { _PhoneNumber = value; }
+        }
+
+        public int RoleID
+        {
+            get { return _RoleID; }
+            set { _RoleID = value; }
+        }
+
+        [Required(ErrorMessage ="Please define role of user", AllowEmptyStrings =false)]
+        public Role Roles
+        {
+            get { return _Role; }
+            set { _Role = value; }
         }
 
         public DateTime DateCreated
@@ -124,7 +154,7 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-
+        #endregion
 
     }
 }
