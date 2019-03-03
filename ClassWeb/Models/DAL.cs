@@ -6,8 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
+using ClassWeb.Models;
 
-namespace ClassWeb.Data
+namespace ClassWeb.Model
 {
     public class DAL
     {
@@ -122,6 +123,23 @@ namespace ClassWeb.Data
         #endregion
 
         #region User
+        public static User AddUser( User obj)
+        {
+            //if (obj == null)
+            //    return -1;
+            //MySqlCommand comm = new MySqlCommand();
+            //try
+            //{
+            //    //sprocs here
+            //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+            //    return UpdateObject(comm);
+            //}
+            //catch(Exception ex)
+            //{
+            //    System.Diagnostics.Debug.WriteLine(ex.Message);
+            //}
+            //return -1;
+        }
 
         #endregion
     }
