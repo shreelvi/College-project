@@ -11,6 +11,10 @@ namespace ClassWeb.Data
 {
     public class DAL
     {
+        /// <summary>
+        /// created by: Ganesh Sapkota
+        /// DAL for Classweb project. 
+        /// </summary>
         private static string ReadOnlyConnectionString = "Server=localhost;Database=webmasters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=webmasters;Uid=root;Pwd=;";
         private DAL()
@@ -36,9 +40,57 @@ namespace ClassWeb.Data
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+
             }
         }
+            public static MySqlDataReader GetDataReader(MySqlCommand comm)
+            {
+                try
+                {
+                ConnectToDatabase(comm);
+                    comm.Connection.Open();
+                return comm.ExecuteReader();
+                }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                return null;
+            }
+            }
+        /// <summary>
+        /// reference: Proffesor's PeerEval Project. 
+        /// </summary>
+        /// <param name="comm"></param>
+        /// <param name="parameterName"></param>
+        /// <returns></returns>
+        internal static int AddObject(MySqlCommand comm, string parameterName)
+        {
+            int retInt = 0;
+            try
+            {
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                MySqlParameter retParameter;
+                retParameter = comm.Parameters.Add(parameterName, MySqlDbType.Int32);
+                retParameter.Direction = System.Data.ParameterDirection.Output;
+                comm.ExecuteNonQuery();
+                retInt = (int)retParameter.Value;
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                if (comm.Connection != null)
+                    comm.Connection.Close();
+
+                retInt = -1;
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+            return retInt;
+        }
+
     }
 #endregion
 }
