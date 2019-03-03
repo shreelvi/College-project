@@ -90,7 +90,7 @@ namespace ClassWeb.Data
             }
             return retInt;
         }
-       
+
         /// <summary>
         /// reference: Professor's DAL for PeerEval
         /// set connection and execute given command on the database
@@ -122,7 +122,7 @@ namespace ClassWeb.Data
         #endregion
 
         #region User
-        
+
         #endregion
     }
 }
