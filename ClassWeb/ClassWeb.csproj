@@ -16,4 +16,10 @@
     <Folder Include="wwwroot\Upload\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MySql.Data">
+      <HintPath>C:\Users\Ganesh\Downloads\MySql.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
