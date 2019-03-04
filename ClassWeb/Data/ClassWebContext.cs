@@ -11,13 +11,13 @@ namespace ClassWeb.Data
     //The database context class relates the database with the model
     //Reference: https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-2.2
     //</summary>
-    public class ClassWebContext: DbContext
+    public class FakeDAL: DbContext
     {
-        public ClassWebContext()
+        public FakeDAL()
         {
         }
 
-        public ClassWebContext(DbContextOptions<ClassWebContext> options)
+        public FakeDAL(DbContextOptions<FakeDAL> options)
            : base(options)
         {
         }
