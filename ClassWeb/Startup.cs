@@ -67,7 +67,7 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Upload}/{action=Index}/{id?}");
+                    template: "{controller=Registration}/{action=Index}/{id?}");
             });
         }
     }

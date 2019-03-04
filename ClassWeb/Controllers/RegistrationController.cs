@@ -6,6 +6,7 @@ using ClassWeb.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ClassWeb.Controllers
 {
     public class RegistrationController : Controller
@@ -13,14 +14,14 @@ namespace ClassWeb.Controllers
        
         private object data;
      
-        public IActionResult Register()
+        public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(Models.User U)
+        public ActionResult Index(Models.User U)
         {
             if (ModelState.IsValid)
             {
