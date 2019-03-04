@@ -16,8 +16,8 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary>
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=webmasters;Uid=root;Pwd=;";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=webmasters;Uid=root;Pwd=;";
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private DAL()
         {
         }
@@ -123,8 +123,8 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-        public static User AddUser( User obj)
-        {
+       /// public static User AddUser( User obj)
+       /// {
             //if (obj == null)
             //    return -1;
             //MySqlCommand comm = new MySqlCommand();
@@ -139,7 +139,7 @@ namespace ClassWeb.Model
             //    System.Diagnostics.Debug.WriteLine(ex.Message);
             //}
             //return -1;
-        }
+        ////}
 
         #endregion
     }
