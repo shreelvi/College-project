@@ -37,7 +37,7 @@ namespace ClassWeb
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<ClassWebContext>(options =>
+            services.AddDbContext<FakeDAL>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
    
@@ -67,7 +67,7 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Upload}/{action=Index}/{id?}");
+                    template: "{controller=Registration}/{action=Index}/{id?}");
             });
         }
     }

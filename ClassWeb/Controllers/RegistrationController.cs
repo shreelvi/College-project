@@ -6,35 +6,34 @@ using ClassWeb.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ClassWeb.Controllers
 {
     public class RegistrationController : Controller
     {
-       
+
         private object data;
-     
-        public IActionResult Register()
+
+        public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Register(Models.User U)
+        public ActionResult Index(Models.User U)
         {
             if (ModelState.IsValid)
             {
-
-                using (ClassWebContext data = new ClassWebContext())
+                using (FakeDAL data = new FakeDAL())
 
                 data.User.Add(U);
-                ModelState.Clear();
                 U = null;
                 ViewBag.Message = "Registration is completed";
             }
             return View(U);
         }
 
-        
-        }
+
     }
+}
+
+   

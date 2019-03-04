@@ -13,7 +13,7 @@ namespace ClassWeb.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(ClassWebContext context)
+        public static void Initialize(FakeDAL context)
         {
             context.Database.EnsureCreated();
 

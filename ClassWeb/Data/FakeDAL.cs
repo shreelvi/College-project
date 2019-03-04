@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Data
 {
-    public class FakeDAL
+ public class FakeDAL
     {
         private static List<Assignment> _Assignments = new List<Assignment>()
         {
@@ -50,5 +50,46 @@ namespace ClassWeb.Data
             return -1;
         }
 
-    }
+        //Users Info List 
+        private static List<User> _Users = new List<User>()
+        {
+            new User() {ID = 1,FirstName = "Ole", MiddleName = "Gunnar", LastName = "Solskjaer", EmailAddress = "olegsks@gmail.com", UserName = "ole20", Password = "Legend20", Address = "Pocatello ID", PhoneNumber = 208-226-4884},
+        };
+
+        public static List<User>GetUsers()
+        {
+            return _Users;
+        }
+
+        public static User GetUser(int actorID)
+        {
+            return _Users.First(b => b.ID == actorID);
+        }
+
+        public static int Add(User b)
+        {
+            if (b != null)
+            {
+                b.ID = _Users.Max(bb => bb.ID) + 1;
+                _Users.Add(b);
+                return 1;
+            }
+            return -1;
+        }
+
+        public static int Edit(User b)
+        {
+            User b2Edit = _Users.First(bb => bb.ID == b.ID);
+            if (b2Edit != null)
+            {
+                b2Edit.FirstName = b.FirstName;
+                b2Edit.MiddleName = b.MiddleName;
+                b2Edit.FirstName = b.FirstName;
+                b2Edit.LastName = b.LastName;
+                return 1;
+            }
+            return -1;
+        }
+
+    }  
 }
