@@ -161,6 +161,7 @@ namespace ClassWeb.Controllers
             _context.Assignment.Remove(assignment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool AssignmentExists(int id)
