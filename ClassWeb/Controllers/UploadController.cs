@@ -12,6 +12,7 @@ namespace ClassWeb.Controllers
     public class UploadController : Controller
     {
         private readonly IHostingEnvironment _appEnvironment;
+        private Assignment Assignment;
         public UploadController(IHostingEnvironment appEnvironment)
         {
             _appEnvironment = appEnvironment;
@@ -19,7 +20,8 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
-            List<Assignment>items=GetFiles();
+
+            List<Assignment> items = GetFiles();
             return View(items);
         }
         /// <summary>
@@ -139,13 +141,17 @@ namespace ClassWeb.Controllers
         private List<Assignment> GetFiles()
         {
             string filepath = _appEnvironment.WebRootPath + "\\Upload\\";
+            if (!Directory.Exists(filepath))
+            {
+                Directory.CreateDirectory(filepath);
+            }
             var dir = new DirectoryInfo(filepath);
             FileInfo[] fileNames = dir.GetFiles("*.*");
             List<Assignment> items = new List<Assignment>();
             foreach (var file in fileNames)
             {
                 Assignment assign = new Assignment();
-                assign.Name=file.Name;
+                assign.Name = file.Name;
                 double filesize = (double)(file.Length / 1024);
                 assign.FileSize = String.Format("{0:0.00}", filesize);
                 assign.Description = file.Name;

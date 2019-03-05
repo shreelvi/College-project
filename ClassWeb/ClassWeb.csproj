@@ -8,10 +8,18 @@
     <PackageReference Include="bootstrap" Version="4.3.1" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="MySql.Data" Version="8.0.15" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\Upload\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MySql.Data">
+      <HintPath>C:\Users\Ganesh\Downloads\MySql.Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
