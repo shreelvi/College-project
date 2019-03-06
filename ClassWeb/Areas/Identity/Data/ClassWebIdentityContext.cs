@@ -10,6 +10,12 @@ namespace ClassWeb.Models
 {
     public class ClassWebIdentityContext : IdentityDbContext<IdentityUser>
     {
+        /// <summary>
+        /// Identity is a membership system that adds login/Register functionality
+        /// Stores information in Identity folder
+        /// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-2.2&tabs=visual-studio
+        /// </summary>
+        /// <param name="options"></param>
         public ClassWebIdentityContext(DbContextOptions<ClassWebIdentityContext> options)
             : base(options)
         {
