@@ -7,7 +7,7 @@ using ClassWeb.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-
+//haha
 namespace ClassWeb.Controllers
 {
     public class RegistrationController : Controller
