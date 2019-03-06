@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClassWeb.Models
 {
-    public class IdentityContext : IdentityDbContext<IdentityUser>
+    public class ClassWebIdentityContext : IdentityDbContext<IdentityUser>
     {
-        public IdentityContext(DbContextOptions<IdentityContext> options)
+        public ClassWebIdentityContext(DbContextOptions<ClassWebIdentityContext> options)
             : base(options)
         {
         }
