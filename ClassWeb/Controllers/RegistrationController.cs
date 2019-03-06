@@ -25,8 +25,6 @@ namespace ClassWeb.Controllers
         public ActionResult Index(Models.User U)
         {
 
-            //Referenc https://www.youtube.com/watch?v=QBNmzSr4sYA
-
             if (ModelState.IsValid)
             {
                 using (Data.DAL data = new Data.DAL())
