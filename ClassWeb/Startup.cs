@@ -37,7 +37,7 @@ namespace ClassWeb
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<FakeDAL>(options =>
+            services.AddDbContext<DAL>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
    

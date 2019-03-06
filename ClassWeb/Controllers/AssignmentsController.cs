@@ -26,9 +26,9 @@ namespace ClassWeb.Controllers
         //IHosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
         //Access the data from the database
-        private readonly FakeDAL _context;
+        private readonly DAL _context;
         #endregion
-        public AssignmentsController(IHostingEnvironment hostingEnvironment, FakeDAL context)
+        public AssignmentsController(IHostingEnvironment hostingEnvironment, DAL context)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
