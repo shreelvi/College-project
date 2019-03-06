@@ -18,5 +18,7 @@ namespace ClassWeb.Data
         }
 
         public DbSet<ClassWeb.Models.Assignment> Assignment { get; set; }
+        public DbSet<ClassWeb.Models.User> User { get; set; }
+
     }
 }
