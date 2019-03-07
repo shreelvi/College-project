@@ -10,7 +10,7 @@ namespace ClassWeb.Models
     /// Code by: Elvis
     /// This model is used to get login data
     /// </summary>
-    public class LoginModel
+    public class LoginModel:DatabaseObject
     {
         [Required]
         public string Username { get; set; }
