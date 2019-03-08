@@ -43,6 +43,8 @@ namespace ClassWeb.Controllers
         public IActionResult Login(LoginModel login)
         {
             //Hash and Salt the password
+
+
             if (login.Username != null && login.Password != null && login.Username.Equals("acc1") && login.Password.Equals("123"))
             {
                 HttpContext.Session.SetString("username", login.Username);
