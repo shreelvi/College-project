@@ -6,18 +6,30 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using ClassWeb.Models;
 
-namespace classWeb.Models
+namespace ClassWeb.Models
 {
+<<<<<<< HEAD:ClassWeb/Models/Resources.cs
     public class Resource:DatabaseObject
     {
 
         private string _Name;
+=======
+    /// <summary>
+    /// Code by Elvis
+    /// Resources are files that are uploaded in the system
+    /// </summary>
+    public class Resource: DatabaseNamedObject
+    {
+
+        #region Private Variables
+>>>>>>> Elvis:ClassWeb/Models/Resource.cs
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
         private int _MaxSize;
         private User _UserID;
         private Assignment _AssignmentID;
+<<<<<<< HEAD:ClassWeb/Models/Resources.cs
 
         public string Name
         {
@@ -25,6 +37,11 @@ namespace classWeb.Models
             set { _Name = value; }
         }
         
+=======
+        #endregion
+
+        #region Public Variables
+>>>>>>> Elvis:ClassWeb/Models/Resource.cs
         public DateTime DateModified
         {
             get { return _DateModified; }
@@ -61,5 +78,6 @@ namespace classWeb.Models
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
+        #endregion
     }
 }

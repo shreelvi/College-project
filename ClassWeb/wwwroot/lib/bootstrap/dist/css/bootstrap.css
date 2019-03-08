@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -6754,20 +6754,4 @@ button.close {
     display: none !important;
   }
 }
-.navbar navbar-inverse navbar-fixed-top, .navbar-inverse {
-    background: #323f4f !important;
-    border-color: #323f4f !important;
-}
-div #navLi1 {
-    border: 1px solid black;
-    background-color: silver;
-}
-div #navLi2 {
-    border: 1px solid black;
-    background-color: silver;
-}
-div #navLi3 {
-    border: 1px solid black;
-    background-color: silver;
-}
-    /*# sourceMappingURL=bootstrap.css.map */
+/*# sourceMappingURL=bootstrap.css.map */
