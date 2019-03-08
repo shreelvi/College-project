@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-<<<<<<< HEAD:ClassWeb/Models/Group.cs
-    public class Group:DatabaseObject
-    {
-        private string _GroupName;
-=======
     /// <summary>
     /// Code by Elvis
     /// Groups are a team of student members for a projects in class
@@ -19,21 +14,11 @@ namespace ClassWeb.Models
     public class Group: DatabaseNamedObject 
     {
         #region Private Variables
->>>>>>> Elvis:ClassWeb/Models/Group.cs
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
         private Assignment _AssignmentID;
-<<<<<<< HEAD:ClassWeb/Models/Group.cs
-
-        public string GroupName
-        {
-            get { return _GroupName; }
-            set { _GroupName = value; }
-        }
-=======
         #endregion
->>>>>>> Elvis:ClassWeb/Models/Group.cs
 
         #region Public Variables
         [Display(Name ="Group's Email-address",
@@ -60,10 +45,7 @@ namespace ClassWeb.Models
             set { _Password = value; }
         }
 
-<<<<<<< HEAD:ClassWeb/Models/Group.cs
-=======
         //Foreign Key
->>>>>>> Elvis:ClassWeb/Models/Group.cs
         public Assignment AssignmentID
         {
             get { return _AssignmentID; }

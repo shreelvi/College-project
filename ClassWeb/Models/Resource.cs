@@ -8,12 +8,6 @@ using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-<<<<<<< HEAD:ClassWeb/Models/Resources.cs
-    public class Resource:DatabaseObject
-    {
-
-        private string _Name;
-=======
     /// <summary>
     /// Code by Elvis
     /// Resources are files that are uploaded in the system
@@ -22,26 +16,15 @@ namespace ClassWeb.Models
     {
 
         #region Private Variables
->>>>>>> Elvis:ClassWeb/Models/Resource.cs
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
         private int _MaxSize;
         private User _UserID;
         private Assignment _AssignmentID;
-<<<<<<< HEAD:ClassWeb/Models/Resources.cs
-
-        public string Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
-        
-=======
         #endregion
 
         #region Public Variables
->>>>>>> Elvis:ClassWeb/Models/Resource.cs
         public DateTime DateModified
         {
             get { return _DateModified; }

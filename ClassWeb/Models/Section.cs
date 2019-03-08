@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-<<<<<<< HEAD
-    public class Section:DatabaseObject
-=======
     public class Section:DatabaseNamedObject
->>>>>>> Elvis
     {
         private int _SectionNumber;
         private int _ClassID;

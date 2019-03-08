@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using ClassWeb.Models;
 
 namespace ClassWeb
 {
@@ -39,12 +37,8 @@ namespace ClassWeb
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<ClassWebContext>(options =>
-<<<<<<< HEAD
-                    options.UseSqlServer(Configuration.GetConnectionString("ClassWebContext")));
-=======
                 options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
 
->>>>>>> Elvis
         }
 
 
@@ -70,7 +64,7 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Assignments}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

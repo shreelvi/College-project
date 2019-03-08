@@ -12,19 +12,6 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-<<<<<<< HEAD
-    public class Course:DatabaseObject
-    {
-        private string _Name;
-        private int _Number;
-        private int _ClassID;
-
-        public string Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
-=======
     public class Course:DatabaseNamedObject
     {
         #region Private Variables
@@ -33,7 +20,6 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Variables
->>>>>>> Elvis
         public int Number
         {
             get { return _Number; }
@@ -45,9 +31,6 @@ namespace ClassWeb.Models
             get { return _ClassID; }
            private set { _ClassID = value; }
         }
-<<<<<<< HEAD
-=======
         #endregion
->>>>>>> Elvis
     }
 }

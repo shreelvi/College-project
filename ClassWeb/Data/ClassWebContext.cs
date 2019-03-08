@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
-namespace ClassWeb.Models
-{
-    public class ClassWebContext : DbContext
-    {
-        public ClassWebContext (DbContextOptions<ClassWebContext> options)
-            : base(options)
-=======
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -28,16 +14,12 @@ namespace ClassWeb.Data
     {
         public ClassWebContext(DbContextOptions<ClassWebContext> options)
            : base(options)
->>>>>>> Elvis
         {
         }
 
         public DbSet<ClassWeb.Models.Assignment> Assignment { get; set; }
-<<<<<<< HEAD
-=======
         public DbSet<ClassWeb.Models.LoginModel> LoginModel { get; set; }
         public DbSet<ClassWeb.Models.User> User { get; set; }
 
->>>>>>> Elvis
     }
 }
