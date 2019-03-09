@@ -50,6 +50,8 @@ namespace ClassWeb.Models
         private DateTime _DateModified;
         private DateTime _DateDeleted;
 
+        public object Title { get; internal set; }
+
 
         #endregion
 

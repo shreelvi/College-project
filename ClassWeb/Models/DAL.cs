@@ -367,7 +367,78 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+        /// <summary>
+        /// database entry by adding specific role for the user 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int AddRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
+                return AddObject(comm, "@" + Role.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// updating database entry for given role
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int UpdateRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// deleting database entry for given user
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int DeleteRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                //comm.CommandText = //Insert Sproc Name Here;
+                comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        //will continue from here next time. 
 
         #endregion
     }
+
 }
