@@ -14,6 +14,24 @@ namespace ClassWeb.Models
     /// </summary>
     public class User:DatabaseObject
     {
+
+        #region Database String
+        internal const string db_FirstName = "FirstName";
+        internal const string db_MiddleName = "MiddleName";
+        internal const string db_LastName = "LastName";
+        internal const string db_EmailAddress = "EmailAddress";
+        internal const string db_Address = "Address";
+        internal const string db_UserName = "UserName";
+        internal const string db_Password = "Password";
+        internal const string db_PhoneNumber = "PhoneNumber";
+        internal const string db_DateCreated = "DateCreated";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_DateDeleted = "DateDeleted";
+        internal const string db_AccountExpired = "AccountExpired";
+        internal const string db_AccountLocked = "AccountLocked";
+        internal const string db_Role = "RoleID";
+
+        #endregion
         #region private variable
         private string _FirstName;
         private string _MiddleName;

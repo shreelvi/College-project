@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
+using ClassWeb;
 
 namespace ClassWeb.Model
 {
@@ -123,23 +124,49 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-       /// public static User AddUser( User obj)
-       /// {
-            //if (obj == null)
-            //    return -1;
-            //MySqlCommand comm = new MySqlCommand();
-            //try
-            //{
-            //    //sprocs here
-            //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-            //    return UpdateObject(comm);
-            //}
-            //catch(Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
-            //return -1;
-        ////}
+
+        public static User GetUser(String idstring, Boolean retNewObject)
+        {
+            User retObject = null;
+            int ID;
+            if (int.TryParse(idstring, out ID))
+            {
+                if (ID == -1 && retNewObject)
+                {
+                    retObject = new User
+                    {
+                        ID = -1
+                    };
+                }
+                else if (ID >= 0)
+                {
+                    retObject = GetUser(ID);
+                }
+            }
+            return retObject;
+        }
+
+        public static User GetUser(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sprocUserGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
 
         #endregion
     }
