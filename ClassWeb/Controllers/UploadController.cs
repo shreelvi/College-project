@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -35,7 +34,6 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> Index(IFormFile file)
         {
             string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
-
             if (file.Length > 0)
             {
                 string path = dir_Path + file.FileName.ToString();
@@ -60,8 +58,6 @@ namespace ClassWeb.Controllers
             }
             memory.Position = 0;
             return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
-
-
             // return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
         }
 

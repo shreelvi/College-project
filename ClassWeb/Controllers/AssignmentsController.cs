@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Data;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Server;
-using System.Web;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClassWeb.Controllers
 {
@@ -73,13 +63,9 @@ namespace ClassWeb.Controllers
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
-
-
         }
 
         // GET: Assignments/Create
-       
-
         // POST: Assignments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -175,6 +161,7 @@ namespace ClassWeb.Controllers
             _context.Assignment.Remove(assignment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool AssignmentExists(int id)
