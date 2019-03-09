@@ -16,6 +16,7 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
+        /// reference: Proffesor's PeerEval Project. 
         /// </summary>
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
@@ -124,7 +125,12 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-
+        /// <summary>
+        /// getting user based on their user ID.
+        /// </summary>
+        /// <param name="idstring"></param>
+        /// <param name="retNewObject"></param>
+        /// <returns></returns>
         public static User GetUser(String idstring, Boolean retNewObject)
         {
             User retObject = null;
@@ -145,7 +151,11 @@ namespace ClassWeb.Model
             }
             return retObject;
         }
-
+        /// <summary>
+        /// getting user based on their user ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static User GetUser(int id)
         {
             MySqlCommand comm = new MySqlCommand("sprocUserGet");
@@ -167,7 +177,64 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
-
+        /// <summary>
+        /// get all the users from the database
+        /// </summary>
+        /// <returns></returns>
+        public static List<User> GetUsers()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocUsersGetAll");
+            List<User> retList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new User(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+        /// <summary>
+        /// adding database entry corresponding to the given user
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int AddUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + User.db_Address, obj.Address);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + User.db_PhoneNumber, obj.PhoneNumber);
+                comm.Parameters.AddWithValue("@" + User.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + User.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + User.db_DateDeleted, obj.DateDeleted);
+                comm.Parameters.AddWithValue("@" + User.db_AccountExpired, obj.AccountExpired);
+                comm.Parameters.AddWithValue("@" + User.db_AccountLocked, obj.AccountLocked);
+                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                return AddObject(comm, "@" + User.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
         #endregion
     }
 }
