@@ -291,7 +291,12 @@ namespace ClassWeb.Model
             return -1;
         }
         #endregion
-
+        /// <summary>
+        /// roles based on user ID
+        /// </summary>
+        /// <param name="idstring"></param>
+        /// <param name="retNewObject"></param>
+        /// <returns></returns>
         #region Role
         public static Role GetRole(String idstring, Boolean retNewObject)
         {
@@ -311,6 +316,11 @@ namespace ClassWeb.Model
             }
             return retObject;
         }
+        /// <summary>
+        /// roles corresponding to the given User ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static Role GetRole(int id)
         {
             MySqlCommand comm = new MySqlCommand("sprocRoleGet");
@@ -357,6 +367,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+
         #endregion
     }
 }

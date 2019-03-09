@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
@@ -50,9 +51,15 @@ namespace ClassWeb.Models
         private bool _AccountLocked;
         private Role _Role;
         private int _RoleID;
+        private MySqlDataReader dr;
+
+        public User(MySqlDataReader dr)
+        {
+            this.dr = dr;
+        }
         #endregion
         #region public Properites
-         
+
         public int RoleID
         {
             get { return _RoleID; }

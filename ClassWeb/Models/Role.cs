@@ -25,5 +25,33 @@ namespace ClassWeb.Models
         {
             this.dr = dr;
         }
+        #region Constructors
+
+        private void Fill(MySqlDataReader dr)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Database String
+        internal const string db_Title = "Title";
+        internal const string db_Description = "Description";
+        internal const string db_DateCreated = "DateCreated";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_DateDeleted = "DateDeleted";
+
+        #endregion
+
+        #region Private Variables
+        private string _Title;
+        private string _Description;
+        private DateTime _DateCreated;
+        private DateTime _DateModified;
+        private DateTime _DateDeleted;
+
+
+        #endregion
+
     }
 }
