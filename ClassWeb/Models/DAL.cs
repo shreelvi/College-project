@@ -153,69 +153,29 @@ namespace ClassWeb.Model
             User retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                comm.Parameters.AddWithValue("@" + Role.db_ID, userID);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
                     retObj = new User(dr);
                 }
                 comm.Connection.Close();
-            }
-
-            SqlCommand comm = new SqlCommand("sprocUserGet");
-            try
-            {
-                comm.Parameters.AddWithValue("@Username", username);
-                comm.Parameters.AddWithValue("@Password", password);
-                SqlDataReader dr = GetDataReader(comm);
-                if (dr.Read())
-                {
-                    toLogIn = new User(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            return toLogIn;
+            return retObj;
         }
 
         public static string GetSaltForUser(string username)
         {
-            string salt = "";
-            SqlCommand comm = new SqlCommand("sprocSaltGetFromUsername");
-            try
-            {
-                comm.Parameters.AddWithValue("@Username", username);
-                SqlDataReader dr = GetDataReader(comm);
-                if (dr.Read())
-                {
-                    salt = (string)dr["Salt"];
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-            }
-            return salt;
+            
         }
 
         public static int SetSaltForUser(int userID, string salt)
         {
-            SqlCommand comm = new SqlCommand("sproc_SaltUpdateForUser");
-            try
-            {
-                comm.Parameters.AddWithValue("@UserID", userID);
-                comm.Parameters.AddWithValue("@Salt", salt);
-                return UpdateObject(comm);
-            }
-            catch
-            {
-
-            }
-            return -1;
+           
         }
 
         #endregion
