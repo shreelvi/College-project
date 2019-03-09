@@ -147,20 +147,26 @@ namespace ClassWeb.Model
 
         #region Login
 
-        public static User GetUser(int userID)
+        ///<summary>
+        /// Gets the User from the database corresponding to the UserID
+        /// Reference: Github, PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static User GetUser(string username)
         {
             MySqlCommand comm = new MySqlCommand("sprocUsersGet");
             User retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + Role.db_ID, userID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, username);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
                     retObj = new User(dr);
                 }
                 comm.Connection.Close();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
@@ -168,16 +174,57 @@ namespace ClassWeb.Model
             return retObj;
         }
 
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
+
         public static string GetSaltForUser(string username)
         {
-            
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return salt;
         }
 
-        public static int SetSaltForUser(int userID, string salt)
+        ///<summary>
+        /// Set salt of the User from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForUser(int userID, string salt)
         {
-           
+            if (userID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
         #endregion
+
+
     }
+
 }

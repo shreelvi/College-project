@@ -12,6 +12,7 @@ namespace ClassWeb.Models
  /// Each role can be assigned to zero to many users.
  /// Each role user can have one to multiple permissions. 
  /// </summary>
+
     public class Role:DatabaseNamedRecord
     {
         #region Constructors
@@ -79,7 +80,6 @@ namespace ClassWeb.Models
             _Description = dr.GetString(db_Description);
         }
         #endregion
-
     }
 }
 

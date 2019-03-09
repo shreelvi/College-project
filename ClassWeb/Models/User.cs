@@ -13,6 +13,7 @@ namespace ClassWeb.Models
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
     /// </summary>
+
     public class User:DatabaseRecord
     {
         #region private variable
@@ -224,6 +225,5 @@ namespace ClassWeb.Models
             _RoleID = dr.GetInt32(Role.db_ID);
         }
         #endregion
-
     }
 }
