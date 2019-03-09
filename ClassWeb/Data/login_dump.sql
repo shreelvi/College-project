@@ -74,7 +74,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Elvis',NULL,'Shrestha','shreelvi@isu.edu',NULL,'shreelvi','x129y190',NULL,'2019-03-08 14:48:49','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL);
+INSERT INTO `users` VALUES (0,'John',NULL,'Doe','doejon@isu.edu',NULL,'doejohn','john123',NULL,'2019-03-09 19:57:59','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL),(1,'Elvis',NULL,'Shrestha','shreelvi@isu.edu',NULL,'shreelvi','x129y190',NULL,'2019-03-08 14:48:49','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,4 +178,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-08 23:40:25
+-- Dump completed on 2019-03-09 12:58:19
