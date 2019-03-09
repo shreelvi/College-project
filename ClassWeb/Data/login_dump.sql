@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `roles`
+-- Table structure for table `login_roles`
 --
 
-DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `login_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `roles` (
+CREATE TABLE `login_roles` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(256) NOT NULL,
   `Description` varchar(256) DEFAULT NULL,
@@ -31,23 +31,23 @@ CREATE TABLE `roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `roles`
+-- Dumping data for table `login_roles`
 --
 
-LOCK TABLES `roles` WRITE;
-/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'Admin','Admin of the website'),(2,'Student','ClassWeb Students'),(3,'Professor','ClassWeb Professors'),(4,'Grader','ClassWeb Graders');
-/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+LOCK TABLES `login_roles` WRITE;
+/*!40000 ALTER TABLE `login_roles` DISABLE KEYS */;
+INSERT INTO `login_roles` VALUES (1,'Admin','Admin of the website'),(2,'Student','ClassWeb Students'),(3,'Professor','ClassWeb Professors'),(4,'Grader','ClassWeb Graders');
+/*!40000 ALTER TABLE `login_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `users`
+-- Table structure for table `login_users`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `login_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
+CREATE TABLE `login_users` (
   `UserID` int(11) NOT NULL,
   `FirstName` varchar(256) NOT NULL,
   `MiddleName` varchar(256) DEFAULT NULL,
@@ -64,18 +64,18 @@ CREATE TABLE `users` (
   `Salt` char(50) DEFAULT NULL,
   PRIMARY KEY (`UserID`),
   KEY `fk_user_role` (`RoleID`),
-  CONSTRAINT `fk_user_role` FOREIGN KEY (`RoleID`) REFERENCES `roles` (`ID`)
+  CONSTRAINT `fk_user_role` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `login_users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (0,'John',NULL,'Doe','doejon@isu.edu',NULL,'doejohn','john123',NULL,'2019-03-09 19:57:59','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL),(1,'Elvis',NULL,'Shrestha','shreelvi@isu.edu',NULL,'shreelvi','x129y190',NULL,'2019-03-08 14:48:49','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `login_users` WRITE;
+/*!40000 ALTER TABLE `login_users` DISABLE KEYS */;
+INSERT INTO `login_users` VALUES (0,'John',NULL,'Doe','doejon@isu.edu',NULL,'doejohn','john123',NULL,'2019-03-09 19:57:59','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL),(1,'Elvis',NULL,'Shrestha','shreelvi@isu.edu',NULL,'shreelvi','x129y190',NULL,'2019-03-08 14:48:49','0000-00-00 00:00:00','0000-00-00 00:00:00',1,NULL);
+/*!40000 ALTER TABLE `login_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -178,4 +178,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-09 12:58:19
+-- Dump completed on 2019-03-09 13:54:38
