@@ -123,23 +123,26 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-       /// public static User AddUser( User obj)
-       /// {
-            //if (obj == null)
-            //    return -1;
-            //MySqlCommand comm = new MySqlCommand();
-            //try
-            //{
-            //    //sprocs here
-            //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-            //    return UpdateObject(comm);
-            //}
-            //catch(Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
+       public static User AddUser(User obj)
+       {
+        User u = new User();
+        if (obj == null)
+            {
             //return -1;
-        ////}
+            }
+        MySqlCommand comm = new MySqlCommand();
+        try
+        {
+                //sprocs here
+            comm.Parameters.AddWithValue("@" + u.ID, obj.ID);
+          //  return UpdateObject(comm);
+    }
+        catch(Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+        }
+        return u;
+       }
 
         #endregion
     }
