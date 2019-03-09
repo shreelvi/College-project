@@ -7,14 +7,23 @@ using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 //haha
 namespace ClassWeb.Controllers
 {
     public class RegistrationController : Controller
     {
-      // private readonly DAL _context;
+       private readonly Data.DAL _context;
+       private IHostingEnvironment _hostingEnvironment;
+
         //private  object data;
+
+        public RegistrationController(IHostingEnvironment hostingEnvironment, Data.DAL context)
+        {
+            _hostingEnvironment = hostingEnvironment;
+            _context = context;
+        }
 
         public IActionResult Index()
         {
@@ -25,7 +34,7 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(User U)
         {
-
+            ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "ID");
             if (ModelState.IsValid)
             {
             Data.DAL data = new Data.DAL();

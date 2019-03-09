@@ -13,11 +13,11 @@ namespace ClassWeb.Controllers
 {
     public class UserController : Controller
     {
-        private IHostingEnvironment hostingEnvironment;
+        //private IHostingEnvironment hostingEnvironment;
         private IHostingEnvironment _hostingEnvironment;
         private readonly DAL _context;
 
-        public UserController(IHostingEnvironment HostingEnvironment, DAL context)
+        public UserController(IHostingEnvironment hostingEnvironment, DAL context)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
