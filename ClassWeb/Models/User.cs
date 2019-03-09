@@ -180,45 +180,26 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Functions
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
+
         public override int dbSave()
         {
-            if (_ID < 0)
-            {
-                return dbAdd();
-            }
-            else
-            {
-                return dbUpdate();
-            }
+            throw new NotImplementedException();
         }
-        /// <summary>
-        /// Calls DAL function to add User to the database.
-        /// </summary>
-        /// <remarks></remarks>
+
         protected override int dbAdd()
         {
-            _ID = DAL.AddUser(this);
-            return ID;
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Calls DAL function to update User to the database.
-        /// </summary>
-        /// <remarks></remarks>
         protected override int dbUpdate()
         {
-            return DAL.UpdateUser(this);
+            throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Calls DAL function to remove User from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public int dbRemove()
-        {
-            return DAL.RemoveUser(this);
-        }
-
         #endregion
 
         #region Public Subs
@@ -244,9 +225,5 @@ namespace ClassWeb.Models
         }
         #endregion
 
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
     }
 }

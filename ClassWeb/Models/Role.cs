@@ -44,43 +44,25 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Functions
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
+
         public override int dbSave()
         {
-            if (_ID < 0)
-            {
-                return dbAdd();
-            }
-            else
-            {
-                return dbUpdate();
-            }
+            throw new NotImplementedException();
         }
-        /// <summary>
-        /// Calls DAL function to add Role to the database.
-        /// </summary>
-        /// <remarks></remarks>
+
         protected override int dbAdd()
         {
-            _ID = DAL.AddRole(this);
-            return ID;
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Calls DAL function to update Role to the database.
-        /// </summary>
-        /// <remarks></remarks>
         protected override int dbUpdate()
         {
-            return DAL.UpdateRole(this);
-        }
-
-        /// <summary>
-        /// Calls DAL function to remove Role from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public int dbRemove()
-        {
-            return DAL.RemoveRole(this);
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -97,11 +79,6 @@ namespace ClassWeb.Models
             _Description = dr.GetString(db_Description);
         }
         #endregion
-
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
 
     }
 }
