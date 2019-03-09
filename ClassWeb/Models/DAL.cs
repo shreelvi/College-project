@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
+using System.Data.SqlClient;
 
 namespace ClassWeb.Model
 {
@@ -44,6 +45,7 @@ namespace ClassWeb.Model
 
             }
         }
+
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -123,23 +125,98 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-       /// public static User AddUser( User obj)
-       /// {
-            //if (obj == null)
-            //    return -1;
-            //MySqlCommand comm = new MySqlCommand();
-            //try
-            //{
-            //    //sprocs here
-            //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-            //    return UpdateObject(comm);
-            //}
-            //catch(Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
-            //return -1;
+        /// public static User AddUser( User obj)
+        /// {
+        //if (obj == null)
+        //    return -1;
+        //MySqlCommand comm = new MySqlCommand();
+        //try
+        //{
+        //    //sprocs here
+        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+        //    return UpdateObject(comm);
+        //}
+        //catch(Exception ex)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(ex.Message);
+        //}
+        //return -1;
         ////}
+
+        #endregion
+
+        #region Login
+
+        public static User GetUser(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sprocUsersGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+
+            SqlCommand comm = new SqlCommand("sprocUserGet");
+            try
+            {
+                comm.Parameters.AddWithValue("@Username", username);
+                comm.Parameters.AddWithValue("@Password", password);
+                SqlDataReader dr = GetDataReader(comm);
+                if (dr.Read())
+                {
+                    toLogIn = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+            }
+            return toLogIn;
+        }
+
+        public static string GetSaltForUser(string username)
+        {
+            string salt = "";
+            SqlCommand comm = new SqlCommand("sprocSaltGetFromUsername");
+            try
+            {
+                comm.Parameters.AddWithValue("@Username", username);
+                SqlDataReader dr = GetDataReader(comm);
+                if (dr.Read())
+                {
+                    salt = (string)dr["Salt"];
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+            }
+            return salt;
+        }
+
+        public static int SetSaltForUser(int userID, string salt)
+        {
+            SqlCommand comm = new SqlCommand("sproc_SaltUpdateForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@UserID", userID);
+                comm.Parameters.AddWithValue("@Salt", salt);
+                return UpdateObject(comm);
+            }
+            catch
+            {
+
+            }
+            return -1;
+        }
 
         #endregion
     }
