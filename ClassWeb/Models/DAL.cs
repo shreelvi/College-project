@@ -235,6 +235,128 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+        /// <summary>
+        /// updating the user's detail
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int UpdateUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + User.db_Address, obj.Address);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + User.db_PhoneNumber, obj.PhoneNumber);
+                comm.Parameters.AddWithValue("@" + User.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + User.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + User.db_DateDeleted, obj.DateDeleted);
+                comm.Parameters.AddWithValue("@" + User.db_AccountExpired, obj.AccountExpired);
+                comm.Parameters.AddWithValue("@" + User.db_AccountLocked, obj.AccountLocked);
+                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// deleting database entry for the given user. 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int DeleteUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                //need more here. 
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        #endregion
+
+        #region Role
+        public static Role GetRole(String idstring, Boolean retNewObject)
+        {
+            Role retObject = null;
+            int ID;
+            if (int.TryParse(idstring, out ID))
+            {
+                if (ID == -1 && retNewObject)
+                {
+                    retObject = new Role();
+                    retObject.ID = -1;
+                }
+                else if (ID >= 0)
+                {
+                    retObject = GetRole(ID);
+                }
+            }
+            return retObject;
+        }
+        public static Role GetRole(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sprocRoleGet");
+            Role retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Role(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        /// <summary>
+        /// Gets a list of all PeerVal.Role objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Role> GetRoles()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocRolesGetAll");
+            List<Role> retList = new List<Role>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Role(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         #endregion
     }
 }
