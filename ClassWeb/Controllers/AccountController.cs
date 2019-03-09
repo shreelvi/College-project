@@ -29,19 +29,42 @@ namespace ClassWeb.Controllers
             return View();
         }
 
-        
+        #region TestLogin
         //
         //POST: /Account/Login
         //Testing login with test data
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Login(LoginModel login)
+        //{
+        //    //Hash and Salt the password
+
+
+        //    if (login.Username != null && login.Password != null && login.Username.Equals("acc1") && login.Password.Equals("123"))
+        //    {
+        //        HttpContext.Session.SetString("username", login.Username);
+        //        return View("Dashboard");
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Error = "Invalid Username and/or Password";
+        //        return View();
+        //    }
+        //}
+        #endregion
+
+
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginModel login)
+        public ActionResult Login(LoginModel login)
         {
-            //Hash and Salt the password
+            //string salt = DAL.GetSaltForUser(login.Username);
+            //if (!String.IsNullOrEmpty(salt))
+            //{
+            User loggedIn = DAL.GetUser(login.Username);
 
-
-            if (login.Username != null && login.Password != null && login.Username.Equals("acc1") && login.Password.Equals("123"))
+            if (loggedIn != null)
             {
                 HttpContext.Session.SetString("username", login.Username);
                 return View("Dashboard");
@@ -53,7 +76,7 @@ namespace ClassWeb.Controllers
             }
         }
 
-    
+
         //
         // GET: /Account/Register
         [AllowAnonymous]

@@ -13,7 +13,7 @@ namespace ClassWeb.Models
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
     /// </summary>
-    public class User:DatabaseRecord
+    public class User : DatabaseRecord
     {
         #region private variable
         private string _FirstName;
@@ -84,13 +84,13 @@ namespace ClassWeb.Models
             set { _Role = value; }
         }
 
-        
+
 
         public string FirstName
         {
             get { return _FirstName; }
             set { _FirstName = value; }
-            
+
         }
         public string MiddleName
         {
@@ -182,43 +182,18 @@ namespace ClassWeb.Models
         #region Public Functions
         public override int dbSave()
         {
-            if (_ID < 0)
-            {
-                return dbAdd();
-            }
-            else
-            {
-                return dbUpdate();
-            }
+            throw new NotImplementedException();
         }
-        /// <summary>
-        /// Calls DAL function to add User to the database.
-        /// </summary>
-        /// <remarks></remarks>
+
         protected override int dbAdd()
         {
-            _ID = DAL.AddUser(this);
-            return ID;
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Calls DAL function to update User to the database.
-        /// </summary>
-        /// <remarks></remarks>
         protected override int dbUpdate()
         {
-            return DAL.UpdateUser(this);
+            throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Calls DAL function to remove User from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public int dbRemove()
-        {
-            return DAL.RemoveUser(this);
-        }
-
         #endregion
 
         #region Public Subs
