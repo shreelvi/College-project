@@ -125,27 +125,64 @@ namespace ClassWeb.Model
 
 
         #region User
-       public static User AddUser(User obj)
-       {
-        User u = new User();
-        if (obj == null)
-            {
-            //return -1;
-            }
-        MySqlCommand comm = new MySqlCommand();
-        try
-        {
-                //sprocs here
-            comm.Parameters.AddWithValue("@" + u.ID, obj.ID);
-          //  return UpdateObject(comm);
-    }
-        catch(Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-        }
-        return u;
-       }
 
+
+        //   ///public static User AddUser(User obj)
+        //   {
+        //    User u = new User();
+        //    if (obj == null)
+        //        {
+        //        //return -1;
+        //        }
+        //    MySqlCommand comm = new MySqlCommand();
+        //    try
+        //    {
+        //            //sprocs here
+        //        comm.Parameters.AddWithValue("@" + u.ID, obj.ID);
+        //      //  return UpdateObject(comm);
+        //}
+        //    catch(Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return u;
+        //   }
+        /////
+
+
+        ///<summary>
+        /// Adds user in the database
+        /// Reference: Professor's PeerVal Project
+        /// </summary>
+        internal static int AddUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            try
+            {
+                // generate new password first.
+                obj.Salt = Tools.Hasher.GenerateSalt(50);
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                obj.Password = newPass;
+                // now set object to Database.
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + User.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
         #endregion
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
@@ -14,6 +15,23 @@ namespace ClassWeb.Models
     /// </summary>
     public class User:DatabaseObject
     {
+        #region Constructors
+        public User()
+        {
+        }
+        internal User(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
+
+        private void Fill(MySqlDataReader dr)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+
         #region private variable
         private string _FirstName;
         private string _MiddleName;
@@ -33,7 +51,30 @@ namespace ClassWeb.Models
         private bool _AccountLocked;
         private Role _Role;
         private int _RoleID;
+        private string _Salt;
         #endregion
+
+        #region Database String
+        internal const string db_ID = "UserID";
+        internal const string db_FirstName = "FirstName";
+        internal const string db_MiddleName = "MiddleName";
+        internal const string db_LastName = "LastName";
+        internal const string db_EmailAddress = "EmailAddress";
+        internal const string db_Address = "Address";
+        internal const string db_UserName = "UserName";
+        internal const string db_Password = "Password";
+        internal const string db_PhoneNumber = "PhoneNumber";
+        internal const string db_DateCreated = "DateCreated";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_DateArchived = "DateDeleted";
+        internal const string db_AccountExpired = "IsExpired";
+        internal const string db_Enabled = "IsEnabled";
+        internal const string db_PasswordExpired = "PasswordExpired";
+        internal const string db_AccountLocked = "AccountLocked";
+        internal const string db_Role = "RoleID";
+        internal const string db_Salt = "Salt";
+        #endregion
+
         #region public Properites
 
         [Required(ErrorMessage ="Please provide First Name", AllowEmptyStrings =false)]
@@ -77,6 +118,15 @@ namespace ClassWeb.Models
             set { _Password = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the Salt for user object
+        /// </summary>
+        public string Salt
+        {
+            get { return _Salt; }
+            set { _Salt = value; }
+        }
+
         [Compare("Password", ErrorMessage = "Confirm Password does not match")]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string ConfirmPassword
@@ -99,17 +149,35 @@ namespace ClassWeb.Models
             set { _PhoneNumber = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the RoleID for user.
+        /// </summary>
         public int RoleID
         {
             get { return _RoleID; }
             set { _RoleID = value; }
         }
-
-        [Required(ErrorMessage ="Please define role of user", AllowEmptyStrings =false)]
+        /// <summary>
+        /// Gets or sets the role for this user
+        /// Reference : Professor's code from PeerVal/User.cs
+        /// </summary>
+        [Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
         public Role Roles
         {
-            get { return _Role; }
-            set { _Role = value; }
+            get { _Role == null){
+                    _Role = DAL.GetRole(_RoleID);
+                }
+                return _Role;
+            }
+            set { _Role = value;
+                if (value == null) {
+                    _RoleID = -1;
+                }
+                else {
+                    _RoleID = -value.ID;
+                }
+            }
+
         }
 
         public DateTime DateCreated
@@ -156,5 +224,73 @@ namespace ClassWeb.Models
         }
         #endregion
 
+
+        #region#region Public Functions
+        public override int dbSave()
+        {
+            if (_ID < 0)
+            {
+                return dbAdd();
+            }
+            else
+            {
+                return dbUpdate();
+            }
+        }
+        /// <summary>
+        /// Calls DAL function to add User to the database.
+        /// Reference Professor's PeerVal
+        /// </summary>
+        /// <remarks></remarks>
+        protected override int dbAdd()
+        {
+            _ID = DAL.AddUser(this);
+            return ID;
+        }
+
+        /// <summary>
+        /// Calls DAL function to update User to the database.
+        /// </summary>
+        /// <remarks></remarks>
+        protected override int dbUpdate()
+        {
+            return DAL.UpdateUser(this);
+        }
+
+        /// <summary>
+        /// Calls DAL function to remove User from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public int dbRemove()
+        {
+            return DAL.RemoveUser(this);
+        }
+
+        #endregion
+
+        #region
+        #region Public Subs
+        /// <summary>
+        /// Fills object from a MySqlClient Data Reader
+        /// </summary>
+        /// <remarks></remarks>
+        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _FirstName = dr.GetString(db_FirstName);
+            _MiddleName = dr.GetString(db_MiddleName);
+            _LastName = dr.GetString(db_LastName);
+            _UserName = dr.GetString(db_UserName);
+            _Password = dr.GetString(db_Password);
+            _Salt = dr.GetString(db_Salt);
+            _RoleID = dr.GetInt32(Role.db_ID);
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
     }
 }

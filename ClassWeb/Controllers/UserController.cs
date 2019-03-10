@@ -13,13 +13,12 @@ namespace ClassWeb.Controllers
 {
     public class UserController : Controller
     {
-        //private IHostingEnvironment hostingEnvironment;
-        private IHostingEnvironment _hostingEnvironment;
-        private readonly DAL _context;
+    
+        private readonly ClassWebContext _context;
 
-        public UserController(IHostingEnvironment hostingEnvironment, DAL context)
+        public UserController(ClassWebContext context)
         {
-            _hostingEnvironment = hostingEnvironment;
+           
             _context = context;
         }
 
@@ -27,8 +26,8 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var dAL = _context.User.Include(u => u.Roles);
-            return View(await Index());
+            var classWebContext = _context.User.Include(u => u.Roles);
+            return View(await ClassWebContext.ToListAsync());
         }
 
         // GET: User/Details/5
