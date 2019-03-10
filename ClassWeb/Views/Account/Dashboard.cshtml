@@ -4,8 +4,9 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h2>Dashboard</h2>
-<p>Welcome @Context.Session.GetString("username")</p>
+<h2>User Dashboard</h2>
+<h3 style="color:Orange">Welcome @Context.Session.GetString("CurrentUser")</h3><br />
+<h3>>More features to be put in the page. Currently working on to creating user dashboard.</h3>
 <br>
 <a asp-controller="account" asp-action="logout">Logout</a>
 
