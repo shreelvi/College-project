@@ -8,6 +8,8 @@ using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
 using System.Data.SqlClient;
+using System.Data;
+
 
 namespace ClassWeb.Model
 {
@@ -17,6 +19,10 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary>
+        
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
+
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private DAL()
@@ -148,17 +154,18 @@ namespace ClassWeb.Model
         #region Login
 
         ///<summary>
-        /// Gets the User from the database corresponding to the UserID
+        /// Gets the User from the database corresponding to the Username
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static User GetUser(string username)
+        public static User GetUser(string userName, string password)
         {
-            MySqlCommand comm = new MySqlCommand("sprocUsersGet");
+
+            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
             User retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_ID, username);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
@@ -171,15 +178,45 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+            /// Verify password matches.
+            //if (retObj != null)
+            //{
+            //    if (!Tools.Hasher.IsValid(passWord, retObj.Salt, _Pepper, _Stretches, retObj.Password))
+            //    {
+            //        retObj = null;
+            //    }
+            //}
+
             return retObj;
         }
 
-        ///<summary>
-        /// Get salt of the User from the database corresponding to the Username
-        /// </summary>
-        /// <remarks></remarks>
+            //return retObj;
+            //User retObj = null;
+            //MySqlCommand comm = new MySqlCommand("sproc_GetUserByUsername");
+            //try
+            //{
+            //    comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+            //    MySqlDataReader dr = GetDataReader(comm);
+            //    while (dr.Read())
+            //    {
+            //        retObj = new User(dr);
+            //    }
+            //    comm.Connection.Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    comm.Connection.Close();
+            //    System.Diagnostics.Debug.WriteLine(ex.Message);
+            //}
+            //return retObj;
 
-        public static string GetSaltForUser(string username)
+
+            ///<summary>
+            /// Get salt of the User from the database corresponding to the Username
+            /// </summary>
+            /// <remarks></remarks>
+
+            public static string GetSaltForUser(string username)
         {
             String salt = "";
             MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
@@ -223,6 +260,35 @@ namespace ClassWeb.Model
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Gets a list of all PeerVal.Evaluation objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Evaluation> GetEvaluations()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
+            List<Evaluation> retList = new List<Evaluation>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Evaluation(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+
 
 
     }
