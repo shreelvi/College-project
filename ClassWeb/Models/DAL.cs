@@ -122,6 +122,8 @@ namespace ClassWeb.Model
         }
         #endregion
 
+
+
         #region User
        public static User AddUser(User obj)
        {

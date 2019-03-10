@@ -26,6 +26,7 @@ namespace ClassWeb.Controllers
         // GET: User
         public async Task<IActionResult> Index()
         {
+
             var dAL = _context.User.Include(u => u.Roles);
             return View(await Index());
         }

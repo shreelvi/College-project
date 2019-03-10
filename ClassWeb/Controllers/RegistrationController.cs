@@ -30,14 +30,15 @@ namespace ClassWeb.Controllers
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(User U)
+        public IActionResult Index(User U)
         {
             ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "ID");
             if (ModelState.IsValid)
             {
-            Data.DAL data = new Data.DAL();
+                Data.DAL data = new Data.DAL();
                 data.User.Add(U);
                 U = null;
                 ViewBag.Message = "You have Successfully Registered";
