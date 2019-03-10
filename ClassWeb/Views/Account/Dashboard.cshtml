@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 style="color:darkorange">User Dashboard</h2><br />
+<h4 style="color:Orange">Welcome @Context.Session.GetString("CurrentUser")</h4><br />
+<p>More features to be put in the page. Currently working on to creating user dashboard.</p>
+<br>
+<a asp-controller="account" asp-action="logout">Logout</a>
+
+
+
