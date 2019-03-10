@@ -25,6 +25,9 @@ namespace ClassWeb.Model
 
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
+        public static int _Stretches = 10000;
+
         private DAL()
         {
         }
@@ -158,18 +161,18 @@ namespace ClassWeb.Model
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static User GetUser(string userName, string password)
+        public static LoginModel GetUser(string userName, string password)
         {
 
             MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
-            User retObj = null;
+            LoginModel retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new User(dr);
+                    retObj = new LoginModel(dr);
                 }
                 comm.Connection.Close();
             }
@@ -178,10 +181,11 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+
             /// Verify password matches.
             //if (retObj != null)
             //{
-            //    if (!Tools.Hasher.IsValid(passWord, retObj.Salt, _Pepper, _Stretches, retObj.Password))
+            //    if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password))
             //    {
             //        retObj = null;
             //    }
@@ -190,33 +194,47 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-            //return retObj;
-            //User retObj = null;
-            //MySqlCommand comm = new MySqlCommand("sproc_GetUserByUsername");
-            //try
-            //{
-            //    comm.Parameters.AddWithValue("@" + User.db_UserName, username);
-            //    MySqlDataReader dr = GetDataReader(comm);
-            //    while (dr.Read())
-            //    {
-            //        retObj = new User(dr);
-            //    }
-            //    comm.Connection.Close();
-            //}
-            //catch (Exception ex)
-            //{
-            //    comm.Connection.Close();
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
-            //return retObj;
+        /// <summary>
+        /// Attempts to add user in the database
+        /// Reference: PeerVal Project
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            try
+            {
+                // generate new password first.
+                obj.Salt = Tools.Hasher.GenerateSalt(50);
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                obj.Password = newPass;
+                // now set object to Database.
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + User.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
 
 
-            ///<summary>
-            /// Get salt of the User from the database corresponding to the Username
-            /// </summary>
-            /// <remarks></remarks>
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
 
-            public static string GetSaltForUser(string username)
+        public static string GetSaltForUser(string username)
         {
             String salt = "";
             MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");

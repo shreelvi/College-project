@@ -27,7 +27,7 @@ CREATE TABLE `login_roles` (
   `Name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `Description` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`RoleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `login_roles` (
 
 LOCK TABLES `login_roles` WRITE;
 /*!40000 ALTER TABLE `login_roles` DISABLE KEYS */;
-INSERT INTO `login_roles` VALUES (1,'Admin','Administration');
+INSERT INTO `login_roles` VALUES (1,'Admin','Administration'),(2,'Student','Student of the Classweb');
 /*!40000 ALTER TABLE `login_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -55,7 +55,10 @@ CREATE TABLE `login_users` (
   `EmailAddress` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   `UserName` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   `Password` char(64) DEFAULT NULL,
-  `RoleID` int(11) NOT NULL,
+  `RoleID` int(11) NOT NULL DEFAULT '2',
+  `Salt` char(128) DEFAULT NULL,
+  `DateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+  `DateModified` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`UserID`),
   KEY `FK1` (`RoleID`),
   CONSTRAINT `FK1` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`RoleID`)
@@ -68,7 +71,7 @@ CREATE TABLE `login_users` (
 
 LOCK TABLES `login_users` WRITE;
 /*!40000 ALTER TABLE `login_users` DISABLE KEYS */;
-INSERT INTO `login_users` VALUES (2,'John','K.','Doe','doejohn@isu.edu','doejohn','john1',1),(3,'John','K.','Doe','doejohn@isu.edu','doejohn','john1',1);
+INSERT INTO `login_users` VALUES (2,'John','K.','Doe','doejohn@isu.edu','doejohn','/OOoOer10+tGwTRDTrQSoeCxVTFr6dtYly7d0cPxIak=',1,'NZsP6NnmfBuYeJrrAKNuVQ==','2019-03-10 15:19:33','2019-03-10 15:20:09');
 /*!40000 ALTER TABLE `login_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -161,6 +164,36 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sproc_useradd` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = cp850 */ ;
+/*!50003 SET character_set_results = cp850 */ ;
+/*!50003 SET collation_connection  = cp850_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_useradd`(
+OUT UserID int,
+IN FirstName nvarchar(45),
+IN MiddleName nvarchar(45),
+IN LastName nvarchar(45),
+IN EmailAddress
+ nvarchar(128),
+IN UserName nvarchar(128),
+IN Password char(64),
+IN Salt char(50))
+BEGIN
+ INSERT INTO Users(FirstName,MiddleName,LastName,EmailAddress,UserName,Password, Salt) 
+VALUES(FirstName,MiddleName,LastName,EmailAddress, UserName,Password, Salt);
+SET UserID = LAST_INSERT_ID;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -171,4 +204,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-09 23:39:55
+-- Dump completed on 2019-03-10 16:03:55
