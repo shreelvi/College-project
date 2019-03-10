@@ -10,15 +10,14 @@ namespace ClassWeb.Models
     {
         /// <summary>
         /// Created By: Kishor Simkhada
-        /// Object for database that can be inherited by other DatabaseNamed object for ID to all classes.
+        /// Object for database that can be inherited by other object.
         /// </summary>
-
         #region Private Variable
         private int _ID;
         #endregion
-
         #region Public Class
         //Primary Key for database
+        [Key]
         public int ID
         {
             get { return _ID; }

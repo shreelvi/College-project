@@ -69,7 +69,3 @@ namespace ClassWeb.Models
         #endregion
     }
 }
-
-
-
-    

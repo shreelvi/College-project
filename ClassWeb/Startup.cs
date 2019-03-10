@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ClassWeb.Models;
 
 namespace ClassWeb
 {
@@ -36,8 +37,10 @@ namespace ClassWeb
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<ClassWebContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
+            services.AddDbContext<DAL>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+   
 
         }
 
@@ -45,26 +48,26 @@ namespace ClassWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseHsts();
+            //}
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseStaticFiles();
-            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Registration}/{action=Index}/{id?}");
             });
         }
     }

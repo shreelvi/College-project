@@ -8,7 +8,7 @@
     }
     $.ajax(
         {
-            url:"/Assignment",
+            url:"/Assignments",
             data: fData,
             processData: false,
             contentType: false,

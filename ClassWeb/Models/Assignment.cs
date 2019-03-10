@@ -17,8 +17,25 @@ namespace ClassWeb.Models
         private  DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback;
-      
-     
+        private string _FileSize;
+
+        public string FileSize
+        {
+            get { return _FileSize; }
+            set { _FileSize = value; }
+        }
+
+        //private Stream _File;
+
+
+
+        //public Stream File
+        //{
+        //    get { return _File; }
+        //    set { _File = value; }
+        //}
+
+
         public string Description
         {
             get { return _Description; }
