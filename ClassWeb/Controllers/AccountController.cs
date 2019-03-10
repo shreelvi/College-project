@@ -91,7 +91,7 @@ namespace ClassWeb.Controllers
         public IActionResult Logout()
         {
             //await _signManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
     }
