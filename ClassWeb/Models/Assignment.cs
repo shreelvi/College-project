@@ -17,6 +17,7 @@ namespace ClassWeb.Models
         private  DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback;
+<<<<<<< HEAD
         private string _FileSize;
 
         public string FileSize
@@ -36,6 +37,10 @@ namespace ClassWeb.Models
         //}
 
 
+=======
+      
+     
+>>>>>>> Elvis
         public string Description
         {
             get { return _Description; }

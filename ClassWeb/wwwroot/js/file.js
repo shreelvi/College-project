@@ -8,7 +8,11 @@
     }
     $.ajax(
         {
+<<<<<<< HEAD
             url:"/Assignments",
+=======
+            url:"/Assignment",
+>>>>>>> Elvis
             data: fData,
             processData: false,
             contentType: false,

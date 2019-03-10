@@ -13,7 +13,10 @@ namespace ClassWeb.Models
         /// Object for database that can be inherited by other DatabaseNamed object for ID to all classes.
         /// </summary>
 
+<<<<<<< HEAD
         internal const string db_ID = "ID";
+=======
+>>>>>>> Elvis
         #region Private Variable
         public int _ID;
         #endregion

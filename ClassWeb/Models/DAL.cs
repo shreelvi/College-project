@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
+<<<<<<< HEAD
 using ClassWeb;
+=======
+using System.Data.SqlClient;
+using System.Data;
+
+>>>>>>> Elvis
 
 namespace ClassWeb.Model
 {
@@ -16,8 +22,16 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
+<<<<<<< HEAD
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>
+=======
+        /// </summary>
+
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
+
+>>>>>>> Elvis
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private DAL()
@@ -46,6 +60,10 @@ namespace ClassWeb.Model
 
             }
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> Elvis
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -125,6 +143,7 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
+<<<<<<< HEAD
         /// <summary>
         /// getting user based on their user ID.
         /// </summary>
@@ -163,6 +182,43 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + User.db_ID, id);
+=======
+        /// public static User AddUser( User obj)
+        /// {
+        //if (obj == null)
+        //    return -1;
+        //MySqlCommand comm = new MySqlCommand();
+        //try
+        //{
+        //    //sprocs here
+        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+        //    return UpdateObject(comm);
+        //}
+        //catch(Exception ex)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(ex.Message);
+        //}
+        //return -1;
+        ////}
+
+        #endregion
+
+        #region Login
+
+        ///<summary>
+        /// Gets the User from the database corresponding to the Username
+        /// Reference: Github, PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static User GetUser(string userName, string password)
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+>>>>>>> Elvis
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
@@ -175,6 +231,7 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+<<<<<<< HEAD
             return retObj;
         }
         /// <summary>
@@ -192,6 +249,57 @@ namespace ClassWeb.Model
                 while (dr.Read())
                 {
                     retList.Add(new User(dr));
+=======
+            /// Verify password matches.
+            //if (retObj != null)
+            //{
+            //    if (!Tools.Hasher.IsValid(passWord, retObj.Salt, _Pepper, _Stretches, retObj.Password))
+            //    {
+            //        retObj = null;
+            //    }
+            //}
+
+            return retObj;
+        }
+
+            //return retObj;
+            //User retObj = null;
+            //MySqlCommand comm = new MySqlCommand("sproc_GetUserByUsername");
+            //try
+            //{
+            //    comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+            //    MySqlDataReader dr = GetDataReader(comm);
+            //    while (dr.Read())
+            //    {
+            //        retObj = new User(dr);
+            //    }
+            //    comm.Connection.Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    comm.Connection.Close();
+            //    System.Diagnostics.Debug.WriteLine(ex.Message);
+            //}
+            //return retObj;
+
+
+            ///<summary>
+            /// Get salt of the User from the database corresponding to the Username
+            /// </summary>
+            /// <remarks></remarks>
+
+            public static string GetSaltForUser(string username)
+        {
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+>>>>>>> Elvis
                 }
                 comm.Connection.Close();
             }
@@ -200,6 +308,7 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+<<<<<<< HEAD
             return retList;
         }
         /// <summary>
@@ -282,6 +391,23 @@ namespace ClassWeb.Model
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 //need more here. 
                 comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+=======
+            return salt;
+        }
+
+        ///<summary>
+        /// Set salt of the User from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForUser(int userID, string salt)
+        {
+            if (userID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+>>>>>>> Elvis
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -290,6 +416,7 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+<<<<<<< HEAD
         #endregion
         /// <summary>
         /// roles based on user ID
@@ -350,13 +477,31 @@ namespace ClassWeb.Model
         {
             MySqlCommand comm = new MySqlCommand("sprocRolesGetAll");
             List<Role> retList = new List<Role>();
+=======
+
+        #endregion
+
+
+        /// <summary>
+        /// Gets a list of all PeerVal.Evaluation objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Evaluation> GetEvaluations()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
+            List<Evaluation> retList = new List<Evaluation>();
+>>>>>>> Elvis
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
+<<<<<<< HEAD
                     retList.Add(new Role(dr));
+=======
+                    retList.Add(new Evaluation(dr));
+>>>>>>> Elvis
                 }
                 comm.Connection.Close();
             }
@@ -367,6 +512,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+<<<<<<< HEAD
         /// <summary>
         /// database entry by adding specific role for the user 
         /// </summary>
@@ -439,6 +585,12 @@ namespace ClassWeb.Model
         //will continue from here next time. 
 
         #endregion
+=======
+
+
+
+
+>>>>>>> Elvis
     }
 
 }
