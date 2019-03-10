@@ -13,9 +13,9 @@ namespace ClassWeb.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(DAL context)
+        public static void Initialize(ClassWebContext context)
         {
-            context.Database.EnsureCreated();
+            //context.Database.EnsureCreated();
 
             //Look for any Assignments 
             if (context.Assignment.Any())

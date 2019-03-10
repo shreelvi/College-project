@@ -11,7 +11,7 @@ namespace ClassWeb.Models
     /// Groups are a team of student members for a projects in class
     /// </summary>
 
-    public class Group : DatabaseNamedObject
+    public class Group: DatabaseNamedObject 
     {
         #region Private Variables
         private string _EmailAddress;
@@ -21,7 +21,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Variables
-        [Display(Name = "Group's Email-address",
+        [Display(Name ="Group's Email-address",
             Description = "Email-address used to contact the group; which all members will have access.")]
         public string EmailAddress
         {

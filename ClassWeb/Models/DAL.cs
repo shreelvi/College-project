@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
+using System.Data.SqlClient;
 
 namespace ClassWeb.Model
 {
@@ -44,6 +45,7 @@ namespace ClassWeb.Model
 
             }
         }
+
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -122,30 +124,107 @@ namespace ClassWeb.Model
         }
         #endregion
 
-
-
         #region User
-       public static User AddUser(User obj)
-       {
-        User u = new User();
-        if (obj == null)
-            {
-            //return -1;
-            }
-        MySqlCommand comm = new MySqlCommand();
-        try
-        {
-                //sprocs here
-            comm.Parameters.AddWithValue("@" + u.ID, obj.ID);
-          //  return UpdateObject(comm);
-    }
-        catch(Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-        }
-        return u;
-       }
+        /// public static User AddUser( User obj)
+        /// {
+        //if (obj == null)
+        //    return -1;
+        //MySqlCommand comm = new MySqlCommand();
+        //try
+        //{
+        //    //sprocs here
+        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+        //    return UpdateObject(comm);
+        //}
+        //catch(Exception ex)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(ex.Message);
+        //}
+        //return -1;
+        ////}
 
         #endregion
+
+        #region Login
+
+        ///<summary>
+        /// Gets the User from the database corresponding to the UserID
+        /// Reference: Github, PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static User GetUser(string username)
+        {
+            MySqlCommand comm = new MySqlCommand("sprocUsersGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static string GetSaltForUser(string username)
+        {
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return salt;
+        }
+
+        ///<summary>
+        /// Set salt of the User from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForUser(int userID, string salt)
+        {
+            if (userID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        #endregion
+
+
     }
+
 }

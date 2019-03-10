@@ -23,7 +23,7 @@ namespace ClassWeb
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<DAL>();
+                    var context = services.GetRequiredService<ClassWebContext>();
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
