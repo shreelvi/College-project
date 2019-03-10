@@ -19,7 +19,7 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary>
-        
+
         //private static string EditOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
         //private static string ReadOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
 
@@ -249,7 +249,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + User.db_ID, userID);
-                comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

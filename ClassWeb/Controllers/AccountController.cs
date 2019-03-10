@@ -68,7 +68,8 @@ namespace ClassWeb.Controllers
 
             if (loggedIn != null)
             {
-                HttpContext.Session.SetString("username", userName);
+                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn);
+                //HttpContext.Session.SetString("username", userName);
                 return View("Dashboard");
             }
             else
