@@ -7,13 +7,9 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
-<<<<<<< HEAD
 using ClassWeb;
-=======
 using System.Data.SqlClient;
 using System.Data;
-
->>>>>>> Elvis
 
 namespace ClassWeb.Model
 {
@@ -22,16 +18,8 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
-<<<<<<< HEAD
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>
-=======
-        /// </summary>
-
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
-        //private static string ReadOnlyConnectionString = "Server=localhost;Database=peerval;Uid=root;Pwd=;";
-
->>>>>>> Elvis
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private DAL()
