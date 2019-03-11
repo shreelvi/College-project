@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
+using System.Data.SqlClient;
+using System.Data;
+using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClassWeb.Model
 {
@@ -16,8 +22,12 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary>
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
+        public static int _Stretches = 10000;
+        private IPasswordHasher<User> _passwordHasher;
         private DAL()
         {
         }
@@ -44,13 +54,15 @@ namespace ClassWeb.Model
 
             }
         }
+
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
             {
                 ConnectToDatabase(comm);
                 comm.Connection.Open();
-                return comm.ExecuteReader();
+                var read = comm.ExecuteReader();
+                return read;
             }
             catch (Exception ex)
             {
@@ -69,7 +81,7 @@ namespace ClassWeb.Model
         {
             int retInt = 0;
             try
-            {
+            { 
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
@@ -123,24 +135,177 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-       /// public static User AddUser( User obj)
-       /// {
-            //if (obj == null)
-            //    return -1;
-            //MySqlCommand comm = new MySqlCommand();
-            //try
-            //{
-            //    //sprocs here
-            //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-            //    return UpdateObject(comm);
-            //}
-            //catch(Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
-            //return -1;
+        /// public static User AddUser( User obj)
+        /// {
+        //if (obj == null)
+        //    return -1;
+        //MySqlCommand comm = new MySqlCommand();
+        //try
+        //{
+        //    //sprocs here
+        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+        //    return UpdateObject(comm);
+        //}
+        //catch(Exception ex)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(ex.Message);
+        //}
+        //return -1;
         ////}
 
         #endregion
+
+        #region Login
+
+
+        ///<summary>
+        /// Gets the User from the database corresponding to the Username
+        /// Reference: Github, PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static LoginModel GetUser(string userName, string password)
+        {
+
+            LoginModel retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_getuserbyusername");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new LoginModel(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            return retObj;
+        }
+
+        /// <summary>
+        /// Attempts to add user in the database
+        /// Reference: PeerVal Project
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddUser(User obj)
+        {
+            if (obj == null)
+            {
+                return -1;
+            }
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            try
+            {
+                // generate new password first.
+                obj.Salt = Tools.Hasher.GenerateSalt(50);
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                obj.Password = newPass;
+                // now set object to Database.
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + User.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static string GetSaltForUser(string username)
+        {
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return salt;
+        }
+
+        ///<summary>
+        /// Set salt of the User from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForUser(int userID, string salt)
+        {
+            if (userID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Gets a list of all PeerVal.Evaluation objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Evaluation> GetEvaluations()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
+            List<Evaluation> retList = new List<Evaluation>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Evaluation(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+
+
+
     }
+
 }
+

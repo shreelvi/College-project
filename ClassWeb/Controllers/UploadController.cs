@@ -153,7 +153,7 @@ namespace ClassWeb.Controllers
                 Assignment assign = new Assignment();
                 assign.Name = file.Name;
                 double filesize = (double)(file.Length / 1024);
-                assign.FileSize = String.Format("{0:0.00}", filesize);
+                assign.FileSize = (string)string.Format("{0:0.00}", filesize);
                 assign.Description = file.Name;
                 items.Add(assign);
             }
