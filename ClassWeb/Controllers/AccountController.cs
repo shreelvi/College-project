@@ -93,7 +93,7 @@ namespace ClassWeb.Controllers
         {
             int UserAdd = DAL.AddUser(NewUser);
             ViewBag.Success = "Successfully added user.";
-            return View("login");
+            return View();
         }
 
         public IActionResult Logout()
