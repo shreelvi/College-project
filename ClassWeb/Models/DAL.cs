@@ -161,6 +161,7 @@ namespace ClassWeb.Model
             try
             {
                 // generate new password first.
+
                 obj.Salt = Tools.Hasher.GenerateSalt(50);
                 string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 obj.Password = newPass;

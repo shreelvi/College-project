@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Model;
 using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
@@ -13,7 +14,7 @@ namespace ClassWeb.Models
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
     /// </summary>
-    public class User:DatabaseObject
+    public class User : DatabaseObject
     {
         #region Constructors
         public User()
@@ -22,11 +23,6 @@ namespace ClassWeb.Models
         internal User(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
-        }
-
-        private void Fill(MySqlDataReader dr)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -77,7 +73,7 @@ namespace ClassWeb.Models
 
         #region public Properites
 
-        [Required(ErrorMessage ="Please provide First Name", AllowEmptyStrings =false)]
+        [Required(ErrorMessage = "Please provide First Name", AllowEmptyStrings = false)]
         public string FirstName
         {
             get { return _FirstName; }
@@ -90,13 +86,13 @@ namespace ClassWeb.Models
             set { _MiddleName = value; }
         }
 
-        [Required(ErrorMessage ="Please provide Last Name", AllowEmptyStrings =false)]
+        [Required(ErrorMessage = "Please provide Last Name", AllowEmptyStrings = false)]
         public string LastName
         {
             get { return _LastName; }
             set { _LastName = value; }
         }
-        [Required(ErrorMessage ="Please provide valid email address", AllowEmptyStrings =false)]
+        [Required(ErrorMessage = "Please provide valid email address", AllowEmptyStrings = false)]
         public string EmailAddress
         {
             get { return _EmailAddress; }
@@ -109,9 +105,9 @@ namespace ClassWeb.Models
             set { _Address = value; }
         }
 
-        [Required(ErrorMessage ="Please provide password", AllowEmptyStrings =false)]
+        [Required(ErrorMessage = "Please provide password", AllowEmptyStrings = false)]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [StringLength(50, MinimumLength =8, ErrorMessage ="Password must be 8 character long.")]
+        [StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be 8 character long.")]
         public string Password
         {
             get { return _Password; }
@@ -135,14 +131,14 @@ namespace ClassWeb.Models
             set { _ConfirmPassword = value; }
         }
 
-        [Required(ErrorMessage ="Please provide username", AllowEmptyStrings =false)]
+        [Required(ErrorMessage = "Please provide username", AllowEmptyStrings = false)]
         public string UserName
         {
             get { return _UserName; }
-            set { _UserName = value;}
+            set { _UserName = value; }
         }
 
-        
+
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
@@ -159,24 +155,12 @@ namespace ClassWeb.Models
         }
         /// <summary>
         /// Gets or sets the role for this user
-        /// Reference : Professor's code from PeerVal/User.cs
         /// </summary>
         [Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
         public Role Roles
         {
-            get { _Role == null){
-                    _Role = DAL.GetRole(_RoleID);
-                }
-                return _Role;
-            }
-            set { _Role = value;
-                if (value == null) {
-                    _RoleID = -1;
-                }
-                else {
-                    _RoleID = -value.ID;
-                }
-            }
+            get { return _Role; }
+            set { _Role = value; }
 
         }
 
@@ -225,72 +209,73 @@ namespace ClassWeb.Models
         #endregion
 
 
-        #region#region Public Functions
-        public override int dbSave()
-        {
-            if (_ID < 0)
-            {
-                return dbAdd();
-            }
-            else
-            {
-                return dbUpdate();
-            }
-        }
-        /// <summary>
-        /// Calls DAL function to add User to the database.
-        /// Reference Professor's PeerVal
-        /// </summary>
-        /// <remarks></remarks>
-        protected override int dbAdd()
-        {
-            _ID = DAL.AddUser(this);
-            return ID;
-        }
+        //    #region#region Public Functions
+        //    public override int dbSave()
+        //    {
+        //        if (_ID < 0)
+        //        {
+        //            return dbAdd();
+        //        }
+        //        else
+        //        {
+        //            return dbUpdate();
+        //        }
+        //    }
+        //    /// <summary>
+        //    /// Calls DAL function to add User to the database.
+        //    /// Reference Professor's PeerVal
+        //    /// </summary>
+        //    /// <remarks></remarks>
+        //    protected override int dbAdd()
+        //    {
+        //        _ID = DAL.AddUser(this);
+        //        return ID;
+        //    }
 
-        /// <summary>
-        /// Calls DAL function to update User to the database.
-        /// </summary>
-        /// <remarks></remarks>
-        protected override int dbUpdate()
-        {
-            return DAL.UpdateUser(this);
-        }
+        //    /// <summary>
+        //    /// Calls DAL function to update User to the database.
+        //    /// </summary>
+        //    /// <remarks></remarks>
+        //    protected override int dbUpdate()
+        //    {
+        //        return DAL.UpdateUser(this);
+        //    }
 
-        /// <summary>
-        /// Calls DAL function to remove User from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public int dbRemove()
-        {
-            return DAL.RemoveUser(this);
-        }
+        //    /// <summary>
+        //    /// Calls DAL function to remove User from the database.
+        //    /// </summary>
+        //    /// <remarks></remarks>
+        //    public int dbRemove()
+        //    {
+        //        return DAL.RemoveUser(this);
+        //    }
 
-        #endregion
+        //    #endregion
 
-        #region
-        #region Public Subs
-        /// <summary>
-        /// Fills object from a MySqlClient Data Reader
-        /// </summary>
-        /// <remarks></remarks>
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-        {
-            _ID = dr.GetInt32(db_ID);
-            _FirstName = dr.GetString(db_FirstName);
-            _MiddleName = dr.GetString(db_MiddleName);
-            _LastName = dr.GetString(db_LastName);
-            _UserName = dr.GetString(db_UserName);
-            _Password = dr.GetString(db_Password);
-            _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(Role.db_ID);
-        }
+        //    #region
+        //    #region Public Subs
+        //    /// <summary>
+        //    /// Fills object from a MySqlClient Data Reader
+        //    /// </summary>
+        //    /// <remarks></remarks>
+        //    public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        //    {
+        //        _ID = dr.GetInt32(db_ID);
+        //        _FirstName = dr.GetString(db_FirstName);
+        //        _MiddleName = dr.GetString(db_MiddleName);
+        //        _LastName = dr.GetString(db_LastName);
+        //        _UserName = dr.GetString(db_UserName);
+        //        _Password = dr.GetString(db_Password);
+        //        _Salt = dr.GetString(db_Salt);
+        //        _RoleID = dr.GetInt32(Role.db_ID);
+        //    }
 
-        #endregion
+        //    #endregion
 
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
+        //    public override string ToString()
+        //    {
+        //        return this.GetType().ToString();
+        //    }
+        //}
     }
 }
