@@ -27,7 +27,7 @@ $$
 -- Description:	Retrieve specific User from the database.
 -- =============================================
 CREATE PROCEDURE sproc_getuserbyusername(
-IN username NVARCHAR(128))
+IN username NVARCHAR(128)
 )
 BEGIN
 	 SELECT * FROM Login_Users

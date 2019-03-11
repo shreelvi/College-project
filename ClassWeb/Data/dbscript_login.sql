@@ -6,8 +6,7 @@ CREATE TABLE `login_roles` (
   `Name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   `Description` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`RoleID`)
-) 
-
+);
 
 -- -----------------------------------------------------
 -- Table dbo.Users
@@ -27,4 +26,4 @@ CREATE TABLE `login_users` (
   PRIMARY KEY (`UserID`),
   KEY `FK1` (`RoleID`),
   CONSTRAINT `FK1` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`RoleID`)
-)
+);
