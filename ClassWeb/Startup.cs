@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ClassWeb.Models;
 
 namespace ClassWeb
 {
@@ -34,13 +33,19 @@ namespace ClassWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //Reference: PeerVal Project
+            // Add the following to start using a session.
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
+            services.AddSession(sessOptions => {
+                sessOptions.IdleTimeout = TimeSpan.FromSeconds(10); // short time for testing. 
+                //TimeSpan.FromMinutes(20) // default 20 minutes.
+                sessOptions.Cookie.HttpOnly = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<DAL>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-   
+            services.AddDbContext<ClassWebContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
 
         }
 
@@ -48,26 +53,26 @@ namespace ClassWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    app.UseHsts();
-            //}
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseStaticFiles();
+            app.UseSession(); // requred to have sessions in our application.
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Registration}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

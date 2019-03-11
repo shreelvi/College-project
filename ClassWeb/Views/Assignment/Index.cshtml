@@ -1,0 +1,57 @@
+﻿
+@model IEnumerable<ClassWeb.Models.Assignment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4 class="text-info font-weight-bold">Upload Assignment</h4>
+
+<div class="input-group">
+    <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Select File:</span>
+                <input type="file" id="files" name="files" class="input-group-text" multiple onchange="fileUpload('files')" ;><br />
+                <input type="submit" class="btn btn-outline-success" value="Upload" />
+            </div>
+        </div>
+        <p class="info alert-warning">  @ViewBag.Message</p>
+    </form>
+</div>
+
+<h2>Your Submissions for all courses:</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th> @Html.DisplayNameFor(model => model.SubmisionDate)</th>
+            <th> @Html.DisplayNameFor(model => model.Grade)</th>
+            <th> @Html.DisplayNameFor(model => model.Feedback)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="mt-5">
+                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
+                <td>@Html.ActionLink(item.Name, "Download", new { FileName = item.Name })</td>
+                <td>@item.Grade</td>
+                <td>@Html.DisplayFor(modelItem => item.SubmisionDate)</td>
+                <td><span class="btn-outline-success btn glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = item.Name })</span></td>
+                <td><span class=" btn-outline-danger btn glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "DeleteFromRoot", new { FileName = item.Name })</span> </td>
+                <td><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">@Html.ActionLink("View", "View", new { FileName = item.Name })</span>  </td>
+                <td><a asp-action="Delete" asp-route-id="@item.ID">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/js/file.js"></script>
