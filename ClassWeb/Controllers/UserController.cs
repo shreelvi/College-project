@@ -20,7 +20,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var classWebContext = _context.User.Include(u => u.Roles);
             return View();
