@@ -92,7 +92,15 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             int UserAdd = DAL.AddUser(NewUser);
-            ViewBag.Success = "Successfully added user.";
+
+            if (UserAdd == -1)
+            {
+                ViewBag.error = "Error Occured when creating a new user";
+            }
+            else
+            {
+                ViewBag.Success = "Successfully added user.";
+            }
             return View();
         }
 
