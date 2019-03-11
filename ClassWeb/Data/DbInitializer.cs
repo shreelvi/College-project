@@ -5,24 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClassWeb.Data
-<<<<<<< HEAD
-=======
 //<summary>
 //code by: Elvis
 //Initialize DB with test data
 //Reference: https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-2.2
 //</summary>
->>>>>>> Elvis
 {
     public static class DbInitializer
     {
         public static void Initialize(ClassWebContext context)
         {
-<<<<<<< HEAD
-            context.Database.EnsureCreated();
-=======
             //context.Database.EnsureCreated();
->>>>>>> Elvis
 
             //Look for any Assignments 
             if (context.Assignment.Any())

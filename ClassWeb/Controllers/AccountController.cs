@@ -61,15 +61,11 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
         {
-            //string salt = DAL.GetSaltForUser(login.Username);
-            //if (!String.IsNullOrEmpty(salt))
-            //{
-            User loggedIn = DAL.GetUser(userName, passWord);
-
+            LoginModel loggedIn = DAL.GetUser(userName, passWord);
             if (loggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn.FirstName);
-                //HttpContext.Session.SetString("username", userName);
+                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+                HttpContext.Session.SetString("username", loggedIn.UserName); 
                 return View("Dashboard");
             }
             else
@@ -80,16 +76,39 @@ namespace ClassWeb.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
+        // GET: /Account/AddUser
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult AddUser(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+
+        //
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public ActionResult AddUser(User NewUser)
+        {
+            int UserAdd = DAL.AddUser(NewUser);
+            if (UserAdd>1)
+            {
+                ViewBag.Message = "User Sucessfully Created!!!";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+            return View();
+            }
         }
 
         public IActionResult Logout()
         {
+            LoginModel loggedIn = new LoginModel();
+            if (loggedIn!=null)
+            {
+                loggedIn = null;
+            }
             //await _signManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }

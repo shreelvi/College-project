@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ClassWeb.Data;
 using ClassWeb.Models;
-using ClassWeb;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClassWeb.Model
 {
@@ -18,10 +21,13 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
-        /// reference: Proffesor's PeerEval Project. 
         /// </summary>
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
+        public static int _Stretches = 10000;
+        private IPasswordHasher<User> _passwordHasher;
         private DAL()
         {
         }
@@ -48,17 +54,15 @@ namespace ClassWeb.Model
 
             }
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> Elvis
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
             {
                 ConnectToDatabase(comm);
                 comm.Connection.Open();
-                return comm.ExecuteReader();
+                var read = comm.ExecuteReader();
+                return read;
             }
             catch (Exception ex)
             {
@@ -77,7 +81,7 @@ namespace ClassWeb.Model
         {
             int retInt = 0;
             try
-            {
+            { 
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
@@ -131,134 +135,102 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-<<<<<<< HEAD
-        /// <summary>
-        /// getting user based on their user ID.
-        /// </summary>
-        /// <param name="idstring"></param>
-        /// <param name="retNewObject"></param>
-        /// <returns></returns>
-        public static User GetUser(String idstring, Boolean retNewObject)
-        {
-            User retObject = null;
-            int ID;
-            if (int.TryParse(idstring, out ID))
-            {
-                if (ID == -1 && retNewObject)
-                {
-                    retObject = new User
-                    {
-                        ID = -1
-                    };
-                }
-                else if (ID >= 0)
-                {
-                    retObject = GetUser(ID);
-                }
-            }
-            return retObject;
-        }
-        /// <summary>
-        /// getting user based on their user ID.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public static User GetUser(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sprocUserGet");
-            User retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, id);
-=======
+        /// public static User AddUser( User obj)
+        /// {
+        //if (obj == null)
+        //    return -1;
+        //MySqlCommand comm = new MySqlCommand();
+        //try
+        //{
+        //    //sprocs here
+        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
+        //    return UpdateObject(comm);
+        //}
+        //catch(Exception ex)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(ex.Message);
+        //}
+        //return -1;
+        ////}
+
         #endregion
 
         #region Login
+
 
         ///<summary>
         /// Gets the User from the database corresponding to the Username
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static User GetUser(string userName, string password)
+        public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
-            User retObj = null;
+            LoginModel retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_getuserbyusername");
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
->>>>>>> Elvis
+                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new User(dr);
+                    retObj = new LoginModel(dr);
                 }
                 comm.Connection.Close();
             }
             catch (Exception ex)
             {
                 comm.Connection.Close();
+
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-<<<<<<< HEAD
+
             return retObj;
         }
+
         /// <summary>
-        /// get all the users from the database
+        /// Attempts to add user in the database
+        /// Reference: PeerVal Project
         /// </summary>
-        /// <returns></returns>
-        public static List<User> GetUsers()
+        /// <remarks></remarks>
+
+        internal static int AddUser(User obj)
         {
-            MySqlCommand comm = new MySqlCommand("sprocUsersGetAll");
-            List<User> retList = new List<User>();
+            if (obj == null)
+            {
+                return -1;
+            }
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
             try
             {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new User(dr));
-=======
-            /// Verify password matches.
-            //if (retObj != null)
-            //{
-            //    if (!Tools.Hasher.IsValid(passWord, retObj.Salt, _Pepper, _Stretches, retObj.Password))
-            //    {
-            //        retObj = null;
-            //    }
-            //}
-
-            return retObj;
+                // generate new password first.
+                obj.Salt = Tools.Hasher.GenerateSalt(50);
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                obj.Password = newPass;
+                // now set object to Database.
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + User.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
-            //return retObj;
-            //User retObj = null;
-            //MySqlCommand comm = new MySqlCommand("sproc_GetUserByUsername");
-            //try
-            //{
-            //    comm.Parameters.AddWithValue("@" + User.db_UserName, username);
-            //    MySqlDataReader dr = GetDataReader(comm);
-            //    while (dr.Read())
-            //    {
-            //        retObj = new User(dr);
-            //    }
-            //    comm.Connection.Close();
-            //}
-            //catch (Exception ex)
-            //{
-            //    comm.Connection.Close();
-            //    System.Diagnostics.Debug.WriteLine(ex.Message);
-            //}
-            //return retObj;
 
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
 
-            ///<summary>
-            /// Get salt of the User from the database corresponding to the Username
-            /// </summary>
-            /// <remarks></remarks>
-
-            public static string GetSaltForUser(string username)
+        public static string GetSaltForUser(string username)
         {
             String salt = "";
             MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
@@ -269,7 +241,6 @@ namespace ClassWeb.Model
                 while (dr.Read())
                 {
                     salt = dr.GetString(0);
->>>>>>> Elvis
                 }
                 comm.Connection.Close();
             }
@@ -278,90 +249,6 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-<<<<<<< HEAD
-            return retList;
-        }
-        /// <summary>
-        /// adding database entry corresponding to the given user
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int AddUser(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
-                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
-                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
-                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("@" + User.db_Address, obj.Address);
-                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
-                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                comm.Parameters.AddWithValue("@" + User.db_PhoneNumber, obj.PhoneNumber);
-                comm.Parameters.AddWithValue("@" + User.db_DateCreated, obj.DateCreated);
-                comm.Parameters.AddWithValue("@" + User.db_DateModified, obj.DateModified);
-                comm.Parameters.AddWithValue("@" + User.db_DateDeleted, obj.DateDeleted);
-                comm.Parameters.AddWithValue("@" + User.db_AccountExpired, obj.AccountExpired);
-                comm.Parameters.AddWithValue("@" + User.db_AccountLocked, obj.AccountLocked);
-                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
-                return AddObject(comm, "@" + User.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// updating the user's detail
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int UpdateUser(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
-                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
-                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
-                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("@" + User.db_Address, obj.Address);
-                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
-                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                comm.Parameters.AddWithValue("@" + User.db_PhoneNumber, obj.PhoneNumber);
-                comm.Parameters.AddWithValue("@" + User.db_DateCreated, obj.DateCreated);
-                comm.Parameters.AddWithValue("@" + User.db_DateModified, obj.DateModified);
-                comm.Parameters.AddWithValue("@" + User.db_DateDeleted, obj.DateDeleted);
-                comm.Parameters.AddWithValue("@" + User.db_AccountExpired, obj.AccountExpired);
-                comm.Parameters.AddWithValue("@" + User.db_AccountLocked, obj.AccountLocked);
-                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// deleting database entry for the given user. 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int DeleteUser(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                //need more here. 
-                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
-=======
             return salt;
         }
 
@@ -377,7 +264,6 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + User.db_ID, userID);
                 //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
->>>>>>> Elvis
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -386,68 +272,6 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-<<<<<<< HEAD
-        #endregion
-        /// <summary>
-        /// roles based on user ID
-        /// </summary>
-        /// <param name="idstring"></param>
-        /// <param name="retNewObject"></param>
-        /// <returns></returns>
-        #region Role
-        public static Role GetRole(String idstring, Boolean retNewObject)
-        {
-            Role retObject = null;
-            int ID;
-            if (int.TryParse(idstring, out ID))
-            {
-                if (ID == -1 && retNewObject)
-                {
-                    retObject = new Role();
-                    retObject.ID = -1;
-                }
-                else if (ID >= 0)
-                {
-                    retObject = GetRole(ID);
-                }
-            }
-            return retObject;
-        }
-        /// <summary>
-        /// roles corresponding to the given User ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public static Role GetRole(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sprocRoleGet");
-            Role retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retObj = new Role(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-        /// <summary>
-        /// Gets a list of all PeerVal.Role objects from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public static List<Role> GetRoles()
-        {
-            MySqlCommand comm = new MySqlCommand("sprocRolesGetAll");
-            List<Role> retList = new List<Role>();
-=======
 
         #endregion
 
@@ -460,18 +284,13 @@ namespace ClassWeb.Model
         {
             MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
             List<Evaluation> retList = new List<Evaluation>();
->>>>>>> Elvis
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-<<<<<<< HEAD
-                    retList.Add(new Role(dr));
-=======
                     retList.Add(new Evaluation(dr));
->>>>>>> Elvis
                 }
                 comm.Connection.Close();
             }
@@ -482,85 +301,11 @@ namespace ClassWeb.Model
             }
             return retList;
         }
-<<<<<<< HEAD
-        /// <summary>
-        /// database entry by adding specific role for the user 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int AddRole(Role obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_RoleAdd");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
-                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
-                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
-                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
-                return AddObject(comm, "@" + Role.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// updating database entry for given role
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int UpdateRole(Role obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_RoleUpdate");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
-                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
-                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
-                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// deleting database entry for given user
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static int DeleteRole(Role obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                //comm.CommandText = //Insert Sproc Name Here;
-                comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        //will continue from here next time. 
-
-        #endregion
-=======
 
 
 
 
->>>>>>> Elvis
     }
 
 }
+

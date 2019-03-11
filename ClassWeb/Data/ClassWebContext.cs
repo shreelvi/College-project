@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Data
 {
-<<<<<<< HEAD
-=======
     //<summary>
     //The database context class relates the database with the model
     //Reference: https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-2.2
     //</summary>
->>>>>>> Elvis
     public class ClassWebContext: DbContext
     {
         public ClassWebContext(DbContextOptions<ClassWebContext> options)

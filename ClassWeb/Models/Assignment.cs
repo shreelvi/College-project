@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using Microsoft.AspNetCore.Rewrite.Internal.UrlMatches;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +18,6 @@ namespace ClassWeb.Models
         private  DateTime _SubmissionDate;
         private int _Grade;
         private string _Feedback;
-<<<<<<< HEAD
         private string _FileSize;
 
         public string FileSize
@@ -25,22 +25,8 @@ namespace ClassWeb.Models
             get { return _FileSize; }
             set { _FileSize = value; }
         }
-
-        //private Stream _File;
-
-
-
-        //public Stream File
-        //{
-        //    get { return _File; }
-        //    set { _File = value; }
-        //}
-
-
-=======
       
      
->>>>>>> Elvis
         public string Description
         {
             get { return _Description; }
