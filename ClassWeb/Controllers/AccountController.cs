@@ -94,8 +94,9 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            int UserAdd = DAL.AddUser(NewUser); 
-            return View();
+            int UserAdd = DAL.AddUser(NewUser);
+            ViewBag.Success = "Successfully added user.";
+            return View("login");
         }
 
         public IActionResult Logout()

@@ -64,7 +64,12 @@ namespace ClassWeb.Tools {
         /// <param name="hashToCompare">hash to comare against</param>
         /// <returns></returns>
         public static bool IsValid(string passToCheck, string salt, string pepper, int stretches, string hashToCompare) {
-            return Get(passToCheck, salt, pepper, stretches, hashToCompare.Length) == hashToCompare;
+            string hash = Get(passToCheck, salt, pepper, stretches, hashToCompare.Length);
+            if (hash == hashToCompare)
+                return true;
+            else
+                return false;
+            //return Get(passToCheck, salt, pepper, stretches, hashToCompare.Length) == hashToCompare;
         }
         /// <summary>
         /// Generate a new salt
