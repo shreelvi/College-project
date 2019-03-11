@@ -61,9 +61,6 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
         {
-            //string salt = DAL.GetSaltForUser(login.Username);
-            //if (!String.IsNullOrEmpty(salt))
-            //{
             LoginModel loggedIn = DAL.GetUser(userName, passWord);
 
             if (loggedIn != null)

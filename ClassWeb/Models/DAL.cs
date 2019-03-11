@@ -182,14 +182,14 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
-            // Verify password matches.
-            //if (retObj != null)
-            //{
-            //    if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password))
-            //    {
-            //        retObj = null;
-            //    }
-            //}
+            //Verify password matches.
+            if (retObj != null)
+            {
+                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password.TrimEnd('!')))
+                {
+                    retObj = null;
+                }
+            }
 
             return retObj;
         }

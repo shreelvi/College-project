@@ -64,8 +64,13 @@ namespace ClassWeb.Tools {
         /// <param name="hashToCompare">hash to comare against</param>
         /// <returns></returns>
         public static bool IsValid(string passToCheck, string salt, string pepper, int stretches, string hashToCompare) {
-            string hash = Get(passToCheck, salt, pepper, stretches, hashToCompare.Length);
-            if (hash == hashToCompare)
+            string hash = (Get(passToCheck, salt, pepper, stretches, hashToCompare.Length));
+
+            //Removes last character from hash and hash to compare
+            //To solve the issue
+            string hash1 = hash.Remove(hash.Length - 1, 1); 
+            string hashToCompare1 = hashToCompare.Remove(hashToCompare.Length - 1, 1);
+            if (hash1 == hashToCompare1)
                 return true;
             else
                 return false;
