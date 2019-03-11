@@ -22,7 +22,7 @@ namespace ClassWeb.Models
         }
         internal User(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
-            Fill(dr);
+            //Fill(dr);
         }
 
         #endregion
@@ -156,7 +156,7 @@ namespace ClassWeb.Models
         /// <summary>
         /// Gets or sets the role for this user
         /// </summary>
-        [Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
+        //[Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
         public Role Roles
         {
             get { return _Role; }
@@ -209,73 +209,5 @@ namespace ClassWeb.Models
         #endregion
 
 
-        //    #region#region Public Functions
-        //    public override int dbSave()
-        //    {
-        //        if (_ID < 0)
-        //        {
-        //            return dbAdd();
-        //        }
-        //        else
-        //        {
-        //            return dbUpdate();
-        //        }
-        //    }
-        //    /// <summary>
-        //    /// Calls DAL function to add User to the database.
-        //    /// Reference Professor's PeerVal
-        //    /// </summary>
-        //    /// <remarks></remarks>
-        //    protected override int dbAdd()
-        //    {
-        //        _ID = DAL.AddUser(this);
-        //        return ID;
-        //    }
-
-        //    /// <summary>
-        //    /// Calls DAL function to update User to the database.
-        //    /// </summary>
-        //    /// <remarks></remarks>
-        //    protected override int dbUpdate()
-        //    {
-        //        return DAL.UpdateUser(this);
-        //    }
-
-        //    /// <summary>
-        //    /// Calls DAL function to remove User from the database.
-        //    /// </summary>
-        //    /// <remarks></remarks>
-        //    public int dbRemove()
-        //    {
-        //        return DAL.RemoveUser(this);
-        //    }
-
-        //    #endregion
-
-        //    #region
-        //    #region Public Subs
-        //    /// <summary>
-        //    /// Fills object from a MySqlClient Data Reader
-        //    /// </summary>
-        //    /// <remarks></remarks>
-        //    public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-        //    {
-        //        _ID = dr.GetInt32(db_ID);
-        //        _FirstName = dr.GetString(db_FirstName);
-        //        _MiddleName = dr.GetString(db_MiddleName);
-        //        _LastName = dr.GetString(db_LastName);
-        //        _UserName = dr.GetString(db_UserName);
-        //        _Password = dr.GetString(db_Password);
-        //        _Salt = dr.GetString(db_Salt);
-        //        _RoleID = dr.GetInt32(Role.db_ID);
-        //    }
-
-        //    #endregion
-
-        //    public override string ToString()
-        //    {
-        //        return this.GetType().ToString();
-        //    }
-        //}
     }
 }

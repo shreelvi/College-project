@@ -6,29 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Data;
-
 using ClassWeb.Models;
-using Microsoft.AspNetCore.Hosting;
 
 namespace ClassWeb.Controllers
 {
     public class UserController : Controller
     {
-    
         private readonly ClassWebContext _context;
 
         public UserController(ClassWebContext context)
         {
-           
             _context = context;
         }
 
         // GET: User
         public async Task<IActionResult> Index()
         {
-
             var classWebContext = _context.User.Include(u => u.Roles);
-            return View(await ClassWebContext.ToListAsync());
+            return View();
         }
 
         // GET: User/Details/5
@@ -62,7 +57,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,EmailAddress,Address,Password,ConfirmPassword,UserName,PhoneNumber,RoleID,DateCreated,DateModified,DateDeleted,AccountExpired,AccountLocked,PasswordExpired,Enabled,ID")] User user)
+        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,EmailAddress,Address,Password,Salt,ConfirmPassword,UserName,PhoneNumber,RoleID,DateCreated,DateModified,DateDeleted,AccountExpired,AccountLocked,PasswordExpired,Enabled,ID")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +91,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FirstName,MiddleName,LastName,EmailAddress,Address,Password,ConfirmPassword,UserName,PhoneNumber,RoleID,DateCreated,DateModified,DateDeleted,AccountExpired,AccountLocked,PasswordExpired,Enabled,ID")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("FirstName,MiddleName,LastName,EmailAddress,Address,Password,Salt,ConfirmPassword,UserName,PhoneNumber,RoleID,DateCreated,DateModified,DateDeleted,AccountExpired,AccountLocked,PasswordExpired,Enabled,ID")] User user)
         {
             if (id != user.ID)
             {

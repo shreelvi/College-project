@@ -18,6 +18,9 @@ namespace ClassWeb.Model
         /// </summary>
         private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
+        public static int _Stretches = 10000;
+
         private DAL()
         {
         }
@@ -149,6 +152,43 @@ namespace ClassWeb.Model
         //   }
         /////
 
+        ///<summary>
+        /// Gets the User from the database corresponding to the Username
+        /// Reference: Professor Jonathan Holmes PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static LoginModel GetUser(string userName, string password)
+        {
+
+            MySqlCommand comm = new MySqlCommand("get_User");
+            LoginModel retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new LoginModel(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            /// Verify password matches.
+            //if (retObj != null)
+            //{
+            //    if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password))
+            //    {
+            //        retObj = null;
+            //    }
+            //}
+
+            return retObj;
+        }
 
         ///<summary>
         /// Adds user in the database
@@ -157,7 +197,7 @@ namespace ClassWeb.Model
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            MySqlCommand comm = new MySqlCommand("add_User");
             try
             {
                 // generate new password first.

@@ -23,9 +23,6 @@ namespace ClassWeb.Data
 
         public DbSet<ClassWeb.Models.User> User { get; set; }
 
-        internal static Task<string> ToListAsync()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
