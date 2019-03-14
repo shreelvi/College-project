@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ClassWeb.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,5 @@ namespace ClassWeb.Data
         public DbSet<ClassWeb.Models.Assignment> Assignment { get; set; }
         public DbSet<ClassWeb.Models.LoginModel> LoginModel { get; set; }
         public DbSet<ClassWeb.Models.User> User { get; set; }
-
     }
 }

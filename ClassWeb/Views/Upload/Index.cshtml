@@ -31,7 +31,6 @@
         {
             <tr class="mt-5">
                 <td>@Model[i].Name</td>
-                <td>@Model[i].FileSize KB</td>
                 <td><span class="btn-outline-success glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
 
                 <td>

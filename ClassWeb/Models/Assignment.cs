@@ -11,37 +11,68 @@ namespace ClassWeb.Models
 {
     public class Assignment:DatabaseNamedObject
     {
-        private string _Description;
-        private DateTime _StartDate;
-        private DateTime _DueDate;
-        private  DateTime _SubmissionDate;
+        #region Database String
+        internal const string db_ID = "AssignmentID";
+        internal const string db_FileName = "FileName";
+        internal const string db_DateStarted = "DateStarted";
+        internal const string db_DateDue = "DateDue";
+        internal const string db_DateSubmited = "DateSubmited";
+        internal const string db_Grade = "Grade";
+        internal const string db_Feedback = "Feedback";
+        internal const string db_FileSize = "FileSize";
+        internal const string db_IsEditable = "IsEditable";
+        #endregion
+
+        #region Private Variable
+        private DateTime _DateStarted;
+        private DateTime _DateDue;
+        private  DateTime _DateSubmited;
         private int _Grade;
         private string _Feedback;
-      
-     
-        public string Description
-        {
-            get { return _Description; }
-            set { _Description = value; }
-        }
+        private double _FileSize;
+        private bool _IsEditable;
+        #endregion
 
+        #region Public Properties
+        public bool IsEditable
+        {
+            get
+            {
+                return _IsEditable;
+            }
+            set
+            {
+                _IsEditable = value;
+            }
+        }
+        public double FileSize
+        {
+            get
+            {
+                return _FileSize;
+            }
+            set
+            {
+                _FileSize = value;
+            }
+        }
         public DateTime StartDate
         {
-            get { return _StartDate; }
-            set { _StartDate = value; }
+            get { return _DateStarted; }
+            set { _DateStarted = value; }
         }
 
         [Display(Name = "Date Due")]
         public DateTime DueDate
         {
-            get { return _DueDate; }
-            set { _DueDate = value; }
+            get { return _DateDue; }
+            set { _DateDue = value; }
         }
         [Display(Name = "Date Submitted")]
         public DateTime SubmisionDate
         {
-            get { return _SubmissionDate; }
-            set { _SubmissionDate = value;}
+            get { return _DateSubmited; }
+            set { _DateSubmited = value;}
         }
 
         public int Grade
@@ -65,5 +96,6 @@ namespace ClassWeb.Models
             get { return _Feedback; }
             set { _Feedback = value; }
         }
+        #endregion
     }
 }

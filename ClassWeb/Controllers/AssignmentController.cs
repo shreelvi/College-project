@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
@@ -19,7 +20,6 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-
         //Access the data from the database
         private readonly ClassWebContext _context;
 
@@ -34,25 +34,27 @@ namespace ClassWeb.Controllers
         {
             return View(await _context.Assignment.ToListAsync());
         }
-
-        // GET: Assignments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> View(string FileName)
         {
-            if (id == null)
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string path = dir_Path + FileName;
+            WebClient User = new WebClient();
+            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
+            string fileBase64Data = Convert.ToBase64String(FileBuffer);
+            string t = GetContentType(path);
+            if (t == "application/vnd.ms-word")
             {
-                return NotFound();
+                //Download the file
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
             }
-
-            var assignment = await _context.Assignment
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (assignment == null)
+            else
             {
-                return NotFound();
+                string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
+                ViewBag.Data = DataURL;
             }
+            return View();
 
-            return View(assignment);
         }
-
         //<summary>
         //Post method to save the file
         //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
@@ -69,11 +71,12 @@ namespace ClassWeb.Controllers
 
                 //Create the file in the directory 
                 using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
-                {      
+                {
                 }
 
                 //Update the database 
                 Assignment assignment = new Assignment();
+
                 assignment.Name = fileName;
                 assignment.SubmisionDate = DateTime.Now;
                 assignment.Feedback = "Not Graded";
@@ -109,8 +112,6 @@ namespace ClassWeb.Controllers
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
-
-
         }
 
         public async Task<FileResult> Download(string FileName)
@@ -124,47 +125,22 @@ namespace ClassWeb.Controllers
             }
             memory.Position = 0;
             return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
-            // return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
-        }
+           }
+                        
+        #region Delete Assignement
 
-        private string GetContentType(string path)
-        {
-            var types = GetMimeTypes();
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-            return types[ext];
-        }
 
-        //mime types
-        private Dictionary<string, string> GetMimeTypes()
-        {
-            return new Dictionary<string, string>
-            {
-                {".txt", "text/plain"},
-                {".pdf", "application/pdf"},
-                {".doc", "application/vnd.ms-word"},
-                {".docx", "application/vnd.ms-word"},
-                {".png", "image/png"},
-                {".jpg", "image/jpeg"},
-                {".jpeg", "image/jpeg"},
-                {".gif", "image/gif"},
-                {".csv", "text/csv"},
-                {".html","text/html" },
-                {".js","text/javascript"},
-                {".css","text/css"},
-                {".mpeg","audio/mpeg"},
-            };
-        }
 
         // GET: Assignments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string FileName)
         {
-            if (id == null)
+            if (FileName == null)
             {
                 return NotFound();
             }
 
             var assignment = await _context.Assignment
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Name == FileName);
             if (assignment == null)
             {
                 return NotFound();
@@ -196,34 +172,96 @@ namespace ClassWeb.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Edit Assignment
+        public async Task<IActionResult> Edit(string FileName)
+        {
+            return View();
+        }
+        // POST: Assignments/Delete/5
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewBag.Message = "On Progress";
+            return View();
+        }
+        #endregion
+
+        #region Custom Function
         private bool AssignmentExists(int id)
         {
             return _context.Assignment.Any(e => e.ID == id);
         }
 
-        public async Task<IActionResult> View(string FileName)
+        private string GetContentType(string path)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            string path = dir_Path + FileName;
-
-            WebClient User = new WebClient();
-            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
-            string fileBase64Data = Convert.ToBase64String(FileBuffer);
-            string t = GetContentType(path);
-            if (t == "application/vnd.ms-word")
-            {
-                //Download the file
-                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
-            }
-            else
-            {
-                string imageDataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
-                ViewBag.ImageData = imageDataURL;
-            }
-            return View();
-
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
         }
-        
+
+        //mime types
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".html","text/html" },
+                {".js","text/javascript"},
+                {".css","text/css"},
+                {".mpeg","audio/mpeg"},
+            };
+        }
+       
+        private List<Assignment> GetFiles()
+        {
+            string filepath = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            if (!Directory.Exists(filepath))
+            {
+                Directory.CreateDirectory(filepath);
+            }
+            var dir = new DirectoryInfo(filepath);
+            FileInfo[] fileNames = dir.GetFiles("*.*");
+            List<Assignment> items = new List<Assignment>();
+            foreach (var file in fileNames)
+            {
+                Assignment assign = new Assignment();
+                assign.Name = file.Name;
+                double filesize = (double)(file.Length / 1024);
+                assign.FileSize = int.Parse(string.Format("{0:0.00}", filesize));
+                items.Add(assign);
+            }
+            return items;
+        }
     }
+    #endregion
+
+        #region Codeplay
+    //public IActionResult View(string FileName)
+    //{
+    //    string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
+    //    string path = dir_Path + FileName;
+
+    //    WebClient User = new WebClient();
+    //    Byte[] FileBuffer = User.DownloadData(path);
+    //    //if(FileBuffer.GetType==MiEM)
+    //    string imageBase64Data = Convert.ToBase64String(FileBuffer);
+
+    //    string imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
+    //    ViewBag.ImageData = imageDataURL;
+    //    ViewBag.SrcUrl = path;
+    //    return View();
+    //}
+    #endregion
+
 }

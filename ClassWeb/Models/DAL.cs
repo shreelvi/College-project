@@ -276,37 +276,6 @@ namespace ClassWeb.Model
         }
 
         #endregion
-
-
-        /// <summary>
-        /// Gets a list of all PeerVal.Evaluation objects from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public static List<Evaluation> GetEvaluations()
-        {
-            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
-            List<Evaluation> retList = new List<Evaluation>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Evaluation(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-
-
-
-
     }
 
 }
