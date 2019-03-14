@@ -5,11 +5,13 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using System.Data.SqlClient;
 using System.Data;
-
+using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClassWeb.Model
 {
@@ -20,12 +22,11 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary>
 
-
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
-
+        private IPasswordHasher<User> _passwordHasher;
         private DAL()
         {
         }
@@ -59,7 +60,8 @@ namespace ClassWeb.Model
             {
                 ConnectToDatabase(comm);
                 comm.Connection.Open();
-                return comm.ExecuteReader();
+                var read = comm.ExecuteReader();
+                return read;
             }
             catch (Exception ex)
             {
@@ -78,7 +80,7 @@ namespace ClassWeb.Model
         {
             int retInt = 0;
             try
-            {
+            { 
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
@@ -154,6 +156,7 @@ namespace ClassWeb.Model
 
         #region Login
 
+    
         ///<summary>
         /// Gets the User from the database corresponding to the Username
         /// Reference: Github, PeerEval Project
@@ -162,8 +165,8 @@ namespace ClassWeb.Model
         public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
             LoginModel retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_getuserbyusername");
             try
             {
                 comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
@@ -177,20 +180,36 @@ namespace ClassWeb.Model
             catch (Exception ex)
             {
                 comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
 
-            //Verify password matches.
-            if (retObj != null)
-            {
-                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password.TrimEnd('!')))
-                {
-                    retObj = null;
-                }
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
             return retObj;
         }
+        internal static int AddAssignment(Assignment obj)
+        {
+            if (obj == null)
+            {
+                return -1;
+            }
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
+            try
+            {
+                // now set object to Database.
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DueDate);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
+                return AddObject(comm, "@" + Assignment.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
 
         /// <summary>
         /// Attempts to add user in the database
@@ -200,7 +219,10 @@ namespace ClassWeb.Model
 
         internal static int AddUser(User obj)
         {
-            if (obj == null) return -1;
+            if (obj == null)
+            {
+                return -1;
+            }
             MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
             try
             {
@@ -215,7 +237,6 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
                 return AddObject(comm, "@" + User.db_ID);
             }
@@ -274,39 +295,8 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
         #endregion
-
-
-        /// <summary>
-        /// Gets a list of all PeerVal.Evaluation objects from the database.
-        /// </summary>
-        /// <remarks></remarks>
-        public static List<Evaluation> GetEvaluations()
-        {
-            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
-            List<Evaluation> retList = new List<Evaluation>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Evaluation(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-
-
-
-
     }
 
 }
+

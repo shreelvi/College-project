@@ -62,10 +62,11 @@ namespace ClassWeb.Controllers
         public ActionResult Login(String userName, String passWord)
         {
             LoginModel loggedIn = DAL.GetUser(userName, passWord);
+
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", loggedIn.UserName); 
+                HttpContext.Session.SetString("username", userName); 
                 return View("Dashboard");
             }
             else
@@ -91,24 +92,20 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             int UserAdd = DAL.AddUser(NewUser);
-            if (UserAdd>1)
+
+            if (UserAdd == -1)
             {
-                ViewBag.Message = "User Sucessfully Created!!!";
-                return RedirectToAction("Login", "Account");
+                ViewBag.error = "Error Occured when creating a new user";
             }
             else
             {
-            return View();
+                ViewBag.Success = "Successfully added user.";
             }
+            return View();
         }
 
         public IActionResult Logout()
         {
-            LoginModel loggedIn = new LoginModel();
-            if (loggedIn!=null)
-            {
-                loggedIn = null;
-            }
             //await _signManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
