@@ -33,7 +33,8 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Assignment.ToListAsync());
+            List < Assignment > assignments= _context.Assignment.OrderByDescending(o=>o.SubmisionDate).ToList();
+            return View(assignments);
         }
         public async Task<IActionResult> View(string FileName)
         {
