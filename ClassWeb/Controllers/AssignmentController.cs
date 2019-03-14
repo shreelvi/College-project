@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
 using ClassWeb.Model;
+using System.Text;
 
 namespace ClassWeb.Controllers
 {
@@ -42,16 +43,29 @@ namespace ClassWeb.Controllers
             Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
             string fileBase64Data = Convert.ToBase64String(FileBuffer);
             string t = GetContentType(path);
+            bool IsReadable = false;
             if (t == "application/vnd.ms-word")
             {
                 //Download the file
                 return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+            }
+            else 
+            
+            if(t=="application/vnd.ms-word" || t=="application/vnd.ms-word"||t == "text/plain" || t == "text/csv" ||
+                t == "text/html" || t == "text/javascript" || t == "text/css")
+            {
+                //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
+                byte[] b = Convert.FromBase64String(fileBase64Data);
+              string decodedString = Encoding.UTF8.GetString(b);
+                IsReadable = true;
+                ViewBag.Data = decodedString;
             }
             else
             {
                 string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
                 ViewBag.Data = DataURL;
             }
+            ViewBag.Readable = IsReadable;
             return View();
 
         }
@@ -207,18 +221,18 @@ namespace ClassWeb.Controllers
         {
             return new Dictionary<string, string>
             {
-                {".txt", "text/plain"},
                 {".pdf", "application/pdf"},
                 {".doc", "application/vnd.ms-word"},
                 {".docx", "application/vnd.ms-word"},
-                {".png", "image/png"},
-                {".jpg", "image/jpeg"},
-                {".jpeg", "image/jpeg"},
-                {".gif", "image/gif"},
+                {".txt", "text/plain"},
                 {".csv", "text/csv"},
                 {".html","text/html" },
                 {".js","text/javascript"},
                 {".css","text/css"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
                 {".mpeg","audio/mpeg"},
             };
         }

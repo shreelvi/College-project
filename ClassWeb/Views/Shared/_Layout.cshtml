@@ -9,6 +9,8 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link href="~/lib/codeMirror/codemirror.css" rel="stylesheet" />
+        <script src="~/lib/codeMirror/codemirror.js"></script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -18,7 +20,7 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse">
         @*<nav class="navbar shadow-lg p-8 rounded alert alert-primary">*@
         <div class="container ">
             <div class="navbar-header ">
