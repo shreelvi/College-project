@@ -20,9 +20,9 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary>
 
-
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+             
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
 
@@ -132,23 +132,6 @@ namespace ClassWeb.Model
         #endregion
 
         #region User
-        /// public static User AddUser( User obj)
-        /// {
-        //if (obj == null)
-        //    return -1;
-        //MySqlCommand comm = new MySqlCommand();
-        //try
-        //{
-        //    //sprocs here
-        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-        //    return UpdateObject(comm);
-        //}
-        //catch(Exception ex)
-        //{
-        //    System.Diagnostics.Debug.WriteLine(ex.Message);
-        //}
-        //return -1;
-        ////}
 
         #endregion
 
@@ -192,6 +175,30 @@ namespace ClassWeb.Model
             return retObj;
         }
 
+        internal static int AddAssignment(Assignment obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
+                comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+                return AddObject(comm, "@" + Assignment.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         /// <summary>
         /// Attempts to add user in the database
         /// Reference: PeerVal Project
@@ -224,6 +231,30 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return -1;
+        }
+
+        internal static List<Assignment>GetAllAssignment()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
+           List<Assignment> retObj = null;
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                foreach (MySqlDataReader a in dr) {
+                    while (a.Read())
+                    {
+                        retObj.Add(new Assignment(dr));
+                    }
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
         }
 
 

@@ -1,7 +1,7 @@
 ﻿@model List<Assignment>
 <h4 class="text-info font-weight-bold">Upload Assignment</h4>
 <div class="input-group">
-    <form asp-controller="Upload" asp-action="index" method="post" enctype="multipart/form-data">
+    <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text">Select File:</span>
@@ -31,12 +31,12 @@
         @for (var i = 0; i <= Model.Count - 1; i++)
         {
         <tr class="mt-5">
-            <td>@Model[i].Name</td>
+            <td contenteditable='true' id="FileName">@Model[i].FileName<td><span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model[i].FileName })</span></td>
             <td>@Model[i].FileSize KB</td>
-            <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
-            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span>  </td>
-            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
-            <td><span class=" glyphicon glyphicon-edit">  @Html.ActionLink("Edit", "Edit", new { FileName = Model[i].Name })</span>  </td>
+            <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].FileName })</span></td>
+            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].FileName })</span>  </td>
+            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].FileName })</span>  </td>
+            <td><span class=" glyphicon glyphicon-edit">  @Html.ActionLink("Edit", "Edit", new { FileName = Model[i].FileName })</span>  </td>
         </tr>
         }
     </tbody>

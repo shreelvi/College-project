@@ -25,11 +25,11 @@ namespace ClassWeb.Data
 
             var assignments = new Assignment[]
             {
-                new Assignment{ID=1,Name="Test",DueDate=DateTime.Now,Grade=98,Feedback="Test"},
-                new Assignment{ID = 2,Name = "INFO_4407_HW1",  DueDate = new DateTime(2019, 2, 26), Feedback ="Not Graded" },
-                new Assignment{ID = 3,Name = "BA_3312_HW2", DueDate = new DateTime(2019, 2, 26), Grade = 90, Feedback="Good Work!"  },
-                new Assignment{ID = 4,Name = "INFO_4482_MVP", DueDate = new DateTime(2019, 4, 26), Feedback="Not Graded" },
-                new Assignment{ID = 5,Name = "MGT_4460_TakeHomeExam", DueDate = new DateTime(2019, 4, 26), Feedback="Not Graded" },
+                new Assignment{ID=1,Name="Test",DateDue=DateTime.Now,Grade=98,Feedback="Test"},
+                new Assignment{ID = 2,Name = "INFO_4407_HW1",  DateDue = new DateTime(2019, 2, 26), Feedback ="Not Graded" },
+                new Assignment{ID = 3,Name = "BA_3312_HW2", DateDue = new DateTime(2019, 2, 26), Grade = 90, Feedback="Good Work!"  },
+                new Assignment{ID = 4,Name = "INFO_4482_MVP", DateDue = new DateTime(2019, 4, 26), Feedback="Not Graded" },
+                new Assignment{ID = 5,Name = "MGT_4460_TakeHomeExam", DateDue = new DateTime(2019, 4, 26), Feedback="Not Graded" },
             };
 
             foreach (Assignment a in assignments)

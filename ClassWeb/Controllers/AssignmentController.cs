@@ -14,6 +14,7 @@ using System.IO;
 using System.Net;
 using ClassWeb.Model;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClassWeb.Controllers
 {
@@ -21,19 +22,17 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-        //Access the data from the database
-        private readonly ClassWebContext _context;
+        List<Assignment> Assignments = new List<Assignment>();
 
-        public AssignmentController(IHostingEnvironment hostingEnvironment, ClassWebContext context)
+        public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            _context = context;
         }
 
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            List < Assignment > assignments= _context.Assignment.OrderByDescending(o=>o.SubmisionDate).ToList();
+            List<Assignment> assignments = GetFiles().OrderByDescending(o => o.DateSubmited).ToList();
             return View(assignments);
         }
         public async Task<IActionResult> View(string FileName)
@@ -50,17 +49,6 @@ namespace ClassWeb.Controllers
                 //Download the file
                 return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
             }
-            else 
-            
-            if(t=="application/vnd.ms-word" || t=="application/vnd.ms-word"||t == "text/plain" || t == "text/csv" ||
-                t == "text/html" || t == "text/javascript" || t == "text/css")
-            {
-                //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
-                byte[] b = Convert.FromBase64String(fileBase64Data);
-              string decodedString = Encoding.UTF8.GetString(b);
-                IsReadable = true;
-                ViewBag.Data = decodedString;
-            }
             else
             {
                 string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
@@ -75,32 +63,47 @@ namespace ClassWeb.Controllers
         //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
         //</summary>
         [HttpPost]
-        public IActionResult Index(IList<IFormFile> files)
+        public async Task<IActionResult> Index(IFormFile file)
         {
-            List<Assignment> Assignments = new List<Assignment>();
             //Save files in the directory
-            foreach (IFormFile item in files)
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            if (file.Length > 0)
             {
-                string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
-                fileName = this.EnsureFilename(fileName);
-
-                //Create the file in the directory 
-                using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
+                string path = dir_Path + file.FileName.ToString();
+                //Need to check if the file is update or insert
+                Assignment assign = new Assignment();
+                assign.IsEditable = false;
+                assign.FileSize = file.Length;
+                assign.FileName = path;
+                assign.Grade = 0;
+                string t = GetContentType(path);
+                //checking if the file is editable and setting up the variable accordingly
+                if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+                 t == "text/html" || t == "text/javascript" || t == "text/css")
                 {
+                    assign.IsEditable = true;
                 }
-
-                //Update the database 
-                Assignment assignment = new Assignment();
-
-                assignment.Name = fileName;
-                assignment.SubmisionDate = DateTime.Now;
-                assignment.Feedback = "Not Graded";
-                Assignments.Add(assignment);
-
-                _context.Assignment.Add(assignment);
-                _context.SaveChanges();
+                assign.DateSubmited = DateTime.Now;
+                assign.Feedback = "File Submitted";
+                assign.DateModified = DateTime.Now;
+                int test = DAL.AddAssignment(assign);
+                //checking and validating the insert info into table
+                if (test > 0)
+                {
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                    await file.CopyToAsync(stream);
+                    ViewBag.Message = "File Succesfully Uploaded!!!";
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "File Upload Failed!!!";
+                }
+               
+                var items = GetFiles();
+                return View(items);
             }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -140,8 +143,8 @@ namespace ClassWeb.Controllers
             }
             memory.Position = 0;
             return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
-           }
-                        
+        }
+
         #region Delete Assignement
 
 
@@ -153,15 +156,16 @@ namespace ClassWeb.Controllers
             {
                 return NotFound();
             }
-
-            var assignment = await _context.Assignment
-                .FirstOrDefaultAsync(m => m.Name == FileName);
+            return NotFound();
+            /*
+            var assignment =Assignments.Last().FirstOrDefaultAsync(m => m.Name == FileName);
             if (assignment == null)
             {
                 return NotFound();
             }
 
             return View(assignment);
+            */
         }
 
 
@@ -176,23 +180,44 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Index", "Assignment");
         }
-
-        // POST: Assignments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var assignment = await _context.Assignment.FindAsync(id);
-            _context.Assignment.Remove(assignment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
         #endregion
-
         #region Edit Assignment
         public async Task<IActionResult> Edit(string FileName)
         {
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string path = dir_Path + FileName;
+            WebClient User = new WebClient();
+            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
+            string fileBase64Data = Convert.ToBase64String(FileBuffer);
+            string t = GetContentType(path);
+            bool IsReadable = false;
+            if (t == "application/vnd.ms-word")
+            {
+                //Download the file
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+            }
+            else
+
+            if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+                t == "text/html" || t == "text/javascript" || t == "text/css")
+            {
+                //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
+                byte[] b = Convert.FromBase64String(fileBase64Data);
+                string decodedString = Encoding.UTF8.GetString(b);
+                IsReadable = true;
+                ViewBag.Data = decodedString;
+            }
+            else
+            {
+                string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
+                ViewBag.Data = DataURL;
+            }
+            ViewBag.Readable = IsReadable;
             return View();
+        }
+        public List<Assignment> GetAllAssignment()
+        {
+           return DAL.GetAllAssignment();
         }
         // POST: Assignments/Delete/5
         [HttpPost, ActionName("Edit")]
@@ -205,11 +230,6 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region Custom Function
-        private bool AssignmentExists(int id)
-        {
-            return _context.Assignment.Any(e => e.ID == id);
-        }
-
         private string GetContentType(string path)
         {
             var types = GetMimeTypes();
@@ -237,7 +257,7 @@ namespace ClassWeb.Controllers
                 {".mpeg","audio/mpeg"},
             };
         }
-       
+
         private List<Assignment> GetFiles()
         {
             string filepath = _hostingEnvironment.WebRootPath + "\\Upload\\";
@@ -251,9 +271,9 @@ namespace ClassWeb.Controllers
             foreach (var file in fileNames)
             {
                 Assignment assign = new Assignment();
-                assign.Name = file.Name;
+                assign.FileName = file.Name;
                 double filesize = (double)(file.Length / 1024);
-                assign.FileSize = int.Parse(string.Format("{0:0.00}", filesize));
+                // assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
                 items.Add(assign);
             }
             return items;
@@ -261,7 +281,7 @@ namespace ClassWeb.Controllers
     }
     #endregion
 
-        #region Codeplay
+    #region Codeplay
     //public IActionResult View(string FileName)
     //{
     //    string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
