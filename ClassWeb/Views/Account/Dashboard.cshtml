@@ -1,12 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Dashboard ";
 }
-<h2 style="color:darkorange">User Dashboard</h2><br />
-<h4 style="color:Orange">Welcome @Context.Session.GetString("username")</h4><br />
-<p>More features to be put in the page. Currently working on to creating user dashboard.</p>
-<br>
+<a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
+<a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
 
-<a style="color:darkblue; font-size: 20px" asp-controller="Assignment" asp-action="Index">Go to Assignment Section</a> <br /><br />
-<a style="color:darkblue" asp-controller="account" asp-action="logout">Logout</a>
+<h2 style="color:darkorange">User Dashboard</h2><br />
+<h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
+<p style="font-size: 20px">More features to be put in the page.</p>
+<br><br />
+
+<a style="color:blue" href="@ViewData["Files"]" target = "_blank">Browse Your Files Directory</a><br /><br />
+
+<a style="color:blue" asp-controller="Assignment" asp-action="Index">Click to Upload Assignment </a> <br /><br />
+<br /><br />
+
+<a style="color:darkblue" asp-controller="account" asp-action="logout">Logout</a><br /><br />
+<a style="color:darkblue" asp-controller="account" asp-action="">Edit Profile</a>
 

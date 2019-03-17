@@ -12,29 +12,39 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace ClassWeb.Controllers
 {
     public class AssignmentController : Controller
     {
+        #region Private Variables
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
 
         //Access the data from the database
         private readonly ClassWebContext _context;
+        #endregion
 
+        #region Constructor
         public AssignmentController(IHostingEnvironment hostingEnvironment, ClassWebContext context)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
         }
+        #endregion
 
+        #region Index
+        //Upload files form.
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
+            ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles"; //Sends files directory to the Index
             return View(await _context.Assignment.ToListAsync());
         }
+        #endregion
 
+        #region File Details
         // GET: Assignments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -52,38 +62,41 @@ namespace ClassWeb.Controllers
 
             return View(assignment);
         }
+        #endregion
 
-        //<summary>
-        //Post method to save the file
-        //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
-        //</summary>
-        [HttpPost]
-        public IActionResult Index(IList<IFormFile> files)
+        #region Upload Files
+        /// <summary>
+        /// Upload file
+        /// https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
+        /// Code taken from the reference
+        /// Uploads multiple files to the given path
+        /// </summary>
+
+        [HttpPost("Assignment")]
+        public async Task<IActionResult> Index(List<IFormFile> files)
         {
-            List<Assignment> Assignments = new List<Assignment>();
-            //Save files in the directory
-            foreach (IFormFile item in files)
+            long size = files.Sum(f => f.Length);
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+
+            foreach (var formFile in files)
             {
-                string fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
-                fileName = this.EnsureFilename(fileName);
-
-                //Create the file in the directory 
-                using (FileStream filestream = System.IO.File.Create(this.GetPath(fileName)))
-                {      
+                if (formFile.Length > 0)
+                {
+                    string path = dir_Path + formFile.FileName.ToString();
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
                 }
-
-                //Update the database 
-                Assignment assignment = new Assignment();
-                assignment.Name = fileName;
-                assignment.SubmisionDate = DateTime.Now;
-                assignment.Feedback = "Not Graded";
-                Assignments.Add(assignment);
-
-                _context.Assignment.Add(assignment);
-                _context.SaveChanges();
             }
 
-            return RedirectToAction(nameof(Index));
+            ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
+            ViewData["Success"]= "File Succesfully Uploaded!";
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return View();
         }
 
         //<summary>
@@ -109,10 +122,11 @@ namespace ClassWeb.Controllers
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
-
-
         }
 
+        #endregion
+
+        #region File Download
         public async Task<FileResult> Download(string FileName)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
@@ -154,7 +168,9 @@ namespace ClassWeb.Controllers
                 {".mpeg","audio/mpeg"},
             };
         }
+        #endregion
 
+        #region Delete Files
         // GET: Assignments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -173,8 +189,10 @@ namespace ClassWeb.Controllers
             return View(assignment);
         }
 
-
-        public IActionResult DeleteFromRoot(string FileName)
+        // POST: Assignments/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id, string FileName)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
             string path = dir_Path + FileName;
@@ -183,17 +201,12 @@ namespace ClassWeb.Controllers
                 System.IO.File.Delete(path);
                 ViewBag.Message = "File Succesfully Deleted!!!";
             }
-            return RedirectToAction("Index", "Assignment");
-        }
 
-        // POST: Assignments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+            //Removes the assignment record from the database
             var assignment = await _context.Assignment.FindAsync(id);
             _context.Assignment.Remove(assignment);
             await _context.SaveChangesAsync();
+ 
             return RedirectToAction(nameof(Index));
         }
 
@@ -201,7 +214,9 @@ namespace ClassWeb.Controllers
         {
             return _context.Assignment.Any(e => e.ID == id);
         }
+        #endregion
 
+        #region View Files in IFRAME
         public async Task<IActionResult> View(string FileName)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
@@ -222,8 +237,8 @@ namespace ClassWeb.Controllers
                 ViewBag.ImageData = imageDataURL;
             }
             return View();
-
         }
-        
+        #endregion
+
     }
 }

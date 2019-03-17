@@ -36,6 +36,7 @@ namespace ClassWeb
             host.Run();
         }
 
+        //Sets the content root to the current directory
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();

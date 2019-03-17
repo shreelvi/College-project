@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ClassWeb.Data;
+using ClassWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace ClassWeb
 {
@@ -22,6 +26,7 @@ namespace ClassWeb
         }
 
         public IConfiguration Configuration { get; }
+        public bool EnableDirectoryBrowsing { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -33,6 +38,8 @@ namespace ClassWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDirectoryBrowser();
+
             //Reference: PeerVal Project
             // Add the following to start using a session.
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
@@ -43,7 +50,7 @@ namespace ClassWeb
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddTransient<IEmailService, EmailService>();
             services.AddDbContext<ClassWebContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
 
@@ -63,9 +70,48 @@ namespace ClassWeb
                 app.UseHsts();
             }
 
+            #region Static Files Serve 
+            //Reference:Followed and copied code from Microsoft doc to serve  
+            //static files, enable Directory browsing and map file providers
+            //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-2.2
+
+
+            // Set up custom content types - associating file extension to MIME type
+            var provider = new FileExtensionContentTypeProvider();
+            // Add new mappings
+            provider.Mappings[".myapp"] = "application/x-msdownload";
+            provider.Mappings[".html"] = "text/html";
+            provider.Mappings[".txt"] = "text/txt";
+            provider.Mappings[".image"] = "image/png";
+            provider.Mappings[".js"] = "text/js";
+
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/MyImages",
+                ContentTypeProvider = provider,
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "image/png"
+            });
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+           Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
+                RequestPath = "/MyFiles"
+            });
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
+                RequestPath = "/MyFiles",
+                EnableDirectoryBrowsing = true
+            });
+            #endregion
+
             app.UseSession(); // requred to have sessions in our application.
 
             app.UseMvc(routes =>

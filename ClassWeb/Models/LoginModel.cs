@@ -38,6 +38,8 @@ namespace ClassWeb.Models
         private string _UserName;
         private string _Password;
         private string _ConfirmPassword;
+        private bool _IsEmailConfirmed = false;
+        private string _EmailToken;
         private DateTime _DateCreated;
         private int _RoleID;
         private string _Salt;
@@ -52,6 +54,8 @@ namespace ClassWeb.Models
         internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
+        internal const string db_EmailToken = "EmailToken";
+        internal const string db_IsEmailConfirmed = "IsEmailConfirmed";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_RoleID = "RoleID";
         internal const string db_Salt = "Salt";
@@ -108,6 +112,16 @@ namespace ClassWeb.Models
         {
             get { return _ConfirmPassword; }
             set { _ConfirmPassword = value; }
+        }
+        public string EmailToken
+        {
+            get { return _EmailToken; }
+            set { _EmailToken = value; }
+        }
+        public bool IsEmailConfirmed
+        {
+            get { return _IsEmailConfirmed; }
+            set { _IsEmailConfirmed = value; }
         }
 
         public DateTime DateCreated
@@ -173,7 +187,7 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            _MiddleName = dr.GetString(db_MiddleName);
+            //_MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             //_Address = dr.GetString(db_Address);
