@@ -36,6 +36,15 @@ namespace ClassWeb.Models
             get { return _Description; }
             set { _Description = value; }
         }
+
+        public static string db_Title { get; internal set; }
+        public static string db_DateCreated { get; internal set; }
+        public object Title { get; internal set; }
+        public object DateCreated { get; internal set; }
+        public object DateModified { get; internal set; }
+        public object DateDeleted { get; internal set; }
+        public static string db_DateModified { get; internal set; }
+        public static string db_DateDeleted { get; internal set; }
         #endregion
 
         #region Database String

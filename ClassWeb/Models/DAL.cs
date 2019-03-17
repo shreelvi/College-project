@@ -276,6 +276,162 @@ namespace ClassWeb.Model
         }
 
         #endregion
+
+        #region Role
+        public static Role GetRole(String idstring, Boolean retNewObject)
+        {
+            Role retObject = null;
+            int ID;
+            if (int.TryParse(idstring, out ID))
+            {
+                if (ID == -1 && retNewObject)
+                {
+                    retObject = new Role();
+                    retObject.ID = -1;
+                }
+                else if (ID >= 0)
+                {
+                    retObject = GetRole(ID);
+                }
+            }
+            return retObject;
+        }
+        /// <summary>
+        /// roles corresponding to the given User ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Role GetRole(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sprocRoleGet");
+            Role retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Role(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        /// <summary>
+        /// Gets a list of all PeerVal.Role objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Role> GetRoles()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocRolesGetAll");
+            List<Role> retList = new List<Role>();
+        }
+        #endregion
+        /// <summary>
+        /// Gets a list of all PeerVal.Evaluation objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Evaluation> GetEvaluations()
+        {
+            MySqlCommand comm = new MySqlCommand("sprocEvaluationsGetAll");
+            List<Evaluation> retList = new List<Evaluation>();
+
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+
+                    retList.Add(new Role(dr));
+
+                    retList.Add(new Evaluation(dr));
+
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+        /// <summary>
+        /// database entry by adding specific role for the user 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int AddRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
+                return AddObject(comm, "@" + Role.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// updating database entry for given role
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int UpdateRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Role.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Role.db_DateCreated, obj.DateCreated);
+                comm.Parameters.AddWithValue("@" + Role.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + Role.db_DateDeleted, obj.DateDeleted);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// deleting database entry for given user
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static int DeleteRole(Role obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                //comm.CommandText = //Insert Sproc Name Here;
+                comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        //will continue from here next time. 
     }
 
 }
