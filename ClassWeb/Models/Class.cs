@@ -7,9 +7,13 @@ namespace ClassWeb.Models
 {
     public class Class : DatabaseNamedObject
     {
-        /// <summary>
-        /// 
-        /// </summary>
+    /// <summary>
+    /// By: Ganesh Sapkota 
+    /// Creating  classes model for our project.
+    /// Class is like Fall 2018, Spring 2019
+    /// Course will have classes and classes will have sections. 
+    /// Start date and end date are the first and last day of the semester respectively.
+    /// </summary>
 
         #region Private Variables
         private bool _Available;
@@ -18,7 +22,8 @@ namespace ClassWeb.Models
         private int _SectionID;
         #endregion
 
-        #region Public Variables
+         #region public class
+        [Key]
         public bool Available
         {
             get
