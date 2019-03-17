@@ -103,15 +103,21 @@ namespace ClassWeb.Controllers
                 return View();
             }
         }
+        public IActionResult Logout()
+        {
+            //await _signManager.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
+        }
         #endregion
 
-        #region Registration
-        /// <summary>
-        /// Code by: Elvis
-        /// Method to Add/Register user to the database.
-        /// </summary>
-        
-        // GET: /Account/AddUser
+            #region Registration
+            /// <summary>
+            /// Code by: Elvis
+            /// Method to Add/Register user to the database.
+            /// </summary>
+
+            // GET: /Account/AddUser
         [AllowAnonymous]
         public ActionResult AddUser(string returnUrl)
         {
@@ -125,11 +131,19 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             int UserAdd = DAL.AddUser(NewUser);
-            ViewBag.Success = "Successfully added user.";
-            return View("login");
+
+            if (UserAdd == -1)
+            {
+                ViewBag.error = "Error Occured when creating a new user";
+            }
+            else
+            {
+                ViewBag.Success = "Successfully added user.";
+            }
+            return RedirectToAction("Login", "Account");
         }
         #endregion
-          
+
 
     }
 }
