@@ -43,6 +43,8 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private int _RoleID;
         private string _Salt;
+        private string _DirectoryPath;
+
         #endregion
 
         #region Database String
@@ -59,6 +61,8 @@ namespace ClassWeb.Models
         internal const string db_DateCreated = "DateCreated";
         internal const string db_RoleID = "RoleID";
         internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+
         #endregion
 
         #region public Properites
@@ -154,6 +158,12 @@ namespace ClassWeb.Models
             }
         }
 
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; }
@@ -196,6 +206,7 @@ namespace ClassWeb.Models
             //_DateCreated = dr.GetDateTime(db_DateCreated);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_RoleID);
+            _DirectoryPath = dr.GetString(db_DirectoryPath);
         }
         #endregion
 

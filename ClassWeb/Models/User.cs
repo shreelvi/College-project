@@ -54,6 +54,7 @@ namespace ClassWeb.Models
         private bool _PasswordExpired;
         private bool _AccountLocked;
         private Role _Role;
+        private string _DirectoryPath;
         #endregion
 
         #region Database String
@@ -75,6 +76,8 @@ namespace ClassWeb.Models
         internal const string db_AccountLocked = "AccountLocked";
         internal const string db_Role = "RoleID";
         internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+
         #endregion
 
         #region public Properites
@@ -186,6 +189,12 @@ namespace ClassWeb.Models
         {
             get { return _Role; }
             set { _Role = value; }
+        }
+
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
         }
         #endregion
 

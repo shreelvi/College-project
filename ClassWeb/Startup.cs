@@ -71,8 +71,13 @@ namespace ClassWeb
             }
 
             #region Static Files Serve 
+            //Created by: Elvis
+            //Date Created: 03/16/2019
+            //This configuratiion enables viewing of static files through URI
             //Reference:Followed and copied code from Microsoft doc to serve  
             //static files, enable Directory browsing and map file providers
+            //Date Modified: 03/17 -- Added directory browsing to the UserDirectory folder
+            //which contains each user default root folder
             //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-2.2
 
 
@@ -97,17 +102,22 @@ namespace ClassWeb
                 ServeUnknownFileTypes = true,
                 DefaultContentType = "image/png"
             });
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-           Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
-                RequestPath = "/MyFiles"
-            });
+
+           //Enables directory browsing and files serve of upload folder via "baseurl/myFiles"
             app.UseFileServer(new FileServerOptions
             {
                 FileProvider = new PhysicalFileProvider(
             Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
                 RequestPath = "/MyFiles",
+                EnableDirectoryBrowsing = true
+            });
+
+            //Enables directory browsing of user directory folder via "baseurl/directory"
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserDirectory")),
+                RequestPath = "/UserDirectory",
                 EnableDirectoryBrowsing = true
             });
             #endregion

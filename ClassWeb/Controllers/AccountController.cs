@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ClassWeb.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
+using System.IO;
 
 namespace ClassWeb.Controllers
 {
@@ -19,13 +22,17 @@ namespace ClassWeb.Controllers
         #region Private Variables
         private readonly ClassWebContext _context;    //Access the data from the local mssql database
         private readonly IEmailService _emailService; //Use classes to send email in serivices folder
+
+        //hosting Envrironment is used to create the user directory 
+        private IHostingEnvironment _hostingEnvironment;
         #endregion
 
         #region constructor
-        public AccountController(ClassWebContext context, IEmailService emailService)
+        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _context = context;
-            _emailService = emailService; 
+            _hostingEnvironment = hostingEnvironment;
+            _emailService = emailService;
         }
         #endregion
 
@@ -38,7 +45,7 @@ namespace ClassWeb.Controllers
         /// Used the code in these References to add feature to send confirmation email to user when registering
         /// Not complete yet. Some issue to fix when sending an email.
         /// </summary>
-        
+
         [AllowAnonymous]
         public ActionResult SendEmail()
         {
@@ -77,7 +84,15 @@ namespace ClassWeb.Controllers
         /// </summary>
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            var s = TempData["UserAddSuccess"];
+            var e = TempData["UserAddError"];
+
+
+            if (s != null)
+                ViewData["UserAddSuccess"] = s;
+            else if(e != null)
+                ViewData["UserAddError"] = e;
+
             return View();
         }
         [HttpPost]
@@ -94,6 +109,8 @@ namespace ClassWeb.Controllers
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", userName);
                 ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory
+
                 return View("Dashboard");
             }
             else
@@ -130,17 +147,35 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
+            SetUserFolder(NewUser); //Sets the default user directory 
             int UserAdd = DAL.AddUser(NewUser);
 
             if (UserAdd == -1)
             {
-                ViewBag.error = "Error Occured when creating a new user";
+                TempData["UserAddError"] = "Database error when adding the user";
             }
             else
             {
-                ViewBag.Success = "Successfully added user.";
+                TempData["UserAddSuccess"] = "User added successfully";
             }
             return RedirectToAction("Login", "Account");
+        }
+
+        /// <summary>
+        /// Created by: Elvis
+        /// Sets the default root folder for each user when registration
+        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
+        /// Used the references to understand and develop the feature in our website
+        /// </summary>
+        private void SetUserFolder(User user)
+        {
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
+            user.DirectoryPath = dir_Path + user.UserName;
+            string path = user.DirectoryPath;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
         }
         #endregion
 

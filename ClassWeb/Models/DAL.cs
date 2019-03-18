@@ -22,11 +22,11 @@ namespace ClassWeb.Model
 
         #region DB Connection String Information
         //Database information for the hosting website db
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=;";
-        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=;";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
         #endregion
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -168,7 +168,7 @@ namespace ClassWeb.Model
         public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
+            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName1");
             LoginModel retObj = null;
             try
             {
@@ -207,7 +207,7 @@ namespace ClassWeb.Model
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd1");
             try
             {
                 // generate new password first.
@@ -223,6 +223,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
                 //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                comm.Parameters.AddWithValue("@" + User.db_DirectoryPath, obj.DirectoryPath);
                 return AddObject(comm, "@" + User.db_ID);
             }
             catch (Exception ex)

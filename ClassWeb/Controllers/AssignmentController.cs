@@ -73,10 +73,10 @@ namespace ClassWeb.Controllers
         /// </summary>
 
         [HttpPost("Assignment")]
-        public async Task<IActionResult> Index(List<IFormFile> files)
+        public async Task<IActionResult> Index(List<IFormFile> files, User user)
         {
             long size = files.Sum(f => f.Length);
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + user.UserName;
 
             foreach (var formFile in files)
             {
