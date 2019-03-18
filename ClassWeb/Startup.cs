@@ -50,10 +50,9 @@ namespace ClassWeb
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddTransient<IEmailService, EmailService>();
             services.AddDbContext<ClassWebContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
-
+            services.AddTransient<IEmailService, EmailService>();
         }
 
 

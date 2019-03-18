@@ -4,26 +4,61 @@
     ViewData["Title"] = "Index";
 }
 
-<a style="color:blue" href="@ViewData["Files"]" target="_blank">Browse Assignment Directory</a><br /><br />
-<p style="color:Green">@ViewData["Success"]</p>
-<h4 class="text-info font-weight-bold">Upload Assignment</h4>
-<div class="input-group">
-    <form method="post" enctype="multipart/form-data" asp-controller="Assignment" asp-action="Index">
-        <div class="form-group">
-            <div class="col-md-10">
-                <p>Upload one or more files using this form:</p>
-                <input type="file" name="files" multiple />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <br /><input type="submit" value="Upload" />
-            </div>
-        </div>
-    </form>
-</div>
+@if (ViewData["Success"] != null)
+{ <a style="color:blue" href='javascript:history.go(-2)'>Return to the dashboard</a><br /><br />}
+else
+{<a style="color:blue" href='javascript:history.go(-1)'>Return to the dashboard</a><br /><br />}
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-<script src="~/js/file.js"></script>
+    <a style="color:blue" href="@ViewData["Directory"]" target="_blank">Browse Your Assignment Directory</a><br /><br />
+    <p style="color:Green">@ViewData["Success"]</p>
+    <h4 class="text-info font-weight-bold">Upload Assignment</h4>
+    <div class="input-group">
+        <form method="post" enctype="multipart/form-data" asp-controller="Assignment" asp-action="Index">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload one or more files using this form:</p>
+                    <input type="file" name="files" multiple />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <br /><input type="submit" value="Upload" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.DateSubmission)</th>
+                <th>@Html.DisplayNameFor(model => model.Grade)</th>
+                <th>@Html.DisplayNameFor(model => model.Feedback)</th>
+            </tr>
+        </thead>
+        @*<tbody>
+            @foreach (var item in Model)
+            {
+            <tr class="mt-5">
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateSubmission)</td>
+                <td>@Html.DisplayFor(modelItem => item.Grade)</td>
+                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
+                <td>@Html.ActionLink(item.Name, "Download", new { FileName = item.Name })</td>
+                <td>@item.Grade</td>
+                <td>@Html.DisplayFor(modelItem => item.DateSubmission)</td>
+                <td><a asp-action="Download" asp-route-id="@item.Name"><span class="btn-outline-success btn glyphicon glyphicon-save"></span></a></td>
+                <td><a asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span></a></td>
+                <td><a asp-action="View" asp-route-id="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open"></span></a></td>
+            </tr>
+            }
+        </tbody>*@
+    </table>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+    <script src="~/js/file.js"></script>

@@ -17,7 +17,9 @@ namespace ClassWeb
         public static void Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
-
+            //This code gets a database cotext instance, call the seed method
+            //And initialize the database
+            //Reference: code copied from https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-2.2
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

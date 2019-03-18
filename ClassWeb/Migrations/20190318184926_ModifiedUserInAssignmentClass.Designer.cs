@@ -4,14 +4,16 @@ using ClassWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClassWeb.Migrations
 {
     [DbContext(typeof(ClassWebContext))]
-    partial class ClassWebContextModelSnapshot : ModelSnapshot
+    [Migration("20190318184926_ModifiedUserInAssignmentClass")]
+    partial class ModifiedUserInAssignmentClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +117,7 @@ namespace ClassWeb.Migrations
             modelBuilder.Entity("ClassWeb.Models.Assignment", b =>
                 {
                     b.HasOne("ClassWeb.Models.User", "User")
-                        .WithMany("Assignments")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

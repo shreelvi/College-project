@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
 using System.Text;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
@@ -35,12 +36,13 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region Index
-        //Upload files form.
+        //Form to upload files
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
             ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles"; //Sends files directory to the Index
-            return View(await _context.Assignment.ToListAsync());
+            //return View(await _context.Assignment.ToListAsync());
+            return View();
         }
         #endregion
 
@@ -66,7 +68,7 @@ namespace ClassWeb.Controllers
 
         #region Upload Files
         /// <summary>
-        /// Upload file
+        /// Post method to Upload files
         /// Date Created: 03/16/2019
         /// Reference: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
         /// Code taken from the reference
@@ -78,28 +80,49 @@ namespace ClassWeb.Controllers
         [HttpPost("Assignment")]
         public async Task<IActionResult> Index(List<IFormFile> files)
         {
+            //LoginModel user = Tools.SessionHelper.Get(HttpContext, "CurrentUser");
+            //List<Assignment> Assignments = new List<Assignment>();
+
+            //Gets username from the session to create files in the user's default directory
             string username = HttpContext.Session.GetString("username");
+            int userID = (int)HttpContext.Session.GetInt32("UserID");
+
             long size = files.Sum(f => f.Length);
             string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
 
             foreach (var formFile in files)
             {
+                //Ensure file names
+                string fileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+                fileName = this.EnsureFilename(fileName);
+
                 if (formFile.Length > 0)
                 {
                     string path = dir_Path + formFile.FileName.ToString();
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    using (var stream = new FileStream(path, FileMode.Create)) //Uploads the file in the path
                     {
                         await formFile.CopyToAsync(stream);
+                    }
+                    //Create the assignment and add it in the database 
+                    Assignment assignment = new Assignment();
+                    assignment.Name = fileName;
+                    assignment.Feedback = "Not Graded";
+                    assignment.UserID = userID; 
+
+                    int AssignmentAdd = DAL.AddAssignment(assignment);
+                    if (AssignmentAdd == -1)
+                    {
+                        TempData["AssignmentAddError"] = "Database error when adding assignment";
+                    }
+                    else
+                    {
+                        ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
+                        ViewData["Success"] = "File Succesfully Uploaded and database updated!";
                     }
                 }
             }
 
-            ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
-            ViewData["Success"]= "File Succesfully Uploaded!";
-
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-
+      
             return View();
         }
 

@@ -4,14 +4,16 @@ using ClassWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClassWeb.Migrations
 {
     [DbContext(typeof(ClassWebContext))]
-    partial class ClassWebContextModelSnapshot : ModelSnapshot
+    [Migration("20190318184413_NewDatabase")]
+    partial class NewDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,11 +41,11 @@ namespace ClassWeb.Migrations
 
                     b.Property<DateTime>("SubmisionDate");
 
-                    b.Property<int>("UserID");
+                    b.Property<int?>("UserIDID");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserIDID");
 
                     b.ToTable("Assignment");
                 });
@@ -114,10 +116,9 @@ namespace ClassWeb.Migrations
 
             modelBuilder.Entity("ClassWeb.Models.Assignment", b =>
                 {
-                    b.HasOne("ClassWeb.Models.User", "User")
-                        .WithMany("Assignments")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("ClassWeb.Models.User", "UserID")
+                        .WithMany()
+                        .HasForeignKey("UserIDID");
                 });
 
             modelBuilder.Entity("ClassWeb.Models.User", b =>

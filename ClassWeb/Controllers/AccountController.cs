@@ -107,7 +107,8 @@ namespace ClassWeb.Controllers
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetString("username", loggedIn.UserName);
+                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory
 

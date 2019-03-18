@@ -55,6 +55,7 @@ namespace ClassWeb.Models
         private bool _AccountLocked;
         private Role _Role;
         private string _DirectoryPath;
+        private List<Assignment> _Assignments;
         #endregion
 
         #region Database String
@@ -77,6 +78,8 @@ namespace ClassWeb.Models
         internal const string db_Role = "RoleID";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
+
 
         #endregion
 
@@ -195,6 +198,12 @@ namespace ClassWeb.Models
         {
             get { return _DirectoryPath; }
             set { _DirectoryPath = value; }
+        }
+
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
         }
         #endregion
 

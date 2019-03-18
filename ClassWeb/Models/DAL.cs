@@ -284,6 +284,29 @@ namespace ClassWeb.Model
 
         #endregion
 
+        /// <summary>
+        /// Attempts to add user in the database
+        /// Reference: PeerVal Project
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddAssignment(Assignment obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserID, obj.UserID);
+                return AddObject(comm, "@" + Assignment.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
     }
 
 }
