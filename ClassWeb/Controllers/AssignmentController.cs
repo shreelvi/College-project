@@ -67,16 +67,20 @@ namespace ClassWeb.Controllers
         #region Upload Files
         /// <summary>
         /// Upload file
-        /// https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
+        /// Date Created: 03/16/2019
+        /// Reference: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
         /// Code taken from the reference
+        /// Date Modified: 03/17/2019
+        /// Added file upload to user's specific directory by getting username from the session
         /// Uploads multiple files to the given path
         /// </summary>
 
         [HttpPost("Assignment")]
-        public async Task<IActionResult> Index(List<IFormFile> files, User user)
+        public async Task<IActionResult> Index(List<IFormFile> files)
         {
+            string username = HttpContext.Session.GetString("username");
             long size = files.Sum(f => f.Length);
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + user.UserName;
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
 
             foreach (var formFile in files)
             {
