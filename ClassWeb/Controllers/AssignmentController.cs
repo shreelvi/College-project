@@ -80,11 +80,13 @@ namespace ClassWeb.Controllers
         /// <summary>
         /// Post method to Upload files
         /// Date Created: 03/16/2019
+        /// Created by: Elvis
         /// Reference: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
         /// Code taken from the reference
         /// Date Modified: 03/17/2019
-        /// Added file upload to user's specific directory by getting username from the session
-        /// Uploads multiple files to the given path
+        /// Uploads one or more files to user's specific directory 
+        /// By getting username from the session
+        /// Modiefied: Update MySql Database table assignment on user upload
         /// </summary>
 
         [HttpPost("Assignment")]
@@ -253,7 +255,7 @@ namespace ClassWeb.Controllers
         }
         #endregion
 
-        #region View Files in IFRAME
+        #region View File
         public async Task<IActionResult> View(string FileName)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";

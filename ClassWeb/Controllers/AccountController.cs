@@ -20,7 +20,6 @@ namespace ClassWeb.Controllers
     public class AccountController : Controller
     {
         #region Private Variables
-        private readonly ClassWebContext _context;    //Access the data from the local mssql database
         private readonly IEmailService _emailService; //Use classes to send email in serivices folder
 
         //hosting Envrironment is used to create the user directory 
@@ -30,7 +29,6 @@ namespace ClassWeb.Controllers
         #region constructor
         public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
-            _context = context;
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
         }
@@ -95,6 +93,17 @@ namespace ClassWeb.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// Created on: 03/07/2019
+        /// Created By: Elvis
+        /// Attempts to login the user with the provided username and password
+        /// Modified On: 03/18/2019
+        /// --Return User directory link to the dashboard page
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="passWord"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
@@ -109,7 +118,7 @@ namespace ClassWeb.Controllers
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", loggedIn.UserName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
+                //ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory
 
                 return View("Dashboard");
@@ -121,6 +130,11 @@ namespace ClassWeb.Controllers
                 return View();
             }
         }
+        /// <summary>
+        /// Created on: 03/09/2019
+        /// Created by: Elvis
+        /// Logs out the user and clears their session information
+        /// </summary>
         public IActionResult Logout()
         {
             //await _signManager.SignOutAsync();
@@ -129,13 +143,16 @@ namespace ClassWeb.Controllers
         }
         #endregion
 
-            #region Registration
-            /// <summary>
-            /// Code by: Elvis
-            /// Method to Add/Register user to the database.
-            /// </summary>
+        #region Registration
+        /// <summary>        
+        /// Created on: 03/09/2019
+        /// Code by: Elvis
+        /// Method to Add/Register user to the database.
+        /// Modified on: 03/18/2019
+        /// Added feature to check the username is unique
+        /// </summary>
 
-            // GET: /Account/AddUser
+        // GET: /Account/AddUser
         [AllowAnonymous]
         public ActionResult AddUser(string returnUrl)
         {
@@ -173,6 +190,7 @@ namespace ClassWeb.Controllers
         }
 
         /// <summary>
+        /// Created on: 03/17/2019
         /// Created by: Elvis
         /// Sets the default root folder for each user when registration
         /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
