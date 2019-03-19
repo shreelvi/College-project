@@ -1,0 +1,68 @@
+﻿@model List<Assignment>
+<h4 class="text-info font-weight-bold">Upload Assignment</h4>
+<div class="input-group">
+    <form asp-controller="Upload" asp-action="index" method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Select File:</span>
+                <input type="file" id="file" name="file" class="input-group-text">
+                <input type="submit" class="btn btn-outline-success" value="Upload" />
+            </div>
+        </div>
+        <p class="info alert-warning">  @ViewBag.Message</p>
+    </form>
+</div>
+<br />
+<br />
+<h2 class="text-success text-center">Document List</h2>
+<table class="table table-striped bg-light">
+    <thead>
+        <tr>
+            <th scope="col">File Name</th>
+            <th scope="col">File Size</th>
+            <th scope="col">Download</th>
+            <th scope="col">Delete</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @for (var i = 0; i <= Model.Count - 1; i++)
+        {
+            <tr class="mt-5">
+                <td>@Model[i].Name</td>
+                <td><span class="btn-outline-success glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
+
+                <td>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn-outline-danger btn" data-toggle="modal" data-target="#exampleModalCenter">
+                        Delete <span class="glyphicon glyphicon-trash" />
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <span class="text-danger">
+                                        Are you sure You want to Delete?
+                                    </span>
+                                    </div>
+                                <div class="modal-footer">
+                                    <button type="button" class=" btn-secondary" data-dismiss="modal">Close</button>
+                                    <span class="btn-outline-danger glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="btn-outline-primary glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
+            </tr>
+        }
+    </tbody>
+</table>

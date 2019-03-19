@@ -1,20 +1,21 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Models; 
+using System.ComponentModel.DataAnnotations;
+using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-    public abstract class AssignmentResources:DatabaseObject
+    /// <summary>
+    /// Code by Elvis
+    /// Resources are files that are uploaded in the system
+    /// </summary>
+    public class Resource: DatabaseNamedObject
     {
-        ///summary
-        ///created by Sakshi Khetan
-        ///This is for an inheritance between resource and assignment class
-        
-        
-        #region Private Variable
-        private string _Name;
+
+        #region Private Variables
         private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
@@ -23,20 +24,14 @@ namespace ClassWeb.Models
         private Assignment _AssignmentID;
         #endregion
 
-        #region Public class
-        public string Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
-
+        #region Public Variables
         public DateTime DateModified
         {
             get { return _DateModified; }
             set { _DateModified = value; }
         }
 
-
+ 
         public DateTime DateUploaded
         {
             get { return _DateUploaded; }
@@ -68,7 +63,4 @@ namespace ClassWeb.Models
         }
         #endregion
     }
-
-
 }
-

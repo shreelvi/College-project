@@ -1,62 +1,94 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:AssignmentResources
-        ///summary 
-        ///Created by: Sakshi Khetan
-        ///Every assignment is a type of resource
-        ///Every user can upload one to many assignments
-        ///this class inherits everything from AssignmentResource class
-
+    public class Assignment:DatabaseNamedObject
     {
-        private string _Title;
-        private string _Description;
-        private DateTime _StartDate;
-        private DateTime _DueDate;
-        private DateTime _SubmissionDate;
+        #region Database String
+        internal const string db_ID = "AssignmentID";
+        internal const string db_FileName = "FileName";
+        internal const string db_DateStarted = "DateStarted";
+        internal const string db_DateDue = "DateDue";
+        internal const string db_DateSubmited = "DateSubmited";
+        internal const string db_Grade = "Grade";
+        internal const string db_Feedback = "Feedback";
+        internal const string db_FileSize = "FileSize";
+        internal const string db_IsEditable = "IsEditable";
+        #endregion
+
+        #region Private Variable
+        private DateTime _DateStarted;
+        private DateTime _DateDue;
+        private  DateTime _DateSubmited;
         private int _Grade;
-        private string _Feedback; 
+        private string _Feedback;
+        private double _FileSize;
+        private bool _IsEditable;
+        #endregion
 
-        public string Title
+        #region Public Properties
+        public bool IsEditable
         {
-            get { return _Title; }
-            set { _Title = value; }
+            get
+            {
+                return _IsEditable;
+            }
+            set
+            {
+                _IsEditable = value;
+            }
         }
-
-        public string Description
+        public double FileSize
         {
-            get { return _Description; }
-            set { _Description = value; }
+            get
+            {
+                return _FileSize;
+            }
+            set
+            {
+                _FileSize = value;
+            }
         }
-
         public DateTime StartDate
         {
-            get { return _StartDate; }
-            set { _StartDate = value; }
+            get { return _DateStarted; }
+            set { _DateStarted = value; }
         }
 
+        [Display(Name = "Date Due")]
         public DateTime DueDate
         {
-            get { return _DueDate; }
-            set { _DueDate = value; }
+            get { return _DateDue; }
+            set { _DateDue = value; }
         }
-
+        [Display(Name = "Date Submitted")]
         public DateTime SubmisionDate
         {
-            get { return _SubmissionDate; }
-            set { _SubmissionDate = value; }
+            get { return _DateSubmited; }
+            set { _DateSubmited = value;}
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set { _Grade = value; }
+            set {
+                if (value > 100)
+                {
+                    _Grade = 100;
+                }
+                if (value < 0)
+                {
+                    _Grade = 0;
+                }
+                _Grade = value;
+            }
         }
 
         public string Feedback
@@ -64,5 +96,6 @@ namespace ClassWeb.Models
             get { return _Feedback; }
             set { _Feedback = value; }
         }
+        #endregion
     }
 }
