@@ -23,7 +23,7 @@ namespace ClassWeb.Models
         #endregion
 
          #region public class
-        [Key]
+        
         public bool Available
         {
             get

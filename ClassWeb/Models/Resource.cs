@@ -16,7 +16,6 @@ namespace ClassWeb.Models
     {
 
         #region Private Variables
-        private DateTime _DateModified;
         private DateTime _DateUploaded;
         private int _ResourceSize;
         private int _MaxSize;
@@ -25,11 +24,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Variables
-        public DateTime DateModified
-        {
-            get { return _DateModified; }
-            set { _DateModified = value; }
-        }
+       
 
  
         public DateTime DateUploaded
