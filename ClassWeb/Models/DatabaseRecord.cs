@@ -34,21 +34,4 @@ namespace ClassWeb.Models
 
         public abstract override string ToString();
     }
-
-    public abstract class DatabaseNamedRecord : DatabaseRecord
-    {
-        protected string _Name;
-        /// <summary>
-        /// The User given Name for the Object.
-        /// </summary>
-        //[Display(Name = "Name")]
-        [DataType(DataType.Text)]
-        //[Required]
-        [Display(Name = "Name")]
-        public String Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
-    }
 }

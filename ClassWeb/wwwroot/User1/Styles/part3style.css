@@ -1,0 +1,23 @@
+﻿/*  Kishor Simkhada
+    Jan 30 2018
+    Info-2202
+    Jon Holmes
+*/
+a:hover{
+    color:#888888;
+}
+td:hover{
+    background-color:#000000;
+    color:#FFFFFF;
+    cursor:cell;
+}
+.sucess::before, .warning::before ,.error::before{
+    content: "Messages: ";
+}
+span.special {
+    font-weight: normal;
+    text-transform: capitalize;
+    text-decoration: overline;
+    /*https://www.w3schools.com/cssref/pr_gen_quotes.asp*/
+    quotes: "\0022";
+}

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,10 +10,16 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:DatabaseNamedObject
+    /// <summary>
+    /// Assignment class is used to add, update, and save objects
+    /// It also contains ID 
+    /// Reference: GitHub Prof. Holmes PeerVal Project
+    /// </summary>
+    public class Assignment:DatabaseRecord
     {
         #region Database String
-        internal const string db_ID = "AssignmentID";
+        internal const string db_ID = "ID";
+        internal const string db_Location = "FileLocation";
         internal const string db_FileName = "FileName";
         internal const string db_DateStarted = "DateStarted";
         internal const string db_DateDue = "DateDue";
@@ -21,19 +28,84 @@ namespace ClassWeb.Models
         internal const string db_Feedback = "Feedback";
         internal const string db_FileSize = "FileSize";
         internal const string db_IsEditable = "IsEditable";
+        internal const string db_DateModified = "DateModified";
         #endregion
+        internal Assignment(MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
+        public Assignment()
+        {
+        }
+        public override void Fill(MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _FileName = dr.GetString(db_FileName);
+            _FileLocation = dr.GetString(db_Location);
+            _DateStarted = dr.GetDateTime(db_DateStarted);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateSubmited = dr.GetDateTime(db_DateSubmited);
+            _Feedback = dr.GetString(db_Feedback);
+            _FileSize = dr.GetInt64(db_FileSize);
+            _Grade = dr.GetInt32(db_Grade);
+            _IsEditable = dr.GetBoolean(db_IsEditable);
+        }
 
+        public override int dbSave()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbAdd()
+        {
+            throw new NotImplementedException();
+        }
         #region Private Variable
-        private DateTime _DateStarted;
-        private DateTime _DateDue;
-        private  DateTime _DateSubmited;
-        private int _Grade;
-        private string _Feedback;
-        private double _FileSize;
-        private bool _IsEditable;
+        protected DateTime _DateStarted;
+        protected DateTime _DateDue;
+        protected  DateTime _DateSubmited;
+        protected int _Grade;
+        protected string _Feedback;
+        protected double _FileSize;
+        protected bool _IsEditable;
+        protected DateTime _DateModified;
+        protected string _FileName;
+        protected string _FileLocation;
         #endregion
 
         #region Public Properties
+        public string FileLocation
+        {
+            get
+            {
+                return _FileLocation;
+            }
+            set
+            {
+                _FileLocation = value;
+            }
+        }
+        public string FileName
+        {
+            get
+            {
+                return _FileName;
+            }
+            set
+            {
+                _FileName = value;
+            }
+        }
         public bool IsEditable
         {
             get
@@ -56,20 +128,25 @@ namespace ClassWeb.Models
                 _FileSize = value;
             }
         }
-        public DateTime StartDate
+        public DateTime DateStarted
         {
             get { return _DateStarted; }
             set { _DateStarted = value; }
         }
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
+        }
 
         [Display(Name = "Date Due")]
-        public DateTime DueDate
+        public DateTime DateDue
         {
             get { return _DateDue; }
             set { _DateDue = value; }
         }
-        [Display(Name = "Date Submitted")]
-        public DateTime SubmisionDate
+        [Display(Name = "Date Submited")]
+        public DateTime DateSubmited
         {
             get { return _DateSubmited; }
             set { _DateSubmited = value;}

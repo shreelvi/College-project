@@ -30,8 +30,8 @@
         @for (var i = 0; i <= Model.Count - 1; i++)
         {
             <tr class="mt-5">
-                <td>@Model[i].Name</td>
-                <td><span class="btn-outline-success glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
+                <td>@Model[i].FileName</td>
+                <td><span class="btn-outline-success glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].FileName })</span></td>
 
                 <td>
                     <!-- Button trigger modal -->
@@ -55,13 +55,13 @@
                                     </div>
                                 <div class="modal-footer">
                                     <button type="button" class=" btn-secondary" data-dismiss="modal">Close</button>
-                                    <span class="btn-outline-danger glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span>
+                                    <span class="btn-outline-danger glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].FileName })</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </td>
-                <td><span class="btn-outline-primary glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
+                <td><span class="btn-outline-primary glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].FileName })</span>  </td>
             </tr>
         }
     </tbody>
