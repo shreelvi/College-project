@@ -30,7 +30,7 @@ namespace ClassWeb.Models
         internal const string db_IsEditable = "IsEditable";
         internal const string db_DateModified = "DateModified";
         #endregion
-        internal Assignment(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal Assignment(MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -41,6 +41,7 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FileName = dr.GetString(db_FileName);
+            _FileLocation = dr.GetString(db_Location);
             _DateStarted = dr.GetDateTime(db_DateStarted);
             _DateModified = dr.GetDateTime(db_DateModified);
             _DateSubmited = dr.GetDateTime(db_DateSubmited);
@@ -79,9 +80,21 @@ namespace ClassWeb.Models
         protected bool _IsEditable;
         protected DateTime _DateModified;
         protected string _FileName;
+        protected string _FileLocation;
         #endregion
 
         #region Public Properties
+        public string FileLocation
+        {
+            get
+            {
+                return _FileLocation;
+            }
+            set
+            {
+                _FileLocation = value;
+            }
+        }
         public string FileName
         {
             get

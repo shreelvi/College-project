@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,8 +22,7 @@ namespace ClassWeb
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<ClassWebContext>();
-                    DbInitializer.Initialize(context);
+                   
                 }
                 catch (Exception ex)
                 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace ClassWeb
 {
@@ -43,10 +44,6 @@ namespace ClassWeb
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddDbContext<ClassWebContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
-
         }
 
 
@@ -67,13 +64,16 @@ namespace ClassWeb
             app.UseCookiePolicy();
             app.UseStaticFiles();
             app.UseSession(); // requred to have sessions in our application.
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Assignment}/{action=index}/{id?}");
-            });
+                routes.MapRoute(
+                    name: "File",
+                    template: "{UserName}/{Directory}/{FileName}",
+                    defaults: "{controller=Assignment}/{action=index}/{id?}");
+                    });
         }
     }
 }

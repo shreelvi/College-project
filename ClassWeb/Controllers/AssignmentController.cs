@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,40 +22,56 @@ namespace ClassWeb.Controllers
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
         List<Assignment> Assignments = new List<Assignment>();
-
+        string UserName = "\\User1\\";
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
+            CurrentDir();
         }
-
+       
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            List<Assignment> assignments = GetFiles().OrderByDescending(o => o.DateSubmited).ToList();
+            Tuple<List<Assignment>, List<string>> assignments = GetFiles();
             return View(assignments);
         }
-        public async Task<IActionResult> View(string FileName)
+        //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
+        public RedirectResult Test(string FileName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            string path = dir_Path + FileName;
-            WebClient User = new WebClient();
-            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
-            string fileBase64Data = Convert.ToBase64String(FileBuffer);
-            string t = GetContentType(path);
-            bool IsReadable = false;
-            if (t == "application/vnd.ms-word")
+            string s = Directory.GetCurrentDirectory();
+            string searchstr = UserName;
+            int Index = s.LastIndexOf(searchstr)+UserName.Length;
+            string dir = s.Substring(Index,s.Length-Index);
+            var url = Url.RouteUrl("File",new { UserName = UserName,Directory=dir,FileName=FileName });
+            return new RedirectResult(url);
+        }
+        public string CurrentDir()
+        {
+            if (!Directory.GetCurrentDirectory().Contains(_hostingEnvironment.WebRootPath))
             {
-                //Download the file
-                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+                Directory.SetCurrentDirectory(_hostingEnvironment.WebRootPath + UserName);
             }
-            else
-            {
-                string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
-                ViewBag.Data = DataURL;
-            }
-            ViewBag.Readable = IsReadable;
-            return View();
+            return Directory.GetCurrentDirectory();
+        }
+        public IActionResult SetDefaultDir()
+        {
+            Directory.SetCurrentDirectory(_hostingEnvironment.WebRootPath + UserName);
+            return RedirectToAction(nameof(Index));
+        }
 
+        public IActionResult ChangeDirUp(string dir)
+        {
+            string path = Directory.GetCurrentDirectory()+"\\" +dir;
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult ChangeDirDown()
+        {
+            string path = Directory.GetCurrentDirectory();
+            int test=path.LastIndexOf("\\");
+            string s=path.Substring(0, test);
+            Directory.SetCurrentDirectory(s);
+            return RedirectToAction(nameof(Index));
         }
         //<summary>
         //Post method to save the file
@@ -66,15 +81,17 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> Index(IFormFile file)
         {
             //Save files in the directory
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            if (file.Length > 0)
+            try
             {
+                string dir_Path = CurrentDir();
                 string path = dir_Path + file.FileName.ToString();
+                //FileExist(path);
                 //Need to check if the file is update or insert
                 Assignment assign = new Assignment();
                 assign.IsEditable = false;
                 assign.FileSize = file.Length;
-                assign.FileName = path;
+                assign.FileLocation = path;
+                assign.FileName = file.FileName.ToString();
                 assign.Grade = 0;
                 string t = GetContentType(path);
                 //checking if the file is editable and setting up the variable accordingly
@@ -92,19 +109,40 @@ namespace ClassWeb.Controllers
                 {
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                    await file.CopyToAsync(stream);
-                    ViewBag.Message = "File Succesfully Uploaded!!!";
+                        await file.CopyToAsync(stream);
+                        ViewBag.Message = "File Succesfully Uploaded!!!";
                     }
                 }
                 else
                 {
-                    ViewBag.Message = "File Upload Failed!!!";
+                    ViewBag.Error = "File Upload Failed!!!";
                 }
-               
+
                 var items = GetFiles();
                 return View(items);
             }
-            return RedirectToAction(nameof(Index));
+            catch(Exception ex)
+            {
+                if (ex.GetType().ToString() == "System.NullReferenceException")
+                {
+                    ViewBag.Error = "Please Select The File To Upload";
+                }
+            }            
+            return RedirectToAction(nameof(Index),ViewBag.Error);
+        }
+
+        private bool FileExist(string path)
+        {
+           List<Assignment> assign= DAL.GetAllAssignment();
+ 
+            foreach(Assignment a in assign)
+            {
+                if (a.FileLocation != path)
+                {
+                    return false;
+                }
+            }
+             return true;
         }
 
         //<summary>
@@ -126,7 +164,7 @@ namespace ClassWeb.Controllers
         //</summary>
         private string GetPath(string fileName)
         {
-            string path = _hostingEnvironment.WebRootPath + "\\upload\\";
+            string path = _hostingEnvironment.WebRootPath + UserName;
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
@@ -134,7 +172,7 @@ namespace ClassWeb.Controllers
 
         public async Task<FileResult> Download(string FileName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string dir_Path = Directory.GetCurrentDirectory();
             var FileVirtualPath = dir_Path + FileName;
             var memory = new MemoryStream();
             using (var stream = new FileStream(FileVirtualPath, FileMode.Open))
@@ -171,7 +209,7 @@ namespace ClassWeb.Controllers
 
         public IActionResult DeleteFromRoot(string FileName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string dir_Path =Directory.GetCurrentDirectory();
             string path = dir_Path + FileName;
             if (System.IO.File.Exists(path))
             {
@@ -184,7 +222,7 @@ namespace ClassWeb.Controllers
         #region Edit Assignment
         public async Task<IActionResult> Edit(string FileName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
+            string dir_Path = Directory.GetCurrentDirectory();
             string path = dir_Path + FileName;
             WebClient User = new WebClient();
             Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
@@ -258,45 +296,64 @@ namespace ClassWeb.Controllers
             };
         }
 
-        private List<Assignment> GetFiles()
+        private Tuple<List<Assignment>,List<string>> GetFiles()
         {
-            string filepath = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            if (!Directory.Exists(filepath))
-            {
-                Directory.CreateDirectory(filepath);
-            }
+            string filepath = Directory.GetCurrentDirectory();
             var dir = new DirectoryInfo(filepath);
-            FileInfo[] fileNames = dir.GetFiles("*.*");
+            var dire = Directory.GetDirectories(filepath);
+            List<string> root = GetDirectory(dire,filepath);
+
+            FileInfo[] fileNames = dir.GetFiles();
             List<Assignment> items = new List<Assignment>();
             foreach (var file in fileNames)
             {
                 Assignment assign = new Assignment();
                 assign.FileName = file.Name;
                 double filesize = (double)(file.Length / 1024);
-                // assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
+                assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
                 items.Add(assign);
             }
-            return items;
+            return Tuple.Create(items,root); ;
         }
+
+        private List<string> GetDirectory(string[] full,string root)
+        {
+            List<string> result = new List<string>();
+            foreach(string s in full)
+            {
+                int len = s.Length + 2 - root.Length;
+                string temp=s.Substring(root.Length+1);
+                result.Add(temp);
+            }
+            return result;
+        }
+        /*
+public  async Task<IActionResult> View(string FileName)
+{
+   string dir_Path = _hostingEnvironment.WebRootPath + UserName;
+   string path = dir_Path + FileName;
+   WebClient User = new WebClient();
+   Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
+   string fileBase64Data = Convert.ToBase64String(FileBuffer);
+   string t = GetContentType(path);
+   bool IsReadable = false;
+   if (t == "application/vnd.ms-word")
+   {
+       //Download the file
+       return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+   }
+   else
+   {
+       Redirect(path);
+       string DataURL = path;
+       ViewBag.Data = DataURL;
+   }
+   ViewBag.Readable = IsReadable;
+   return View();
+
+}
+*/
     }
-    #endregion
-
-    #region Codeplay
-    //public IActionResult View(string FileName)
-    //{
-    //    string dir_Path = _appEnvironment.WebRootPath + "\\Upload\\";
-    //    string path = dir_Path + FileName;
-
-    //    WebClient User = new WebClient();
-    //    Byte[] FileBuffer = User.DownloadData(path);
-    //    //if(FileBuffer.GetType==MiEM)
-    //    string imageBase64Data = Convert.ToBase64String(FileBuffer);
-
-    //    string imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
-    //    ViewBag.ImageData = imageDataURL;
-    //    ViewBag.SrcUrl = path;
-    //    return View();
-    //}
     #endregion
 
 }

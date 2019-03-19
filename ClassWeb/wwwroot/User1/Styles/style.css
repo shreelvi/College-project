@@ -1,0 +1,70 @@
+﻿/*  Kishor Simkhada
+    Jan 30 2018
+    Info-2202
+    Jon Holmes
+*/
+body {
+    font-family:"Trebuchet MS","Lucida Sans Unicode",'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode',"Lucida Sans",Arial,sans-serif;
+    padding:10px;
+}
+p{
+    padding:2ex;
+}
+span{
+    font-weight:bold;
+}
+/*This style applies only to the span in the table*/
+table span {
+    text-decoration: underline;
+}
+a{
+    color:#fF8800;
+}
+h1{
+    font-size:2em;
+    color:#FF8800;
+}
+h2{
+    font-size:1.8em;
+    color:#888888;
+}
+h3{
+    font-size:1.6em;
+}
+th{
+    background-color:#FF8800;
+    color:#FFFFFF;
+}
+tr{
+    font-size:0.9em;
+    background-color:#EEEEEE;
+
+}
+tr.other{
+    background-color:#DDD;
+}
+/* Appliying style for all the three class*/
+.sucess,.warning, .error{
+    border:1px solid #AAA;
+    font-weight:bold;
+    padding:0.3em;
+    margin:0.3em;
+}
+.sucess{
+    color:#008800;
+    background-color:#F0FFF0;
+    border-color:#008800;
+}
+.warning{
+    color:#888800;
+    background-color:#FFFFF0;
+    border-color:#888800;
+}
+.error {
+    color: #880000;
+    background-color: #FFF0F0;
+    border-color: #880000;
+}
+span{
+    color: #008800;
+}

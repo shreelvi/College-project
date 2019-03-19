@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using System.Data.SqlClient;
 using System.Data;
@@ -18,9 +17,7 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
-        /// </summary>
-
-             
+        /// </summary
         private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
@@ -145,7 +142,7 @@ namespace ClassWeb.Model
         public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByUserName");
             LoginModel retObj = null;
             try
             {
@@ -182,6 +179,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
                 comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
                 comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
@@ -236,8 +234,9 @@ namespace ClassWeb.Model
         internal static List<Assignment>GetAllAssignment()
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
            List<Assignment> retObj = null;
+            /*
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
             try
             {
                 MySqlDataReader dr = GetDataReader(comm);
@@ -254,6 +253,7 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+            */
             return retObj;
         }
 

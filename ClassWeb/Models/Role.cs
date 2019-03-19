@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
+}
  /// <summary>
  /// Created By: Kishor Simkhada
  /// Role is a designated position for each user.
@@ -13,7 +14,8 @@ namespace ClassWeb.Models
  /// Each role user can have one to multiple permissions. 
  /// </summary>
 
-    public class Role:DatabaseNamedRecord
+        /*
+    public class Role:DatabaseRecord
     {
         #region Constructors
         public Role()
@@ -57,4 +59,4 @@ namespace ClassWeb.Models
         #endregion
     }
 }
-
+*/

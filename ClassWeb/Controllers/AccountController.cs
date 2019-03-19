@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +16,6 @@ namespace ClassWeb.Controllers
     public class AccountController : Controller
     {
         //Access the data from the database
-        private readonly ClassWebContext _context;
-
-        public AccountController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -30,32 +23,6 @@ namespace ClassWeb.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
-        #region TestLogin
-        //
-        //POST: /Account/Login
-        //Testing login with test data
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Login(LoginModel login)
-        //{
-        //    //Hash and Salt the password
-
-
-        //    if (login.Username != null && login.Password != null && login.Username.Equals("acc1") && login.Password.Equals("123"))
-        //    {
-        //        HttpContext.Session.SetString("username", login.Username);
-        //        return View("Dashboard");
-        //    }
-        //    else
-        //    {
-        //        ViewBag.Error = "Invalid Username and/or Password";
-        //        return View();
-        //    }
-        //}
-        #endregion
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -99,9 +66,9 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                ViewBag.Success = "Successfully added user.";
+                ViewBag.Success = "Account Has Been Successfully Created!! Please Login Using your Account Info";
             }
-            return View();
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Logout()
