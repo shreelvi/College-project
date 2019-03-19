@@ -152,7 +152,8 @@ namespace ClassWeb.Controllers
             int check = DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
-                TempData["UserAddError"] = " Username not Unique! Please enter a new username.";
+                ViewBag.Error = " Username not Unique! Please enter a new username.";
+                return View(); //Redirects to add user page
                
             }
             else
@@ -168,7 +169,7 @@ namespace ClassWeb.Controllers
                     TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
 
         /// <summary>

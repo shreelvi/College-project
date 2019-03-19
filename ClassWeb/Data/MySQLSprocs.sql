@@ -25,15 +25,12 @@ END$$
 
 DELIMITER $$
 CREATE PROCEDURE `sproc_CheckUserName`
-(IN `UserName` VARCHAR(128))
+(IN `Username1` VARCHAR(128))
 BEGIN
     SET @User_exists = 0;
-    SELECT COUNT(1) INTO @found
+    SELECT 1 INTO @User_exists
     FROM `login_users`
-    WHERE `UserName` = UserName;
-    IF @found > 0 THEN
-        SET @User_exists = 1;
-    END IF;
+    WHERE login_Users.`UserName` = `Username1`;
     SELECT @User_exists;
 END $$
 DELIMITER ;
