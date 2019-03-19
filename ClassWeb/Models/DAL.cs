@@ -74,6 +74,23 @@ namespace ClassWeb.Model
                 return null;
             }
         }
+
+        public static int GetIntReader(MySqlCommand comm)
+        {
+            try
+            {
+                ConnectToDatabase(comm);
+                comm.Connection.Open();
+                int count = Convert.ToInt32(comm.ExecuteScalar());
+                return count;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                return 0;
+            }
+        }
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>
@@ -135,6 +152,7 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
+
         #endregion
 
         #region User
@@ -282,6 +300,54 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        /// Check if username exists in the database
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int CheckUserExists(string username)
+        {
+            if (username == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                int dr = GetIntReader(comm);
+
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// Gets List of usernames from the database to check for same names
+        /// </summary>
+        /// <returns>List of Usernames string</returns>
+        internal static List<User> GetAllUsers()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllUsers");
+            List<User> retList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    User user = new User(dr);
+                    //a.User = new User(dr);
+                    retList.Add(user);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         #endregion
 
         /// <summary>

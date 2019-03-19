@@ -149,15 +149,24 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             SetUserFolder(NewUser); //Sets the default user directory 
-            int UserAdd = DAL.AddUser(NewUser);
-
-            if (UserAdd == -1)
+            int check = DAL.CheckUserExists(NewUser.UserName);
+            if (check > 0)
             {
-                TempData["UserAddError"] = "Database error when adding the user";
+                TempData["UserAddError"] = " Username not Unique! Please enter a new username.";
+               
             }
             else
             {
-                TempData["UserAddSuccess"] = "User added successfully";
+                try
+                {
+                    //int UserAdd = DAL.AddUser(NewUser);
+                    DAL.AddUser(NewUser);
+                    TempData["UserAddSuccess"] = "User added successfully";
+                }
+                catch
+                {
+                    TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+                }
             }
             return RedirectToAction("Login", "Account");
         }
