@@ -8,6 +8,20 @@ namespace ClassWeb.Models
 {
     public class Assignment:DatabaseNamedRecord
     {
+        #region Constructors
+        /// <summary>
+        /// Code By Elvis
+        /// Constructor to map results of sql query to the class
+        /// Reference: GitHub PeerVal Project
+        /// </summary>
+        public Assignment()
+        {
+        }
+        internal Assignment(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
+        #endregion
         #region Private Variables
         private string _Description;
         private DateTime _DateDue;
@@ -126,13 +140,13 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _Name = dr.GetString(db_Name);
-            _Description = dr.GetString(db_Description);
-            _DateDue = dr.GetDateTime(db_DateDue);
+            //_Description = dr.GetString(db_Description);
+            //_DateDue = dr.GetDateTime(db_DateDue);
             _DateSubmission = dr.GetDateTime(db_DateSubmission);
-            _Grade = dr.GetChar(db_Grade);
+            //_Grade = dr.GetChar(db_Grade);
             _Feedback = dr.GetString(db_Feedback);
             _DateModified = dr.GetDateTime(db_DateModified);
-            _Size = dr.GetInt32(db_Size);
+            //_Size = dr.GetInt32(db_Size);
             _UserID = dr.GetInt32(db_UserID);        }
         #endregion
 

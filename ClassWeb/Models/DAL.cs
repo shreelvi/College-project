@@ -307,6 +307,35 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+
+        /// <summary>
+        /// Gets a list of all ClassWeb.Assignment objects for the user from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Assignment> GetUserAssignments(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentsByUserID");
+            List<Assignment> retList = new List<Assignment>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue(User.db_ID, userID );
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    Assignment a = new Assignment(dr);
+                    //a.User = new User(dr);
+                    retList.Add(a);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
     }
 
 }

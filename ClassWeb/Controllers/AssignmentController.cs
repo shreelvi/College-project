@@ -40,9 +40,19 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles"; //Sends files directory to the Index
-            //return View(await _context.Assignment.ToListAsync());
-            return View();
+            List<Assignment> UserAssignments = new List<Assignment>();
+            int userID = (int)HttpContext.Session.GetInt32("UserID");
+            string username = HttpContext.Session.GetString("username");
+            UserAssignments = DAL.GetUserAssignments(userID);
+            if (UserAssignments == null)
+            {
+                TempData["AssignmentAddError"] = "Database error when getting assignment";
+            }
+            else
+            {
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
+            }
+            return View(UserAssignments);
         }
         #endregion
 
@@ -81,12 +91,11 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> Index(List<IFormFile> files)
         {
             //LoginModel user = Tools.SessionHelper.Get(HttpContext, "CurrentUser");
-            //List<Assignment> Assignments = new List<Assignment>();
+            List<Assignment> UserAssignments = new List<Assignment>();
+            int userID = (int)HttpContext.Session.GetInt32("UserID");
 
             //Gets username from the session to create files in the user's default directory
             string username = HttpContext.Session.GetString("username");
-            int userID = (int)HttpContext.Session.GetInt32("UserID");
-
             long size = files.Sum(f => f.Length);
             string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
 
@@ -116,18 +125,19 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
+                        UserAssignments = DAL.GetUserAssignments(userID); //Gets the assignment list from database to update the view
                         ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
                         ViewData["Success"] = "File Succesfully Uploaded and database updated!";
                     }
                 }
             }
-
-      
-            return View();
+            return View(UserAssignments);
+            //return RedirectToAction("Index");
         }
 
         //<summary>
         //Verify the file Name
+        //And removes '\\' from the file name
         //</summary>
 
         private string EnsureFilename(string fileName)
