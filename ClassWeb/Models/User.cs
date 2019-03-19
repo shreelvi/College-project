@@ -73,7 +73,7 @@ namespace ClassWeb.Models
         internal const string db_Enabled = "IsEnabled";
         internal const string db_PasswordExpired = "PasswordExpired";
         internal const string db_AccountLocked = "AccountLocked";
-        internal const string db_Role = "RoleID";
+       
         internal const string db_Salt = "Salt";
         #endregion
 
@@ -111,8 +111,10 @@ namespace ClassWeb.Models
         }
         public string Password
         {
-            get { return _Password; }
-            set { _Password = value; }
+            get {
+                if (String.IsNullOrEmpty(_Password)) _Password = "";
+                return _Password; }
+            set { _Password = value.Trim(); }
         }
 
         /// <summary>
@@ -121,44 +123,20 @@ namespace ClassWeb.Models
         public string Salt
         {
             get { return _Salt; }
-            set { _Salt = value; }
+            set { _Salt = value.Trim(); }
         }
 
         /// <summary>
         /// Gets or sets the RoleID for this PeerVal.User object.
         /// </summary>
         /// <remarks></remarks>
-        public int RoleID
-        {
-            get
-            {
-                return _RoleID;
-            }
-            set
-            {
-                _RoleID = value;
-            }
-        }
+       
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
             set { _PhoneNumber = value; }
         }
-        public DateTime DateCreated
-        {
-            get { return _DateCreated; }
-            set { _DateCreated = value; }
-        }
-        public DateTime DateModified
-        {
-            get { return _DateModified; }
-            set { _DateModified = value; }
-        }
-        public DateTime DateDeleted
-        {
-            get { return _DateDeleted; }
-            set { _DateDeleted = value; }
-        }
+       
         public bool AccountExpired
         {
             get { return _AccountExpired; }
@@ -170,7 +148,7 @@ namespace ClassWeb.Models
             get { return _AccountLocked; }
             set { _AccountLocked = value; }
         }
-
+        
         public bool PasswordExpired
         {
             get { return _PasswordExpired; }
@@ -182,11 +160,7 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-        public Role Role
-        {
-            get { return _Role; }
-            set { _Role = value; }
-        }
+      
         #endregion
 
         #region Public Functions
@@ -198,11 +172,14 @@ namespace ClassWeb.Models
 
         protected override int dbAdd()
         {
-            throw new NotImplementedException();
+            _ID = DAL.AddUser(this);
+            return ID; 
+            ///throw new NotImplementedException();
         }
 
         protected override int dbUpdate()
         {
+            return DAL.UpdateObject(this);
             throw new NotImplementedException();
         }
         #endregion
@@ -226,7 +203,7 @@ namespace ClassWeb.Models
             _DateModified = dr.GetDateTime(db_DateModified);
             _DateArchived = dr.GetDateTime(db_DateArchived);
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(db_Role);
+           
         }
         #endregion
 
