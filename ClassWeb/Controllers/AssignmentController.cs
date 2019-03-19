@@ -22,7 +22,7 @@ namespace ClassWeb.Controllers
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
         List<Assignment> Assignments = new List<Assignment>();
-        string UserName = "\\User1\\";
+        string UserName = "\\User1";
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -38,11 +38,19 @@ namespace ClassWeb.Controllers
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
         public RedirectResult Test(string FileName)
         {
+            string url = "";
             string s = Directory.GetCurrentDirectory();
-            string searchstr = UserName;
-            int Index = s.LastIndexOf(searchstr)+UserName.Length;
-            string dir = s.Substring(Index,s.Length-Index);
-            var url = Url.RouteUrl("File",new { UserName = UserName,Directory=dir,FileName=FileName });
+            if (s == _hostingEnvironment.WebRootPath + UserName)
+            {
+                 url= Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
+            }
+            else
+            {
+                int Index = s.IndexOf(UserName);
+                Index += UserName.Length;
+                string dir = s.Substring(Index, s.Length - Index);
+                url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
+            }           
             return new RedirectResult(url);
         }
         public string CurrentDir()

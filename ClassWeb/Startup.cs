@@ -70,10 +70,15 @@ namespace ClassWeb
                     name: "default",
                     template: "{controller=Assignment}/{action=index}/{id?}");
                 routes.MapRoute(
-                    name: "File",
+                    name: "fileDirectory",
                     template: "{UserName}/{Directory}/{FileName}",
                     defaults: "{controller=Assignment}/{action=index}/{id?}");
-                    });
+                routes.MapRoute(
+                   name: "root",
+                   template: "{UserName}/{FileName}",
+                   defaults: "{controller=Assignment}/{action=index}/{id?}");
+            });
+
         }
     }
 }
