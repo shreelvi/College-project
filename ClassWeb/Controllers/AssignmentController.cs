@@ -157,7 +157,7 @@ namespace ClassWeb.Controllers
         //</summary>
         private string GetPath(string fileName)
         {
-            string path = _hostingEnvironment.WebRootPath + "\\upload\\";
+            string path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
@@ -166,10 +166,11 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region File Download
-        public async Task<FileResult> Download(string FileName)
+        public async Task<FileResult> Download(string Name)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            var FileVirtualPath = dir_Path + FileName;
+            string username = HttpContext.Session.GetString("username");
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
+            var FileVirtualPath = dir_Path + Name;
             var memory = new MemoryStream();
             using (var stream = new FileStream(FileVirtualPath, FileMode.Open))
             {
@@ -203,7 +204,8 @@ namespace ClassWeb.Controllers
                 {".csv", "text/csv"},
                 {".html","text/html" },
                 {".js","text/javascript"},
-                {".css","text/css"},
+                { ".sql","text/sql"},
+                { ".css","text/css"},
                 {".mpeg","audio/mpeg"},
             };
         }
@@ -256,19 +258,20 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region View File
-        public async Task<IActionResult> View(string FileName)
+        public async Task<IActionResult> View(string Name)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            string path = dir_Path + FileName;
+            string username = HttpContext.Session.GetString("username");
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
+            string path = dir_Path + Name;
 
             WebClient User = new WebClient();
-            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
+            Byte[] FileBuffer = User.DownloadData(path);
             string fileBase64Data = Convert.ToBase64String(FileBuffer);
             string t = GetContentType(path);
             if (t == "application/vnd.ms-word")
             {
                 //Download the file
-                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(Name)));
             }
             else
             {

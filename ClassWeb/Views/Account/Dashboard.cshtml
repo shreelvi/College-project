@@ -1,20 +1,57 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿@model List<ClassWeb.Models.Assignment>
+
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard ";
 }
-<a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
-<a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
+<div style="float:right">
+    <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
+    <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
 
-<h2 style="color:darkorange">User Dashboard</h2><br />
-<h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
-<p style="font-size: 20px">More features to be put in the page.</p>
-<br><br />
+    <br /><br />
+    <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
+    <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
+</div>
 
-<a style="color:blue" href="@ViewData["Directory"]" target="_blank">Browse Your Files Directory</a><br /><br />
+<div style="float:left">
+    <h2 style="color:darkorange">User Dashboard</h2><br />
+    <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
 
-<a style="color:blue" asp-controller="Assignment" asp-action="Index">Click to Upload Assignment </a> <br /><br />
-<br /><br />
+    <a style="color:blue" href="@ViewData["Directory"]" target="_blank">Browse Your Files Directory</a><br /><br />
+    <a style="color:blue" href="@ViewData["Sample"]" target="_blank">Test html, css and JS view with sample files</a><br /><br />
 
-<a style="color:darkblue" asp-controller="account" asp-action="logout">Logout</a><br /><br />
-<a style="color:darkblue" asp-controller="account" asp-action="">Edit Profile</a>
+    <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
+
+    <h3 style="color:orange">List of your files:</h3>
+</div>
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Assignment Description</th>
+            <th>Date Submitted</th>
+            <th>Grade</th>
+            <th>Feedback</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr class="mt-5">
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateSubmission)</td>
+                <td>@Html.DisplayFor(modelItem => item.Grade)</td>
+                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
+                <td><a asp-controller="Assignment" asp-action="Download" asp-route-Name="@item.Name"><span class="btn-outline-success btn glyphicon glyphicon-save"></span>Download</a></td>
+                <td><a asp-controller="Assignment" asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
+                <td><a asp-controller="Assignment" asp-action="View" asp-route-Name="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">View</span></a></td>
+                <td><a asp-controller="FileEditor" asp-action="Index" asp-route-Name="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon-edit">Edit</span></a></td>
+
+            </tr>
+        </tbody>
+    }
+</table>
+
 

@@ -18,16 +18,10 @@ CREATE DEFINER=`a458d6_shreelv`@`%` PROCEDURE `sproc_AssignmentAdd` (OUT `Assign
 SET AssignmentID = LAST_INSERT_ID();
 END$$
 
-DELIMITER $$
-
-//Sorts the assignment 
-CREATE PROCEDURE `sproc_GetAssignmentsbyUserID1` (IN `UserID` INT) 
-BEGIN 
-	SELECT * FROM assignment 
-	WHERE assignment.UserID = UserID 
-	ORDER BY assignment.AssignmentID DESC; 
-	END $$
-DELIMITER :
+CREATE DEFINER=`a458d6_shreelv`@`%` PROCEDURE `sproc_GetAssignmentsbyUserID` (IN `UserID` INT)  BEGIN
+	 SELECT * FROM assignment
+	 WHERE assignment.UserID = UserID;
+END$$
 
 DELIMITER $$
 CREATE PROCEDURE `sproc_CheckUserName`

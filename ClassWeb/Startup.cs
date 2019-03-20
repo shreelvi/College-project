@@ -88,6 +88,8 @@ namespace ClassWeb
             provider.Mappings[".txt"] = "text/txt";
             provider.Mappings[".image"] = "image/png";
             provider.Mappings[".js"] = "text/js";
+            provider.Mappings[".sql"] = "text/sql";
+
 
             app.UseHttpsRedirection();
             app.UseCookiePolicy();

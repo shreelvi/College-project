@@ -27,16 +27,14 @@ else
         </div>
     </form>
 </div>
-
+<br />
+<h3 style="color:cadetblue"> Your Recent Submissions:</h3>
 <table class="table">
 
     <thead>
         <tr>
             <th>File Name</th>
-            <th>Assignment Description</th>
             <th>Date Submitted</th>
-            <th>Grade</th>
-            <th>Feedback</th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -44,13 +42,10 @@ else
         <tbody>
             <tr class="mt-5">
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@Html.DisplayFor(modelItem => item.DateSubmission)</td>
-                <td>@Html.DisplayFor(modelItem => item.Grade)</td>
-                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
-                <td><a asp-action="Download" asp-route-id="@item.Name"><span class="btn-outline-success btn glyphicon glyphicon-save"></span>Download</a></td>
+                <td><a asp-action="Download" asp-route-Name="@item.Name"><span class="btn-outline-success btn glyphicon glyphicon-save"></span>Download</a></td>
                 <td><a asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
-                <td><a asp-action="View" asp-route-id="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">View</span></a></td>
+                <td><a asp-action="View" asp-route-Name="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">View</span></a></td>
             </tr>
         </tbody>
     }

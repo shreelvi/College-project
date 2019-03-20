@@ -118,10 +118,10 @@ namespace ClassWeb.Controllers
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", loggedIn.UserName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                //ViewData["Files"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//MyFiles";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory
-
-                return View("Dashboard");
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
+                return RedirectToAction("Dashboard");
+                //return View("Dashboard");
             }
             else
             {
@@ -129,6 +129,20 @@ namespace ClassWeb.Controllers
                 ViewBag.User = userName;
                 return View();
             }
+        }
+
+        public ActionResult Dashboard()
+        {
+            int id = (int)HttpContext.Session.GetInt32("UserID");
+            string username = HttpContext.Session.GetString("username");
+
+            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+
+            List<Assignment> UserAssignments = new List<Assignment>();
+            UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+
+            return View(UserAssignments);
         }
         /// <summary>
         /// Created on: 03/09/2019
