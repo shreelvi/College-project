@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Class : DatabaseNamedObject
+    public class Class : DatabaseRecord
     {
     /// <summary>
     /// By: Ganesh Sapkota 
@@ -70,6 +71,31 @@ namespace ClassWeb.Models
             {
                 _SectionID = value;
             }
+        }
+
+        public override int dbSave()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Fill(MySqlDataReader dr)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbAdd()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

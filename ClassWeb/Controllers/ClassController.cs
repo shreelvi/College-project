@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using ClassWeb.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
@@ -25,10 +27,18 @@ namespace ClassWeb.Controllers
           
             _hostingEnvironment = hostingEnvironment;
         }
+        //GET: Classes
         public IActionResult Index()
         {
-            return View();
+            Tuple<List<Class>, List<string>> classes = GetClasses();
+            return View(classes);
         }
+
+        private Tuple<List<Class>, List<string>> GetClasses() //need to work here. 
+        {
+            throw new NotImplementedException();
+        }
+
         public IActionResult ClassDetails()
         {
 
@@ -42,5 +52,6 @@ namespace ClassWeb.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }
