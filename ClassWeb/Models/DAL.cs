@@ -44,7 +44,7 @@ namespace ClassWeb.Model
 
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -126,12 +126,102 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
-        #endregion
-
-        #region User
 
         #endregion
+        #region Assignment
+        internal static int AddAssignment(Assignment obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
+                comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+                return AddObject(comm, "@" + Assignment.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
 
+        internal static List<Assignment> GetAssignmentByFileName(string fileName)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByFileName");
+            List<Assignment>retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close(); 
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static Assignment GetAllAssignment()
+        {
+
+           Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                    while (dr.Read())
+                    {
+                        retObj=new Assignment(dr);
+                    }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        internal static int DeleteAssignmentByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentDeleteByID");
+           int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                MySqlParameter retParameter;
+                retParameter = comm.Parameters.Add("@" + Assignment.db_ID, MySqlDbType.Int32);
+                retParameter.Direction = System.Data.ParameterDirection.Output;
+                comm.ExecuteNonQuery();
+                retInt = (int)retParameter.Value;
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+        #endregion
         #region Login
 
         ///<summary>
@@ -172,31 +262,6 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-        internal static int AddAssignment(Assignment obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
-                comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
-                comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
-                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
-                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
-                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
-                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
-                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
-                comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
-                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
-                return AddObject(comm, "@" + Assignment.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
         /// <summary>
         /// Attempts to add user in the database
         /// Reference: PeerVal Project
@@ -231,31 +296,6 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static List<Assignment>GetAllAssignment()
-        {
-
-           List<Assignment> retObj = null;
-            /*
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
-            try
-            {
-                MySqlDataReader dr = GetDataReader(comm);
-                foreach (MySqlDataReader a in dr) {
-                    while (a.Read())
-                    {
-                        retObj.Add(new Assignment(dr));
-                    }
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            */
-            return retObj;
-        }
 
 
         ///<summary>

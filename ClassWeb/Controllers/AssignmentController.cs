@@ -13,7 +13,9 @@ using System.IO;
 using System.Net;
 using ClassWeb.Model;
 using System.Text;
+using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Authorization;
+
 
 namespace ClassWeb.Controllers
 {
@@ -30,7 +32,7 @@ namespace ClassWeb.Controllers
         }
        
         // GET: Assignments
-        public async Task<IActionResult> Index()
+        public  IActionResult Index()
         {
             Tuple<List<Assignment>, List<string>> assignments = GetFiles();
             return View(assignments);
@@ -81,6 +83,40 @@ namespace ClassWeb.Controllers
             Directory.SetCurrentDirectory(s);
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public IActionResult Close()
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult SaveEditedFile(string Content,string FileName)
+        {
+            if (Content != null && Content.Length > 0)
+            {
+
+                string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
+
+                try
+                {
+                if (System.IO.File.Exists(path))
+                {
+                    using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                    {
+                        fileStream.SetLength(0);
+                        fileStream.Close();
+                    }
+                    StreamWriter sw = new StreamWriter(path);
+                    sw.Write(Content);
+                    sw.Close();
+                        ViewBag.Message = "File Has Been Succefully Modified";
+                }
+                }catch(Exception ex)
+                {
+                    //return ex;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
         //<summary>
         //Post method to save the file
         //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
@@ -92,7 +128,7 @@ namespace ClassWeb.Controllers
             try
             {
                 string dir_Path = CurrentDir();
-                string path = dir_Path + file.FileName.ToString();
+                string path = dir_Path +"\\"+ file.FileName.ToString();
                 //FileExist(path);
                 //Need to check if the file is update or insert
                 Assignment assign = new Assignment();
@@ -141,6 +177,7 @@ namespace ClassWeb.Controllers
 
         private bool FileExist(string path)
         {
+            /*
            List<Assignment> assign= DAL.GetAllAssignment();
  
             foreach(Assignment a in assign)
@@ -150,7 +187,9 @@ namespace ClassWeb.Controllers
                     return false;
                 }
             }
+            */
              return true;
+
         }
 
         //<summary>
@@ -196,29 +235,32 @@ namespace ClassWeb.Controllers
 
 
         // GET: Assignments/Delete/5
-        public async Task<IActionResult> Delete(string FileName)
+        public  IActionResult Delete(string FileName)
         {
             if (FileName == null)
             {
                 return NotFound();
             }
-            return NotFound();
-            /*
-            var assignment =Assignments.Last().FirstOrDefaultAsync(m => m.Name == FileName);
-            if (assignment == null)
+            List<Assignment> assign = DAL.GetAssignmentByFileName(FileName);
+
+            if (assign == null)
             {
                 return NotFound();
             }
+            else
+            {
+                int retVal = DAL.DeleteAssignmentByID(assign[1].ID);
 
-            return View(assignment);
-            */
+            }
+            return RedirectToAction(nameof(Index));
+
         }
 
 
         public IActionResult DeleteFromRoot(string FileName)
         {
             string dir_Path =Directory.GetCurrentDirectory();
-            string path = dir_Path + FileName;
+            string path = dir_Path +"//"+ FileName;
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
@@ -228,12 +270,12 @@ namespace ClassWeb.Controllers
         }
         #endregion
         #region Edit Assignment
-        public async Task<IActionResult> Edit(string FileName)
+        public  IActionResult Edit(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
-            string path = dir_Path + FileName;
+            string path = dir_Path +"\\"+ FileName;
             WebClient User = new WebClient();
-            Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
+            Byte[] FileBuffer = User.DownloadData(path);
             string fileBase64Data = Convert.ToBase64String(FileBuffer);
             string t = GetContentType(path);
             bool IsReadable = false;
@@ -259,16 +301,17 @@ namespace ClassWeb.Controllers
                 ViewBag.Data = DataURL;
             }
             ViewBag.Readable = IsReadable;
+            ViewBag.FileName = FileName;
             return View();
         }
-        public List<Assignment> GetAllAssignment()
+        public Assignment GetAllAssignment()
         {
            return DAL.GetAllAssignment();
         }
         // POST: Assignments/Delete/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
             ViewBag.Message = "On Progress";
             return View();
@@ -321,6 +364,9 @@ namespace ClassWeb.Controllers
                 assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
                 items.Add(assign);
             }
+            Assignment Assign = DAL.GetAllAssignment();
+
+
             return Tuple.Create(items,root); ;
         }
 

@@ -1,14 +1,33 @@
-﻿<script>
-    var editor = CodeMirror.fromTextArea(myTextarea, {
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+<script>
+    var editor_js = CodeMirror.fromTextArea(document.getElementById("js"), {
+        mode: 'text/javascript',
+        theme: 'icecoder',
+        styleActiveLine: true,
         lineNumbers: true,
-        outerHeight=100%
+        lineWrapping: true,
     });
 </script>
-@if (ViewBag.Readable == true)
-{
-<textarea class="p-4 " style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%">@ViewBag.Data </textarea>
-}
-else
-{
-    <iframe src="@ViewBag.Data" class="embed-responsive-item" style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
-}
+<div class="Fileaction">
+</div>
+<form  asp-controller="Assignment" method="post">
+    <button href="#" id="SaveFile" asp-action="SaveEditedFile" type="submit" class="btn btn-success pull-left glyphicon glyphicon-save">Save</button>
+    <button href="#" id="Exit" type="submit" asp-action="Close" class="btn btn-danger pull-Right glyphicon glyphicon-remove">Close</button>
+    <input type="hidden" value=@ViewBag.FileName name="FileName" />
+    @if (ViewBag.Readable == true)
+    {
+
+<textarea id="EditedText" name="Content"  class="p-4 " style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%">@ViewBag.Data </textarea>
+    }
+    else
+    {
+        <iframe src="@ViewBag.Data"  class="embed-responsive-item" style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+    }
+
+</form>
