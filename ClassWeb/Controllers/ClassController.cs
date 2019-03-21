@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ClassWeb.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ClassWeb.Controllers
 {
@@ -14,15 +15,19 @@ namespace ClassWeb.Controllers
         /// created by Ganesh
         /// </summary>
 
+        //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
+        private IHostingEnvironment _hostingEnvironment;
+        public ClassController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
         public IActionResult Index()
         {
             return View();
         }
         public IActionResult About()
         {
-            //ViewData["Message"] = "Your application description page.";
 
-            //return View();
             ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
 
             return View();
