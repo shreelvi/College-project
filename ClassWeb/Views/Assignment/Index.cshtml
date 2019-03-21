@@ -20,7 +20,6 @@
 <h2 class="text-success text-center">Document List</h2>
 <table class="table table-striped bg-light">
     <thead>
-        {
         <tr>
             <th>
                 <span class="glyphicon glyphicon-home">
@@ -28,8 +27,8 @@
                 </span>
             </th>
             <th>
-                <span class="glyphicon glyphicon-home">
-                    <a href="\Assignment\ChangeDirDown">Down</a>
+                <span class="glyphicon glyphicon-arrow-up">
+                    <a href="\Assignment\ChangeDirDown">Folder Up</a>
                 </span>
             </th>
         </tr>
@@ -57,7 +56,7 @@
                 <td contenteditable='true' id="FileName">@Model.Item1[i].FileName<span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model.Item1[i].FileName })</span></td>
                 <td>@Model.Item1[i].FileSize KB</td>
                 <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>
-                <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })</span>  </td>
+                <td><span class=" glyphicon glyphicon-trash">  @Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })</span>  </td>
                 <td>
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group" role="group">

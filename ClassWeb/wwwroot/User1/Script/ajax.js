@@ -1,8 +1,8 @@
-﻿Test 1
+﻿
 $(document).ready(function () {
     $("#btnSearch").click(function () {
         // alert($("#searchInput").val().trim());
-        if ($("#searchInput").val().trim() == null || $("#searchInput").val().trim() == "") {
+        if ($("#searchInput").val().trim() === null || $("#searchInput").val().trim() === "") {
             $.ajax({
                 url: "data/books.json"
                 , dataType: "json"
@@ -10,7 +10,7 @@ $(document).ready(function () {
                     var table = $(".tblajax");
                     var tblData = $("#trdata");
                     //var tblRow = $("<tr></tr>");
-                    if (books.ok == "true") {
+                    if (books.ok === "true") {
                         tblData.empty();
                         for (var i = 0; i < books.data.length; i++) {
                             var book = books.data[i];
@@ -22,7 +22,7 @@ $(document).ready(function () {
                             var ulTag = $("<ul></ul>");
                             for (var j = 0; j < book.tags.length; j++) {
                                 var liTags = $("<li></li>");
-                                text = document.createTextNode(book.tags[j])
+                                text = document.createTextNode(book.tags[j]);
                                 liTags.append(text.data);
                                 ulTag.append(liTags);
                             }
@@ -30,7 +30,7 @@ $(document).ready(function () {
                             //  tdTags;
                             //trRow.append(tdTitle, tdISBN, tdAuthorName, ulTag);
                             // tblData.append(trRow.append(tdTitle, tdISBN, tdAuthorName, ulTag));
-                            table.append(trRow.append(tdTitle, tdISBN, tdAuthorName, ulTag))
+                            table.append(trRow.append(tdTitle, tdISBN, tdAuthorName, ulTag));
                         }
                     }
                 }
@@ -48,7 +48,7 @@ $(document).ready(function () {
                     var tblData = $("#trdata");
                     var txtValue = $("#searchInput").val().trim().toLowerCase();
                     //var tblRow = $("<tr></tr>");
-                    if (books.ok == "true") {
+                    if (books.ok === "true") {
                         tblData.children().empty();
                         for (var i = 0; i < books.data.length; i++) {
                             var book = books.data[i];
@@ -65,9 +65,9 @@ $(document).ready(function () {
                                     var tdISBN = $("<td></td>").text(book.ISBN);
                                     var tdAuthorName = $("<td></td>").text(book.author.firstName + " " + book.author.middleName + " " + book.author.lastName);
                                     var ulTag = $("<ul></ul>");
-                                    for (var j = 0; j < book.tags.length; j++) {
+                                    for ( j = 0; j < book.tags.length; j++) {
                                         var liTags = $("<li></li>");
-                                        text = document.createTextNode(book.tags[j])
+                                        text = document.createTextNode(book.tags[j]);
                                         liTags.append(text.data);
                                         ulTag.append(liTags);
                                     }
@@ -101,9 +101,9 @@ $(document).ready(function () {
                 var ulTag = $("<ul></ul>");
                 for (var i = 0; i < peoples.length; i++) {
                     if (peoples[i].name.toLowerCase().indexOf(peopleSearch) > -1
-                        || peoples[i].age == peopleSearch
+                        || peoples[i].age === peopleSearch
                         || peoples[i].phone.toLowerCase().indexOf(peopleSearch) > -1
-                        || peoples[i].group==peopleSearch) {
+                        || peoples[i].group===peopleSearch) {
 
                         var ulList = $("<ul></ul>");
                         var nameList = $("<li></li>");

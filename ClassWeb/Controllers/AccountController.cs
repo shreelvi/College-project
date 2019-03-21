@@ -52,7 +52,6 @@ namespace ClassWeb.Controllers
             return View();
         }
 
-        //
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
