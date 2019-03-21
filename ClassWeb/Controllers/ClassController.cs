@@ -13,35 +13,27 @@ namespace ClassWeb.Controllers
     {
         /// <summary>
         /// created by Ganesh
+        /// Ref: prof's code for PeerEval
         /// </summary>
+
+        //private readonly ClassWebContext _Context;
 
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-        public ClassController(IHostingEnvironment hostingEnvironment)
+        public ClassController( IHostingEnvironment hostingEnvironment)
         {
+          
             _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult About()
+        public IActionResult ClassDetails()
         {
 
             ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
