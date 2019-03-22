@@ -65,6 +65,30 @@ namespace ClassWeb.Model
                 return null;
             }
         }
+
+        internal static User GetUserByID(int UserID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByID");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            return retObj;
+        }
+
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>

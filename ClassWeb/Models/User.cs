@@ -219,14 +219,11 @@ namespace ClassWeb.Models
             _MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-            _Address = dr.GetString(db_Address);
+      
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateArchived = dr.GetDateTime(db_DateArchived);
+      
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(db_Role);
         }
         #endregion
 

@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ClassWeb.Controllers
 {
     public class AccountController : Controller
     {
         //Access the data from the database
-
+        private IHostingEnvironment _hostingEnvironment;
+        public AccountController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -33,7 +33,7 @@ namespace ClassWeb.Controllers
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", userName); 
+                HttpContext.Session.SetString("username", userName);
                 return View("Dashboard");
             }
             else
@@ -58,14 +58,21 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             int UserAdd = DAL.AddUser(NewUser);
-
+            string a = "";
             if (UserAdd == -1)
             {
                 ViewBag.error = "Error Occured when creating a new user";
             }
-            else
-            {
-                ViewBag.Success = "Account Has Been Successfully Created!! Please Login Using your Account Info";
+            else {
+
+                User User = DAL.GetUserByID(UserAdd);
+                var UserFilePath =Path.Combine(_hostingEnvironment.WebRootPath,User.UserName);
+                if (!Directory.Exists(UserFilePath))
+                {
+                    Directory.CreateDirectory(UserFilePath);
+                    a = "File Directory Created";
+                }
+                ViewBag.Success =a+"Account Has Been Successfully Created!! Please Login Using your Account Info";
             }
             return RedirectToAction("Login", "Account");
         }

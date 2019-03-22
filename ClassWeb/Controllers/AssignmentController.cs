@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
 using ClassWeb.Model;
 using System.Text;
-using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -23,14 +18,20 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
+        string LoggedInUserName="User1";
         List<Assignment> Assignments = new List<Assignment>();
-        string UserName = "\\User1";
+
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
             CurrentDir();
         }
-       
+        [HttpPost]
+        public IActionResult UserName(string Username)
+        {
+            LoggedInUserName = Username;
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Assignments
         public  IActionResult Index()
         {
@@ -38,40 +39,44 @@ namespace ClassWeb.Controllers
             return View(assignments);
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
+        [ValidateAntiForgeryToken]
         public RedirectResult Test(string FileName)
         {
             string url = "";
+            string UserName = this.HttpContext.Session.GetString("username");
             string s = Directory.GetCurrentDirectory();
-            if (s == _hostingEnvironment.WebRootPath + UserName)
+            if (s ==Path.Combine(_hostingEnvironment.WebRootPath , LoggedInUserName))
             {
                  url= Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
             }
             else
             {
-                int Index = s.IndexOf(UserName);
+                int Index = s.IndexOf(LoggedInUserName);
                 Index += UserName.Length;
                 string dir = s.Substring(Index, s.Length - Index);
-                url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
+                url = Url.RouteUrl("fileDirectory", new { UserName = LoggedInUserName, Directory = dir, FileName = FileName });
             }           
             return new RedirectResult(url);
         }
         public string CurrentDir()
         {
-            if (!Directory.GetCurrentDirectory().Contains(_hostingEnvironment.WebRootPath))
+            string UserName = LoggedInUserName;
+            if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath,UserName)))
             {
-                Directory.SetCurrentDirectory(_hostingEnvironment.WebRootPath + UserName);
+                Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath , UserName));
             }
             return Directory.GetCurrentDirectory();
         }
         public IActionResult SetDefaultDir()
         {
-            Directory.SetCurrentDirectory(_hostingEnvironment.WebRootPath + UserName);
+            string UserName = LoggedInUserName;
+            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, UserName));
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult ChangeDirUp(string dir)
         {
-            string path = Directory.GetCurrentDirectory()+"\\" +dir;
+            string path =Path.Combine(Directory.GetCurrentDirectory(),dir);
             Directory.SetCurrentDirectory(path);
             return RedirectToAction(nameof(Index));
         }
@@ -128,7 +133,7 @@ namespace ClassWeb.Controllers
             try
             {
                 string dir_Path = CurrentDir();
-                string path = dir_Path +"\\"+ file.FileName.ToString();
+                string path = Path.Combine(dir_Path, file.FileName.ToString());
                 //FileExist(path);
                 //Need to check if the file is update or insert
                 Assignment assign = new Assignment();
@@ -211,7 +216,8 @@ namespace ClassWeb.Controllers
         //</summary>
         private string GetPath(string fileName)
         {
-            string path = _hostingEnvironment.WebRootPath + UserName;
+            string UserName = LoggedInUserName;
+            string path =Path.Combine(_hostingEnvironment.WebRootPath , UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
@@ -220,7 +226,7 @@ namespace ClassWeb.Controllers
         public async Task<FileResult> Download(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
-            var FileVirtualPath = dir_Path + FileName;
+            var FileVirtualPath = Path.Combine(dir_Path, FileName);
             var memory = new MemoryStream();
             using (var stream = new FileStream(FileVirtualPath, FileMode.Open))
             {
@@ -260,7 +266,7 @@ namespace ClassWeb.Controllers
         public IActionResult DeleteFromRoot(string FileName)
         {
             string dir_Path =Directory.GetCurrentDirectory();
-            string path = dir_Path +"//"+ FileName;
+            string path =Path.Combine(dir_Path, FileName);
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
@@ -273,7 +279,7 @@ namespace ClassWeb.Controllers
         public  IActionResult Edit(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
-            string path = dir_Path +"\\"+ FileName;
+            string path = Path.Combine(dir_Path, FileName);
             WebClient User = new WebClient();
             Byte[] FileBuffer = User.DownloadData(path);
             string fileBase64Data = Convert.ToBase64String(FileBuffer);
@@ -381,32 +387,6 @@ namespace ClassWeb.Controllers
             }
             return result;
         }
-        /*
-public  async Task<IActionResult> View(string FileName)
-{
-   string dir_Path = _hostingEnvironment.WebRootPath + UserName;
-   string path = dir_Path + FileName;
-   WebClient User = new WebClient();
-   Byte[] FileBuffer = User.DownloadData(GetPath(FileName));
-   string fileBase64Data = Convert.ToBase64String(FileBuffer);
-   string t = GetContentType(path);
-   bool IsReadable = false;
-   if (t == "application/vnd.ms-word")
-   {
-       //Download the file
-       return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
-   }
-   else
-   {
-       Redirect(path);
-       string DataURL = path;
-       ViewBag.Data = DataURL;
-   }
-   ViewBag.Readable = IsReadable;
-   return View();
-
-}
-*/
     }
     #endregion
 

@@ -33,7 +33,7 @@ namespace ClassWeb
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            services.AddSession();
             //Reference: PeerVal Project
             // Add the following to start using a session.
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
@@ -42,7 +42,8 @@ namespace ClassWeb
                 //TimeSpan.FromMinutes(20) // default 20 minutes.
                 sessOptions.Cookie.HttpOnly = true;
             });
-
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -59,7 +60,7 @@ namespace ClassWeb
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            app.UseMvc();
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseStaticFiles();
@@ -68,7 +69,7 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Assignment}/{action=index}/{id?}");
+                    template: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
                     template: "{UserName}/{Directory}/{FileName}",
