@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
@@ -14,5 +15,7 @@ namespace ClassWeb.Models
         }
 
         public DbSet<ClassWeb.Models.Class> Class { get; set; }
+
+        public DbSet<ClassWeb.Models.Course> Course { get; set; }
     }
 }
