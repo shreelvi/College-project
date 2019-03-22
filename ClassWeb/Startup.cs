@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using ClassWeb.Models;
 
 namespace ClassWeb
 {
@@ -44,6 +45,9 @@ namespace ClassWeb
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<ClassWebContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ClassWebContext")));
         }
 
 

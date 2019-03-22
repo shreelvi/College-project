@@ -85,7 +85,7 @@ namespace ClassWeb.Models
             }
         }
 
-        public int SectionId
+        public int SectionID
         {
             get
             {

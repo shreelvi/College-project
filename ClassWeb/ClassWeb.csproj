@@ -68,4 +68,8 @@
     <None Include="wwwroot\User1\ViewStorage.html" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Class\" />
+  </ItemGroup>
+
 </Project>
