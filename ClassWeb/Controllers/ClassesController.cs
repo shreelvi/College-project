@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
 
 namespace ClassWeb.Controllers
 {
@@ -154,6 +155,12 @@ namespace ClassWeb.Controllers
         private bool ClassExists(int id)
         {
             return _context.Class.Any(e => e.ID == id);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
