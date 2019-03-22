@@ -12,6 +12,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClassWeb.Controllers
 {
+    /// <summary>
+    /// Created by: Elvis
+    /// Created on: 03/20/2019
+    /// Reference: https://ej2.syncfusion.com/aspnetcore/documentation/getting-started/visual-studio-2017/?no-cache=1
+    /// Text Editor Tool for ASP.NET Core by Syncfusion
+    /// Used to have edit view and controls for the controller code
+    /// File editor controller is used to edit files in the website
+    /// </summary>
     public class FileEditorController : Controller
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
@@ -22,13 +30,12 @@ namespace ClassWeb.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        //public IActionResult Index()
-        //{
-        //    ViewBag.value = 
-        //    return View();
-        //}
-
-
+        /// <summary>
+        /// Created on: 03/20/2019
+        /// Created by: Elvis
+        /// Reads content from the file and pass to the view
+        /// as string to RichTextDocumentEditor view
+        /// </summary>
 
         public async Task<IActionResult> Index(string Name)
         {
@@ -38,10 +45,9 @@ namespace ClassWeb.Controllers
             string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
             string path = dir_Path + Name;
 
-            //string[] lines = System.IO.File.ReadAllLines(path);
             string t = GetContentType(path);
 
-            //System.IO.StreamReader myFile = new System.IO.StreamReader(path);
+            //Read the file line by line
             const Int32 BufferSize = 128;
             using (var fileStream = System.IO.File.OpenRead(path))
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
@@ -51,26 +57,21 @@ namespace ClassWeb.Controllers
                 {
                     if(t == "text/html")
                     {
-                        //Will not add line to html files
-                        ViewBag.content = "Html";
-                        FileData = FileData + line;
+                        ViewBag.content = "Html"; //Sends file type to the view to display markup html
+                        FileData = FileData + line +Environment.NewLine;
                     }
-                    //Adds line for other files so it is displayed properly
-                    FileData = FileData + line + Environment.NewLine;
+                    else
+                    {
+                        //Adds line for other files so it is displayed properly
+                        FileData = FileData + line + Environment.NewLine;
+                    }
                 }
             }
-                //HtmlString decode = DecodedValue(FileData);
-                //ViewBag.FileData = decode;
 
             ViewBag.FileData = FileData;
             return View();
         }
 
-
-        //public static HtmlString DecodedValue(string decode)
-        //{
-        //   return new HtmlString(decode);
-        //}
 
         private string GetContentType(string path)
         {

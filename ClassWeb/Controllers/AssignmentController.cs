@@ -104,17 +104,21 @@ namespace ClassWeb.Controllers
             foreach (var formFile in files)
             {
                 //Ensure file names
-                string fileName = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
-                fileName = this.EnsureFilename(fileName);
+                string fileName = formFile.FileName; //ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+                fileName = this.EnsureFilename(fileName, username); //Ensure Filename before storing to the DB
+                string path = dir_Path + fileName;
 
                 if (formFile.Length > 0)
                 {
-                    string path = dir_Path + formFile.FileName.ToString();
+                    path = dir_Path + fileName;
                     using (var stream = new FileStream(path, FileMode.Create)) //Uploads the file in the path
                     {
                         await formFile.CopyToAsync(stream);
                     }
-                    //Create the assignment and add it in the database 
+
+                    HandleHTMLFileEdit(path);
+
+                    //Add the assignment metadata in the database 
                     Assignment assignment = new Assignment();
                     assignment.Name = fileName;
                     assignment.Feedback = "Not Graded";
@@ -137,18 +141,48 @@ namespace ClassWeb.Controllers
             //return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Replaces HTML file that contains <script> tag
+        /// Edit view was having issue displaying file with 
+        /// JS scripts
+        /// </summary>
+        private void HandleHTMLFileEdit(string path)
+        {
+            string type = GetContentType(path);
+
+            if(type == "text/html")
+            {
+                string text = System.IO.File.ReadAllText(path);
+                text = text.Replace("script", "sc");
+
+                System.IO.File.WriteAllText(path, text);
+
+            }
+
+        }
+
         //<summary>
         //Verify the file Name
-        //And removes '\\' from the file name
+        //to remove '\\' from the file name
+        //And change the filename with index.html to username
         //</summary>
-
-        private string EnsureFilename(string fileName)
+        private string EnsureFilename(string fileName, string user)
         {
-            //throw new NotImplementedException();
+            //Replace index.html with other name 
+            //as it opens the index file when browsing its directory
+            Random rnd = new Random();
+            int n = 0;
+            n = rnd.Next(20);
+
             if (fileName.Contains("\\"))
             {
                 fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
             }
+            else if(fileName == "index.html")
+            {
+                fileName = user + n + ".html";
+            }
+
             return fileName;
         }
 
