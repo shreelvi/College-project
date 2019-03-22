@@ -53,11 +53,13 @@ namespace ClassWeb.Models
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-      //  private Role _Role;
+        private Role _Role;
+        private string _DirectoryPath;
+        private List<Assignment> _Assignments;
         #endregion
 
         #region Database String
-        internal const string db_ID = "ID";
+        internal const string db_ID = "UserID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -75,6 +77,10 @@ namespace ClassWeb.Models
         internal const string db_AccountLocked = "AccountLocked";
         internal const string db_Role = "RoleID";
         internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
+
+
         #endregion
 
         #region public Properites
@@ -182,11 +188,23 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-       // public Role Role
-        //{
-          //  get { return _Role; }
-            //set { _Role = value; }
-        //}
+        public Role Role
+        {
+            get { return _Role; }
+            set { _Role = value; }
+        }
+
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
+        }
         #endregion
 
         #region Public Functions
@@ -219,11 +237,14 @@ namespace ClassWeb.Models
             _MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-      
+            _Address = dr.GetString(db_Address);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-      
+            _DateCreated = dr.GetDateTime(db_DateCreated);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateArchived = dr.GetDateTime(db_DateArchived);
             _Salt = dr.GetString(db_Salt);
+            _RoleID = dr.GetInt32(db_Role);
         }
         #endregion
 
