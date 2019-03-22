@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ClassWeb.csproj.user" />
     <None Include="wwwroot\User1\ajax.html" />
     <None Include="wwwroot\User1\Assignment 2\csstest.html" />
     <None Include="wwwroot\User1\Assignment 3\jsintro.html" />
