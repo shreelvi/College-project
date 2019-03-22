@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
@@ -13,29 +14,9 @@ namespace ClassWeb.Models
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
     /// </summary>
-    public class User : DatabaseRecord
+
+    public class User:DatabaseRecord
     {
-        #region private variable
-        private string _FirstName;
-        private string _MiddleName;
-        private string _LastName;
-        private string _EmailAddress;
-        private string _Address;
-        private string _Password;
-        private string _Salt;
-        private string _UserName;
-        private long _PhoneNumber;
-        private DateTime _DateCreated;
-        private DateTime _DateArchived;
-        private DateTime _DateModified;
-        private DateTime _DateDeleted;
-        private bool _AccountExpired;
-        private bool _Enabled;
-        private bool _PasswordExpired;
-        private bool _AccountLocked;
-        private Role _Role;
-        private int _RoleID;
-        #endregion
 
         #region Constructors
         /// <summary>
@@ -53,6 +34,28 @@ namespace ClassWeb.Models
 
         #endregion
 
+        #region private variable
+        private string _FirstName;
+        private string _MiddleName;
+        private string _LastName;
+        private string _EmailAddress;
+        private string _Address;
+        private string _UserName;
+        private string _Password;
+        private int _RoleID;
+        private string _Salt;
+        private long _PhoneNumber;
+        private DateTime _DateCreated;
+        private DateTime _DateArchived;
+        private DateTime _DateModified;
+        private DateTime _DateDeleted;
+        private bool _AccountExpired;
+        private bool _Enabled;
+        private bool _PasswordExpired;
+        private bool _AccountLocked;
+        private Role _Role;
+        #endregion
+
         #region Database String
         internal const string db_ID = "UserID";
         internal const string db_FirstName = "FirstName";
@@ -65,95 +68,97 @@ namespace ClassWeb.Models
         internal const string db_PhoneNumber = "PhoneNumber";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
-        internal const string db_DateArchived = "DateArchived";
+        internal const string db_DateArchived = "DateDeleted";
+        internal const string db_AccountExpired = "IsExpired";
+        internal const string db_Enabled = "IsEnabled";
+        internal const string db_PasswordExpired = "PasswordExpired";
+        internal const string db_AccountLocked = "AccountLocked";
         internal const string db_Role = "RoleID";
         internal const string db_Salt = "Salt";
         #endregion
 
         #region public Properites
 
-        public int RoleID
-        {
-            get { return _RoleID; }
-            set { _RoleID = value; }
-        }
-
-        public Role Roles
-        {
-            get { return _Role; }
-            set { _Role = value; }
-        }
-
-
-
         public string FirstName
         {
             get { return _FirstName; }
-            set { _FirstName = value; }
-
+            set { _FirstName = value; }   
         }
         public string MiddleName
         {
             get { return _MiddleName; }
             set { _MiddleName = value; }
         }
-
-
         public string LastName
         {
             get { return _LastName; }
             set { _LastName = value; }
         }
-
         public string EmailAddress
         {
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-
         public string Address
         {
             get { return _Address; }
             set { _Address = value; }
         }
-
+        public string UserName
+        {
+            get { return _UserName; }
+            set { _UserName = value; }
+        }
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
 
-        public string UserName
+        /// <summary>
+        /// Gets or sets the Salt for this PeerVal.User object
+        /// </summary>
+        public string Salt
         {
-            get { return _UserName; }
-            set { _UserName = value; }
+            get { return _Salt; }
+            set { _Salt = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the RoleID for this PeerVal.User object.
+        /// </summary>
+        /// <remarks></remarks>
+        public int RoleID
+        {
+            get
+            {
+                return _RoleID;
+            }
+            set
+            {
+                _RoleID = value;
+            }
+        }
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
             set { _PhoneNumber = value; }
         }
-
         public DateTime DateCreated
         {
             get { return _DateCreated; }
             set { _DateCreated = value; }
         }
-
-
         public DateTime DateModified
         {
             get { return _DateModified; }
             set { _DateModified = value; }
         }
-
         public DateTime DateDeleted
         {
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
-
         public bool AccountExpired
         {
             get { return _AccountExpired; }
@@ -177,9 +182,15 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
+        public Role Role
+        {
+            get { return _Role; }
+            set { _Role = value; }
+        }
         #endregion
 
         #region Public Functions
+
         public override int dbSave()
         {
             throw new NotImplementedException();
@@ -215,7 +226,7 @@ namespace ClassWeb.Models
             _DateModified = dr.GetDateTime(db_DateModified);
             _DateArchived = dr.GetDateTime(db_DateArchived);
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(Role.db_ID);
+            _RoleID = dr.GetInt32(db_Role);
         }
         #endregion
 

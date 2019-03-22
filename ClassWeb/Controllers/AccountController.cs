@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace ClassWeb.Controllers
 {
@@ -16,7 +18,6 @@ namespace ClassWeb.Controllers
     {
         //Access the data from the database
         private readonly ClassWebContext _context;
-        private object _signManager;
 
         public AccountController(ClassWebContext context)
         {
@@ -58,38 +59,55 @@ namespace ClassWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginModel login)
+        public ActionResult Login(String userName, String passWord)
         {
-            //string salt = DAL.GetSaltForUser(login.Username);
-            //if (!String.IsNullOrEmpty(salt))
-            //{
-            User loggedIn = DAL.GetUser(login.Username);
+            LoginModel loggedIn = DAL.GetUser(userName, passWord);
 
             if (loggedIn != null)
             {
-                HttpContext.Session.SetString("username", login.Username);
+                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+                HttpContext.Session.SetString("username", userName); 
                 return View("Dashboard");
             }
             else
             {
                 ViewBag.Error = "Invalid Username and/or Password";
+                ViewBag.User = userName;
                 return View();
             }
         }
 
+        // GET: /Account/AddUser
+        [AllowAnonymous]
+        public ActionResult AddUser(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
 
         //
-        // GET: /Account/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult AddUser(User NewUser)
         {
+            int UserAdd = DAL.AddUser(NewUser);
+
+            if (UserAdd == -1)
+            {
+                ViewBag.error = "Error Occured when creating a new user";
+            }
+            else
+            {
+                ViewBag.Success = "Successfully added user.";
+            }
             return View();
         }
 
         public IActionResult Logout()
         {
             //await _signManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
     }

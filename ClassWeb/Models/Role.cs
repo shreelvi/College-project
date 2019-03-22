@@ -3,27 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Model;
 
 namespace ClassWeb.Models
 {
  /// <summary>
- /// Created By Meshari
+ /// Created By: Kishor Simkhada
  /// Role is a designated position for each user.
  /// Each role can be assigned to zero to many users.
  /// Each role user can have one to multiple permissions. 
  /// </summary>
-    public class Role: DatabaseRecord
+
+    public class Role:DatabaseNamedRecord
     {
-
-        #region Private Variables
-        private string _Title;
-        private string _Description;
-        private DateTime _DateCreated;
-        private DateTime _DateModifed;
-        private DateTime _DateDeleted;
-        #endregion
-
         #region Constructors
         public Role()
         {
@@ -35,45 +26,31 @@ namespace ClassWeb.Models
 
         #endregion
 
-        #region Database String
-        internal const string db_ID = "RoleID";
-        internal const string db_Title = "Title";
-        internal const string db_Description = "Description";
-        internal const string db_DateCreated = "DateCreated";
-        internal const string db_DateModifed = "DateModifed";
-        internal const string db_DateDeleted = "DateDeleted";
+        #region Private Variables
+        private string _Description;
         #endregion
 
         #region public Properites
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
-
         public string Description
         {
             get { return _Description; }
             set { _Description = value; }
         }
-        public DateTime DateCreated
-        {
-            get { return _DateCreated; }
-            set { _DateCreated = value; }
-        }
-        public DateTime DateModifed
-        {
-            get { return _DateModifed; }
-            set { _DateModifed = value; }
-        }
-        public DateTime DateDeleted
-        {
-            get { return _DateDeleted; }
-            set { _DateDeleted = value; }
-        }
+        #endregion
+
+        #region Database String
+        internal const string db_ID = "ID";
+        internal const string db_Name = "Name";
+        internal const string db_Description = "Description";
         #endregion
 
         #region Public Functions
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
+
         public override int dbSave()
         {
             throw new NotImplementedException();
@@ -88,6 +65,7 @@ namespace ClassWeb.Models
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region Public Subs
@@ -98,18 +76,10 @@ namespace ClassWeb.Models
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Title = dr.GetString(db_Title);
+            _Name = dr.GetString(db_Name);
             _Description = dr.GetString(db_Description);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModifed = dr.GetDateTime(db_DateModifed);
-            _DateDeleted = dr.GetDateTime(db_DateDeleted);
         }
         #endregion
-
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
-
     }
 }
+
