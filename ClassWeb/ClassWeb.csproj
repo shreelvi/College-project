@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="web.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.8">
@@ -31,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="ClassWeb.csproj.user" />
     <None Include="wwwroot\User1\ajax.html" />
     <None Include="wwwroot\User1\Assignment 2\csstest.html" />
     <None Include="wwwroot\User1\Assignment 3\jsintro.html" />
