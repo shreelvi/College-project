@@ -149,7 +149,7 @@ namespace ClassWeb.Controllers
             var @class = await _context.Class.FindAsync(id);
             _context.Class.Remove(@class);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); 
         }
 
         private bool ClassExists(int id)
