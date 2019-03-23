@@ -179,8 +179,8 @@ namespace ClassWeb.Models
 
         protected override int dbUpdate()
         {
-            return DAL.UpdateObject(this);
-            throw new NotImplementedException();
+            return DAL.UpdateUser(this);
+            ///throw new NotImplementedException();
         }
         #endregion
 

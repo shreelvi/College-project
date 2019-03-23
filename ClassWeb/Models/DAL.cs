@@ -227,6 +227,32 @@ namespace ClassWeb.Model
         }
 
 
+        internal static int UpdateUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + User.db_Address, obj.Address);
+                comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+
         ///<summary>
         /// Get salt of the User from the database corresponding to the Username
         /// </summary>
