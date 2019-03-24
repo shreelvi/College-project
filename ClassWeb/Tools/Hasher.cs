@@ -68,7 +68,7 @@ namespace ClassWeb.Tools {
 
             //Removes last character from hash and hash to compare
             //To solve the issue
-            string hash1 = hash.Remove(hash.Length - 1, 1); 
+            string hash1 = hash.Remove(hash.Length - 1, 1);
             string hashToCompare1 = hashToCompare.Remove(hashToCompare.Length - 1, 1);
             if (hash1 == hashToCompare1)
                 return true;

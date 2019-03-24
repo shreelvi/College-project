@@ -1,7 +1,7 @@
 ﻿@model Tuple<List<Assignment>, List<string>>
 <h4 class="text-info font-weight-bold">Upload Assignment</h4>
 <div class="input-group">
-    <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
+    <form asp-controller="Assignment" asp-action="index" method="post" mu enctype="multipart/form-data">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text">Select File:</span>
@@ -31,6 +31,38 @@
                     <a href="\Assignment\ChangeDirDown">Folder Up</a>
                 </span>
             </th>
+            <th>
+                <!-- Button trigger modal -->
+                <button type="button" class="glyphicon glyphicon-folder-open btn btn-success btn-outline-success" data-toggle="modal" data-target="#CreateFolder">
+                    Create Folder
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="CreateFolder" tabindex="-1" role="dialog" aria-labelledby="CreateFolder" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="CreateFolder">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            
+                            <div class="modal-body">
+                                <form asp-action="CreateFolder" id="CreateFolderForm" asp-controller="Assignment" method="post">
+                                    <label for="folderName">Folder Name:</label>
+                                    <input name="folderName" id="folderName" value="" />
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <!--https://stackoverflow.com/questions/16154216/twitter-bootstrap-modal-form-submit-->
+                                <button type="submit" class="btn btn-primary" onclick="event.preventDefault();document.getElementById('CreateFolderForm').submit();">Create Folder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th>
         </tr>
         <tr>
             <th scope="col">File Name</th>
@@ -41,36 +73,67 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i <= Model.Item1.Count - 1; i++)
+        @for (int j = 0; j <= Model.Item2.Count - 1; j++)
         {
-            @if (i <= Model.Item2.Count - 1)
-            {
+           
                 <tr class="mt-5">
                     <td id="FileName">
                         <span class="glyphicon glyphicon-folder-open">
-                            <a href="\Assignment\ChangeDirUp?dir=@Model.Item2[i]">@Model.Item2[i]</a>
+                            <a href="\Assignment\ChangeDirUp?dir=@Model.Item2[j]">@Model.Item2[j]</a>
                         </span>
                 </tr>
-            }
-            <tr class="mt-5">
-                <td contenteditable='true' id="FileName">@Model.Item1[i].FileName<span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model.Item1[i].FileName })</span></td>
-                <td>@Model.Item1[i].FileSize KB</td>
-                <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>
-                <td><span class=" glyphicon glyphicon-trash">  @Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })</span>  </td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <div class="btn-group" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                <span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "Test", new { FileName = Model.Item1[i].FileName})</span>
-                                <span class=" glyphicon glyphicon-edit">  @Html.ActionLink("Edit", "Edit", new { FileName = Model.Item1[i].FileName })</span>
-                            </div>
+           }
+            @for (int i = 0; i <= Model.Item1.Count - 1; i++)
+            {
+                <tr>
+                    <td contenteditable='true' id="FileName">@Model.Item1[i].FileName<span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model.Item1[i].FileName })</span></td>
+                    <td>@Model.Item1[i].FileSize KB</td>
+                    <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>
+                    <td><span class="btn-outline-danger glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })</span></td>
+                    <td>
+                        <span class=" glyphicon glyphicon-eye-open">@Html.ActionLink("View", "FileView", new { FileName = Model.Item1[i].FileName })</span>
+                        <span class=" glyphicon glyphicon-edit"> @Html.ActionLink("Edit", "Edit", new { FileName = Model.Item1[i].FileName })</span>
+                    </td>
+                    <!-- Button trigger modal
+    <button type="button" class="btn-outline-danger btn-danger btn" data-toggle="modal" data-target="#exampleModalCenter">
+        Delete <span class="glyphicon glyphicon-trash" />
+    </button>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title bg-danger" id="exampleModalLongTitle">Delete Assignment?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-danger">
+                        Are you sure You want to Delete?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn-secondary" data-dismiss="modal" onclick="Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <td>
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+
                         </div>
                     </div>
-                </td>
-            </tr>
-        }
-    </tbody>
+                </div>
+            </td>
+                -->
+                </tr>
+                    
+            }
+        </tbody>
 </table>
