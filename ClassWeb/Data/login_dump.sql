@@ -62,7 +62,7 @@ CREATE TABLE `login_users` (
   PRIMARY KEY (`UserID`),
   KEY `FK1` (`RoleID`),
   CONSTRAINT `FK1` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`RoleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +71,7 @@ CREATE TABLE `login_users` (
 
 LOCK TABLES `login_users` WRITE;
 /*!40000 ALTER TABLE `login_users` DISABLE KEYS */;
-INSERT INTO `login_users` VALUES (2,'John','K.','Doe','doejohn@isu.edu','doejohn','/OOoOer10+tGwTRDTrQSoeCxVTFr6dtYly7d0cPxIak=',1,'NZsP6NnmfBuYeJrrAKNuVQ==','2019-03-10 15:19:33','2019-03-10 15:20:09');
+INSERT INTO `login_users` VALUES (2,'John','K.','Doe','doejohn@isu.edu','doejohn','/OOoOer10+tGwTRDTrQSoeCxVTFr6dtYly7d0cPxIak=',1,'NZsP6NnmfBuYeJrrAKNuVQ==','2019-03-10 15:19:33','2019-03-10 15:20:09'),(4,'test','t','l','test@isu.edu','testuser','test1',2,'test12','2019-03-10 17:17:48','2019-03-10 17:17:48'),(5,'test','t','t','test','test','test',2,'tt','2019-03-10 18:09:00','2019-03-10 18:09:00'),(6,'test','t','t','test','test','test',2,'tt','2019-03-10 18:15:10','2019-03-10 18:15:10'),(7,'Elvis','s','Shrestha','Shrestha','shreelvi','HrRZoWHksMVjIEbMXTnGDM0TLxFFFU5iuEHTbKgogtXrlOqvgP',2,'PvEqpcy8kmrzHVKOnMyZmni2hMj2bvzUic6YUTIp4QE84mX8lZ','2019-03-10 18:18:24','2019-03-10 18:18:24'),(8,'john','s','smith','smith','johns','8qOwU4zzwGLABZ64W/wP87tJAnFGtnWwXtVwVBQ8AvNIUybyVf',2,'G/qFPMU2MS/XERviB/3Rc0SUbc+eW4z3e+vcrxc8djiZHVxJWv','2019-03-10 18:22:41','2019-03-10 18:22:41'),(9,'john','s','smith','smith','johns','BrpF2xxORs4C8VDg1lVDuiRQd1NPMtruazBdJahqlK+hyZgtnQ',2,'vtZ3DptRUOBkhB7+snhjxXfCVn95o2KJlwBNBAD3KMqVI5QZYJ','2019-03-10 18:23:22','2019-03-10 18:23:22'),(10,'tom','k','smith','smith','tom','caQjzJYLCpGp+YAsC0XWdBPBbDEkS9cHOXRg59/TLVqlAf8ZhZ',2,'y6Ki6j/13jOdeIyDqdUlJTwdJHeMVL6F7c1jTQrYqs9Wq9smS9','2019-03-10 18:36:10','2019-03-10 18:36:10'),(11,'a','a','a','a','a','rxFjmpX/J1GUkCDcXvG0I3VpfxwQkoR31xII1HVlr3pwyepapz',2,'wfrQqcZpN+/KR6b6+k1tMeLOfC/BwlAs9L6806z00BWur/eLIc','2019-03-10 18:52:22','2019-03-10 18:52:22');
 /*!40000 ALTER TABLE `login_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +164,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sproc_useradd` */;
+/*!50003 DROP PROCEDURE IF EXISTS `sproc_UserAdd` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -174,20 +174,39 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_useradd`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_UserAdd`(
 OUT UserID int,
 IN FirstName nvarchar(45),
 IN MiddleName nvarchar(45),
 IN LastName nvarchar(45),
-IN EmailAddress
- nvarchar(128),
+IN EmailAddress nvarchar(128),
 IN UserName nvarchar(128),
-IN Password char(64),
-IN Salt char(50))
+IN Password char(50),
+IN Salt char(50)
+)
 BEGIN
- INSERT INTO Users(FirstName,MiddleName,LastName,EmailAddress,UserName,Password, Salt) 
-VALUES(FirstName,MiddleName,LastName,EmailAddress, UserName,Password, Salt);
-SET UserID = LAST_INSERT_ID;
+     INSERT INTO login_Users(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt)
+     VALUES(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt);
+SET UserID = LAST_INSERT_ID();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sum_of_two` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = cp850 */ ;
+/*!50003 SET character_set_results = cp850 */ ;
+/*!50003 SET collation_connection  = cp850_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sum_of_two`(IN num1 INT,IN num2 INT,OUT sot INT)
+BEGIN
+    SET sot := num1 + num2;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -204,4 +223,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-10 16:03:55
+-- Dump completed on 2019-03-10 19:25:18
