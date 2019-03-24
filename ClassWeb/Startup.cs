@@ -56,7 +56,7 @@ namespace ClassWeb
                 app.UseHsts();
             }
             app.UseSession(); // requred to have sessions in our application.
-
+            app.UseStaticFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
