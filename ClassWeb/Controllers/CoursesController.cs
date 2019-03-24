@@ -7,23 +7,44 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using System.Diagnostics;
+using ClassWeb.Data;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ClassWeb.Controllers
 {
+    /// <summary>
+    /// Created By: Mohan
+    /// Courses => A course is like 4430, 3307, etc.
+   /// Each course can be accessible to one to many users.
+   /// Each course can be taught by multiple professors, hence multiple classes.
+   /// A course has a course name and a number.
+ /// </summary>
+ /// 
     public class CoursesController : Controller
     {
+    
+        //access the data from the database
         private readonly ClassWebContext _context;
 
-        public CoursesController(ClassWebContext context)
+        //hosting Envrironment to upload file in root path (wwwroot)
+        private IHostingEnvironment _hostingEnvironment;
+        public CoursesController(ClassWebContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
-        {
+        {   
             return View(await _context.Course.ToListAsync());
         }
+
+        public override IActionResult View(object p)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
