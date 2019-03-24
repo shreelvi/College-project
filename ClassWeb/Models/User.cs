@@ -42,24 +42,19 @@ namespace ClassWeb.Models
         private string _Address;
         private string _UserName;
         private string _Password;
-        private int _RoleID;
         private string _Salt;
         private long _PhoneNumber;
         private DateTime _DateCreated;
-        private DateTime _DateArchived;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
         private bool _AccountExpired;
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-        private Role _Role;
-        private string _DirectoryPath;
-        private List<Assignment> _Assignments;
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -75,7 +70,6 @@ namespace ClassWeb.Models
         internal const string db_Enabled = "IsEnabled";
         internal const string db_PasswordExpired = "PasswordExpired";
         internal const string db_AccountLocked = "AccountLocked";
-        internal const string db_Role = "RoleID";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
         internal const string db_Assignments = "Assignments";
@@ -129,22 +123,7 @@ namespace ClassWeb.Models
             get { return _Salt; }
             set { _Salt = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the RoleID for this PeerVal.User object.
-        /// </summary>
-        /// <remarks></remarks>
-        public int RoleID
-        {
-            get
-            {
-                return _RoleID;
-            }
-            set
-            {
-                _RoleID = value;
-            }
-        }
+        
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
@@ -188,23 +167,6 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-        public Role Role
-        {
-            get { return _Role; }
-            set { _Role = value; }
-        }
-
-        public string DirectoryPath
-        {
-            get { return _DirectoryPath; }
-            set { _DirectoryPath = value; }
-        }
-
-        public List<Assignment> Assignments
-        {
-            get { return _Assignments; }
-            set { _Assignments = value; }
-        }
         #endregion
 
         #region Public Functions
@@ -237,14 +199,11 @@ namespace ClassWeb.Models
             _MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-            _Address = dr.GetString(db_Address);
+      
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateArchived = dr.GetDateTime(db_DateArchived);
+      
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(db_Role);
         }
         #endregion
 

@@ -18,73 +18,61 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-        string LoggedInUserName="User1";
         List<Assignment> Assignments = new List<Assignment>();
-
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            CurrentDir();
-        }
-        [HttpPost]
-        public IActionResult UserName(string Username)
-        {
-            LoggedInUserName = Username;
-            return RedirectToAction(nameof(Index));
         }
         // GET: Assignments
-        public  IActionResult Index()
+        public IActionResult Index()
         {
+            string UserName = HttpContext.Session.GetString("username");
+            if (UserName == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            CurrentDir(UserName);
             Tuple<List<Assignment>, List<string>> assignments = GetFiles();
             return View(assignments);
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
-        [ValidateAntiForgeryToken]
-        public RedirectResult Test(string FileName)
+        public RedirectResult FileView(string FileName)
         {
             string url = "";
-            string UserName = this.HttpContext.Session.GetString("username");
             string s = Directory.GetCurrentDirectory();
-            if (s ==Path.Combine(_hostingEnvironment.WebRootPath , LoggedInUserName))
+            string UserName = HttpContext.Session.GetString("username");
+            if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
             {
-                 url= Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
+                url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
             }
             else
             {
-                int Index = s.IndexOf(LoggedInUserName);
+                int Index = s.IndexOf(UserName);
                 Index += UserName.Length;
                 string dir = s.Substring(Index, s.Length - Index);
-                url = Url.RouteUrl("fileDirectory", new { UserName = LoggedInUserName, Directory = dir, FileName = FileName });
-            }           
+                url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
+            }
             return new RedirectResult(url);
         }
-        public string CurrentDir()
-        {
-            string UserName = LoggedInUserName;
-            if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath,UserName)))
-            {
-                Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath , UserName));
-            }
-            return Directory.GetCurrentDirectory();
-        }
+
         public IActionResult SetDefaultDir()
         {
-            string UserName = LoggedInUserName;
-            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, UserName));
+            string _UserName = HttpContext.Session.GetString("username");
+            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, _UserName));
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult ChangeDirUp(string dir)
         {
-            string path =Path.Combine(Directory.GetCurrentDirectory(),dir);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
             Directory.SetCurrentDirectory(path);
             return RedirectToAction(nameof(Index));
         }
         public IActionResult ChangeDirDown()
         {
             string path = Directory.GetCurrentDirectory();
-            int test=path.LastIndexOf("\\");
-            string s=path.Substring(0, test);
+            int test = path.LastIndexOf("\\");
+            string s = path.Substring(0, test);
             Directory.SetCurrentDirectory(s);
             return RedirectToAction(nameof(Index));
         }
@@ -94,7 +82,7 @@ namespace ClassWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
-        public IActionResult SaveEditedFile(string Content,string FileName)
+        public IActionResult SaveEditedFile(string Content, string FileName)
         {
             if (Content != null && Content.Length > 0)
             {
@@ -103,19 +91,20 @@ namespace ClassWeb.Controllers
 
                 try
                 {
-                if (System.IO.File.Exists(path))
-                {
-                    using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                    if (System.IO.File.Exists(path))
                     {
-                        fileStream.SetLength(0);
-                        fileStream.Close();
-                    }
-                    StreamWriter sw = new StreamWriter(path);
-                    sw.Write(Content);
-                    sw.Close();
+                        using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                        {
+                            fileStream.SetLength(0);
+                            fileStream.Close();
+                        }
+                        StreamWriter sw = new StreamWriter(path);
+                        sw.Write(Content);
+                        sw.Close();
                         ViewBag.Message = "File Has Been Succefully Modified";
+                    }
                 }
-                }catch(Exception ex)
+                catch (Exception ex)
                 {
                     //return ex;
                 }
@@ -132,7 +121,8 @@ namespace ClassWeb.Controllers
             //Save files in the directory
             try
             {
-                string dir_Path = CurrentDir();
+                string _UserName = HttpContext.Session.GetString("username");
+                string dir_Path = CurrentDir(_UserName);
                 string path = Path.Combine(dir_Path, file.FileName.ToString());
                 //FileExist(path);
                 //Need to check if the file is update or insert
@@ -170,58 +160,16 @@ namespace ClassWeb.Controllers
                 var items = GetFiles();
                 return View(items);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (ex.GetType().ToString() == "System.NullReferenceException")
                 {
                     ViewBag.Error = "Please Select The File To Upload";
                 }
-            }            
-            return RedirectToAction(nameof(Index),ViewBag.Error);
-        }
-
-        private bool FileExist(string path)
-        {
-            /*
-           List<Assignment> assign= DAL.GetAllAssignment();
- 
-            foreach(Assignment a in assign)
-            {
-                if (a.FileLocation != path)
-                {
-                    return false;
-                }
             }
-            */
-             return true;
-
+            return RedirectToAction(nameof(Index));
         }
 
-        //<summary>
-        //Verify the file Name
-        //</summary>
-
-        private string EnsureFilename(string fileName)
-        {
-            //throw new NotImplementedException();
-            if (fileName.Contains("\\"))
-            {
-                fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
-            }
-            return fileName;
-        }
-
-        //<summary>
-        //Get the Path of the File
-        //</summary>
-        private string GetPath(string fileName)
-        {
-            string UserName = LoggedInUserName;
-            string path =Path.Combine(_hostingEnvironment.WebRootPath , UserName);
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            return path + fileName;
-        }
 
         public async Task<FileResult> Download(string FileName)
         {
@@ -235,50 +183,60 @@ namespace ClassWeb.Controllers
             memory.Position = 0;
             return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
         }
-
-        #region Delete Assignement
-
-
-
-        // GET: Assignments/Delete/5
-        public  IActionResult Delete(string FileName)
+        public IActionResult CreateFolder(string folderName)
         {
-            if (FileName == null)
+            string path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if (!Directory.Exists(path))
             {
-                return NotFound();
-            }
-            List<Assignment> assign = DAL.GetAssignmentByFileName(FileName);
+                try
+                {
+                    ViewBag.Message = "Folder Succesfully Created";
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
 
-            if (assign == null)
-            {
-                return NotFound();
+                }
+
             }
             else
             {
-                int retVal = DAL.DeleteAssignmentByID(assign[1].ID);
-
+                ViewBag.Message = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
             }
             return RedirectToAction(nameof(Index));
-
         }
 
-
-        public IActionResult DeleteFromRoot(string FileName)
+        #region Delete Assignement
+        public IActionResult Delete(string FileName)
         {
-            string dir_Path =Directory.GetCurrentDirectory();
-            string path =Path.Combine(dir_Path, FileName);
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FileName);
             if (System.IO.File.Exists(path))
             {
-                System.IO.File.Delete(path);
-                ViewBag.Message = "File Succesfully Deleted!!!";
+                try
+                {
+                    Assignment assign = DAL.GetAssignmentByFileName(FileName);
+                   
+                        if (assign.FileName == FileName && path == assign.FileLocation)
+                        {
+                            DAL.DeleteAssignmentByID(assign.ID);
+                            System.IO.File.Delete(path);
+                            ViewBag.Message = "File Succesfully Deleted!!!";
+                        }
+                }
+                catch
+                {
+
+                }
             }
-            return RedirectToAction("Index", "Assignment");
+            return RedirectToAction(nameof(Index));
         }
         #endregion
         #region Edit Assignment
-        public  IActionResult Edit(string FileName)
+        public IActionResult Edit(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
+            string _UserName = HttpContext.Session.GetString("username");
             string path = Path.Combine(dir_Path, FileName);
             WebClient User = new WebClient();
             Byte[] FileBuffer = User.DownloadData(path);
@@ -288,7 +246,7 @@ namespace ClassWeb.Controllers
             if (t == "application/vnd.ms-word")
             {
                 //Download the file
-                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName)));
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName, _UserName)));
             }
             else
 
@@ -310,10 +268,6 @@ namespace ClassWeb.Controllers
             ViewBag.FileName = FileName;
             return View();
         }
-        public Assignment GetAllAssignment()
-        {
-           return DAL.GetAllAssignment();
-        }
         // POST: Assignments/Delete/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
@@ -325,6 +279,25 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region Custom Function
+        public string CurrentDir(string UserName)
+        {
+            if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath, UserName)))
+            {
+                Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, UserName));
+            }
+            return Directory.GetCurrentDirectory();
+        }
+        //<summary>
+        //Get the Path of the File
+        //</summary>
+        private string GetPath(string fileName, string _UserName)
+        {
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, _UserName);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path + fileName;
+        }
+
         private string GetContentType(string path)
         {
             var types = GetMimeTypes();
@@ -353,12 +326,12 @@ namespace ClassWeb.Controllers
             };
         }
 
-        private Tuple<List<Assignment>,List<string>> GetFiles()
+        private Tuple<List<Assignment>, List<string>> GetFiles()
         {
             string filepath = Directory.GetCurrentDirectory();
             var dir = new DirectoryInfo(filepath);
             var dire = Directory.GetDirectories(filepath);
-            List<string> root = GetDirectory(dire,filepath);
+            List<string> root = GetDirectory(dire, filepath);
 
             FileInfo[] fileNames = dir.GetFiles();
             List<Assignment> items = new List<Assignment>();
@@ -373,16 +346,16 @@ namespace ClassWeb.Controllers
             Assignment Assign = DAL.GetAllAssignment();
 
 
-            return Tuple.Create(items,root); ;
+            return Tuple.Create(items, root);
         }
 
-        private List<string> GetDirectory(string[] full,string root)
+        private List<string> GetDirectory(string[] full, string root)
         {
             List<string> result = new List<string>();
-            foreach(string s in full)
+            foreach (string s in full)
             {
                 int len = s.Length + 2 - root.Length;
-                string temp=s.Substring(root.Length+1);
+                string temp = s.Substring(root.Length + 1);
                 result.Add(temp);
             }
             return result;

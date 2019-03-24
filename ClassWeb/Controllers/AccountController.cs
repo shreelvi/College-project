@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +26,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController( IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -59,15 +58,6 @@ namespace ClassWeb.Controllers
             return Ok();
         }
         [AllowAnonymous]
-        //public ActionResult ConfirmEmail(string username, string token )
-        //{
-        //    //string UserToken = DAL.GetUserToken(username);
-        //    if (UserToken == token)
-        //    {
-        //        ViewBag.Success = "Successfully verified email.";
-        //    }
-        //    return View("login");
-        //}
         #endregion
 
         #region Login
@@ -117,7 +107,7 @@ namespace ClassWeb.Controllers
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", loggedIn.UserName);
-                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
+                HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
@@ -133,14 +123,14 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
-            int id = (int)HttpContext.Session.GetInt32("UserID");
+            int id = (int)HttpContext.Session.GetInt32("ID");
             string username = HttpContext.Session.GetString("username");
 
             ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
             ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
 
             List<Assignment> UserAssignments = new List<Assignment>();
-            UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+           // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
 
             return View(UserAssignments);
         }
@@ -179,8 +169,7 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            SetUserFolder(NewUser); //Sets the default user directory 
-            int check = DAL.CheckUserExists(NewUser.UserName);
+            int check =0; // DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -194,6 +183,7 @@ namespace ClassWeb.Controllers
                     //int UserAdd = DAL.AddUser(NewUser);
                     DAL.AddUser(NewUser);
                     TempData["UserAddSuccess"] = "User added successfully";
+                    CreateUserDirectory(NewUser.UserName);
                 }
                 catch
                 {
@@ -203,20 +193,9 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
 
-        /// <summary>
-        /// Created on: 03/17/2019
-        /// Created by: Elvis
-        /// Sets the default root folder for each user when registration
-        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
-        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
-        /// Used the references to understand and develop the feature in our website
-        /// </summary>
-        private void SetUserFolder(User user)
+        private void CreateUserDirectory(string UserName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
-            user.DirectoryPath = dir_Path + user.UserName;
-            string path = user.DirectoryPath;
-
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }

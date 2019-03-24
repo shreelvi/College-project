@@ -22,7 +22,6 @@ namespace ClassWeb.Model
         private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
-
         private DAL()
         {
         }
@@ -31,7 +30,6 @@ namespace ClassWeb.Model
             Read,
             Edit
         }
-
         #region Database Connections
         internal static void ConnectToDatabase(MySqlCommand comm, dbAction action = dbAction.Read)
         {
@@ -41,15 +39,12 @@ namespace ClassWeb.Model
                     comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 else
                     comm.Connection = new MySqlConnection(ReadOnlyConnectionString);
-
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
             }
             catch (Exception)
             {
-
             }
         }
-
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -65,30 +60,22 @@ namespace ClassWeb.Model
                 return null;
             }
         }
-
-        internal static User GetUserByID(int UserID)
+        public static int GetIntReader(MySqlCommand comm)
         {
-            MySqlCommand comm = new MySqlCommand("sproc_UserGetByID");
-            User retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retObj = new User(dr);
-                }
-                comm.Connection.Close();
+                ConnectToDatabase(comm);
+                comm.Connection.Open();
+                int count = Convert.ToInt32(comm.ExecuteScalar());
+                return count;
             }
             catch (Exception ex)
             {
-                comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                return 0;
             }
-
-            return retObj;
         }
-
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>
@@ -178,19 +165,20 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static List<Assignment> GetAssignmentByFileName(string fileName)
+        public static Assignment GetAssignmentByFileName(string fileName)
         {
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByFileName");
-            List<Assignment>retObj = null;
+            Assignment retObj = null;
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
                 MySqlDataReader dr = GetDataReader(comm);
+
                 while (dr.Read())
                 {
-                    retObj.Add(new Assignment(dr));
+                    retObj=new Assignment(dr);
                 }
-                comm.Connection.Close(); 
+                comm.Connection.Close();
             }
             catch (Exception ex)
             {
@@ -200,18 +188,18 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-        internal static Assignment GetAllAssignment()
+        public static Assignment GetAllAssignment()
         {
 
-           Assignment retObj = null;
+            Assignment retObj = null;
             MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
             try
             {
                 MySqlDataReader dr = GetDataReader(comm);
-                    while (dr.Read())
-                    {
-                        retObj=new Assignment(dr);
-                    }
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
                 comm.Connection.Close();
             }
             catch (Exception ex)
@@ -224,7 +212,7 @@ namespace ClassWeb.Model
         internal static int DeleteAssignmentByID(int ID)
         {
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentDeleteByID");
-           int retInt = 0;
+            int retInt = 0;
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, ID);
