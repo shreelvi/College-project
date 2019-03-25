@@ -53,11 +53,11 @@ namespace ClassWeb.Models
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-        private Role _Role;
+      //  private Role _Role;
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -160,7 +160,7 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-      
+
         #endregion
 
         #region Public Functions
