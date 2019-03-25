@@ -42,18 +42,15 @@ namespace ClassWeb.Models
         private string _Address;
         private string _UserName;
         private string _Password;
-        private int _RoleID;
         private string _Salt;
         private long _PhoneNumber;
         private DateTime _DateCreated;
-        private DateTime _DateArchived;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
         private bool _AccountExpired;
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-      //  private Role _Role;
         #endregion
 
         #region Database String
@@ -73,8 +70,11 @@ namespace ClassWeb.Models
         internal const string db_Enabled = "IsEnabled";
         internal const string db_PasswordExpired = "PasswordExpired";
         internal const string db_AccountLocked = "AccountLocked";
-       
         internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
+
+
         #endregion
 
         #region public Properites
@@ -111,10 +111,8 @@ namespace ClassWeb.Models
         }
         public string Password
         {
-            get {
-                if (String.IsNullOrEmpty(_Password)) _Password = "";
-                return _Password; }
-            set { _Password = value.Trim(); }
+            get { return _Password; }
+            set { _Password = value; }
         }
 
         /// <summary>
@@ -123,20 +121,29 @@ namespace ClassWeb.Models
         public string Salt
         {
             get { return _Salt; }
-            set { _Salt = value.Trim(); }
+            set { _Salt = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the RoleID for this PeerVal.User object.
-        /// </summary>
-        /// <remarks></remarks>
-       
+        
         public long PhoneNumber
         {
             get { return _PhoneNumber; }
             set { _PhoneNumber = value; }
         }
-       
+        public DateTime DateCreated
+        {
+            get { return _DateCreated; }
+            set { _DateCreated = value; }
+        }
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
+        }
+        public DateTime DateDeleted
+        {
+            get { return _DateDeleted; }
+            set { _DateDeleted = value; }
+        }
         public bool AccountExpired
         {
             get { return _AccountExpired; }
@@ -148,7 +155,7 @@ namespace ClassWeb.Models
             get { return _AccountLocked; }
             set { _AccountLocked = value; }
         }
-        
+
         public bool PasswordExpired
         {
             get { return _PasswordExpired; }
@@ -160,7 +167,6 @@ namespace ClassWeb.Models
             get { return _Enabled; }
             set { _Enabled = value; }
         }
-
         #endregion
 
         #region Public Functions
@@ -172,15 +178,12 @@ namespace ClassWeb.Models
 
         protected override int dbAdd()
         {
-            _ID = DAL.AddUser(this);
-            return ID; 
-            ///throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         protected override int dbUpdate()
         {
-            return DAL.UpdateUser(this);
-            ///throw new NotImplementedException();
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -196,14 +199,11 @@ namespace ClassWeb.Models
             _MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-            _Address = dr.GetString(db_Address);
+      
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateArchived = dr.GetDateTime(db_DateArchived);
+      
             _Salt = dr.GetString(db_Salt);
-           
         }
         #endregion
 

@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="web.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.8">
@@ -23,49 +19,19 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.2105168" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="MySql.Data" Version="8.0.15" />
+    <PackageReference Include="Syncfusion.EJ2" Version="16.3.0.29" />
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\User1\ajax.html" />
-    <None Include="wwwroot\User1\Assignment 2\csstest.html" />
-    <None Include="wwwroot\User1\Assignment 3\jsintro.html" />
-    <None Include="wwwroot\User1\Assignment 4\objects.html" />
-    <None Include="wwwroot\User1\Assignment 5\dom.html" />
-    <None Include="wwwroot\User1\Assignment 6\events.html" />
-    <None Include="wwwroot\User1\Assignment 7\jQuery.html" />
-    <None Include="wwwroot\User1\Assignment1\Form.html" />
-    <None Include="wwwroot\User1\Assignment1\index.html" />
-    <None Include="wwwroot\User1\Assignment1\Resume.html" />
-    <None Include="wwwroot\User1\Images\background-ribbon.png" />
-    <None Include="wwwroot\User1\Images\favicon.ico" />
-    <None Include="wwwroot\User1\Images\Kishor Pic.jpg" />
-    <None Include="wwwroot\User1\New Text Document.txt" />
-    <None Include="wwwroot\User1\Resume.html" />
-    <None Include="wwwroot\User1\robots.txt" />
-    <None Include="wwwroot\User1\Script\ajax.js" />
-    <None Include="wwwroot\User1\Script\dom.js" />
-    <None Include="wwwroot\User1\Script\events.js" />
-    <None Include="wwwroot\User1\Script\intro-defer.js" />
-    <None Include="wwwroot\User1\Script\intro-end.js" />
-    <None Include="wwwroot\User1\Script\intro.js" />
-    <None Include="wwwroot\User1\Script\jquery-3.3.1.js" />
-    <None Include="wwwroot\User1\Script\myQuery.js" />
-    <None Include="wwwroot\User1\Script\objects.js" />
-    <None Include="wwwroot\User1\Script\Storage.js" />
-    <None Include="wwwroot\User1\Starting Page.html" />
-    <None Include="wwwroot\User1\Styles\ajax.css" />
-    <None Include="wwwroot\User1\Styles\events.css" />
-    <None Include="wwwroot\User1\Styles\part3style.css" />
-    <None Include="wwwroot\User1\Styles\Storage.css" />
-    <None Include="wwwroot\User1\Styles\style.css" />
-    <None Include="wwwroot\User1\Styles\Test.css" />
-    <None Include="wwwroot\User1\Test\Test1.html" />
-    <None Include="wwwroot\User1\ViewStorage.html" />
+    <None Include="ClassWeb.csproj.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\hack\" />
   </ItemGroup>
 
 </Project>
