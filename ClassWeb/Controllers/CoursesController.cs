@@ -40,12 +40,7 @@ namespace ClassWeb.Controllers
             return View(await _context.Course.ToListAsync());
         }
 
-        public override IActionResult View(object p)
-        {
-            throw new NotImplementedException();
-        }
-
-
+      
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
