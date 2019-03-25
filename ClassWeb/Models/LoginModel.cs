@@ -44,7 +44,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -52,7 +52,7 @@ namespace ClassWeb.Models
         internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
-        internal const string db_DateCreated = "DateCreated";
+        //internal const string db_DateCreated = "DateCreated";
         internal const string db_RoleID = "RoleID";
         internal const string db_Salt = "Salt";
         #endregion
@@ -181,7 +181,7 @@ namespace ClassWeb.Models
             _Password = dr.GetString(db_Password);
             //_DateCreated = dr.GetDateTime(db_DateCreated);
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(db_RoleID);
+            //_RoleID = dr.GetInt32(db_RoleID);
         }
         #endregion
 

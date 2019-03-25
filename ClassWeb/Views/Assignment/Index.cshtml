@@ -1,7 +1,7 @@
-﻿@model List<Assignment>
+﻿@model Tuple<List<Assignment>, List<string>>
 <h4 class="text-info font-weight-bold">Upload Assignment</h4>
 <div class="input-group">
-    <form asp-controller="Upload" asp-action="index" method="post" enctype="multipart/form-data">
+    <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text">Select File:</span>
@@ -9,7 +9,10 @@
                 <input type="submit" class="btn btn-outline-success" value="Upload" />
             </div>
         </div>
-        <p class="info alert-warning">  @ViewBag.Message</p>
+        <div>
+            <span class="info alert-success">@ViewBag.Message</span>
+            <span class="info alert-danger">  @ViewBag.Error</span>
+        </div>
     </form>
 </div>
 <br />
@@ -18,26 +21,56 @@
 <table class="table table-striped bg-light">
     <thead>
         <tr>
+            <th>
+                <span class="glyphicon glyphicon-home">
+                    <a href="\Assignment\SetDefaultDir">Home</a>
+                </span>
+            </th>
+            <th>
+                <span class="glyphicon glyphicon-arrow-up">
+                    <a href="\Assignment\ChangeDirDown">Folder Up</a>
+                </span>
+            </th>
+        </tr>
+        <tr>
             <th scope="col">File Name</th>
             <th scope="col">File Size</th>
             <th scope="col">Download</th>
             <th scope="col">Delete</th>
-            <th scope="col">View</th>
-            <th scope="col">Edit</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
-
-        @for (var i = 0; i <= Model.Count - 1; i++)
+        @for (int i = 0; i <= Model.Item1.Count - 1; i++)
         {
-        <tr class="mt-5">
-            <td>@Model[i].Name</td>
-            <td>@Model[i].FileSize KB</td>
-            <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model[i].Name })</span></td>
-            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("Delete", "Delete", new { FileName = Model[i].Name })</span>  </td>
-            <td><span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "View", new { FileName = Model[i].Name })</span>  </td>
-            <td><span class=" glyphicon glyphicon-edit">  @Html.ActionLink("Edit", "Edit", new { FileName = Model[i].Name })</span>  </td>
-        </tr>
+            @if (i <= Model.Item2.Count - 1)
+            {
+                <tr class="mt-5">
+                    <td id="FileName">
+                        <span class="glyphicon glyphicon-folder-open">
+                            <a href="\Assignment\ChangeDirUp?dir=@Model.Item2[i]">@Model.Item2[i]</a>
+                        </span>
+                </tr>
+            }
+            <tr class="mt-5">
+                <td contenteditable='true' id="FileName">@Model.Item1[i].FileName<span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model.Item1[i].FileName })</span></td>
+                <td>@Model.Item1[i].FileSize KB</td>
+                <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>
+                <td><span class=" glyphicon glyphicon-trash">  @Html.ActionLink("Delete", "Delete", new { FileName = Model.Item1[i].FileName })</span>  </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <span class=" glyphicon glyphicon-eye-open">  @Html.ActionLink("View", "Test", new { FileName = Model.Item1[i].FileName})</span>
+                                <span class=" glyphicon glyphicon-edit">  @Html.ActionLink("Edit", "Edit", new { FileName = Model.Item1[i].FileName })</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

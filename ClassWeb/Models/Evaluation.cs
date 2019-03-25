@@ -34,8 +34,6 @@ namespace ClassWeb {
         private string _Name;
         private DateTime _DateStart;
         private DateTime _DateClosed;
-        private List<Prompt> _Prompts = null;
-
         #endregion
 
         #region Public Properties
