@@ -116,21 +116,22 @@ namespace ClassWeb.Controllers
         //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
         //</summary>
         [HttpPost]
-        public async Task<IActionResult> Index(IFormFile file)
+        public async Task<IActionResult> Index(List<IFormFile> file)
         {
             //Save files in the directory
             try
             {
                 string _UserName = HttpContext.Session.GetString("username");
                 string dir_Path = CurrentDir(_UserName);
-                string path = Path.Combine(dir_Path, file.FileName.ToString());
+                string path = Path.Combine(dir_Path, file[0].FileName.ToString());
                 //FileExist(path);
                 //Need to check if the file is update or insert
+                CreateFolderDirectory(file);
                 Assignment assign = new Assignment();
                 assign.IsEditable = false;
-                assign.FileSize = file.Length;
+                assign.FileSize = file[0].Length;
                 assign.FileLocation = path;
-                assign.FileName = file.FileName.ToString();
+                assign.FileName = file[0].FileName.ToString();
                 assign.Grade = 0;
                 string t = GetContentType(path);
                 //checking if the file is editable and setting up the variable accordingly
@@ -148,7 +149,7 @@ namespace ClassWeb.Controllers
                 {
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        await file[0].CopyToAsync(stream);
                         ViewBag.Message = "File Succesfully Uploaded!!!";
                     }
                 }
@@ -170,6 +171,36 @@ namespace ClassWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private void CreateFolderDirectory(List<IFormFile> files)
+        {
+            foreach (IFormFile file in files)
+            {
+                string temp = "";
+                string[] directory = file.FileName.Split("/");
+                for (int i = 0; i < directory.Length - 1; i++)
+                {        
+                    temp=Path.Combine(temp,directory[i]);
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), temp);
+                    if (!Directory.Exists(path))
+                    {
+                        ViewBag.Message = "Folder Succesfully Created";
+                        Directory.CreateDirectory(path);
+                    }
+                    else
+                    {
+                        if (temp == directory[i])
+                        {
+                            //Donothing
+                        }
+                        else
+                        {
+                        temp += directory[i];
+                        }
+                    }
+                }
+            }
+            SetDefaultDir();
+        }
 
         public async Task<FileResult> Download(string FileName)
         {
@@ -216,13 +247,13 @@ namespace ClassWeb.Controllers
                 try
                 {
                     Assignment assign = DAL.GetAssignmentByFileName(FileName);
-                   
-                        if (assign.FileName == FileName && path == assign.FileLocation)
-                        {
-                            DAL.DeleteAssignmentByID(assign.ID);
-                            System.IO.File.Delete(path);
-                            ViewBag.Message = "File Succesfully Deleted!!!";
-                        }
+
+                    if (assign.FileName == FileName && path == assign.FileLocation)
+                    {
+                        DAL.DeleteAssignmentByID(assign.ID);
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
+                    }
                 }
                 catch
                 {
