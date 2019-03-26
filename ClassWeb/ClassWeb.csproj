@@ -34,4 +34,10 @@
     <Folder Include="wwwroot\hack\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Account\AddGroup.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>

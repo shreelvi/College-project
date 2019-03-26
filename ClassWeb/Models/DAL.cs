@@ -442,9 +442,9 @@ namespace ClassWeb.Model
                 string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 obj.Password = newPass;
                 // now set object to Database.
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
-               
+
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
@@ -457,15 +457,33 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        internal static int AddUserToGroup(Group obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("add_UserToGroup");
+            try
+            {
+              
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+               
+                return AddObject(comm, "@" + Group.db_EmailAddress);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
         internal static int UpdateGroup(Group obj)
         {
             if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("update_Group");
             try
             {
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
-
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
