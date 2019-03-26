@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Xml.Serialization; 
+using ClassWeb.Model; 
 
 namespace ClassWeb.Models
 {
