@@ -17,8 +17,8 @@ namespace ClassWeb.Models
         private int _SectionNumber;
         private DateTime _SectionStart;
         private DateTime _SectionEnd;
-        private Class _Class;
-        private int _ClassID;
+        //private Class _Class;
+        //private int _ClassID;
         private User _User;
         private int _UserID;
         #endregion
@@ -39,7 +39,7 @@ namespace ClassWeb.Models
         internal const string db_SectionNumber = "SectionNumber";
         internal const string db_SectionStart = "SectionStart";
         internal const string db_SectionEnd = "SectionEnd";
-        internal const string db_Class = "ClassID";
+       // internal const string db_Class = "ClassID";
         internal const string db_User = "UserID";
         #endregion
 
@@ -60,16 +60,16 @@ namespace ClassWeb.Models
             get { return _SectionEnd; }
             set { _SectionEnd = value; }
         }
-        public Class Class
-        {
-            get { return _Class; }
-            set { _Class = value; }
-        }
-        public int ClassID
-        {
-            get { return _ClassID; }
-            set { _ClassID = value; }
-        }
+        //public Class Class
+        //{
+        //    get { return _Class; }
+        //    set { _Class = value; }
+        //}
+        //public int ClassID
+        //{
+        //    get { return _ClassID; }
+        //    set { _ClassID = value; }
+        //}
         public User User
         {
             get { return _User; }
@@ -110,7 +110,7 @@ namespace ClassWeb.Models
             _SectionNumber = dr.GetInt32(db_SectionNumber);
             _SectionStart = dr.GetDateTime(db_SectionStart);
             _SectionEnd = dr.GetDateTime(db_SectionEnd);
-            _ClassID = dr.GetInt32(Class.db_ID);
+            //_ClassID = dr.GetInt32(Class.db_ID);
             _UserID = dr.GetInt32(User.db_ID);
         }
         #endregion

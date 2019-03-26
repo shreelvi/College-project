@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Models;
 
 namespace ClassWeb.Data
 {
@@ -20,6 +21,7 @@ namespace ClassWeb.Data
         public DbSet<ClassWeb.Models.Assignment> Assignment { get; set; }
         public DbSet<ClassWeb.Models.LoginModel> LoginModel { get; set; }
         public DbSet<ClassWeb.Models.User> User { get; set; }
+        public DbSet<ClassWeb.Models.Section> Section { get; set; }
 
     }
 }
