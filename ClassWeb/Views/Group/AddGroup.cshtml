@@ -1,5 +1,5 @@
 ﻿@using ClassWeb.Models
-@model LoginModel
+@model GroupLoginModel
 @{
     ViewData["Title"] = "Add Group";
 }
@@ -11,12 +11,20 @@
             <h2 style="color: darkorange">Add a new group.</h2>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
-            
+
             <div class="form-group">
                 <label asp-for="EmailAddress"></label>
                 <input asp-for="EmailAddress" class="form-control" />
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+
             <div class="form-group">
                 <label asp-for="UserName"></label>
                 <input asp-for="UserName" class="form-control" />

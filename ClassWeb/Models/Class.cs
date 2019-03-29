@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using System.Xml.Serialization; 
-using ClassWeb.Model; 
 
 namespace ClassWeb.Models
 {
@@ -47,12 +44,12 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
-   
+
         #endregion
 
-         #region public class
-        [Key]
-        public bool Available
+        #region public class
+
+        public bool IsAvailable
         {
             get
             {
@@ -130,4 +127,4 @@ namespace ClassWeb.Models
 
 
 
-    
+
