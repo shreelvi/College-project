@@ -32,6 +32,8 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Login", "Account");
             }
             CurrentDir(UserName);
+            //string Current =// Directory.GetCurrentDirectory().Split(UserName);
+            //ViewBag.Location = //;
             Tuple<List<Assignment>, List<string>> assignments = GetFiles();
             return View(assignments);
         }
@@ -123,41 +125,7 @@ namespace ClassWeb.Controllers
             {
                 string _UserName = HttpContext.Session.GetString("username");
                 string dir_Path = CurrentDir(_UserName);
-                string path = Path.Combine(dir_Path, file[0].FileName.ToString());
-                //FileExist(path);
-                //Need to check if the file is update or insert
                 CreateFolderDirectory(file);
-                Assignment assign = new Assignment();
-                assign.IsEditable = false;
-                assign.FileSize = file[0].Length;
-                assign.FileLocation = path;
-                assign.FileName = file[0].FileName.ToString();
-                assign.Grade = 0;
-                string t = GetContentType(path);
-                //checking if the file is editable and setting up the variable accordingly
-                if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
-                 t == "text/html" || t == "text/javascript" || t == "text/css")
-                {
-                    assign.IsEditable = true;
-                }
-                assign.DateSubmited = DateTime.Now;
-                assign.Feedback = "File Submitted";
-                assign.DateModified = DateTime.Now;
-                int test = DAL.AddAssignment(assign);
-                //checking and validating the insert info into table
-                if (test > 0)
-                {
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await file[0].CopyToAsync(stream);
-                        ViewBag.Message = "File Succesfully Uploaded!!!";
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "File Upload Failed!!!";
-                }
-
                 var items = GetFiles();
                 return View(items);
             }
@@ -173,30 +141,37 @@ namespace ClassWeb.Controllers
 
         private void CreateFolderDirectory(List<IFormFile> files)
         {
+            List<Assignment> assign = new List<Assignment>();
             foreach (IFormFile file in files)
             {
-                string temp = "";
-                string[] directory = file.FileName.Split("/");
-                for (int i = 0; i < directory.Length - 1; i++)
-                {        
-                    temp=Path.Combine(temp,directory[i]);
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), temp);
-                    if (!Directory.Exists(path))
+                DirectoryInfo dir = new DirectoryInfo(file.FileName);
+                if (!Directory.Exists(dir.Parent.ToString()))
+                {
+                    Directory.CreateDirectory(dir.Parent.ToString());
+                    Assignment a = new Assignment();
+                    a.IsEditable = false;
+                    a.FileSize = file.Length;
+                    a.FileLocation = dir.FullName;
+                    a.FileName = file.FileName.ToString();
+                    a.Grade = 0;                
+                    a.DateSubmited = DateTime.Now;
+                    a.Feedback = "File Submitted";
+                    a.DateModified = DateTime.Now;
+                    int test = DAL.AddAssignment(a);
+                    //checking and validating the insert info into table
+                    if (test > 0)
                     {
-                        ViewBag.Message = "Folder Succesfully Created";
-                        Directory.CreateDirectory(path);
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
+                        }
                     }
                     else
                     {
-                        if (temp == directory[i])
-                        {
-                            //Donothing
-                        }
-                        else
-                        {
-                        temp += directory[i];
-                        }
+                        ViewBag.Error = "File Upload Failed!!!";
                     }
+                    assign.Add(a);
                 }
             }
             SetDefaultDir();
@@ -354,6 +329,7 @@ namespace ClassWeb.Controllers
                 {".jpeg", "image/jpeg"},
                 {".gif", "image/gif"},
                 {".mpeg","audio/mpeg"},
+                {".*",""}
             };
         }
 
