@@ -31,6 +31,11 @@ namespace ClassWeb.Models
             get { return _ClassID; }
            private set { _ClassID = value; }
         }
+
+        internal static Task FirstOrDefaultAsync(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

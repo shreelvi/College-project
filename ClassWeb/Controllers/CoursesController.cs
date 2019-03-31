@@ -23,21 +23,22 @@ namespace ClassWeb.Controllers
     public class CoursesController : Controller
     {
     
-        //access the data from the database
-        private readonly ClassWebContext _context;
-
+       
         //hosting Envrironment to upload file in root path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-        public CoursesController(ClassWebContext context, IHostingEnvironment hostingEnvironment)
+    
+        List<Course> Courses = new List<Course>();
+        public CoursesController(IHostingEnvironment hostingEnvironment)
         {
-            _context = context;
+            
             _hostingEnvironment = hostingEnvironment;
+            
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {   
-            return View(await _context.Course.ToListAsync());
+            return View(Courses);
         }
 
       
@@ -49,7 +50,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Course
+            var course = await .Course
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (course == null)
             {
@@ -70,31 +71,30 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Number,ClassID,Name,ID")] Course course)
+        public IActionResult Create([Bind("Number,ClassID,Name,ID")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
         }
 
         // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Course.FindAsync(id);
-            if (course == null)
+
+            if (Courses == null)
             {
                 return NotFound();
             }
-            return View(course);
+            return View(Courses);
         }
 
         // POST: Courses/Edit/5
@@ -102,7 +102,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Number,ClassID,Name,ID")] Course course)
+        public IActionResult Edit(int id, [Bind("Number,ClassID,Name,ID")] Course course)
         {
             if (id != course.ID)
             {
@@ -113,8 +113,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    // _context.Update(course);
+                    // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,37 +133,37 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Courses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Course
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
+           // var course = await Course
+         // .FirstOrDefaultAsync(m => m.ID == id);
+            if (Courses == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            return View(Courses);
         }
 
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var course = await _context.Course.FindAsync(id);
-            _context.Course.Remove(course);
-            await _context.SaveChangesAsync();
+            // var course = await _context.Course.FindAsync(id);
+            // _context.Course.Remove(course);
+            // await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)
         {
-            return _context.Course.Any(e => e.ID == id);
+            return Courses.Any(e => e.ID == id);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
