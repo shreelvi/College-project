@@ -17,6 +17,7 @@ namespace ClassWeb.Controllers
         #region Private Variables
         private readonly ClassWebContext _context;
         #endregion
+
         #region constructor
         private IHostingEnvironment _hostingEnvironment;
         public SectionController(ClassWebContext context, IHostingEnvironment hostingEnvironment)
@@ -25,6 +26,7 @@ namespace ClassWeb.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         #endregion
+
         // GET: Section
         public async Task<IActionResult> Index()
         {
