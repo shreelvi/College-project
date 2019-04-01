@@ -1,16 +1,16 @@
-﻿@model ClassWeb.Models.Class
-
+﻿@using ClassWeb.Models
+@model Class
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Cretae Class";
 }
-
-<h2>View</h2>
+<p style="color:red">@ViewBag.Error</p>
+<h2>Create</h2>
 
 <h4>Class</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="View">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <div class="checkbox">
