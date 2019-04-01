@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
+using ClassWeb.Services;
 
 namespace ClassWeb.Controllers
 {
@@ -17,146 +18,97 @@ namespace ClassWeb.Controllers
         /// created by Ganesh
         ///ref: professor's code for PeerEval
         /// </summary>
-        private readonly ClassWebContext _context;
-        //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
+        #region Private Variables
+        private readonly IEmailService _emailService; //Use classes to send email in serivices folder
+
+        //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
-        public ClassesController(ClassWebContext context, IHostingEnvironment hostingEnvironment)
+        #endregion
+
+        #region constructor
+        public ClassesController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
-            _context = context;
             _hostingEnvironment = hostingEnvironment;
+            _emailService = emailService;
         }
+        #endregion
 
-        // GET: Classes
-        public async Task<IActionResult> Index()
+        // GET: Class
+        public ActionResult Index()
         {
-            return View(await _context.Class.ToListAsync());
+            ClassDBHandle dbhandle = new ClassDBHandle();
+            ModelState.Clear();
+            return View(dbhandle.GetClass());
         }
 
-        // GET: Classes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @class = await _context.Class
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (@class == null)
-            {
-                return NotFound();
-            }
-
-            return View(@class);
-        }
-
-        // GET: Classes/Create
-        public IActionResult Create()
+        // GET: Class/Create
+        public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Classes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Class/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IsAvailable,DateStart,DateEnd,SectionID,ID")] Class @class)
+        public ActionResult Create(Class cmodel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(@class);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(@class);
-        }
-
-        // GET: Classes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @class = await _context.Class.FindAsync(id);
-            if (@class == null)
-            {
-                return NotFound();
-            }
-            return View(@class);
-        }
-
-        // POST: Classes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IsAvailable,DateStart,DateEnd,SectionID,ID")] Class @class)
-        {
-            if (id != @class.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(@class);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClassExists(@class.ID))
+                    ClassDBHandle sdb = new ClassDBHandle();
+                    if (sdb.AddStudent(cmodel))
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        ViewBag.Message = "Class Details Added Successfully";
+                        ModelState.Clear();
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View();
             }
-            return View(@class);
-        }
-
-        // GET: Classes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            catch
             {
-                return NotFound();
+                return View();
             }
+        }
 
-            var @class = await _context.Class
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (@class == null)
+        // GET: Class/Edit/5
+        public ActionResult Edit(int id)
+        {
+            ClassDBHandle sdb = new ClassDBHandle();
+            return View(sdb.GetClass().Find(cmodel => cmodel.ID == id));
+        }
+
+        // POST: Class/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, Class cmodel)
+        {
+            try
             {
-                return NotFound();
+                ClassDBHandle sdb = new ClassDBHandle();
+                sdb.UpdateDetails(cmodel);
+                return RedirectToAction("Index");
             }
-
-            return View(@class);
+            catch
+            {
+                return View();
+            }
         }
-
-        // POST: Classes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // GET: Class/Delete/5
+        public ActionResult Delete(int id)
         {
-            var @class = await _context.Class.FindAsync(id);
-            _context.Class.Remove(@class);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index)); 
+            try
+            {
+                ClassDBHandle sdb = new ClassDBHandle();
+                if (sdb.DeleteClass(id))
+                {
+                    ViewBag.AlertMsg = "Class Deleted Successfully";
+                }
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
         }
-
-        private bool ClassExists(int id)
-        {
-            return _context.Class.Any(e => e.ID == id);
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

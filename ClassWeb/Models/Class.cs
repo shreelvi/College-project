@@ -97,6 +97,8 @@ namespace ClassWeb.Models
             }
         }
 
+        public object Title { get; internal set; }
+
         public override int dbSave()
         {
             throw new NotImplementedException();
