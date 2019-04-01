@@ -51,3 +51,22 @@ CREATE TABLE `assignment` (
 ALTER TABLE `assignment`
   ADD PRIMARY KEY (`AssignmentID`),
   ADD CONSTRAINT FK_AssignmentUser FOREIGN KEY (`UserID`) REFERENCES Login_users(UserID);
+
+--
+-- Table structure for table `roles`
+--
+CREATE TABLE IF NOT EXISTS `Roles` ( 
+`RoleID` INT NOT NULL AUTO_INCREMENT, 
+`Name` VARCHAR(45) NULL, 
+`IsAdmin` BIT(1) NULL, 
+`Users` BIT(4) NULL, 
+`Role` BIT(4) NULL, `
+Assignment` BIT(4) NULL, 
+PRIMARY KEY (`RoleID`)) ENGINE = InnoDB;
+
+INSERT INTO `Roles`(
+`RoleID`, `Name`, `IsAdmin`,`Users`, `Role`, `Assignment`) 
+VALUES (null,'Admin',1,b'1111',b'1111',b'1111') ,
+(null,'Power User',1,b'0111',b'0111',b'0111') ,
+(null,'Data Entry',1,b'0110',b'0110',b'0110');
+

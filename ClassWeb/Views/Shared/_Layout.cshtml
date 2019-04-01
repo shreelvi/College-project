@@ -58,7 +58,17 @@
     <div class="container body-content">
         @RenderBody()
         <!-- Syncfusion Essential JS 2 ScriptManager -->
-        <ejs-scripts></ejs-scripts>
+        <ejs-scripts>
+            document.getElementById('SaveEditedFiles').addEventListener('click', function () {
+            var obj = document.getElementById('types').ej2_instances[0];
+            var value = JSON.stringify({ text: obj.value });
+            const Http = new XMLHttpRequest();
+            const url = '@Url.Action("Save")';
+            Http.open("POST", url);
+            Http.setRequestHeader('Content-Type', 'application/json');
+            Http.send(value);
+            });
+        </ejs-scripts>
         <hr />
         <footer>
             <p>&copy; 2019 - ClassWeb</p>

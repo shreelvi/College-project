@@ -13,7 +13,7 @@ namespace ClassWeb.Models
  /// Each role user can have one to multiple permissions. 
  /// </summary>
 
-    public class Role:DatabaseNamedRecord
+    public class Role:DatabaseRecord
     {
         #region Constructors
         public Role()
@@ -27,21 +27,24 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
-        private string _Description;
+        private string _Name;
+        private bool _IsAdmin;
+        private PermissionSet _Users;
+        private PermissionSet _Role;
+        private PermissionSet _Assignment;
         #endregion
 
         #region public Properites
-        public string Description
-        {
-            get { return _Description; }
-            set { _Description = value; }
-        }
+        
         #endregion
 
         #region Database String
         internal const string db_ID = "ID";
         internal const string db_Name = "Name";
-        internal const string db_Description = "Description";
+        internal const string db_IsAdmin = "IsAdmin";
+        internal const string db_Users = "Users";
+        internal const string db_Role = "Role";
+        internal const string db_Assignment = "Assignment";
         #endregion
 
         #region Public Functions
@@ -67,7 +70,85 @@ namespace ClassWeb.Models
         }
 
         #endregion
+        /// <summary>
+        /// Gets or sets the Name for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value.Trim();
+            }
+        }
 
+        /// <summary>
+        /// Gets or sets the IsAdmin for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        public bool IsAdmin
+        {
+            get
+            {
+                return _IsAdmin;
+            }
+            set
+            {
+                _IsAdmin = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Users for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        public PermissionSet Users
+        {
+            get
+            {
+                return _Users;
+            }
+            set
+            {
+                _Users = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Role for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        public PermissionSet Roles
+        {
+            get
+            {
+                return _Role;
+            }
+            set
+            {
+                _Role = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Evaluation for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        public PermissionSet Assignment
+        {
+            get
+            {
+                return _Assignment;
+            }
+            set
+            {
+                _Assignment = value;
+            }
+        }
         #region Public Subs
         /// <summary>
         /// Fills object from a MySqlClient Data Reader

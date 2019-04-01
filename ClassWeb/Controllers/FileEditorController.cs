@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
@@ -39,6 +40,8 @@ namespace ClassWeb.Controllers
 
         public async Task<IActionResult> Index(string Name)
         {
+            DataModel model = new DataModel();
+
             string FileData = null;
 
             string username = HttpContext.Session.GetString("username");
@@ -55,10 +58,10 @@ namespace ClassWeb.Controllers
                 String line;
                 while ((line = streamReader.ReadLine()) != null)
                 {
-                    if(t == "text/html")
+                    if (t == "text/html")
                     {
                         ViewBag.content = "Html"; //Sends file type to the view to display markup html
-                        FileData = FileData + line +Environment.NewLine;
+                        FileData = FileData + line + Environment.NewLine;
                     }
                     else
                     {
@@ -67,9 +70,10 @@ namespace ClassWeb.Controllers
                     }
                 }
             }
-
+            ViewBag.FileName = Name;
             ViewBag.FileData = FileData;
-            return View();
+            model.Value = FileData;
+            return View(model);
         }
 
 
@@ -101,7 +105,57 @@ namespace ClassWeb.Controllers
                 {".mpeg","audio/mpeg"},
             };
         }
+
+        
+
+        [HttpPost]
+        public ActionResult Save(string text)
+        {
+            //string username = HttpContext.Session.GetString("username");
+            //string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
+            //string path = dir_Path + Name;
+
+            //StreamWriter wirteFile = new StreamWriter(path);
+            //wirteFile.WriteLine(text);
+            //wirteFile.Close();
+            //wirteFile.Dispose();
+
+            ViewBag.SuccessSave = "File saved successfully";
+            return View();
+        }
+
+        public IActionResult Test()
+        {
+            DataModel model = new DataModel();
+            model.Value = "<p>This is <b>RichTextEditor</b> Value</p>";
+            return View(model);
+        }
+
+        //Post method to Save the edit file
+        //Testing now
+        [HttpPost]
+        public IActionResult Test(DataModel model, string FileName)
+        {
+            string username = HttpContext.Session.GetString("username");
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
+            string path = dir_Path + FileName;
+            ViewBag.Name = FileName;
+            StreamWriter wirteFile = new StreamWriter(path);
+            wirteFile.WriteLine(model.Value);
+            wirteFile.Close();
+            wirteFile.Dispose();
+
+            ViewBag.Success = "File saved!";
+            return View(model);
+        }
+
+        public class DataModel
+        {
+            public string Value { get; set; }
+
+        }
     }
 }
+    
 
     

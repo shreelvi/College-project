@@ -314,7 +314,40 @@ namespace ClassWeb.Controllers
             }
             return View();
         }
+
         #endregion
+
+        public IActionResult CreateFolder()
+        {
+            return View();
+        }
+
+            public IActionResult CreateFolder1(string folderName)
+        {
+            string username = HttpContext.Session.GetString("username");
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
+            string path = dir_Path + folderName;
+
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    ViewBag.folder = "Folder Succesfully Created";
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
+
+                }
+
+            }
+            else
+            {
+                ViewBag.folder = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
+            }
+            return View();
+        }
+
 
     }
 }

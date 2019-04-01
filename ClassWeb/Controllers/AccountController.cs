@@ -17,7 +17,7 @@ using System.IO;
 
 namespace ClassWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         #region Private Variables
         private readonly IEmailService _emailService; //Use classes to send email in serivices folder
@@ -112,10 +112,11 @@ namespace ClassWeb.Controllers
             //if (!String.IsNullOrEmpty(salt))
             //{
             LoginModel loggedIn = DAL.GetUser(userName, passWord);
+            CurrentUser = loggedIn; //Sets the session for user from base controller
 
             if (loggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", loggedIn.UserName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
