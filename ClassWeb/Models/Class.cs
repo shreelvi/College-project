@@ -44,7 +44,7 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
-   
+
         #endregion
 
         #region public class
@@ -126,7 +126,3 @@ namespace ClassWeb.Models
         #endregion
     }
 }
-
-
-
-    
