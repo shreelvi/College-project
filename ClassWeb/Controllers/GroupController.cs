@@ -13,7 +13,9 @@ using ClassWeb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using System.IO;
-
+using ClassWeb;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace ClassWeb.Controllers
 {
@@ -25,6 +27,7 @@ namespace ClassWeb.Controllers
 
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
+   
         #endregion
 
         #region constructor
@@ -86,7 +89,7 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
         {
-            LoginModel loggedIn = DAL.GetGroup(userName, passWord);
+            GroupLoginModel loggedIn = DAL.GetGroup(userName, passWord);
 
             if (loggedIn != null)
             {
@@ -131,23 +134,12 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
-            //int GroupAdd = DAL.AddGroup(NewGroup);
-
-            //if (GroupAdd == -1)
-            //{
-            //   ViewBag.error = "Error Occured when creating a new group";
-            // }
-            //else
-            //{
-            //    ViewBag.Success = "Group Account Has Been Successfully Created!! Please Login Using your Account Info";
-            //}
-            //return RedirectToAction("Login", "Account");
-            int check = 0; // DAL.CheckUserExists(NewUser.UserName);
+            SetUserFolder(NewGroup);
+            int check =  DAL.CheckGroupExists(NewGroup.Username);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-
             }
             else
             {
@@ -165,17 +157,126 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Login", "Account");
         }
+
+        /// <summary>
+        /// Created on: 03/17/2019
+        /// Created by: Elvis
+        /// Sets the default root folder for each user when registration
+        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
+        /// Used the references to understand and develop the feature in our website
+        /// </summary>
+        private void SetUserFolder(Group group)
+        {
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
+            group.DirectoryPath = dir_Path + group.Username;
+            string path = group.DirectoryPath;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
         private void CreateUserDirectory(string UserName)
         {
             string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
+
+        List<Group> g = new List<Group>();
+        //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
+        // GET: Prompt
+        public IActionResult Index()
+        {
+            
+            return View(g);
+        }
+    
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var group = await Group
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+            return View(group);
+        }
+
+        //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
+        
+
+        public IActionResult EditGroup(int? id)
+        {
+           // Group groups = context.Groups.Find(id);
+            
+    
+            if(id == null)
+            {
+                return NotFound(); 
+            }
+            if(g == null)
+            {
+                return NotFound();
+            }
+            return View(g);
+        }
+        
+        [HttpPost]
+        public IActionResult Edit(int id, Group groups)
+        {
+            if(id != groups.ID)
+            {
+                return NotFound();
+            }
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    
+                }
+
+                catch(DbUpdateConcurrencyException)
+                {
+                    if (!GroupExists(groups.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+               
+                return RedirectToAction(nameof(Index)); 
+            }
+            
+            return View(groups);
+        }
+
         public IActionResult Logout()
         {
             //await _signManager.SignOutAsync();
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
+        }
+        private bool GroupExists(int id)
+        {
+            return g.Any(e => e.ID == id);
+        }
+        
+    }
+
+    internal class HttpStatusCodeResult : ActionResult
+    {
+        private object badRequest;
+
+        public HttpStatusCodeResult(object badRequest)
+        {
+            this.badRequest = badRequest;
         }
     }
 }

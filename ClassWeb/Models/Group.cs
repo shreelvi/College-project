@@ -12,14 +12,28 @@ namespace ClassWeb.Models
     /// Groups are a team of student members for a projects in class
     /// </summary>
 
-    public class Group: DatabaseNamedRecord
+    public class Group : DatabaseNamedRecord
     {
+        #region Constructors
+        /// <summary>
+        /// By Sakshi
+        /// Constructor to map results of sql query to the class
+        /// Reference: GitHub PeerVal Project
+        /// </summary>
+        public Group()
+        { }
+        internal Group(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
         #region Private Variables
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
         private string _Salt;
-        private Assignment _AssignmentID;
+        private string _DirectoryPath;
+        private List<Assignment> _Assignments; 
+        private int _AssignmentID;
         #endregion
 
         #region Database String
@@ -29,11 +43,13 @@ namespace ClassWeb.Models
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
         internal const string db_AssignmentID = "AssignmentID";
-        
+
         #endregion
         #region Public Variables
-        [Display(Name ="Group's Email-address",
+        [Display(Name = "Group's Email-address",
             Description = "Email-address used to contact the group; which all members will have access.")]
         public string EmailAddress
         {
@@ -66,9 +82,18 @@ namespace ClassWeb.Models
             get { return _Salt; }
             set { _Salt = value.Trim(); }
         }
-
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
+        }
         //Foreign Key
-        public Assignment AssignmentID
+        public int AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
@@ -79,20 +104,32 @@ namespace ClassWeb.Models
 
         public override int dbSave()
         {
-            throw new NotImplementedException();
+          if(_ID < 0)
+            {
+                return dbAdd();
+
+            }
+            else
+            {
+                return dbUpdate();
+            }
         }
 
         protected override int dbAdd()
         {
             _ID = DAL.AddGroup(this);
             return ID;
-            ///throw new NotImplementedException();
+           
         }
 
         protected override int dbUpdate()
         {
             return DAL.UpdateGroup(this);
-            ///throw new NotImplementedException();
+            
+        }
+        public int dbRemoveUserFromGroup()
+        {
+            return DAL.RemoveUserFromGroup(this);
         }
         #endregion
 
@@ -107,7 +144,8 @@ namespace ClassWeb.Models
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-          
+            _Salt = dr.GetString(db_Salt);
+            _AssignmentID = dr.GetInt32(db_AssignmentID);
 
         }
         #endregion
@@ -116,5 +154,11 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
+
+        internal static Task FirstOrDefaultAsync(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
+        }
     }
+    #endregion
 }

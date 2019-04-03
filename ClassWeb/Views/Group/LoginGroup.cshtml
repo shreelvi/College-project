@@ -1,12 +1,13 @@
 ﻿@using ClassWeb.Models
-@model LoginModel
+@model GroupLoginModel
 @{
-    ViewData["Title"] = "User Login";
+    ViewData["Title"] = "Group Login";
 }
+
 <p style="color:Blue">@ViewBag.Success</p>
 <p style="color:red">@ViewBag.Error</p>
-<p style="color:red">@ViewData["UserAddError"]</p>
-<p style="color:Blue">@ViewData["UserAddSuccess"]</p>
+<p style="color:red">@ViewData["GroupAddError"]</p>
+<p style="color:Blue">@ViewData["GroupAddSuccess"]</p>
 <div class="row">
     <div class="col-md-4">
         <section>
@@ -40,10 +41,10 @@
                             <a asp-page="./ForgotPassword">Forgot your password?</a>
                         </p> *@
                     <p>
-                        <a asp-action="AddUser">Register as a new user</a>
-                        
+                        <a asp-action="AddGroup">Register as a new group</a>
+
                     </p>
-                  
+
                 </div>
             </form>
         </section>

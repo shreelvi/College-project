@@ -392,18 +392,18 @@ namespace ClassWeb.Model
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static LoginModel GetGroup(string userName, string password)
+        public static GroupLoginModel GetGroup(string userName, string password)
         {
 
             MySqlCommand comm = new MySqlCommand("get_GroupByUserName");
-            LoginModel retObj = null;
+            GroupLoginModel retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + GroupLoginModel.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new LoginModel(dr);
+                    retObj = new GroupLoginModel(dr);
                 }
                 comm.Connection.Close();
             }
@@ -496,7 +496,72 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        /// Check if username exists in the database
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int CheckGroupExists(string username)
+        {
+            if (username == null) return -1;
+            MySqlCommand comm = new MySqlCommand("CheckUserName_Group");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
+                int dr = GetIntReader(comm);
 
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        internal static int RemoveUserFromGroup(Group obj)
+        {
+            if (obj == null)
+                return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1; 
+        }
+        /// <summary>
+        /// Gets List of usernames from the database to check for same names
+        /// </summary>
+        /// <returns>List of Usernames string</returns>
+        internal static List<Group> GetAllGroups()
+        {
+            MySqlCommand comm = new MySqlCommand("get_Group");
+            List<Group> groupList = new List<Group>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    Group group = new Group(dr);
+                  
+                    groupList.Add(group);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return groupList;
+        }
+        #endregion
 
 
         ///<summary>
@@ -547,7 +612,7 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        #endregion
+       
 
     }
 
