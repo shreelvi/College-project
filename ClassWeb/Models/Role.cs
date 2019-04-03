@@ -26,6 +26,15 @@ namespace ClassWeb.Models
 
         #endregion
 
+        #region Database String
+        internal const string db_ID = "RoleID";
+        internal const string db_Name = "Name";
+        internal const string db_IsAdmin = "IsAdmin";
+        internal const string db_Users = "Users";
+        internal const string db_Role = "Role";
+        internal const string db_Assignment = "Assignment";
+        #endregion
+
         #region Private Variables
         private string _Name;
         private bool _IsAdmin;
@@ -116,14 +125,7 @@ namespace ClassWeb.Models
         }
         #endregion
 
-        #region Database String
-        internal const string db_ID = "ID";
-        internal const string db_Name = "Name";
-        internal const string db_IsAdmin = "IsAdmin";
-        internal const string db_Users = "Users";
-        internal const string db_Role = "Role";
-        internal const string db_Assignment = "Assignment";
-        #endregion
+        
 
         #region Public Functions
 

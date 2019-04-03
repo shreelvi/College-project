@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +84,9 @@ namespace ClassWeb.Controllers
             if (user == null) return false;
             if (typeof(T) == typeof(Assignment))
             {
-                PermissionSet n = user.Role.Roles;
+                //List<Role> rr = DAL.GetRoles();
+                //Role r = user.Role;
+                //PermissionSet n = r.Assignment;
                 return user.Role.Assignment >= perm;
             }
             else if (typeof(T) == typeof(Role))
