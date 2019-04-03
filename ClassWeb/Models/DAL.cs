@@ -186,7 +186,7 @@ namespace ClassWeb.Model
         public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName1");
+            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
             LoginModel retObj = null;
             try
             {
@@ -225,7 +225,7 @@ namespace ClassWeb.Model
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd1");
+            MySqlCommand comm = new MySqlCommand("sproc_AddUser");
             try
             {
                 // generate new password first.
@@ -236,7 +236,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
                 comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
                 comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
-                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
                 //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
@@ -350,6 +350,8 @@ namespace ClassWeb.Model
         }
         #endregion
 
+        #region Assignment
+
         /// <summary>
         /// Attempts to add user in the database
         /// Reference: PeerVal Project
@@ -402,6 +404,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+        #endregion
     }
 
 }

@@ -48,12 +48,12 @@ namespace ClassWeb.Controllers
             HttpContext.Session.SetString(key, jsonString);
         }
 
-        internal LoginModel CurrentUser
+        internal User CurrentUser
         {
             get
             {
-                LoginModel u = Get<LoginModel>("CurrentUser");
-                if (u == null) u = new LoginModel() { FirstName = "Anonymous" };
+                User u = Get<User>("CurrentUser");
+                if (u == null) u = new User() { FirstName = "Anonymous" };
                 return u;
             }
             set
@@ -62,12 +62,13 @@ namespace ClassWeb.Controllers
             }
         }
 
-        internal User LoggedInUser
+        //Same method as above. Created because we used loginmodel
+        internal LoginModel LoggedInUser
         {
             get
             {
-                User u = Get<User>("LoggedInUser");
-                if (u == null) u = new User() { FirstName = "Anonymous" };
+                LoginModel u = Get<LoginModel>("LoggedInUser");
+                if (u == null) u = new LoginModel() { FirstName = "Anonymous" };
                 return u;
             }
             set

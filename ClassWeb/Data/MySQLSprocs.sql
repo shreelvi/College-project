@@ -1,15 +1,27 @@
 -- -----------------User-----------------
 -- =============================================
-$$
-CREATE PROCEDURE `sproc_UserAdd` (OUT `UserID` INT, IN `FirstName` VARCHAR(45), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(45), IN `EmailAddress` VARCHAR(128), IN `UserName` VARCHAR(128), IN `Password` CHAR(50), IN `Salt` CHAR(50), IN `DirectoryPath` VARCHAR(256))  BEGIN
-     INSERT INTO login_Users(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, DirectoryPath)
-     VALUES(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, DirectoryPath);
+DELIMITER $$
+
+CREATE PROCEDURE `sproc_AddUser` (
+OUT `UserID` INT, 
+IN `FirstName` VARCHAR(45), 
+IN `MiddleName` VARCHAR(45), 
+IN `LastName` VARCHAR(45), 
+IN `EmailAddress` VARCHAR(128), 
+IN `UserName` VARCHAR(128), 
+IN `Password` CHAR(64), 
+IN `Salt` CHAR(50), 
+IN `RoleID` int,
+IN `DirectoryPath` VARCHAR(256))  
+BEGIN
+     INSERT INTO Users(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, RoleID, DirectoryPath)
+     VALUES(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, RoleID, DirectoryPath);
 SET UserID = LAST_INSERT_ID();
 END$$
 
-CREATE DEFINER=`a458d6_shreelv`@`%` PROCEDURE `sproc_getuserbyusername` (IN `username` VARCHAR(128))  BEGIN
-	 SELECT * FROM Login_Users
-	 WHERE Login_Users1.UserName = username;
+CREATE PROCEDURE `sproc_GetUserByUsername` (IN `Username` VARCHAR(128))  BEGIN
+	 SELECT * FROM Users
+	 WHERE Users.UserName = Username;
 END$$
 
 CREATE DEFINER=`a458d6_shreelv`@`%` PROCEDURE `sproc_AssignmentAdd` (OUT `AssignmentID` INT, IN `Name` VARCHAR(45), IN `Feedback` VARCHAR(128), IN `UserID` INT)  BEGIN
@@ -27,16 +39,16 @@ BEGIN
 	WHERE assignment.UserID = UserID 
 	ORDER BY assignment.AssignmentID DESC; 
 	END $$
-DELIMITER :
+DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE `sproc_CheckUserName`
+CREATE PROCEDURE `sproc_CheckUserName1`
 (IN `Username1` VARCHAR(128))
 BEGIN
     SET @User_exists = 0;
     SELECT 1 INTO @User_exists
-    FROM `login_users`
-    WHERE login_Users.`UserName` = `Username1`;
+    FROM `Users`
+    WHERE Users.`UserName` = `Username1`;
     SELECT @User_exists;
 END $$
 DELIMITER ;

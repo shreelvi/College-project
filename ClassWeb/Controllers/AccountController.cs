@@ -111,8 +111,11 @@ namespace ClassWeb.Controllers
             //string salt = DAL.GetSaltForUser(login.Username);
             //if (!String.IsNullOrEmpty(salt))
             //{
+            //User LoggedIn = DAL.GetUser(userName, passWord);
+            //CurrentUser = LoggedIn; //Sets the session for user from base controller
+
             LoginModel loggedIn = DAL.GetUser(userName, passWord);
-            CurrentUser = loggedIn; //Sets the session for user from base controller
+            LoggedInUser = loggedIn; //Sets the session for user from base controller
 
             if (loggedIn != null)
             {
@@ -192,9 +195,15 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //int UserAdd = DAL.AddUser(NewUser);
-                    DAL.AddUser(NewUser);
-                    TempData["UserAddSuccess"] = "User added successfully";
+                    int UserAdd = DAL.AddUser(NewUser);
+                    if (UserAdd < 1)
+                    {
+                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+                    }
+                    else
+                    {
+                        TempData["UserAddSuccess"] = "User added successfully";
+                    }
                 }
                 catch
                 {
