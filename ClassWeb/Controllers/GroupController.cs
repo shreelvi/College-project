@@ -190,28 +190,28 @@ namespace ClassWeb.Controllers
             
             return View(g);
         }
-    
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var group = await Group
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            return View(group);
-        }
+
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    var group = await Group
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (group == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(group);
+        //}
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
-        
+
 
         public IActionResult EditGroup(int? id)
         {
-           // Group groups = context.Groups.Find(id);
+         
             
     
             if(id == null)
