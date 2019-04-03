@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using ClassWeb.Model;
-using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
@@ -45,7 +40,7 @@ namespace ClassWeb.Models
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-        private Role _Role;
+       //rivate Role _Role;
         private int _RoleID;
         private string _Salt;
         #endregion
@@ -157,12 +152,12 @@ namespace ClassWeb.Models
         /// Gets or sets the role for this user
         /// </summary>
         //[Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
-        public Role Roles
-        {
-            get { return _Role; }
-            set { _Role = value; }
+        //public Role Roles
+        //{
+        //    get { return _Role; }
+        //    set { _Role = value; }
 
-        }
+        //}
 
         public DateTime DateCreated
         {

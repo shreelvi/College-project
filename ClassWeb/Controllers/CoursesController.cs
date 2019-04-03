@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using System.Diagnostics;
-using ClassWeb.Data;
 using Microsoft.AspNetCore.Hosting;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
     /// <summary>
     /// Created By: Mohan
     /// Courses => A course is like 4430, 3307, etc.
-   /// Each course can be accessible to one to many users.
-   /// Each course can be taught by multiple professors, hence multiple classes.
-   /// A course has a course name and a number.
- /// </summary>
- /// 
+    /// Each course can be accessible to one to many users.
+    /// Each course can be taught by multiple professors, hence multiple classes.
+    /// A course has a course name and a number.
+    /// </summary>
+    /// 
     public class CoursesController : Controller
     {
-    
-       
         //hosting Envrironment to upload file in root path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
     
         List<Course> Courses = new List<Course>();
+        private readonly int ID;
+       private readonly object course;
+
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
             
@@ -41,23 +39,23 @@ namespace ClassWeb.Controllers
             return View(Courses);
         }
 
-      
+
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await .Course
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
-            {
-                return NotFound();
+
+             if (course == null)
+             {
+               return NotFound();
+            
             }
 
-            return View(course);
+            return View(Courses);
         }
 
         // GET: Courses/Create
@@ -71,12 +69,12 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Number,ClassID,Name,ID")] Course course)
+        public IActionResult Create([Bind("Number,Name,ClassID,ID")] Course course)
         {
             if (ModelState.IsValid)
             {
-
-                return RedirectToAction(nameof(Index));
+                DAL.Create(course);
+                ; return RedirectToAction(nameof(Index));
             }
             return View(course);
         }
@@ -102,9 +100,10 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Number,ClassID,Name,ID")] Course course)
+        public IActionResult Edit(int id, [Bind("Number,Name,ClassID,ID")] Course course)
         {
-            if (id != course.ID)
+            if (id != ID)
+
             {
                 return NotFound();
             }
@@ -113,12 +112,12 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    // _context.Update(course);
+                  //  _context.Update(course);
                     // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.ID))
+                    if (!CourseExists(ID))
                     {
                         return NotFound();
                     }
@@ -163,7 +162,7 @@ namespace ClassWeb.Controllers
 
         private bool CourseExists(int id)
         {
-            return Courses.Any(e => e.ID == id);
+            return Courses.Any(e => ID == id);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -172,3 +171,4 @@ namespace ClassWeb.Controllers
         }
     }
 }
+

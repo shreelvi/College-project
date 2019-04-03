@@ -12,10 +12,13 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Course:DatabaseNamedObject
+    public class Course : DatabaseRecord
     {
+
         #region Private Variables
+
         private int _Number;
+        private int _Name;
         private int _ClassID;
         #endregion
 
@@ -26,16 +29,45 @@ namespace ClassWeb.Models
             set { _Number = value; }
         }
 
+        public int Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
+        }
         public int ClassID
         {
             get { return _ClassID; }
-           private set { _ClassID = value; }
+            private set { _ClassID = value; }
+        }
+        public override int dbSave()
+        {
+            throw new NotImplementedException();
         }
 
+        protected override int dbAdd()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
         internal static Task FirstOrDefaultAsync(Func<object, bool> p)
         {
             throw new NotImplementedException();
         }
         #endregion
     }
+
 }

@@ -1,10 +1,5 @@
-﻿using ClassWeb.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
@@ -143,6 +138,7 @@ namespace ClassWeb.Models
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; }
+     
 
         #endregion
 

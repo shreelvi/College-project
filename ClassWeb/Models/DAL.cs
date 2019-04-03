@@ -5,8 +5,10 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using ClassWeb.Data;
 using ClassWeb.Models;
+using System.Data.SqlClient;
+using System.Data;
+
 
 namespace ClassWeb.Model
 {
@@ -15,12 +17,11 @@ namespace ClassWeb.Model
         /// <summary>
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
-        /// </summary>
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
+        /// </summary
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
-
         private DAL()
         {
         }
@@ -29,7 +30,6 @@ namespace ClassWeb.Model
             Read,
             Edit
         }
-
         #region Database Connections
         internal static void ConnectToDatabase(MySqlCommand comm, dbAction action = dbAction.Read)
         {
@@ -39,12 +39,10 @@ namespace ClassWeb.Model
                     comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 else
                     comm.Connection = new MySqlConnection(ReadOnlyConnectionString);
-
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
             }
         }
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
@@ -60,6 +58,22 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 return null;
+            }
+        }
+        public static int GetIntReader(MySqlCommand comm)
+        {
+            try
+            {
+                ConnectToDatabase(comm);
+                comm.Connection.Open();
+                int count = Convert.ToInt32(comm.ExecuteScalar());
+                return count;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                return 0;
             }
         }
         /// <summary>
@@ -123,44 +137,115 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
+
         #endregion
-
-
-
-        #region User
-
-
-        //   ///public static User AddUser(User obj)
-        //   {
-        //    User u = new User();
-        //    if (obj == null)
-        //        {
-        //        //return -1;
-        //        }
-        //    MySqlCommand comm = new MySqlCommand();
+        #region Assignment
+        //internal static int AddAssignment(Assignment obj)
+        //{
+        //    if (obj == null) return -1;
+        //    MySqlCommand comm = new MySqlCommand("sproc_AssignmentAdd");
         //    try
         //    {
-        //            //sprocs here
-        //        comm.Parameters.AddWithValue("@" + u.ID, obj.ID);
-        //      //  return UpdateObject(comm);
-        //}
-        //    catch(Exception ex)
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
+        //        comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+        //        return AddObject(comm, "@" + Assignment.db_ID);
+        //    }
+        //    catch (Exception ex)
         //    {
         //        System.Diagnostics.Debug.WriteLine(ex.Message);
         //    }
-        //    return u;
-        //   }
-        /////
+        //    return -1;
+        //}
+
+        public static Assignment GetAssignmentByFileName(string fileName)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByFileName");
+            Assignment retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        public static Assignment GetAllAssignment()
+        {
+
+            Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllAssignment");
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        internal static int DeleteAssignmentByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentDeleteByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                MySqlParameter retParameter;
+                retParameter = comm.Parameters.Add("@" + Assignment.db_ID, MySqlDbType.Int32);
+                retParameter.Direction = System.Data.ParameterDirection.Output;
+                comm.ExecuteNonQuery();
+                retInt = (int)retParameter.Value;
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+        #endregion
+
+        #region Login
 
         ///<summary>
         /// Gets the User from the database corresponding to the Username
-        /// Reference: Professor Jonathan Holmes PeerEval Project
+        /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
         public static LoginModel GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("get_User");
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByUserName");
             LoginModel retObj = null;
             try
             {
@@ -178,30 +263,31 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
-            /// Verify password matches.
-            //if (retObj != null)
-            //{
-            //    if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password))
-            //    {
-            //        retObj = null;
-            //    }
-            //}
+            //Verify password matches.
+            if (retObj != null)
+            {
+                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password.TrimEnd('!')))
+                {
+                    retObj = null;
+                }
+            }
 
             return retObj;
         }
 
-        ///<summary>
-        /// Adds user in the database
-        /// Reference: Professor's PeerVal Project
+        /// <summary>
+        /// Attempts to add user in the database
+        /// Reference: PeerVal Project
         /// </summary>
+        /// <remarks></remarks>
+
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("add_User");
+            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
             try
             {
                 // generate new password first.
-
                 obj.Salt = Tools.Hasher.GenerateSalt(50);
                 string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 obj.Password = newPass;
@@ -209,7 +295,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
                 comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
                 comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
-                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
                 //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
@@ -222,8 +308,95 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+
+
+
+        ///<summary>
+        /// Get salt of the User from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static string GetSaltForUser(string username)
+        {
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return salt;
+        }
+
+        ///<summary>
+        /// Set salt of the User from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForUser(int userID, string salt)
+        {
+            if (userID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForUser");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         #endregion
 
 
+        #region Courses
+        ///<summary>
+        /// Create/Add Course in database
+        /// </summary>
+        /// <remarks></remarks>
+
+         internal static int Create(Course obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
+            try
+            {
+                 //comm.Parameters.AddWithValue("@" + Course.Number, obj.Number);
+                // comm.Parameters.AddWithValue("@" + Course.ClassID, obj.ClassID);
+                // return AddObject(comm, "@" + Course.ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        ///<summary>
+        /// Edit Course
+        /// </summary>
+        /// <remarks></remarks>
+
+        #endregion
+
+
+
     }
+
+
+
+
 }
