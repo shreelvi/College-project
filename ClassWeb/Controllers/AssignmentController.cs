@@ -59,6 +59,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
                 return RedirectToAction("Dashboard", "Account");
             }
 

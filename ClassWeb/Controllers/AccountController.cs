@@ -137,6 +137,11 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
+            //Display Permission check message that is passed from Assignment index
+            var s = TempData["PermissionError"];
+            if (s != null)
+                ViewData["PermissionErr"] = s;
+
             int id = (int)HttpContext.Session.GetInt32("UserID");
             string username = HttpContext.Session.GetString("username");
 
