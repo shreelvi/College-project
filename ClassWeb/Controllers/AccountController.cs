@@ -114,13 +114,13 @@ namespace ClassWeb.Controllers
             //User LoggedIn = DAL.GetUser(userName, passWord);
             //CurrentUser = LoggedIn; //Sets the session for user from base controller
 
-            LoginModel loggedIn = DAL.GetUser(userName, passWord);
-            LoggedInUser = loggedIn; //Sets the session for user from base controller
+            User loggedIn = DAL.GetUser(userName, passWord);
+            CurrentUser = loggedIn; //Sets the session for user from base controller
 
             if (loggedIn != null)
             {
                 //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", loggedIn.UserName);
+                HttpContext.Session.SetString("username", userName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 

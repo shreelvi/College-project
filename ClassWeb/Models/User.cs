@@ -148,11 +148,7 @@ namespace ClassWeb.Models
                 _RoleID = value;
             }
         }
-        //public long PhoneNumber
-        //{
-        //    get { return _PhoneNumber; }
-        //    set { _PhoneNumber = value; }
-        //}
+        
         public DateTime DateCreated
         {
             get { return _DateCreated; }
@@ -168,6 +164,56 @@ namespace ClassWeb.Models
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
+       
+
+        /// <summary>
+        /// Gets or sets the Role for this User object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public Role Role
+        {
+            get
+            {
+                if (_Role == null)
+                {
+                    _Role = Roles.Get(_RoleID);//DAL.GetRole(_RoleID);
+                }
+                return _Role;
+            }
+            set
+            {
+                _Role = value;
+                if (value == null)
+                {
+                    _RoleID = -1;
+                }
+                else
+                {
+                    _RoleID = value.ID;
+                }
+            }
+        }
+
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
+        }
+
+        //public long PhoneNumber
+        //{
+        //    get { return _PhoneNumber; }
+        //    set { _PhoneNumber = value; }
+        //}
+
         //public bool AccountExpired
         //{
         //    get { return _AccountExpired; }
@@ -191,23 +237,6 @@ namespace ClassWeb.Models
         //    get { return _Enabled; }
         //    set { _Enabled = value; }
         //}
-        public Role Role
-        {
-            get { return _Role; }
-            set { _Role = value; }
-        }
-
-        public string DirectoryPath
-        {
-            get { return _DirectoryPath; }
-            set { _DirectoryPath = value; }
-        }
-
-        public List<Assignment> Assignments
-        {
-            get { return _Assignments; }
-            set { _Assignments = value; }
-        }
         #endregion
 
         #region Public Functions
@@ -241,11 +270,11 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             //_Address = dr.GetString(db_Address);
-            _UserName = dr.GetString(db_UserName);
+            //_UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _DateCreated = dr.GetDateTime(db_DateCreated);
             _DateModified = dr.GetDateTime(db_DateModified);
-            _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            //_DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
         }

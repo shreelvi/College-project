@@ -17,7 +17,7 @@ using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
-    public class AssignmentController : Controller
+    public class AssignmentController : BaseController
     {
         #region Private Variables
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
@@ -40,19 +40,28 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public async Task<IActionResult> Index()
         {
-            List<Assignment> UserAssignments = new List<Assignment>();
-            int userID = (int)HttpContext.Session.GetInt32("UserID");
-            string username = HttpContext.Session.GetString("username");
-            UserAssignments = DAL.GetUserAssignments(userID);
-            if (UserAssignments == null)
+            if (UserCan<Assignment>(PermissionSet.Permissions.View))
             {
-                TempData["AssignmentAddError"] = "Database error when getting assignment";
+                List<Assignment> UserAssignments = new List<Assignment>();
+                int userID = (int)HttpContext.Session.GetInt32("UserID");
+                string username = HttpContext.Session.GetString("username");
+                UserAssignments = DAL.GetUserAssignments(userID);
+                if (UserAssignments == null)
+                {
+                    TempData["AssignmentAddError"] = "Database error when getting assignment";
+                }
+                else
+                {
+                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
+                }
+
+                return View(UserAssignments);
             }
             else
             {
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
+                return RedirectToAction("Dashboard", "Account");
             }
-            return View(UserAssignments);
+
         }
         #endregion
 

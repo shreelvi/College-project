@@ -23,6 +23,8 @@ namespace ClassWeb.Model
         #region DB Connection String Information
         //Database information for the hosting website db
         private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+
+       
         private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
 
         //private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=;";
@@ -155,6 +157,34 @@ namespace ClassWeb.Model
 
         #endregion
 
+        #region Role
+        /// <summary>
+        /// Get list of all Role CLassweb.objects from the database
+        /// Reference: Taken code from the peerval project
+        /// </summary>
+        /// <returns></returns>
+        public static List<Role> GetRoles()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_RolesGetAll");
+            List<Role> retList = new List<Role>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Role(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+        #endregion
         #region User
         /// public static User AddUser( User obj)
         /// {
@@ -183,18 +213,18 @@ namespace ClassWeb.Model
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static LoginModel GetUser(string userName, string password)
+        public static User GetUser(string userName, string password)
         {
 
             MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
-            LoginModel retObj = null;
+            User retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + LoginModel.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new LoginModel(dr);
+                    retObj = new User(dr);
                 }
                 comm.Connection.Close();
             }

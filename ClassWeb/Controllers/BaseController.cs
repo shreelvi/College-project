@@ -83,6 +83,7 @@ namespace ClassWeb.Controllers
             if (user == null) return false;
             if (typeof(T) == typeof(Assignment))
             {
+                PermissionSet n = user.Role.Roles;
                 return user.Role.Assignment >= perm;
             }
             else if (typeof(T) == typeof(Role))
