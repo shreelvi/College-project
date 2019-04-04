@@ -62,10 +62,10 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //int UserAdd = DAL.AddUser(NewUser);
-                    DAL.AddUser(NewClass);
-                    TempData["ClassAddSuccess"] = "Class added successfully";
-                    CreateClassDirectory(NewClass.Title);
+                    ////int UserAdd = DAL.AddUser(NewUser);
+                    //DAL.AddUser(NewClass);
+                    //TempData["ClassAddSuccess"] = "Class added successfully";
+                    //CreateClassDirectory(NewClass.Title);
                 }
                 catch
                 {
