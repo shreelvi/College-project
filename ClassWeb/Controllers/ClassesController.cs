@@ -9,6 +9,7 @@ using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
 using ClassWeb.Services;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
@@ -36,9 +37,8 @@ namespace ClassWeb.Controllers
         // GET: Class
         public ActionResult Index()
         {
-            ClassDBHandle dbhandle = new ClassDBHandle();
-            ModelState.Clear();
-            return View(dbhandle.GetClass());
+            // return View(DAL.GetClass());
+            return View();
         }
 
         // GET: Class/Create
@@ -51,30 +51,28 @@ namespace ClassWeb.Controllers
         [HttpPost]
         public ActionResult Create(Class cmodel)
         {
-            try
+            int check = 0; 
+            if (check > 0)
             {
-                if (ModelState.IsValid)
-                {
-                    ClassDBHandle sdb = new ClassDBHandle();
-                    if (sdb.AddStudent(cmodel))
-                    {
-                        ViewBag.Message = "Class Details Added Successfully";
-                        ModelState.Clear();
-                    }
-                }
-                return View();
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                ViewBag.Error = " Username not Unique! Please enter a new username.";
+                return View(); //Redirects to add user page
 
-        // GET: Class/Edit/5
-        public ActionResult Edit(int id)
-        {
-            ClassDBHandle sdb = new ClassDBHandle();
-            return View(sdb.GetClass().Find(cmodel => cmodel.ID == id));
+            }
+            else
+            {
+                try
+                {
+                    //int UserAdd = DAL.AddUser(NewUser);
+                    DAL.AddUser(NewClass);
+                    TempData["ClassAddSuccess"] = "Class added successfully";
+                    CreateClassDirectory(NewClass.Title);
+                }
+                catch
+                {
+                    TempData["ClassAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+                }
+            }
+            return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
 
         // POST: Class/Edit/5
@@ -108,6 +106,12 @@ namespace ClassWeb.Controllers
             {
                 return View();
             }
+        }
+        public IActionResult Logout()
+        {
+            //await _signManager.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
