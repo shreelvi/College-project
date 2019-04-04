@@ -9,6 +9,7 @@ using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
 using ClassWeb.Services;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
@@ -36,9 +37,8 @@ namespace ClassWeb.Controllers
         // GET: Class
         public ActionResult Index()
         {
-            ClassDBHandle dbhandle = new ClassDBHandle();
-            ModelState.Clear();
-            return View(dbhandle.GetClass());
+            List<Class> cls = DAL.ClassGetAll();
+            return View(cls);
         }
 
         // GET: Class/Create
@@ -55,12 +55,7 @@ namespace ClassWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    ClassDBHandle sdb = new ClassDBHandle();
-                    if (sdb.AddStudent(cmodel))
-                    {
-                        ViewBag.Message = "Class Details Added Successfully";
-                        ModelState.Clear();
-                    }
+                   
                 }
                 return View();
             }
@@ -73,8 +68,8 @@ namespace ClassWeb.Controllers
         // GET: Class/Edit/5
         public ActionResult Edit(int id)
         {
-            ClassDBHandle sdb = new ClassDBHandle();
-            return View(sdb.GetClass().Find(cmodel => cmodel.ID == id));
+           
+            return View();
         }
 
         // POST: Class/Edit/5
@@ -83,8 +78,7 @@ namespace ClassWeb.Controllers
         {
             try
             {
-                ClassDBHandle sdb = new ClassDBHandle();
-                sdb.UpdateDetails(cmodel);
+               
                 return RedirectToAction("Index");
             }
             catch
@@ -97,11 +91,7 @@ namespace ClassWeb.Controllers
         {
             try
             {
-                ClassDBHandle sdb = new ClassDBHandle();
-                if (sdb.DeleteClass(id))
-                {
-                    ViewBag.AlertMsg = "Class Deleted Successfully";
-                }
+               
                 return RedirectToAction("Index");
             }
             catch

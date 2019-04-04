@@ -41,7 +41,28 @@ namespace ClassWeb.Model
             {
             }
         }
-       
+
+        internal static List<Class> ClassGetAll()
+        {
+            List<Class> retObj = new List<Class>();
+            MySqlCommand comm = new MySqlCommand("sproc_ClassGetAll");
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    //
+                    retObj.Add(new Class(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
 
         public static int GetIntReader(MySqlCommand comm)
         {
