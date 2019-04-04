@@ -360,6 +360,10 @@ namespace ClassWeb.Model
 
         #endregion
 
+        /// <summary>
+        /// by: Ganesh
+        /// reference: https://www.completecsharptutorial.com/mvc-articles/insert-update-delete-in-asp-net-mvc-5-without-entity-framework.php
+        /// </summary>
         #region Classes
         private SqlConnection con;
         private void connection()
