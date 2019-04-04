@@ -18,8 +18,8 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()

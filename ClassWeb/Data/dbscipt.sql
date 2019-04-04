@@ -23,7 +23,7 @@ CREATE TABLE `login_users` (
   `Salt` char(128) DEFAULT NULL,
   `DateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   `DateModified` datetime DEFAULT CURRENT_TIMESTAMP,
-  'DirectoryPath` string NOT NULL,
+  `DirectoryPath` string NOT NULL,
   PRIMARY KEY (`UserID`),
   KEY `FK1` (`RoleID`),
   CONSTRAINT `FK1` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`RoleID`)
