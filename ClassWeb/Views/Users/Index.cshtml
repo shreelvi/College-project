@@ -9,6 +9,12 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-controller="Users" asp-action="index" method="get">
+    <p>
+        UserName: <input type="text" id="UserSearch" name="SearchString">
+        <input type="submit" value="Search" />
+    </p>
+</form>
 <span class="alert">@ViewBag.Message</span>
 <table class="table">
     <thead>

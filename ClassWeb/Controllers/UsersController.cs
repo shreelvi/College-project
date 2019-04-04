@@ -15,12 +15,19 @@ namespace ClassWeb.Controllers
     public class UsersController : BaseController
     {        
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchString)
         {
-            List<User> a =DAL.UserGetAll();
-            return View(a);
+            List<User> user = null;
+            if (SearchString == null)
+            {
+                user =DAL.UserGetAll();
+            }
+            else
+            {
+                user = DAL.UserGetAll().FindAll(User => User.UserName.Contains(SearchString));
+            }
+            return View(user);
         }
-
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {

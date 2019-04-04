@@ -92,6 +92,65 @@ namespace ClassWeb.Controllers
 
             return View();
         }
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (uid != null)
+            {
+                id = uid;
+            }
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = DAL.UserGetByID(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
+        {
+
+            if (id != user.ID)
+            {
+                return NotFound();
+            }
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (id == null && uid != null)
+            {
+                id = uid;
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == uid)
+                    {
+                        int a = DAL.UpdateUser(user);
+                        if (a > 0)
+                        {
+                            HttpContext.Session.SetString("username",user.UserName);
+                            TempData["Message"] = "User Succesfully Updated!!";
+                        }
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Trick!!";
+                    }
+                    return RedirectToAction("Dashboard", "Account");
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return RedirectToAction("Dashboard", "Account");
+        }
 
         /// <summary>
         /// Created on: 03/07/2019

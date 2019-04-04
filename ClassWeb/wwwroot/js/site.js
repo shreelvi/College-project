@@ -74,3 +74,7 @@ $(CreateFolder).on('shown.bs.modal', function (e) {
     $('[autofocus]', e.target).focus();
 
 });
+$("#UserSearch").on("KeyUp", function (e) {
+    var text = $("#UserSearch").val;
+    window.location.replace("/Users/index?SearchString="+text);
+});
