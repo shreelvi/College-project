@@ -137,16 +137,25 @@ namespace ClassWeb.Controllers
         public ActionResult Dashboard()
         {
             //Display Permission check message that is passed from Assignment index
-            var s = TempData["PermissionError"];
-            if (s != null)
-                ViewData["PermissionErr"] = s;
+            if (UserCan<User>(PermissionSet.Permissions.View))
+            {
+                var s = TempData["PermissionError"];
+                if (s != null)
+                    ViewData["PermissionErr"] = s;
 
-            int id = (int)HttpContext.Session.GetInt32("UserID");
-            string username = HttpContext.Session.GetString("username");
+                int id = (int)HttpContext.Session.GetInt32("UserID");
+                string username = HttpContext.Session.GetString("username");
 
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-            return View();
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+                return View();
+            }
+            else
+            {
+                TempData["PermissionError"] = "Not Enough Permission";
+                return RedirectToAction("Login", "Account");
+            }
+           
         }
         /// <summary>
         /// Created on: 03/09/2019

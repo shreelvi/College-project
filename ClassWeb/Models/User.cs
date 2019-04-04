@@ -43,8 +43,8 @@ namespace ClassWeb.Models
         private string _UserName;
         private string _Password;
         private string _Salt;
-        public int _RoleID;
-        public Role _Role;
+        private int _RoleID;
+        private Role _Role;
         private string _DirectoryPath;
         private List<Assignment> _Assignments;
         private DateTime _DateCreated;

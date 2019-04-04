@@ -92,29 +92,7 @@ namespace ClassWeb.Model
             return retInt;
         }
 
-        internal static List<Role> GetRoles()
-        {
-
-            MySqlCommand comm = new MySqlCommand("sproc_RolesGetAll");
-            List<Role> retList = new List<Role>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Role(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-
+       
         /// <summary>
         /// reference: Professor's DAL for PeerEval
         /// set connection and execute given command on the database
@@ -391,6 +369,29 @@ namespace ClassWeb.Model
         }
         #endregion
         #region Roles
+        internal static List<Role> GetRoles()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_RolesGetAll");
+            List<Role> retList = new List<Role>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Role(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
         /// <summary>
         /// Gets the PeerVal.Role correposponding with the given ID
         /// </summary>

@@ -12,6 +12,7 @@
         <section>
             <form method="post">
                 <h3 style="color:darkorange">Login to ClassWeb.</h3>
+                <p class="text-danger">@TempData["PermissionError"]</p>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">

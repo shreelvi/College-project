@@ -54,7 +54,13 @@ namespace ClassWeb.Controllers
             get
             {
                 User u = Get<User>("CurrentUser");
-                if (u == null) u = new User() { FirstName = "Anonymous" };
+                if (u == null) u = new User() {
+                    FirstName = "Anony",
+                    Role = new Role()
+                    {
+                        Name = "Anonymous",
+                    }
+                };
                 return u;
             }
             set
@@ -69,7 +75,7 @@ namespace ClassWeb.Controllers
             get
             {
                 User u = Get<User>("LoggedInUser");
-                if (u == null) u = new User() { FirstName = "Anonymous" };
+                if (u == null) u = new User() { FirstName = "Anony" };
                 return u;
             }
             set
@@ -95,7 +101,14 @@ namespace ClassWeb.Controllers
             }
             else if (typeof(T) == typeof(User))
             {
-                return user.Role.Users >= perm;
+                if (user.FirstName == "Anony" || user.Role.Name== "Anonymous")
+                {
+                    return false;
+                }
+                else
+                {
+                    return user.Role.Users >= perm;
+                }
             }
             else
                 return false;

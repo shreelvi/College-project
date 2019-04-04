@@ -23,9 +23,9 @@ namespace ClassWeb.Controllers
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
-        {          
-
-            return View();
+        {
+            User user = DAL.UserGetByID(id);
+            return View(user);
         }
 
         // GET: Users/Create
@@ -39,7 +39,7 @@ namespace ClassWeb.Controllers
         {
             if (UserCan<User>(PermissionSet.Permissions.Edit))
             {
-                int? uid = HttpContext.Session.GetInt32("ID");
+                int? uid = HttpContext.Session.GetInt32("UserID");
                 if (id == null && uid != null)
                 {
                     id = uid;
@@ -55,7 +55,11 @@ namespace ClassWeb.Controllers
                 }
             return View(user);
             }
-            return View();
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard","Account");
+            }
         }
 
         // POST: Users/Edit/5
