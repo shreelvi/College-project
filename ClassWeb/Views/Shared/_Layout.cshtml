@@ -9,10 +9,10 @@
 
     <!-- Syncfusion Essential JS 2 Styles -->
     <!-- these scripts are required to have File edit control. Commentout when running in debugging as it might not run -->
-    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+    @*<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />*@
 
     <!-- Syncfusion Essential JS 2 Scripts -->
-    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+    @*<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>*@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -58,7 +58,17 @@
     <div class="container body-content">
         @RenderBody()
         <!-- Syncfusion Essential JS 2 ScriptManager -->
-        <ejs-scripts></ejs-scripts>
+        <ejs-scripts>
+            document.getElementById('SaveEditedFiles').addEventListener('click', function () {
+            var obj = document.getElementById('types').ej2_instances[0];
+            var value = JSON.stringify({ text: obj.value });
+            const Http = new XMLHttpRequest();
+            const url = '@Url.Action("Save")';
+            Http.open("POST", url);
+            Http.setRequestHeader('Content-Type', 'application/json');
+            Http.send(value);
+            });
+        </ejs-scripts>
         <hr />
         <footer>
             <p>&copy; 2019 - ClassWeb</p>

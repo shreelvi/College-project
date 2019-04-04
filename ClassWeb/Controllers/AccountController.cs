@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Data;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ using System.IO;
 
 namespace ClassWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         #region Private Variables
         private readonly IEmailService _emailService; //Use classes to send email in serivices folder
@@ -26,7 +27,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController( IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -58,6 +59,15 @@ namespace ClassWeb.Controllers
             return Ok();
         }
         [AllowAnonymous]
+        //public ActionResult ConfirmEmail(string username, string token )
+        //{
+        //    //string UserToken = DAL.GetUserToken(username);
+        //    if (UserToken == token)
+        //    {
+        //        ViewBag.Success = "Successfully verified email.";
+        //    }
+        //    return View("login");
+        //}
         #endregion
 
         #region Login
@@ -101,13 +111,17 @@ namespace ClassWeb.Controllers
             //string salt = DAL.GetSaltForUser(login.Username);
             //if (!String.IsNullOrEmpty(salt))
             //{
-            LoginModel loggedIn = DAL.GetUser(userName, passWord);
+            //User LoggedIn = DAL.GetUser(userName, passWord);
+            //CurrentUser = LoggedIn; //Sets the session for user from base controller
+
+            User loggedIn = DAL.GetUser(userName, passWord);
+            CurrentUser = loggedIn; //Sets the session for user from base controller
 
             if (loggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", loggedIn.UserName);
-                HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
+                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
@@ -123,14 +137,19 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
-            int id = (int)HttpContext.Session.GetInt32("ID");
+            //Display Permission check message that is passed from Assignment index
+            var s = TempData["PermissionError"];
+            if (s != null)
+                ViewData["PermissionErr"] = s;
+
+            int id = (int)HttpContext.Session.GetInt32("UserID");
             string username = HttpContext.Session.GetString("username");
 
             ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
             ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
 
             List<Assignment> UserAssignments = new List<Assignment>();
-           // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+            UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
 
             return View(UserAssignments);
         }
@@ -169,7 +188,8 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            int check =0; // DAL.CheckUserExists(NewUser.UserName);
+            SetUserFolder(NewUser); //Sets the default user directory 
+            int check = DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -180,10 +200,15 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //int UserAdd = DAL.AddUser(NewUser);
-                    DAL.AddUser(NewUser);
-                    TempData["UserAddSuccess"] = "User added successfully";
-                    CreateUserDirectory(NewUser.UserName);
+                    int UserAdd = DAL.AddUser(NewUser);
+                    if (UserAdd < 1)
+                    {
+                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+                    }
+                    else
+                    {
+                        TempData["UserAddSuccess"] = "User added successfully";
+                    }
                 }
                 catch
                 {
@@ -192,71 +217,21 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            int? uid = HttpContext.Session.GetInt32("ID");
-            if (uid != null)
-            {
-                id = uid;
-            }
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var user = DAL.UserGetByID(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,PhoneNumber,ID")] User user)
+        /// <summary>
+        /// Created on: 03/17/2019
+        /// Created by: Elvis
+        /// Sets the default root folder for each user when registration
+        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
+        /// Used the references to understand and develop the feature in our website
+        /// </summary>
+        private void SetUserFolder(User user)
         {
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
+            user.DirectoryPath = dir_Path + user.UserName;
+            string path = user.DirectoryPath;
 
-            if (id != user.ID)
-            {
-                return NotFound();
-            }
-            int? uid = HttpContext.Session.GetInt32("ID");
-            if (id == null && uid != null)
-            {
-                id = uid;
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (id == uid)
-                    {
-                    int a = DAL.UpdateUser(user);
-                    if (a > 0)
-                    {
-                        ViewBag.Message = "User Succesfully Updated!!";
-                    }
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Trick!!";
-                    }
-                    return RedirectToAction("Dashboard", "Account");
-                }
-                catch ( Exception ex)
-                {
-                    
-                }
-            }
-                return RedirectToAction("Dashboard","Account");
-        }
-        private void CreateUserDirectory(string UserName)
-        {
-            string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }

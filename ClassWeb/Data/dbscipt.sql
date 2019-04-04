@@ -1,33 +1,46 @@
--- -----------------------------------------------------
--- Table dbo.Roles
--- -----------------------------------------------------
-CREATE TABLE `login_roles` (
-  `RoleID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
-  `Description` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
-  PRIMARY KEY (`RoleID`)
-);
+--
+-- Table structure for table `roles`
+--
+CREATE TABLE IF NOT EXISTS `Roles` ( 
+`RoleID` INT NOT NULL AUTO_INCREMENT, 
+`Name` VARCHAR(45) NULL, 
+`IsAdmin` BIT(1) NULL, 
+`Users` BIT(4) NULL, 
+`Role` BIT(4) NULL, `
+Assignment` BIT(4) NULL, 
+PRIMARY KEY (`RoleID`)) ENGINE = InnoDB;
+
+INSERT INTO `Roles`(
+`RoleID`, `Name`, `IsAdmin`,`Users`, `Role`, `Assignment`) 
+VALUES ('Admin',1,b'1111',b'1111',b'1111') ,
+('Power User',1,b'0111',b'0111',b'0111') ,
+('Data Entry',1,b'0110',b'0110',b'0110');
 
 -- -----------------------------------------------------
 -- Table dbo.Users
 -- -----------------------------------------------------
-CREATE TABLE `login_users` (
-  `UserID` int(11) NOT NULL AUTO_INCREMENT,
-  `FirstName` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
-  `MiddleName` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
-  `LastName` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+CREATE TABLE `Users` (
+  `UserID` INT NOT NULL AUTO_INCREMENT,
+  `FirstName` VARCHAR(45) NULL,
+  `MiddleName` VARCHAR(45) NULL,
+  `LastName` VARCHAR(45) NULL,
   `EmailAddress` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
-  `UserName` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
-  `Password` char(64) DEFAULT NULL,
-  `RoleID` int(11) NOT NULL DEFAULT '2',
-  `Salt` char(128) DEFAULT NULL,
+  `UserName` VARCHAR(128) NULL,
+  `Password` CHAR(64) NULL,
+  `Salt` CHAR(50) NULL,
+  `RoleID` INT DEFAULT 2,
+  `DirectoryPath` VARCHAR(128) NULL,
   `DateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   `DateModified` datetime DEFAULT CURRENT_TIMESTAMP,
-  'DirectoryPath` string NOT NULL,
+  `DateDeleted` datetime NULL,
   PRIMARY KEY (`UserID`),
-  KEY `FK1` (`RoleID`),
-  CONSTRAINT `FK1` FOREIGN KEY (`RoleID`) REFERENCES `login_roles` (`RoleID`)
-);
+  INDEX `Users_Roles_idx` (`RoleID` ASC),
+  CONSTRAINT `Users_Roles`
+    FOREIGN KEY (`RoleID`)
+    REFERENCES `Roles` (`RoleID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 --
 -- Table structure for table `assignment`
@@ -51,3 +64,6 @@ CREATE TABLE `assignment` (
 ALTER TABLE `assignment`
   ADD PRIMARY KEY (`AssignmentID`),
   ADD CONSTRAINT FK_AssignmentUser FOREIGN KEY (`UserID`) REFERENCES Login_users(UserID);
+
+
+
