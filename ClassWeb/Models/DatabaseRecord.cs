@@ -14,7 +14,7 @@ namespace ClassWeb.Models
     /// </summary>
     public abstract class DatabaseRecord
     {
-        protected int _ID;
+        public int _ID;
         /// <summary>
         /// The User given Name for the Object.
         /// </summary>
