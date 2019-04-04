@@ -81,8 +81,7 @@ namespace ClassWeb.Controllers
         {
             try
             {
-                ClassDBHandle sdb = new ClassDBHandle();
-                sdb.UpdateDetails(cmodel);
+//
                 return RedirectToAction("Index");
             }
             catch
@@ -94,9 +93,7 @@ namespace ClassWeb.Controllers
         public ActionResult Delete(int id)
         {
             try
-            {
-                ClassDBHandle sdb = new ClassDBHandle();
-                if (sdb.DeleteClass(id))
+            {//
                 {
                     ViewBag.AlertMsg = "Class Deleted Successfully";
                 }

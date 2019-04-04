@@ -60,6 +60,12 @@ namespace ClassWeb.Model
                 return null;
             }
         }
+
+        internal static void AddUser(object newClass)
+        {
+            throw new NotImplementedException();
+        }
+
         public static int GetIntReader(MySqlCommand comm)
         {
             try
@@ -360,11 +366,12 @@ namespace ClassWeb.Model
 
         #endregion
 
+        #region Classes
         /// <summary>
         /// by: Ganesh
         /// reference: https://www.completecsharptutorial.com/mvc-articles/insert-update-delete-in-asp-net-mvc-5-without-entity-framework.php
         /// </summary>
-        #region Classes
+ 
         private SqlConnection con;
         private void connection()
         {
