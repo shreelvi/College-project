@@ -192,7 +192,68 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            int? uid = HttpContext.Session.GetInt32("ID");
+            if (uid != null)
+            {
+                id = uid;
+            }
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = DAL.UserGetByID(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
 
+        // POST: Users/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,PhoneNumber,ID")] User user)
+        {
+
+            if (id != user.ID)
+            {
+                return NotFound();
+            }
+            int? uid = HttpContext.Session.GetInt32("ID");
+            if (id == null && uid != null)
+            {
+                id = uid;
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == uid)
+                    {
+                    int a = DAL.UpdateUser(user);
+                    if (a > 0)
+                    {
+                        ViewBag.Message = "User Succesfully Updated!!";
+                    }
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Trick!!";
+                    }
+                    return RedirectToAction("Dashboard", "Account");
+                }
+                catch ( Exception ex)
+                {
+                    
+                }
+            }
+                return RedirectToAction("Dashboard","Account");
+        }
         private void CreateUserDirectory(string UserName)
         {
             string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);

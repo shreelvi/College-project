@@ -35,6 +35,7 @@ namespace ClassWeb.Controllers
             //string Current =// Directory.GetCurrentDirectory().Split(UserName);
             //ViewBag.Location = //;
             Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+            ViewBag.Dir = RootDir();
             return View(assignments);
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
@@ -56,7 +57,12 @@ namespace ClassWeb.Controllers
             }
             return new RedirectResult(url);
         }
-
+        public string RootDir()
+        {
+            string _UserName = HttpContext.Session.GetString("username");
+            int index = Directory.GetCurrentDirectory().IndexOf(_UserName) + _UserName.Length;
+            return ("Home" + Directory.GetCurrentDirectory().Substring(index));
+        }
         public IActionResult SetDefaultDir()
         {
             string _UserName = HttpContext.Session.GetString("username");
@@ -145,15 +151,22 @@ namespace ClassWeb.Controllers
             foreach (IFormFile file in files)
             {
                 DirectoryInfo dir = new DirectoryInfo(file.FileName);
+                Assignment a = new Assignment();
                 if (!Directory.Exists(dir.Parent.ToString()))
                 {
                     Directory.CreateDirectory(dir.Parent.ToString());
-                    Assignment a = new Assignment();
+                    string t = dir.Extension;
+                    bool IsReadable = false;
+                    if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+              t == "text/html" || t == "text/javascript" || t == "text/css")
+                    {
+                        IsReadable = true;
+                    }
                     a.IsEditable = false;
                     a.FileSize = file.Length;
-                    a.FileLocation = dir.FullName;
-                    a.FileName = file.FileName.ToString();
-                    a.Grade = 0;                
+                    a.FileLocation = file.FileName.ToString();
+                    a.FileName = file.Name;
+                    a.Grade = 0;
                     a.DateSubmited = DateTime.Now;
                     a.Feedback = "File Submitted";
                     a.DateModified = DateTime.Now;
@@ -173,10 +186,48 @@ namespace ClassWeb.Controllers
                     }
                     assign.Add(a);
                 }
+                if (Directory.Exists(dir.Parent.ToString()))
+                {
+
+                    //Directory.CreateDirectory(dir.Parent.ToString());
+                    Assignment db = DAL.GetAssignmentByFileName(dir.Name);
+                    if (db != null)
+                    {
+                    db.Feedback = "File Re-Submitted";
+                    db.DateModified = DateTime.Now;
+                        DAL.UpdateAssignment(a);
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Re-Uploaded!!!";
+                        }
+                    }
+                    else if(db==null)
+                    {
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            a.IsEditable = false;
+                            a.FileSize = file.Length;
+                            a.FileLocation = dir.FullName;
+                            a.FileName = file.FileName.ToString();
+                            a.Grade = 0;
+                            a.DateSubmited = DateTime.Now;
+                            a.Feedback = "File Submitted";
+                            a.DateModified = DateTime.Now;
+                            int test = DAL.AddAssignment(a);
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.Error = "File Upload Failed!!!";
+                    }
+                    assign.Add(a);
+                }
             }
             SetDefaultDir();
         }
-
         public async Task<FileResult> Download(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
@@ -213,7 +264,8 @@ namespace ClassWeb.Controllers
         }
 
         #region Delete Assignement
-        public IActionResult Delete(string FileName)
+        [HttpPost]
+        public IActionResult DeleteFile(string FileName)
         {
             string dir_Path = Directory.GetCurrentDirectory();
             string path = Path.Combine(dir_Path, FileName);
@@ -223,6 +275,11 @@ namespace ClassWeb.Controllers
                 {
                     Assignment assign = DAL.GetAssignmentByFileName(FileName);
 
+                    if (assign == null)
+                    {
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
+                    }
                     if (assign.FileName == FileName && path == assign.FileLocation)
                     {
                         DAL.DeleteAssignmentByID(assign.ID);
@@ -230,10 +287,58 @@ namespace ClassWeb.Controllers
                         ViewBag.Message = "File Succesfully Deleted!!!";
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    // return ex.Message;
                 }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult DeleteFolder(string FolderName)
+        {
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FolderName);
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    var dire = Directory.GetDirectories(path);
+                    List<string> root = GetDirectory(dire, path);
+                    foreach(string s in root)
+                    {
+                        string newpath= Path.Combine(path, s);
+                        var dirs = Directory.GetDirectories(newpath);
+                        List<string> roots = GetDirectory(dirs, newpath);
+                        //while()
+                        if (System.IO.File.Exists(newpath))
+                        {
+                            var dir = new DirectoryInfo(newpath);
+                            FileInfo[] files = dir.GetFiles();
+                            foreach (FileInfo file in files)
+                            {
+                                Assignment assign = DAL.GetAssignmentByFileName(FolderName);
+                                if (assign == null)
+                                {
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
+                                }
+                                if (assign.FileName == FolderName && path == assign.FileLocation)
+                                {
+                                    DAL.DeleteAssignmentByID(assign.ID);
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
+                                }
+                            }
+                        }
+                    }                  
+                    Directory.Delete(path);
+                    ViewBag.Message = "Folder sucessfully deleted Succesfully Deleted!!!";
+                }            
+            }
+            catch
+            {
+
             }
             return RedirectToAction(nameof(Index));
         }
@@ -351,8 +456,6 @@ namespace ClassWeb.Controllers
                 items.Add(assign);
             }
             Assignment Assign = DAL.GetAllAssignment();
-
-
             return Tuple.Create(items, root);
         }
 

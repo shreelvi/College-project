@@ -1,6 +1,4 @@
-﻿@model List<ClassWeb.Models.Assignment>
-
-@using Microsoft.AspNetCore.Http;
+﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard ";
 }
@@ -10,10 +8,11 @@
 
     <br /><br />
     <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
+    <a style="color:darkblue; float: right" asp-controller="Account" asp-action="Edit">Edit Profile <text>&nbsp;</text></a>
 </div>
 
 <div style="float:left">
+<span>@ViewBag.Message</span>
     <h2 style="color:darkorange">User Dashboard</h2><br />
     <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
 
