@@ -39,7 +39,6 @@ namespace ClassWeb.Model
             {
             }
         }
-       
 
         public static int GetIntReader(MySqlCommand comm)
         {
@@ -661,6 +660,12 @@ namespace ClassWeb.Model
         }
         #endregion
 
+        #region Classes
+        internal static List<Class> ClassGetAll()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 
 }
