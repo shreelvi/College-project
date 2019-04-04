@@ -382,10 +382,10 @@ namespace ClassWeb.Model
             con = new SqlConnection(constring);
         }
 
-        public bool AddStudent(Class cmodel)
+        public bool AddClass(Class cmodel)
         {
             connection();
-            SqlCommand cmd = new SqlCommand("AddNewClass", con);
+            SqlCommand cmd = new SqlCommand("AddClass", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@Title", cmodel.Title);
@@ -474,6 +474,7 @@ namespace ClassWeb.Model
             else
                 return false;
         }
+        #endregion
     }
-    #endregion
+
 }
