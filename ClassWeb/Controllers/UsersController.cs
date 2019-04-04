@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ClassWeb.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {        
         // GET: Users
         public async Task<IActionResult> Index()
@@ -37,21 +37,25 @@ namespace ClassWeb.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            int? uid = HttpContext.Session.GetInt32("ID");
-            if (id == null && uid != null)
+            if (UserCan<User>(PermissionSet.Permissions.Edit))
             {
-                id = uid;
-            }
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var user = DAL.UserGetByID(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+                int? uid = HttpContext.Session.GetInt32("ID");
+                if (id == null && uid != null)
+                {
+                    id = uid;
+                }
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var user = DAL.UserGetByID(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
             return View(user);
+            }
+            return View();
         }
 
         // POST: Users/Edit/5

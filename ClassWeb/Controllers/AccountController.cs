@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +26,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -119,7 +118,7 @@ namespace ClassWeb.Controllers
 
             if (loggedIn != null)
             {
-                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", userName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
@@ -147,11 +146,7 @@ namespace ClassWeb.Controllers
 
             ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
             ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-
-            List<Assignment> UserAssignments = new List<Assignment>();
-            UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-
-            return View(UserAssignments);
+            return View();
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -189,7 +184,7 @@ namespace ClassWeb.Controllers
         public ActionResult AddUser(User NewUser)
         {
             SetUserFolder(NewUser); //Sets the default user directory 
-            int check = DAL.CheckUserExists(NewUser.UserName);
+            int check = 0; //DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";

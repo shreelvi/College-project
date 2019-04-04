@@ -64,12 +64,12 @@ namespace ClassWeb.Controllers
         }
 
         //Same method as above. Created because we used loginmodel
-        internal LoginModel LoggedInUser
+        internal User LoggedInUser
         {
             get
             {
-                LoginModel u = Get<LoginModel>("LoggedInUser");
-                if (u == null) u = new LoginModel() { FirstName = "Anonymous" };
+                User u = Get<User>("LoggedInUser");
+                if (u == null) u = new User() { FirstName = "Anonymous" };
                 return u;
             }
             set

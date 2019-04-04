@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassWeb.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -141,16 +142,24 @@ namespace ClassWeb.Models
 
         protected override int dbAdd()
         {
-            throw new NotImplementedException();
+            _ID = DAL.AddRole(this);
+            return ID;
         }
 
         protected override int dbUpdate()
         {
-            throw new NotImplementedException();
+            return DAL.UpdateRole(this);
         }
-
+        /// <summary>
+        /// Calls DAL function to remove Role from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public int dbRemove()
+        {
+            return DAL.RemoveRole(this);
+        }
         #endregion
-        
+
         #region Public Subs
         /// <summary>
         /// Fills object from a MySqlClient Data Reader
@@ -163,7 +172,6 @@ namespace ClassWeb.Models
             _IsAdmin = dr.GetBoolean(db_IsAdmin);
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
-            _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
         }
         #endregion
     }
