@@ -19,7 +19,7 @@ using System.Net;
 
 namespace ClassWeb.Controllers
 {
-    public class GroupController : Controller
+    public class GroupController : BaseController
     {
 
         #region Private Variables

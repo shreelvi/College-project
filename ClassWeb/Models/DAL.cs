@@ -392,18 +392,18 @@ namespace ClassWeb.Model
         /// Reference: Github, PeerEval Project
         /// </summary>
         /// <remarks></remarks>
-        public static GroupLoginModel GetGroup(string userName, string password)
+        public static Group GetGroup(string userName, string password)
         {
 
             MySqlCommand comm = new MySqlCommand("get_GroupByUserName");
-            GroupLoginModel retObj = null;
+            Group retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + GroupLoginModel.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new GroupLoginModel(dr);
+                    retObj = new Group(dr);
                 }
                 comm.Connection.Close();
             }
