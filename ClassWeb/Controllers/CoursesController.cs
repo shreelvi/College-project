@@ -2,10 +2,10 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using ClassWeb.Model;
+using ClassWeb.Models;
 
 namespace ClassWeb.Controllers
 {
@@ -24,7 +24,7 @@ namespace ClassWeb.Controllers
     
         List<Course> Courses = new List<Course>();
         private readonly int ID;
-       private readonly object course;
+        private readonly object course;
 
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
@@ -68,13 +68,12 @@ namespace ClassWeb.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Number,Name,ClassID,ID")] Course course)
+        public IActionResult Create([Bind("Number,Name,ClassID")]Course NewCourse)
         {
             if (ModelState.IsValid)
             {
-                DAL.Create(course);
-                ; return RedirectToAction(nameof(Index));
+                int i=  DAL.CreateCourse(NewCourse);
+                return RedirectToAction(nameof(Index));
             }
             return View(course);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,31 +15,28 @@ namespace ClassWeb.Models
 {
     public class Course : DatabaseRecord
     {
+        public Course()
+        {
 
-        #region Private Variables
-
-        private int _Number;
-        private int _Name;
-        private int _ClassID;
+        }
+        //database strings
+        #region Database  String
+        internal const string db_ID = "ID";
+        internal const string db_Name = "Name";
+        internal const string db_Number = "Number";
+        internal const string db_ClassID = "ClassID";
         #endregion
 
-        #region Public Variables
-        public int Number
+      //Fills the data from the database while making objects
+        public override void Fill(MySqlDataReader dr)
         {
-            get { return _Number; }
-            set { _Number = value; }
+            _ID = dr.GetInt32(db_ID);
+            _Name = dr.GetString(db_Name);
+            _Number = dr.GetInt32(db_Number);
+            _ClassID = dr.GetInt32(db_ClassID);
+            
         }
 
-        public int Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
-        public int ClassID
-        {
-            get { return _ClassID; }
-            private set { _ClassID = value; }
-        }
         public override int dbSave()
         {
             throw new NotImplementedException();
@@ -54,19 +52,46 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-        {
-            throw new NotImplementedException();
-        }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
         internal static Task FirstOrDefaultAsync(Func<object, bool> p)
         {
             throw new NotImplementedException();
         }
+
+
+        #region Private Variables
+
+        private int _Number;
+        private string _Name;
+        private int _ClassID;
+
+        public Course(MySqlDataReader dr)
+        {
+        }
+        #endregion
+
+        #region Public Variables
+        public int Number
+        {
+            get { return _Number; }
+            set { _Number = value; }
+        }
+
+        public string Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
+        }
+        public int ClassID
+        {
+            get { return _ClassID; }
+            private set { _ClassID = value; }
+        }
+       
         #endregion
     }
 

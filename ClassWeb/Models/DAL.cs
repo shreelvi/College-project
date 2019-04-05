@@ -18,8 +18,8 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -368,15 +368,68 @@ namespace ClassWeb.Model
         /// </summary>
         /// <remarks></remarks>
 
-         internal static int Create(Course obj)
+        internal static int CreateCourse(Course obj)
         {
             if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
-                 //comm.Parameters.AddWithValue("@" + Course.Number, obj.Number);
-                // comm.Parameters.AddWithValue("@" + Course.ClassID, obj.ClassID);
-                // return AddObject(comm, "@" + Course.ID);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Number, obj.Number);
+                comm.Parameters.AddWithValue("@" + Course.db_ClassID, obj.ClassID);
+                return AddObject(comm, "@" + Course.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        ///<summary>
+        /// Get All Courses from the database
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static List<Course> GetAllCourses()
+        {
+            List<Course> retObj = new List<Course>();
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    //
+                    retObj.Add(new Course(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        ///<summary>
+        ///Edit Course 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int EditCourse(Course obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Number, obj.Number);
+                return UpdateObject(comm);
             }
             catch (Exception ex)
             {
@@ -386,10 +439,35 @@ namespace ClassWeb.Model
         }
 
         ///<summary>
-        /// Edit Course
+        ///Delete Course by Id from the database
+        /// Reference: PeerVal project by Professor
         /// </summary>
         /// <remarks></remarks>
 
+        internal static int DeleteCourseByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_DeleteCourseByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                MySqlParameter retParameter;
+                retParameter = comm.Parameters.Add("@" + Course.db_ID, MySqlDbType.Int32);
+                retParameter.Direction = System.Data.ParameterDirection.Output;
+                comm.ExecuteNonQuery();
+                retInt = (int)retParameter.Value;
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
         #endregion
 
 
