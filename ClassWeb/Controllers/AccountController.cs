@@ -137,21 +137,31 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
-            //Display Permission check message that is passed from Assignment index
-            var s = TempData["PermissionError"];
-            if (s != null)
-                ViewData["PermissionErr"] = s;
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                //Display Permission check message that is passed from Assignment index
+                var s = TempData["PermissionError"];
+                if (s != null)
+                    ViewData["PermissionErr"] = s;
 
-            int id = (int)HttpContext.Session.GetInt32("UserID");
-            string username = HttpContext.Session.GetString("username");
+                int id = (int)HttpContext.Session.GetInt32("UserID");
+                string username = HttpContext.Session.GetString("username");
 
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
 
-            List<Assignment> UserAssignments = new List<Assignment>();
-            UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+                List<Assignment> UserAssignments = new List<Assignment>();
+                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
 
-            return View(UserAssignments);
+                return View(UserAssignments);
+            }
+            
         }
         /// <summary>
         /// Created on: 03/09/2019

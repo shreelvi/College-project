@@ -100,7 +100,7 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Role for this PeerVal.Role object.
+        /// Gets or sets the Role for this Classweb.Role object.
         /// </summary>
         /// <remarks></remarks>
         [Required]
@@ -118,7 +118,7 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Evaluation for this PeerVal.Role object.
+        /// Gets or sets the Evaluation for this Classweb.Role object.
         /// </summary>
         [Required]
         [Display(Name = "Assignment Permissionset")]

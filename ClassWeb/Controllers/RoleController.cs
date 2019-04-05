@@ -67,7 +67,22 @@ namespace ClassWeb.Controllers
         // GET: Role/Create
         public IActionResult Create()
         {
-            return View();
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (UserCan<Role>(PermissionSet.Permissions.Add))
+            {
+                return View();
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         // POST: Role/Create
@@ -77,25 +92,53 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Name,IsAdmin,Users,Roles,Assignment")] Role role)
         {
-            //if (ModelState.IsValid)
-            //{
-            int retInt = DAL.AddRole(role);
-            if (retInt < 0)
-                ViewBag.RoleAdd = "Database problem occured when adding the role";
-            else { ViewBag.RoleAdd = "Role added successfully"; }
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            if (UserCan<Role>(PermissionSet.Permissions.Add))
+            {
+                int retInt = DAL.AddRole(role);
+                if (retInt < 0)
+                    ViewBag.RoleAdd = "Database problem occured when adding the role";
+                else { ViewBag.RoleAdd = "Role added successfully"; }
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
+
         }
 
         // GET: Role/Edit/5
         public IActionResult Edit(int id)
         {
-            Role role = DAL.GetRole(id);
-            if (role == null)
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
             {
-                return NotFound();
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
             }
-            return View(role);
+
+            if (UserCan<Role>(PermissionSet.Permissions.Edit))
+            {
+                Role role = DAL.GetRole(id);
+                if (role == null)
+                {
+                    return NotFound();
+                }
+                return View(role);
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         //// POST: Role/Edit/5
@@ -105,16 +148,30 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,ID")] Role role)
         {
-            try
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
             {
-                int retInt = DAL.UpdateRole(role);
-                ViewBag.RoleUpdate = "Role updated successfully";
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
             }
-            catch //(DbUpdateConcurrencyException)
+            if (UserCan<Role>(PermissionSet.Permissions.Edit))
             {
-                ViewBag.RoleUpdate("Database error occured when updating the role");
+                try
+                {
+                    int retInt = DAL.UpdateRole(role);
+                    ViewBag.RoleUpdate = "Role updated successfully";
+                }
+                catch //(DbUpdateConcurrencyException)
+                {
+                    ViewBag.RoleUpdate("Database error occured when updating the role");
+                }
+                return View(role);
             }
-            return View(role);
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
 
@@ -122,13 +179,26 @@ namespace ClassWeb.Controllers
         // GET: Role/Delete/5
         public IActionResult Delete(int id)
         {
-            Role retRole = DAL.GetRole(id);
-            if (retRole == null)
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
             {
-                return NotFound();
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
             }
-
-            return View(retRole);
+            if (UserCan<Role>(PermissionSet.Permissions.Delete))
+            {
+                Role retRole = DAL.GetRole(id);
+                if (retRole == null)
+                {
+                    return NotFound();
+                }
+                return View(retRole);
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         // POST: Role/Delete/5
@@ -136,13 +206,27 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            int retInt = DAL.RemoveRole(id);
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            if (UserCan<Role>(PermissionSet.Permissions.Delete))
+            {
+                int retInt = DAL.RemoveRole(id);
 
-            if (retInt < 0)
-                TempData["RoleDelete"] = "Error occured when deleting the role";
+                if (retInt < 0)
+                    TempData["RoleDelete"] = "Error occured when deleting the role";
 
-            TempData["RoleDelete"] = "Successfully deleted the role";
-            return RedirectToAction(nameof(Index));
+                TempData["RoleDelete"] = "Successfully deleted the role";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
     }
