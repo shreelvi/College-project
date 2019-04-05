@@ -2,25 +2,25 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1 style="color:darkorange">Idaho State University, College of Business -- Class Web</h1>
-</div>
 <div class="row">
-    <div class="col-md-4">
-        <h2>Welcome to ClassWeb</h2>
+    <div class="col-md-5">
+        <h1 style="color:darkorange">Idaho State University, College of Business -- Class Web</h1><br />
+        <h2>Welcome to Class Web</h2>
         <p>
             ClassWeb is a website where students can manage
             Assignments for classes taken each semester. It is designed
-            for ISU College of Business Students and faculty members.
+            for ISU College of Business Students and faculty members.<br /><br />
+            It is currently under development.
+            <br /><br />
+            Test Login with username: test; pwd: test1 or Register.
         </p>
     </div>
-    <div class="col-md-4">
-        <h2>Login Here</h2>
-        <input type="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Login", "Account") + "'");" />
-    </div>
-    <div class="col-md-4">
-        <h2>Request Registration</h2>
-        <input type="button" value="Register Account" onclick="@("window.location.href='" + @Url.Action("AddUser", "Account") + "'");" />
-
+    <div style="float:right; width:600px">
+        @await Html.PartialAsync("../Account/_LoginPartial.cshtml")
     </div>
 </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

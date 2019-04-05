@@ -3,35 +3,83 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="main">
+    <main class="content">
+        <h2>Index</h2>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <span class="alert">@ViewBag.Message</span>
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>
+                        User Name
+                    </td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                @foreach (User item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </main>
+</div>
+</div>
 
-<h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<form asp-controller="Users" asp-action="index" method="get">
-    <p>
-        UserName: <input type="text" id="UserSearch" name="SearchString">
-        <input type="submit" value="Search" />
-    </p>
-</form>
-<span class="alert">@ViewBag.Message</span>
-<table class="table">
-    <thead>
 
-    </thead>
-    <tbody>
-@foreach (User item in Model) {
-        <tr>        
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

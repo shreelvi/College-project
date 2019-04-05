@@ -26,15 +26,6 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                var apiKey = Environment.GetEnvironmentVariable("user space");
-                var client = new SendGridClient(apiKey);
-                var from = new EmailAddress("test@example.com", "Example User");
-                var subject = "Sending with SendGrid is Fun";
-                var to = new EmailAddress("test@example.com", "Example User");
-                var plainTextContent = "and easy to do anywhere, even with C#";
-                var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-                var response = await client.SendEmailAsync(msg);
 
                 user = DAL.UserGetAll().FindAll(User => User.UserName.Contains(SearchString));
             }
@@ -94,7 +85,7 @@ namespace ClassWeb.Controllers
                
                 return NotFound();
             }
-            int? uid =HttpContext.Session.GetInt32("ID");
+            int? uid =HttpContext.Session.GetInt32("UserID");
             if (id == null&&uid!=null)
             {
                 id = uid;
