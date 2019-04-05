@@ -4,8 +4,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ClassWeb.Models;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+
 namespace ClassWeb
 {
     public class Startup
@@ -57,19 +62,23 @@ namespace ClassWeb
             }
             app.UseSession(); // requred to have sessions in our application.
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions() {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=index}/{id?}");
+                    template: "{controller=Users}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
                     template: "{UserName}/{Directory}/{FileName}",
-                    defaults: "{controller=Home}/{action=index}/{id?}");
+                    defaults: "{controller=Users}/{action=index}/{id?}");
                 routes.MapRoute(
                    name: "root",
                    template: "{UserName}/{FileName}",
-                   defaults: "{controller=Home}/{action=index}/{id?}");
+                   defaults: "{controller=Users}/{action=index}/{id?}");
             });
         }
     }

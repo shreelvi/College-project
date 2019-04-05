@@ -1,9 +1,9 @@
-﻿@model ClassWeb.Models.Class
-
+﻿@using ClassWeb.Models
+@model Class
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Cretae Class";
 }
-
+<p style="color:red">@ViewBag.Error</p>
 <h2>Create</h2>
 
 <h4>Class</h4>
@@ -33,6 +33,11 @@
                 <label asp-for="SectionID" class="control-label"></label>
                 <input asp-for="SectionID" class="form-control" />
                 <span asp-validation-for="SectionID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ID" class="control-label"></label>
+                <input asp-for="ID" class="form-control" />
+                <span asp-validation-for="ID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
