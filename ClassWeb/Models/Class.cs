@@ -105,18 +105,11 @@ namespace ClassWeb.Models
         }
 
         public object Title { get; internal set; }
-        public string Salt { get; internal set; }
-        public string Password { get; internal set; }
 
         public override int dbSave()
         {
             throw new NotImplementedException();
         }
-
-        //public override void Fill(MySqlDataReader dr)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public override string ToString()
         {
@@ -129,6 +122,11 @@ namespace ClassWeb.Models
         }
 
         protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static Class Get(int id)
         {
             throw new NotImplementedException();
         }

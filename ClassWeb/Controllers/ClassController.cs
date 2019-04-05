@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassWeb.Model;
+using ClassWeb.Models;
 using ClassWeb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,12 +35,14 @@ namespace ClassWeb.Controllers
         // GET: Class
         public ActionResult Index()
         {
+            ViewBag.Class = DAL.GetClass();
             return View();
         }
 
         // GET: Class/Details/5
         public ActionResult Details(int id)
         {
+            ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
             return View();
         }
 
@@ -48,6 +53,11 @@ namespace ClassWeb.Controllers
         }
 
         // POST: Class/Create
+        /// <summary>
+        /// this will create the new classes
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -71,6 +81,12 @@ namespace ClassWeb.Controllers
         }
 
         // POST: Class/Edit/5
+        /// <summary>
+        /// to edit the class details for the user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -88,6 +104,11 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Class/Delete/5
+        /// <summary>
+        /// deleting the class. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Delete(int id)
         {
             return View();
@@ -108,6 +129,21 @@ namespace ClassWeb.Controllers
             {
                 return View();
             }
+        }
+        /// <summary>
+        /// logs out the user and clear their session information. 
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
+        }
+        
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

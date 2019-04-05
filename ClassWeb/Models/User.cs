@@ -266,10 +266,5 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
-
-        public static implicit operator User(Class v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

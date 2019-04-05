@@ -661,6 +661,64 @@ namespace ClassWeb.Model
         #endregion
 
         #region Class
+
+        internal static List<Class> GetClass()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_ClassesGetAll");
+            List<Class> retList = new List<Class>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Class(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        /// <summary>
+        /// Gets the Classes correposponding with the given ID
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static Class GetClass(String idstring, Boolean retNewObject)
+        {
+            Class retObject = null;
+            int ID;
+            if (int.TryParse(idstring, out ID))
+            {
+                if (ID == -1 && retNewObject)
+                {
+                    retObject = new Class();
+                    retObject.ID = -1;
+                }
+                else if (ID >= 0)
+                {
+                    retObject = GetClass(ID);
+                }
+            }
+            return retObject;
+        }
+
+
+        /// <summary>
+        /// Gets the class corresponding with the given ID
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static Class GetClass(int id)
+        {
+            return Class.Get(id);
+        }
         /// <summary>
         /// Attempts to add classes in the database
         /// Reference: PeerVal Project
@@ -772,7 +830,7 @@ namespace ClassWeb.Model
             return retObj;
         }
         ///<summary>
-        /// Get salt of the User from the database corresponding to the title
+        /// Get salt of the class from the database corresponding to the title
         /// </summary>
         /// <remarks></remarks>
 
@@ -799,7 +857,7 @@ namespace ClassWeb.Model
         }
 
         ///<summary>
-        /// Set salt of the User from the database corresponding to the ID
+        /// Set salt of the class from the database corresponding to the ID
         /// </summary>
         /// <remarks></remarks>
         internal static int SetSaltForClass(int ClassID, string salt)
@@ -808,8 +866,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_SetSaltForClass");
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_ID, ClassID);
-                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                comm.Parameters.AddWithValue("@" + Class.db_ID, ClassID);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
