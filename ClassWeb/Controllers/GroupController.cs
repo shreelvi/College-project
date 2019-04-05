@@ -123,7 +123,7 @@ namespace ClassWeb.Controllers
             return View(GroupAssignments);
         }
 
-        // GET: /Account/AddUser
+        // GET: Group/AddGroup
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
@@ -162,7 +162,7 @@ namespace ClassWeb.Controllers
                     TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("Login", "Group");
+            return RedirectToAction("LoginGroup", "Group");
         }
 
         /// <summary>
@@ -189,12 +189,12 @@ namespace ClassWeb.Controllers
                 Directory.CreateDirectory(path);
         }
 
-        List<Group> g = new List<Group>();
+       // List<Group> g = new List<Group>();
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
         public IActionResult Index()
         {
-            
+            List<Group> g = new List<Group>();
             return View(g);
         }
 
@@ -280,10 +280,11 @@ namespace ClassWeb.Controllers
         {
             //await _signManager.SignOutAsync();
             HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("LoginGroup", "Group");
         }
         private bool GroupExists(int id)
         {
+            List<Group> g = new List<Group>();
             return g.Any(e => e.ID == id);
         }
         
