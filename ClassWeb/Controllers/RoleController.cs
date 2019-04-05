@@ -39,7 +39,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            if (UserCan<Role>(PermissionSet.Permissions.View))
             {
                 List<Role> Roles = new List<Role>();
                 Roles = DAL.GetRoles();
