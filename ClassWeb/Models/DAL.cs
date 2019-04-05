@@ -89,7 +89,7 @@ namespace ClassWeb.Model
             return retInt;
         }
 
-       
+
         /// <summary>
         /// reference: Professor's DAL for PeerEval
         /// set connection and execute given command on the database
@@ -196,7 +196,7 @@ namespace ClassWeb.Model
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                  //
+                    //
                     retObj.Add(new User(dr));
                 }
                 comm.Connection.Close();
@@ -225,7 +225,7 @@ namespace ClassWeb.Model
 
                 while (dr.Read())
                 {
-                    retObj=new Assignment(dr);
+                    retObj = new Assignment(dr);
                 }
                 comm.Connection.Close();
             }
@@ -529,7 +529,65 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+        internal static int DeleteUserByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserDeleteByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
 
+        internal static int UpdateUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the User
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserRemove");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
 
         internal static User UserGetByID(int? id)
         {
@@ -540,6 +598,19 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_ID, id);
                 MySqlDataReader dr = GetDataReader(comm);
 
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         ///<summary>
         /// Get salt of the User from the database corresponding to the Username
         /// </summary>
@@ -588,15 +659,257 @@ namespace ClassWeb.Model
             return -1;
         }
         #endregion
+        #region GroupLogin
 
-        #region Classes
-        internal static List<Class> ClassGetAll()
+        ///<summary>
+        /// Gets the User from the database corresponding to the Username
+        /// Reference: Github, PeerEval Project
+        /// </summary>
+        /// <remarks></remarks>
+        public static Group GetGroup(string userName, string password)
         {
-            throw new NotImplementedException();
+
+            MySqlCommand comm = new MySqlCommand("get_GroupByUserName");
+            Group retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Group(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            //Verify password matches.
+            if (retObj != null)
+            {
+                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password.TrimEnd('!')))
+                {
+                    retObj = null;
+                }
+            }
+
+            return retObj;
+        }
+        internal static Group GroupGetByID(int? id)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupByID");
+            Group retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Group(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        /// <summary>
+        /// Attempts to add group in the database
+        /// Reference: PeerVal Project + Login for User
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddGroup(Group obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("add_Group");
+            try
+            {
+                // generate new password first.
+                obj.Salt = Tools.Hasher.GenerateSalt(50);
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                obj.Password = newPass;
+                // now set object to Database.
+
+                comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
+                comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + Group.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        internal static int AddUserToGroup(Group obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("add_UserToGroup");
+            try
+            {
+
+                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
+
+                return AddObject(comm, "@" + Group.db_EmailAddress);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        internal static int UpdateGroup(Group obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("update_Group");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
+                comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        ///<summary>
+        /// Check if username exists in the database
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int CheckGroupExists(string username)
+        {
+            if (username == null) return -1;
+            MySqlCommand comm = new MySqlCommand("CheckUserName_Group");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
+                int dr = GetIntReader(comm);
+
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        internal static int RemoveUserFromGroup(Group obj)
+        {
+            if (obj == null)
+                return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// Gets List of usernames from the database to check for same names
+        /// </summary>
+        /// <returns>List of Usernames string</returns>
+        internal static List<Group> GetAllGroups()
+        {
+            MySqlCommand comm = new MySqlCommand("get_Group");
+            List<Group> groupList = new List<Group>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    Group group = new Group(dr);
+
+                    groupList.Add(group);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return groupList;
         }
         #endregion
 
-       
+
+        ///<summary>
+        /// Get salt of the Group from the database corresponding to the Username
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static string GetSaltForGroup(string username)
+        {
+            String salt = "";
+            MySqlCommand comm = new MySqlCommand("get_SaltForGroup");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    salt = dr.GetString(0);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return salt;
+        }
+
+        ///<summary>
+        /// Set salt of the Group from the database corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int SetSaltForGroup(int groupID, string salt)
+        {
+            if (groupID == 0 || salt == null) return -1;
+            MySqlCommand comm = new MySqlCommand("set_SaltForGroup");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, groupID);
+                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+
     }
+
 
 }

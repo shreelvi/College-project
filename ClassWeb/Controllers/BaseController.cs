@@ -68,7 +68,26 @@ namespace ClassWeb.Controllers
                 Set("CurrentUser", value);
             }
         }
-
+        internal Group CurrentGroup
+        {
+            get
+            {
+                Group g = Get<Group>("CurrentUser");
+                if (g == null) g = new Group()
+                {
+                  
+                   
+                    
+                        Name = "Anonymous",
+                    
+                };
+                return g;
+            }
+            set
+            {
+                Set("CurrentUser", value);
+            }
+        }
         //Same method as above. Created because we used loginmodel
         internal User LoggedInUser
         {

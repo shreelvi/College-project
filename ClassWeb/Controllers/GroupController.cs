@@ -92,7 +92,7 @@ namespace ClassWeb.Controllers
         {
             
             Group loggedIn = DAL.GetGroup(userName, passWord);
-            CurrentUser = loggedIn;
+            CurrentGroup = loggedIn;
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
@@ -137,7 +137,7 @@ namespace ClassWeb.Controllers
         public ActionResult AddGroup(Group NewGroup)
         {
             SetUserFolder(NewGroup);
-            int check =  DAL.CheckGroupExists(NewGroup.Username);
+            int check = 0;// DAL.CheckGroupExists(NewGroup.Username);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -147,17 +147,22 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //int UserAdd = DAL.AddUser(NewUser);
-                    DAL.AddGroup(NewGroup);
-                    TempData["GroupAddSuccess"] = "Group added successfully";
-                    CreateUserDirectory(NewGroup.Username);
+                    int GroupAdd = DAL.AddGroup(NewGroup);
+                    // DAL.AddGroup(NewGroup);
+                    if (GroupAdd < 1)
+                    { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
+                    else
+                    {
+                        TempData["GroupAddSuccess"] = "Group added successfully";
+                    }
+                    
                 }
                 catch
                 {
                     TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Group");
         }
 
         /// <summary>
@@ -221,7 +226,7 @@ namespace ClassWeb.Controllers
             {
                 return NotFound();
             }
-            var group = DAL.GetGroup(id);
+            var group = DAL.GroupGetByID(id);
             if (group == null)
             {
                 return NotFound();
