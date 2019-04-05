@@ -55,7 +55,8 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
             await _emailService.SendEmail(email, subject, message);
-            return Ok();
+            TempData["Message"] = "Email Succesfully Send!!";
+            return RedirectToAction("Dashboard", "Account");
         }
         [AllowAnonymous]
         //public ActionResult ConfirmEmail(string username, string token )

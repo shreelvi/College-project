@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ClassWeb.Models;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace ClassWeb
 {
@@ -21,6 +23,7 @@ namespace ClassWeb
         }
 
         public IConfiguration Configuration { get; }
+        public object UIFramework { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,6 +46,10 @@ namespace ClassWeb
                 sessOptions.Cookie.HttpOnly = true;
             });
             services.AddHttpContextAccessor();
+            services.AddDefaultIdentity<IdentityUser>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = true;
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient<IEmailService, EmailService>();
         }
