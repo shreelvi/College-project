@@ -61,7 +61,8 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
             await _emailService.SendEmail(email, subject, message);
-            return Ok();
+            TempData["Message"] = "Email Successfully Sent!!";
+            return RedirectToAction("Dashboard","Group");
         }
         [AllowAnonymous]
         #endregion
@@ -89,12 +90,13 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
         {
-            GroupLoginModel loggedIn = DAL.GetGroup(userName, passWord);
-
+            
+            Group loggedIn = DAL.GetGroup(userName, passWord);
+            CurrentUser = loggedIn;
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", loggedIn.UserName);
+                HttpContext.Session.SetString("username", loggedIn.Username);
                 HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
@@ -208,54 +210,66 @@ namespace ClassWeb.Controllers
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
 
-
-        public IActionResult EditGroup(int? id)
+            public async Task<IActionResult> Edit(int? id)
         {
-         
-            
-    
-            if(id == null)
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+            if (gid != null)
             {
-                return NotFound(); 
+                id = gid;
             }
-            if(g == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            return View(g);
+            var group = DAL.GetGroup(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+            return View(group);
         }
-        
+
         [HttpPost]
-        public IActionResult Edit(int id, Group groups)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, [Bind("EmailAddress,Name,UserName,ID")] Group group)
         {
-            if(id != groups.ID)
+
+            if (id != group.ID)
             {
                 return NotFound();
             }
-            if(ModelState.IsValid)
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+            if (id == null && gid != null)
+            {
+                id = gid;
+            }
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    
-                }
-
-                catch(DbUpdateConcurrencyException)
-                {
-                    if (!GroupExists(groups.ID))
+                    if (id == gid)
                     {
-                        return NotFound();
+                        int a = DAL.UpdateGroup(group);
+                        if (a > 0)
+                        {
+                            HttpContext.Session.SetString("username", group.Username);
+                            TempData["Message"] = "User Succesfully Updated!!";
+                        }
                     }
                     else
                     {
-                        throw;
+                        TempData["Message"] = "Trick!!";
                     }
+                    return RedirectToAction("Dashboard", "Group");
                 }
-               
-                return RedirectToAction(nameof(Index)); 
+                catch (Exception ex)
+                {
+
+                }
             }
-            
-            return View(groups);
+            return RedirectToAction("Dashboard", "Group");
         }
+
 
         public IActionResult Logout()
         {

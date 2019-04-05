@@ -17,12 +17,13 @@
     <div class="col-md-4">
         <h2>Login Here</h2>
         <input type="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Login", "Account") + "'");" />
+        <input type="button" value="Group Login" onclick="@("window.location.href='" + @Url.Action("LoginGroup", "Group") + "'");" />
 
 
     </div>
     <div class="col-md-4">
         <h2>Request Registration</h2>
         <input type="button" value="Register Account" onclick="@("window.location.href='" + @Url.Action("AddUser", "Account") + "'");" />
-
+        <input type="button" value="Register Group Account" onclick="@("window.location.href='" + @Url.Action("AddGroup", "Group") + "'");" />
     </div>
 </div>
