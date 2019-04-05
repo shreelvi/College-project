@@ -27,13 +27,29 @@ namespace ClassWeb.Controllers
         // GET: Role
         public IActionResult Index()
         {
+            User LoggedIn = CurrentUser;
+            //string ss = LoggedIn.FirstName;
             var s = TempData["RoleDelete"];
             if (s != null)
                 ViewData["RoleDelete"] = s;
 
-            List<Role> Roles = new List<Role>();
-            Roles = DAL.GetRoles();
-            return View(Roles);
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            {
+                List<Role> Roles = new List<Role>();
+                Roles = DAL.GetRoles();
+                return View(Roles);
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         //GET: Role/Details/5
@@ -87,12 +103,12 @@ namespace ClassWeb.Controllers
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,ID")] Role role)
+        public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,ID")] Role role)
         {
             try
             {
                 int retInt = DAL.UpdateRole(role);
-                ViewBag.RoleUpdate ="Role updated successfully";
+                ViewBag.RoleUpdate = "Role updated successfully";
             }
             catch //(DbUpdateConcurrencyException)
             {
