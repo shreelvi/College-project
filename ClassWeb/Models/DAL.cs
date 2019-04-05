@@ -529,65 +529,7 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-        internal static int DeleteUserByID(int ID)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_UserDeleteByID");
-            int retInt = 0;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, ID);
-                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Connection.Open();
-                retInt = comm.ExecuteNonQuery();
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retInt;
-        }
-       
-        internal static int UpdateUser(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
-                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
-                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
-                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// Attempts to delete the database entry corresponding to the User
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int RemoveUser(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserRemove");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
+
 
         internal static User UserGetByID(int? id)
         {
@@ -598,19 +540,6 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_ID, id);
                 MySqlDataReader dr = GetDataReader(comm);
 
-                while (dr.Read())
-                {
-                    retObj = new User(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
         ///<summary>
         /// Get salt of the User from the database corresponding to the Username
         /// </summary>
@@ -666,6 +595,8 @@ namespace ClassWeb.Model
             throw new NotImplementedException();
         }
         #endregion
+
+       
     }
 
 }
