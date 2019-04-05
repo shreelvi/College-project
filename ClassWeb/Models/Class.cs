@@ -28,6 +28,12 @@ namespace ClassWeb.Models
         public Class()
         {
         }
+
+        public Class(MySqlDataReader dr)
+        {
+            this.dr = dr;
+        }
+
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
@@ -44,6 +50,7 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
+        private MySqlDataReader dr;
 
         #endregion
 
@@ -98,6 +105,8 @@ namespace ClassWeb.Models
         }
 
         public object Title { get; internal set; }
+        public string Salt { get; internal set; }
+        public string Password { get; internal set; }
 
         public override int dbSave()
         {
