@@ -69,7 +69,7 @@ namespace ClassWeb.Controllers
         //Access the data from the database
 
 
-        public ActionResult Login(string returnUrl)
+        public ActionResult LoginGroup(string returnUrl)
         {
             // ViewBag.ReturnUrl = returnUrl;
             //return View();
@@ -88,7 +88,7 @@ namespace ClassWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(String userName, String passWord)
+        public ActionResult LoginGroup(String userName, String passWord)
         {
             
             Group loggedIn = DAL.GetGroup(userName, passWord);
@@ -215,7 +215,7 @@ namespace ClassWeb.Controllers
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
 
-            public async Task<IActionResult> Edit(int? id)
+            public async Task<IActionResult> EditGroup(int? id)
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (gid != null)
@@ -236,7 +236,7 @@ namespace ClassWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("EmailAddress,Name,UserName,ID")] Group group)
+        public async Task<IActionResult> EditGroup(int? id, [Bind("EmailAddress,Name,UserName,ID")] Group group)
         {
 
             if (id != group.ID)
