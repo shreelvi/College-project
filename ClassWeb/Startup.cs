@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using ClassWeb.Models;
 
 namespace ClassWeb
 {
@@ -53,6 +54,7 @@ namespace ClassWeb
             services.AddDbContext<ClassWebContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ClassWebContextConnection")));
             services.AddTransient<IEmailService, EmailService>();
+
         }
 
 

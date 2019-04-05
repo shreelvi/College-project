@@ -19,6 +19,5 @@ namespace ClassWeb.Data
         }
 
         public DbSet<Assignment> Assignment { get; set; }
-
     }
 }
