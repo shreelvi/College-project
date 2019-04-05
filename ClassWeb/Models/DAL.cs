@@ -249,14 +249,14 @@ namespace ClassWeb.Model
         /// Attempts to delete the database entry corresponding to the Role
         /// </summary>
         /// <remarks></remarks>
-        internal static int RemoveRole(Role obj)
+        internal static int RemoveRole(int roleID)
         {
-            if (obj == null) return -1;
+            if (roleID == 0) return -1;
             MySqlCommand comm = new MySqlCommand();
             try
             {
                 comm.CommandText = "sproc_RoleRemove";
-                comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Role.db_ID, roleID);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

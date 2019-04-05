@@ -27,13 +27,17 @@ namespace ClassWeb.Controllers
         // GET: Role
         public IActionResult Index()
         {
+            var s = TempData["RoleDelete"];
+            if (s != null)
+                ViewData["RoleDelete"] = s;
+
             List<Role> Roles = new List<Role>();
             Roles = DAL.GetRoles();
             return View(Roles);
         }
 
         //GET: Role/Details/5
-        public async Task<IActionResult> Details(int id)
+        public IActionResult Details(int id)
         {
             Role roleObj = DAL.GetRole(id);
             if (roleObj == null)
@@ -99,38 +103,31 @@ namespace ClassWeb.Controllers
 
 
 
-        //// GET: Role/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Role/Delete/5
+        public IActionResult Delete(int id)
+        {
+            Role retRole = DAL.GetRole(id);
+            if (retRole == null)
+            {
+                return NotFound();
+            }
 
-        //    //var role = await _context.Role
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (role == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(retRole);
+        }
 
-        //    return View(role);
-        //}
+        // POST: Role/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            int retInt = DAL.RemoveRole(id);
 
-        //// POST: Role/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    //var role = await _context.Role.FindAsync(id);
-        //    //_context.Role.Remove(role);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            if (retInt < 0)
+                TempData["RoleDelete"] = "Error occured when deleting the role";
 
-        //private bool RoleExists(int id)
-        //{
-        //    return _context.Role.Any(e => e.ID == id);
-        //}
+            TempData["RoleDelete"] = "Successfully deleted the role";
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
