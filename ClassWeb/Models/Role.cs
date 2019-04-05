@@ -121,7 +121,7 @@ namespace ClassWeb.Models
         /// Gets or sets the Evaluation for this PeerVal.Role object.
         /// </summary>
         [Required]
-        [Display(Name = "Users Permissionset")]
+        [Display(Name = "Assignment Permissionset")]
         public PermissionSet Assignment
         {
             get

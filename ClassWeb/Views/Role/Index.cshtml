@@ -56,7 +56,7 @@
                                 <p>View&nbsp;</p>
                             </th>
                             <th>
-                                <p>DeleteView  </p>
+                                <p>ViewEdit  </p>
                             </th>
                         </tr>
                     </thead>
@@ -66,23 +66,23 @@
                             <td class="Edit">@Html.DisplayFor(modelItem => item.Users.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Users.Delete)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Users.View)</td>
-                            <td class="delete">@Html.DisplayFor(modelItem => item.Users.ViewAndEdit)</td>
+                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Users.ViewAndEdit)</td>
                         </tr>
                     </tbody>
                 </table>
                 <table>
                     <thead>
                         <tr>
-                            <th>AsBinary</th>
+                            <th>AsBinary&nbsp;</th>
                             <th>DAVESet</th>
-                            <th>ID</th>
+                            @*<th>ID</th>*@
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Users.AsBinary)</td>
                             <td>@Html.DisplayFor(modelItem => item.Users.DAVESet)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Users.ID)</td>
+                            @*<td>@Html.DisplayFor(modelItem => item.Users.ID)</td>*@
                         </tr>
                     </tbody>
                 </table>
@@ -105,7 +105,7 @@
                                 <p>View&nbsp;</p>
                             </th>
                             <th>
-                                <p>DeleteView  </p>
+                                <p>ViewEdit</p>
                             </th>
                         </tr>
                     </thead>
@@ -115,23 +115,21 @@
                             <td class="Edit">@Html.DisplayFor(modelItem => item.Roles.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Roles.Delete)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Roles.View)</td>
-                            <td class="delete">@Html.DisplayFor(modelItem => item.Roles.ViewAndEdit)</td>
+                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Roles.ViewAndEdit)</td>
                         </tr>
                     </tbody>
                 </table>
                 <table>
                     <thead>
                         <tr>
-                            <th>AsBinary</th>
+                            <th>AsBinary&nbsp;</th>
                             <th>DAVESet</th>
-                            <th>ID</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Roles.AsBinary)</td>
                             <td>@Html.DisplayFor(modelItem => item.Roles.DAVESet)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Roles.ID)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -153,7 +151,7 @@
                                 <p>View&nbsp;</p>
                             </th>
                             <th>
-                                <p>DeleteView  </p>
+                                <p>ViewEdit  </p>
                             </th>
                         </tr>
                     </thead>
@@ -163,23 +161,21 @@
                             <td class="Edit">@Html.DisplayFor(modelItem => item.Assignment.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Assignment.Delete)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Assignment.View)</td>
-                            <td class="delete">@Html.DisplayFor(modelItem => item.Assignment.ViewAndEdit)</td>
+                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Assignment.ViewAndEdit)</td>
                         </tr>
                     </tbody>
                 </table>
                 <table>
                     <thead>
                         <tr>
-                            <th>AsBinary</th>
+                            <th>AsBinary&nbsp;</th>
                             <th>DAVESet</th>
-                            <th>ID</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Assignment.AsBinary)</td>
                             <td>@Html.DisplayFor(modelItem => item.Assignment.DAVESet)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Assignment.ID)</td>
                         </tr>
                     </tbody>
                 </table>

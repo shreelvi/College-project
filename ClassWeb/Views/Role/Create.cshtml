@@ -8,6 +8,7 @@
 
 <h4>Role</h4>
 <hr />
+<p style="color:red">@ViewBag.RoleAdd</p>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -30,24 +31,24 @@
                 <span asp-validation-for="Users" class="text-danger"></span>
 
                 <label>
-                    DAVESet(Enter as decimal e.g. 15)<input asp-for="Users.DAVESet" class="form-control" />
-                </label><br />
+                    DAVESet(Enter as decimal e.g. 15 for full DAVE control)<input asp-for="Users.DAVESet" class="form-control" />
+                </label><br /><br />
 
                 <label asp-for="Roles" class="control-label"></label>
                 <input type="hidden" asp-for="Roles" class="form-control" />
                 <span asp-validation-for="Roles" class="text-danger"></span>
 
                 <label>
-                    DAVESet(Enter as decimal e.g. 15)<input asp-for="Roles.DAVESet" class="form-control" />
-                </label><br />
+                    DAVESet(Enter as decimal e.g. 15 for full DAVE control)<input asp-for="Roles.DAVESet" class="form-control" />
+                </label><br /><br />
 
                 <label asp-for="Assignment" class="control-label"></label>
                 <input type="hidden" asp-for="Assignment" class="form-control" />
                 <span asp-validation-for="Assignment" class="text-danger"></span>
 
                 <label>
-                    DAVESet(Enter as decimal e.g. 15)<input asp-for="Assignment.DAVESet" class="form-control" />
-                </label><br />
+                    DAVESet(Enter as decimal e.g. 15 for full DAVE control.)<input asp-for="Assignment.DAVESet" class="form-control" />
+                </label><br /><br />
 
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

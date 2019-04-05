@@ -210,6 +210,17 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Gets the Classweb.Role corresponding with the given ID
+        /// Reference: Code taken from the peerval project
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static Role GetRole(int id)
+        {
+            return Roles.Get(id);
+        }
+
+        /// <summary>
         /// Attempts to the database entry corresponding to the given Role
         /// Reference: Taken code from the peerval project
         /// </summary>
@@ -222,9 +233,9 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Role.db_Name, obj.Name);
                 comm.Parameters.AddWithValue("@" + Role.db_IsAdmin, obj.IsAdmin);
-                comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users);
-                comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles);
-                comm.Parameters.AddWithValue("@" + Role.db_Assignment, obj.Assignment);                
+                comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Assignment, obj.Assignment.DAVESet);                
                 return UpdateObject(comm);
             }
             catch (Exception ex)
