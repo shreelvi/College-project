@@ -29,16 +29,24 @@ namespace ClassWeb.Controllers
         {
             User LoggedIn = CurrentUser;
             //string ss = LoggedIn.FirstName;
-            var s = TempData["RoleDelete"];
-            if (s != null)
-                ViewData["RoleDelete"] = s;
 
+            //Gets error message to display from Create method 
+            var a = TempData["RoleAdd"];
+            if (a != null)
+                ViewData["RoleAdd"] = a;
+            //Gets error message to display from Delete method 
+            var d = TempData["RoleDelete"];
+            if (d != null)
+                ViewData["RoleDelete"] = d;
+
+            //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
             
+            //Checks if the user has permission to view
             if (UserCan<Role>(PermissionSet.Permissions.View))
             {
                 List<Role> Roles = new List<Role>();
@@ -50,6 +58,7 @@ namespace ClassWeb.Controllers
                 TempData["PermissionError"] = "You don't have permission to view the page.";
                 return RedirectToAction("Dashboard", "Account");
             }
+
         }
 
         //GET: Role/Details/5
@@ -68,12 +77,15 @@ namespace ClassWeb.Controllers
         public IActionResult Create()
         {
             User LoggedIn = CurrentUser;
+
+            //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
 
+            //Checks if the user has permission to Add
             if (UserCan<Role>(PermissionSet.Permissions.Add))
             {
                 return View();
@@ -98,12 +110,14 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+            //Checks if the user has permission to add
             if (UserCan<Role>(PermissionSet.Permissions.Add))
             {
                 int retInt = DAL.AddRole(role);
                 if (retInt < 0)
                     ViewBag.RoleAdd = "Database problem occured when adding the role";
-                else { ViewBag.RoleAdd = "Role added successfully"; }
+                else { TempData["RoleAdd"] = "Role added successfully"; }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -125,6 +139,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            //Checks if the user has permission to edit
             if (UserCan<Role>(PermissionSet.Permissions.Edit))
             {
                 Role role = DAL.GetRole(id);
