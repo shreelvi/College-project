@@ -165,6 +165,47 @@ namespace ClassWeb.Controllers
             return RedirectToAction("LoginGroup", "Group");
         }
 
+        //[AllowAnonymous]
+        //public ActionResult AddUserToGroup(string returnUrl)
+        //{
+        //    ViewBag.ReturnUrl = returnUrl;
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[AllowAnonymous]
+        //public ActionResult AddGroup(Group NewGroup)
+        //{
+        //    SetUserFolder(NewGroup);
+        //    int check = 0;// DAL.CheckGroupExists(NewGroup.Username);
+        //    if (check > 0)
+        //    {
+        //        ViewBag.Error = " Username not Unique! Please enter a new username.";
+        //        return View(); //Redirects to add user page
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            int GroupAdd = DAL.AddGroup(NewGroup);
+        //            // DAL.AddGroup(NewGroup);
+        //            if (GroupAdd < 1)
+        //            { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
+        //            else
+        //            {
+        //                TempData["GroupAddSuccess"] = "Group added successfully";
+        //            }
+
+        //        }
+        //        catch
+        //        {
+        //            TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+        //        }
+        //    }
+        //    return RedirectToAction("LoginGroup", "Group");
+        //}
+
         /// <summary>
         /// Created on: 03/17/2019
         /// Created by: Elvis
@@ -194,28 +235,27 @@ namespace ClassWeb.Controllers
         // GET: Prompt
         public IActionResult Index()
         {
-            List<Group> g = new List<Group>();
+           
+            List<Group> g = DAL.GetAllGroups();
             return View(g);
         }
 
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    var group = await Group
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (group == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(group);
-        //}
+
+        public async Task<IActionResult> DetailGroup(int? id)
+        {
+            Group group = DAL.GroupGetByID(id);
+            return View(group);
+            
+        }
+
+        public IActionResult Create()
+        {
+            return RedirectToAction("AddGroup", "Group");
+        }
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
 
-            public async Task<IActionResult> EditGroup(int? id)
+        public async Task<IActionResult> EditGroup(int? id)
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (gid != null)
@@ -275,6 +315,8 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Dashboard", "Group");
         }
 
+     
+      
 
         public IActionResult Logout()
         {
