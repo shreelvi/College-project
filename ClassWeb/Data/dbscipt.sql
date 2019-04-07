@@ -64,6 +64,15 @@ CREATE TABLE `assignment` (
 ALTER TABLE `assignment`
   ADD PRIMARY KEY (`AssignmentID`),
   ADD CONSTRAINT FK_AssignmentUser FOREIGN KEY (`UserID`) REFERENCES Login_users(UserID);
+  
+  
+--Added column in Roles Table to store CRUD datetime
+ALTER TABLE Roles
+ADD DateCreated datetime DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE Roles
+ADD DateModified datetime DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE Roles
+ADD DateDeleted datetime DEFAULT CURRENT_TIMESTAMP;
 
 
 

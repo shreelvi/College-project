@@ -154,4 +154,21 @@ END
 $$
 -- ===============================================
 
+-- =============================================
+-- Author:		Elvis
+-- Create date:	06 April 2019
+-- Description:	Returns users with their roles information.
+-- =============================================
+CREATE PROCEDURE sproc_GetUsersWithRoles( 
+IN UserID INT(11)
+) 
+BEGIN 
+	SELECT * From Users u 
+	JOIN Roles r 
+	ON u.RoleID = r.RoleID 
+	WHERE u.RoleID = UserID; 
+END
+$$
+-- ===============================================
+
 
