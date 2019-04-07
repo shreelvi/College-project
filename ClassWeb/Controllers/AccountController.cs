@@ -108,12 +108,6 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(String userName, String passWord)
         {
-            //string salt = DAL.GetSaltForUser(login.Username);
-            //if (!String.IsNullOrEmpty(salt))
-            //{
-            //User LoggedIn = DAL.GetUser(userName, passWord);
-            //CurrentUser = LoggedIn; //Sets the session for user from base controller
-
             User loggedIn = DAL.GetUser(userName, passWord);
             CurrentUser = loggedIn; //Sets the session for user from base controller
 
@@ -122,8 +116,15 @@ namespace ClassWeb.Controllers
                 //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", userName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//admin";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
+
+                //Check if the user is admin
+                if (loggedIn.Role.IsAdmin)
+                {
+                    return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
+                }
+
                 return RedirectToAction("Dashboard");
                 //return View("Dashboard");
             }

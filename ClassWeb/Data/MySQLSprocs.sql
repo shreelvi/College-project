@@ -55,10 +55,14 @@ DELIMITER ;
 
 DELIMITER $$
 
+-- Author: Elvis
+-- Description:	Get all the users from the database.
+-- =============================================
 CREATE PROCEDURE `sproc_GetAllUsers` ()  
 BEGIN
-	 SELECT * FROM login_users1;
+	 SELECT * FROM Users;
 END$$
+
 
 -- -----------------Role---------------------------------
 -----Description: sproc CRUD for ROLES-------------------
@@ -162,12 +166,12 @@ $$
 CREATE PROCEDURE sproc_GetUsersWithRoles( 
 IN UserID INT(11)
 ) 
-BEGIN 
-	SELECT * From Users u 
-	JOIN Roles r 
-	ON u.RoleID = r.RoleID 
-	WHERE u.RoleID = UserID; 
-END
+BEGIN
+    SELECT u.UserName, u.RoleID, r.Name, r.IsAdmin, r.users, r.Role, r.Assignment 
+	From Users u
+    JOIN Roles r ON u.RoleID = r.RoleID
+    WHERE u.UserID = UserID;
+    END
 $$
 -- ===============================================
 

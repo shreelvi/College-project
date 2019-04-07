@@ -39,25 +39,34 @@ namespace ClassWeb.Controllers
             if (d != null)
                 ViewData["RoleDelete"] = d;
 
+            #region development code
             //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous")
-            {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
-            }
-            
+            //Commented for testing
+            //if (LoggedIn.FirstName == "Anonymous")
+            //{
+            //    TempData["LoginError"] = "Please login to view the page.";
+            //    return RedirectToAction("Index", "Home");
+            //}
+
             //Checks if the user has permission to view
-            if (UserCan<Role>(PermissionSet.Permissions.View))
-            {
-                List<Role> Roles = new List<Role>();
-                Roles = DAL.GetRoles();
-                return View(Roles);
-            }
-            else
-            {
-                TempData["PermissionError"] = "You don't have permission to view the page.";
-                return RedirectToAction("Dashboard", "Account");
-            }
+            //if (UserCan<Role>(PermissionSet.Permissions.View))
+            //{
+            //    List<Role> Roles = new List<Role>();
+            //    Roles = DAL.GetRoles();
+            //    return View(Roles);
+            //}
+            //else
+            //{
+            //    TempData["PermissionError"] = "You don't have permission to view the page.";
+            //    return RedirectToAction("Dashboard", "Account");
+            //}
+            #endregion
+
+            #region Testing Code
+            List<Role> Roles = new List<Role>();
+            Roles = DAL.GetRoles();
+            return View(Roles);
+            #endregion
 
         }
 
