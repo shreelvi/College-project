@@ -39,7 +39,7 @@ namespace ClassWeb.Models
         private string _MiddleName;
         private string _LastName;
         private string _EmailAddress;
-        //private string _Address;
+        private string _ResetCode;
         private string _UserName;
         private string _Password;
         private string _Salt;
@@ -47,7 +47,7 @@ namespace ClassWeb.Models
         private Role _Role;
         private string _DirectoryPath;
         private List<Assignment> _Assignments;
-        private DateTime _DateCreated;
+        private DateTime  _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
         #endregion
@@ -62,7 +62,11 @@ namespace ClassWeb.Models
         internal const string db_Salt = "Salt";
         internal const string db_Role = "RoleID";
         internal const string db_Password = "Password";
-        
+        internal const string db_ResetCode = "ResetCode";
+        internal const string db_DateCreated = "DateCreated";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_DateDeleted = "DateDeleted";
+
 
 
         #endregion
@@ -73,6 +77,11 @@ namespace ClassWeb.Models
         {
             get { return _FirstName; }
             set { _FirstName = value; }   
+        }
+        public string ResetCode
+        {
+            get { return _ResetCode; }
+            set { _ResetCode = value; }
         }
         public string MiddleName
         {
@@ -248,14 +257,14 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            //_MiddleName = dr.GetString(db_MiddleName);
+            _ResetCode = dr.GetString(db_ResetCode);
             _LastName = dr.GetString(db_LastName);
-           // _EmailAddress = dr.GetString(db_EmailAddress);
-            //_Address = dr.GetString(db_Address);
+            _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            //_DateCreated = dr.GetDateTime(db_DateCreated);
-            //_DateModified = dr.GetDateTime(db_DateModified);
-            //_DateDeleted = dr.GetDateTime(db_DateDeleted);
+            DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+           _DateModified = dr.GetDateTime(db_DateModified);
+           // _DateModified = DateTime.Parse(DateModified.ToString());
+            _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);

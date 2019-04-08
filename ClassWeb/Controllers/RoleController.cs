@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
-using ClassWeb.Data;
 using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
@@ -18,11 +17,6 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-        private readonly ClassWebContext _context;
-        public RoleController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: Role
         public IActionResult Index()
@@ -120,7 +114,8 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            int retInt = DAL.RemoveRole(id);
+            Role r = DAL.GetRole(id);
+            int retInt = DAL.RemoveRole(r);
 
             if (retInt < 0)
                 TempData["RoleDelete"] = "Error occured when deleting the role";

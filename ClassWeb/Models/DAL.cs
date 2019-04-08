@@ -12,10 +12,8 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
-
-
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -177,6 +175,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
                 comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
                 comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, obj.UserName);
                 return AddObject(comm, "@" + Assignment.db_ID);
             }
             catch (Exception ex)
@@ -211,6 +210,39 @@ namespace ClassWeb.Model
             return retList;
         }
 
+        internal static User UserGetByUserName(string userName, string emailAddress)
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByUserName");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            //Verify password matches.
+            if (retObj != null)
+            {
+                if (retObj.EmailAddress!=emailAddress)
+                {
+                    retObj = null;
+                }
+            }
+
+            return retObj;
+        }
+
         internal static List<User> UserGetAll()
         {
             List<User> retObj = new List<User>();
@@ -240,16 +272,15 @@ namespace ClassWeb.Model
 
         public static Assignment GetAssignmentByFileName(string fileName)
         {
-            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByFileName");
-            Assignment retObj = null;
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
             try
             {
-                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
                 MySqlDataReader dr = GetDataReader(comm);
-
                 while (dr.Read())
                 {
-                    retObj=new Assignment(dr);
+                    //
+                    retObj.Add(new Assignment(dr));
                 }
                 comm.Connection.Close();
             }
@@ -258,7 +289,7 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            return retObj;
+            return retObj[0];
         }
 
         public static Assignment GetAllAssignment()
@@ -330,6 +361,7 @@ namespace ClassWeb.Model
             int retInt = 0;
             try
             {
+
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, ID);
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
@@ -519,6 +551,28 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+
+        internal static List<Assignment> GetAllAssignmentByUserName(string UserName)
+        {
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetAllByUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, UserName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         #endregion
         #region User
         /// <summary>
@@ -580,11 +634,14 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
             try
             {
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
                 comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
                 comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
+                comm.Parameters.AddWithValue("@" + User.db_ResetCode, obj.ResetCode);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

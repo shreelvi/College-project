@@ -27,6 +27,7 @@ namespace ClassWeb.Services
             client.Credentials = new NetworkCredential(UserName,Password);
 
             MailMessage mailMessage = new MailMessage();
+            mailMessage.IsBodyHtml = true;
             mailMessage.From = new MailAddress(Email);
             mailMessage.To.Add(email.ToString());
             mailMessage.Body = body;

@@ -69,7 +69,8 @@ namespace ClassWeb
             }
             app.UseSession(); // requred to have sessions in our application.
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions() {
+            app.UseStaticFiles(new StaticFileOptions()
+            {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
             });
@@ -77,15 +78,15 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Users}/{action=index}/{id?}");
+                    template: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
                     template: "{UserName}/{Directory}/{FileName}",
-                    defaults: "{controller=Users}/{action=index}/{id?}");
+                    defaults: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                    name: "root",
                    template: "{UserName}/{FileName}",
-                   defaults: "{controller=Users}/{action=index}/{id?}");
+                   defaults: "{controller=Home}/{action=index}/{id?}");
             });
         }
     }

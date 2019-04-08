@@ -22,7 +22,8 @@ namespace ClassWeb.Controllers
             List<User> user = null;
             if (SearchString == null)
             {
-                user =DAL.UserGetAll();
+                user = DAL.UserGetAll();
+                user=user.FindAll(u=>u.DateDeleted<DateTime.MaxValue|| u.DateDeleted == DateTime.MaxValue);
             }
             else
             {
