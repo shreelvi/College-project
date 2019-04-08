@@ -33,6 +33,12 @@ namespace ClassWeb.Models
         {
             Fill(dr);
         }
+
+        public Class(MySqlDataReader dr)
+        {
+            this.dr = dr;
+        }
+
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
@@ -48,6 +54,7 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
+        private MySqlDataReader dr;
 
         #endregion
 
@@ -117,11 +124,6 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-        //public override void Fill(MySqlDataReader dr)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public override string ToString()
         {
             throw new NotImplementedException();
@@ -133,6 +135,11 @@ namespace ClassWeb.Models
         }
 
         protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static Class Get(int id)
         {
             throw new NotImplementedException();
         }
