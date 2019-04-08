@@ -1,0 +1,45 @@
+﻿@model ClassWeb.Models.Assignment
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2 class="text-center bg-danger center-block p-4">Delete</h2>
+<hr />
+<div>
+    <h3>Are you sure you want to delete <Span class="text-capitalize text-danger">@Html.DisplayFor(model => model.FileName)</Span> ?</h3>
+    <div >
+        <dl class="dl-horizontal">
+            <dt class="dl-horizontal text-capitalize">
+                @Html.DisplayNameFor(model => model.FileName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FileName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.DateSubmited)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DateSubmited)
+            </dd>
+            <dt >
+                @Html.DisplayNameFor(model => model.Grade)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Grade)
+            </dd>
+            <dt >
+                @Html.DisplayNameFor(model => model.Feedback)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Feedback)
+            </dd>
+        </dl>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="ID" />
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-action="Index">Back to List</a>
+        </form>
+    </div>
+</div>
+

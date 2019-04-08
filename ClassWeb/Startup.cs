@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using ClassWeb.Models;
+
+namespace ClassWeb
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            //Reference: PeerVal Project
+            // Add the following to start using a session.
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
+            services.AddSession(sessOptions => {
+                sessOptions.IdleTimeout = TimeSpan.FromSeconds(10); // short time for testing. 
+                //TimeSpan.FromMinutes(20) // default 20 minutes.
+                sessOptions.Cookie.HttpOnly = true;
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<ClassWebContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ClassWebContext")));
+        }
+
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
+            app.UseStaticFiles();
+            app.UseSession(); // requred to have sessions in our application.
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Assignment}/{action=index}/{id?}");
+                routes.MapRoute(
+                    name: "fileDirectory",
+                    template: "{UserName}/{Directory}/{FileName}",
+                    defaults: "{controller=Assignment}/{action=index}/{id?}");
+                routes.MapRoute(
+                   name: "root",
+                   template: "{UserName}/{FileName}",
+                   defaults: "{controller=Assignment}/{action=index}/{id?}");
+            });
+
+        }
+    }
+}

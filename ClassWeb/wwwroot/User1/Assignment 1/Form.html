@@ -1,0 +1,95 @@
+﻿<!--Kishor Simkhada
+ Jan 30 2018
+ Info-2202
+ Jon Holmes
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Forms</title>
+    <link href="../Images/favicon.ico" rel="shortcut icon" />
+</head>
+<body>
+    <form action="http://teaching.jdholmes.net/postvget/reader/index.php" method="post" id="UserInput">
+        <fieldset>
+            <input type="hidden" name="id" value="888655" />
+            <div>
+                <lable name="FirstName">First Name:</lable>
+                <input type="text" name="FirstName" value="" placeholder="First Name" />
+            </div>
+            <div>
+                <lable name="LastName">Last Name:</lable>
+                <input type="text" name="LastName" value="" placeholder="Last Name" />
+            </div>
+            <div>
+                <lable name="SecretKey">Secret Key:</lable>
+                <input type="password" name="SecretKey" value="" placeholder="Secret Key" />
+            </div>
+            <div>
+                <lable>FavoriteColor:</lable>
+                <select name="FavoriteColor">
+                    <option value="Green" name="Green">Green</option>
+                    <option value="Purple" name="Purple">Purple</option>
+                    <option value="Red" name="Red">Red</option>
+                    <option value="" name="Red">Pink</option>
+                </select>
+            </div>
+            <fieldset name="DayofaWeek">
+                <lable> Day of the Week</lable>
+
+                <div>
+                    <lable name="Sunday">
+                        <input id="Sunday" value="Sunday" type="radio" name="Day" />Sunday
+                    </lable>
+                    <lable name="Monday">
+                        <input id="Monday" value="Monday" type="radio" name="Day" />Monday
+                    </lable>
+                    <lable name="Tuesday">
+                        <input id="Tuesday" value="Tuesday" type="radio" name="Day" />Tuesday
+                    </lable>
+                    <lable name="Wednesday">
+                        <input id="Wednesday" value="Wednesday" type="radio" name="Day" />Wednesday
+                    </lable>
+                    <lable name="Thrusday">
+                        <input id="Thrusday" value="hrusday" type="radio" name="Day" />Thrusday
+                    </lable>
+                    <lable name="Friday">
+                        <input id="Friday" value="Friday" type="radio" name="Day" />Friday
+                    </lable>
+                    <lable name="Saturday">
+                        <input id="Saturday" value="Saturday" type="radio" name="Day" />Saturday
+                    </lable>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <label>Times</label>
+                <div>
+                    <lable name="11:00 AM">
+                        <input id="11:00 AM" type="checkbox" name="timeofday11" value="11" />11:00 AM
+                    </lable>
+                    <lable name="12:00 AM">
+                        <input id="12:00 AM" type="checkbox" name="timeofday12" value="12" />12:00 AM
+                    </lable>
+                    <lable name="1:00 PM">
+                        <input id="Tuesday" type="checkbox" name="timeofday13" value="13" />1:00 PM
+                    </lable>
+                    <lable name="2:00 PM">
+                        <input id="2:00 PM" type="checkbox" name="timeofday14" value="14" />2:00 PM
+                    </lable>
+                    <lable name="3:00 PM">
+                        <input id="3:00 PM" type="checkbox" name="timeofday15" value="15" />3:00 PM
+                    </lable>
+                </div>
+            </fieldset>
+            <fieldset>
+                <Lable>
+                    Description: <textarea name="Description"></textarea>
+                </Lable>
+            </fieldset>
+            <button type="submit">Send to Server</button>
+        </fieldset>
+    </form>
+</body>
+</html>

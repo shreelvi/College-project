@@ -1,0 +1,52 @@
+﻿<!--
+  Kishor Simkhada
+    Jan 20 2018
+    Info-2202
+    Jon Holmes
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>DOM</title>
+    <link href="../Styles/part3style.css" rel="stylesheet" />
+    <link href="../Styles/style.css" rel="stylesheet" />
+    <script src="../Script/dom.js"></script>
+</head>
+<body>
+    <div>
+        <p id="pOne">I am <i>going</i> to <span>be</span> shown.</p>
+        <button onclick="showInnerText();">Display Inner Text</button>
+        <button onclick="showInnerHTML();"> Display Inner HTML</button>
+    </div>
+    <div>
+        <ul><li>Item</li><li>Item</li><li>Item</li><li>Item</li><li>Item</li></ul>
+        <button onclick="numberList();">Number List Items</button>
+    </div>
+    <div>
+        <table id="tblMarkRows">
+            <tr><th>Number</th><th>Name</th></tr>
+            <tr><td>1</td><td>One</td></tr>
+            <tr><td>2</td><td>Two</td></tr>
+            <tr><td>3</td><td>Three</td></tr>
+            <tr><td>4</td><td>Four</td></tr>
+            <tr><td>5</td><td>Five</td></tr>
+            <tr><td>6</td><td>Six</td></tr>
+        </table><button onclick="markRows();">Mark Every Other Row</button>
+    </div>
+    <div>
+        <table id="tblAddRows">
+            <tr><th>First Name</th><th>Last Name</th><th>Age</th></tr>
+        </table>
+        <button onclick="addRows();">Add Data Rows</button>
+    </div>
+    <div id="divMessage">
+        <button onclick="addSuccess();">Add a Success Message</button>
+        <button onclick="addWarning();">Add a Warning Message</button>
+        <button onclick="addError();">Add an Error Message</button>
+        <br/>
+        <a href="../Assignment 1/index.html">Back to Assignment List</a>
+    </div>
+
+</body>
+</html>
