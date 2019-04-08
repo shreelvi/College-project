@@ -1,57 +1,57 @@
-﻿
-@model IEnumerable<ClassWeb.Models.Assignment>
-
+﻿@*@model IEnumerable<ClassWeb.Models.Assignment>*@
+@model List<ClassWeb.Models.Assignment>
 @{
     ViewData["Title"] = "Index";
 }
 
-<h4 class="text-info font-weight-bold">Upload Assignment</h4>
+@if (ViewData["Success"] != null)
+{<a style="color:blue" href='javascript:history.go(-2)'>Return to the dashboard</a><br /><br />}
+else
+{<a style="color:blue" href='javascript:history.go(-1)'>Return to the dashboard</a><br /><br />}
 
+<a style="color:blue" href="@ViewData["Directory"]" target="_blank">Browse Your Assignment Directory</a><br /><br />
+<p style="color:Green">@ViewData["Success"]</p>
+<h4 class="text-info font-weight-bold">Upload Assignment</h4>
 <div class="input-group">
-    <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Select File:</span>
-                <input type="file" id="files" name="files" class="input-group-text";><br />
-                <input type="submit" class="btn btn-outline-success" value="Upload" />
+    <form method="post" enctype="multipart/form-data" asp-controller="Assignment" asp-action="Index">
+        <div class="form-group">
+            <div class="col-md-10">
+                <p>Upload one or more files using this form:</p>
+                <input type="file" name="files" multiple />
             </div>
         </div>
-        <p class="info alert-warning">  @ViewBag.Message</p>
+        <div class="form-group">
+            <div class="col-md-10">
+                <br /><input type="submit" value="Upload" />
+            </div>
+        </div>
     </form>
 </div>
-
-<h2>Your Submissions for all courses:</h2>
-
-
+<br />
+<h3 style="color:cadetblue"> Your Recent Submissions:</h3>
 <table class="table">
+
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th> @Html.DisplayNameFor(model => model.SubmisionDate)</th>
-            <th> @Html.DisplayNameFor(model => model.Grade)</th>
-            <th> @Html.DisplayNameFor(model => model.Feedback)</th>
+            <th>File Name</th>
+            <th>Date Submitted</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    @foreach (var item in Model)
+    {
+        <tbody>
             <tr class="mt-5">
-                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
-                <td>@Html.ActionLink(item.Name, "Download", new { FileName = item.Name })</td>
-                <td>@item.Grade</td>
-                <td>@Html.DisplayFor(modelItem => item.SubmisionDate)</td>
-                <td><span class="btn-outline-success btn glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = item.Name })</span></td>
-                <td><span class=" btn-outline-danger btn glyphicon glyphicon-trash"> @Html.ActionLink("Delete", "DeleteFromRoot", new { FileName = item.Name })</span> </td>
-                <td><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">@Html.ActionLink("View", "View", new { FileName = item.Name })</span>  </td>
-                <td><a asp-action="Delete" asp-route-id="@item.ID">Delete</a></td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateSubmission)</td>
+                <td><a asp-action="Download" asp-route-Name="@item.Name"><span class="btn-outline-success btn glyphicon glyphicon-save"></span>Download</a></td>
+                <td><a asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
+                <td><a asp-action="View" asp-route-Name="@item.Name"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">View</span></a></td>
             </tr>
-        }
-    </tbody>
+        </tbody>
+    }
 </table>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
 <script src="~/js/file.js"></script>

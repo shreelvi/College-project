@@ -1,28 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using ClassWeb.Models;
 
 namespace ClassWeb.Models
 {
-    /// <summary>
-    /// Code by Meshari
-    /// It is a task assigned by a professor to the student and graded by the grader. 
-    /// </summary>
-    public class Assignment: DatabaseRecord
+    public class Assignment:DatabaseNamedRecord
     {
-        #region Private Variables
-        private string _Title;
-        private string _Description;
-        private DateTime _StartDate;
-        private DateTime _DueDate;
-        private  DateTime _SubmissionDate;
-        private int _Grade;
-        private string _Feedback;
-        #endregion
-
         #region Constructors
         /// <summary>
         /// Code By Elvis
@@ -36,55 +21,57 @@ namespace ClassWeb.Models
         {
             Fill(dr);
         }
-
+        #endregion
+        #region Private Variables
+        private string _Description;
+        private DateTime _DateDue;
+        private DateTime _DateSubmission;
+        private int _Grade;
+        private string _Feedback;
+        private DateTime _DateModified;
+        private int _Size;
+        private int _UserID;
+        private User _User;
         #endregion
 
-        #region Database String
-        internal const string db_ID = "ClassID";
-        internal const string db_Title = "Title";
+        #region Database string
+        internal const string db_ID = "AssignmentID";
+        internal const string db_Name = "Name";
         internal const string db_Description = "Description";
-        internal const string db_StartDate = "DateStarted";
-        internal const string db_DueDate = "DateEnded";
-        internal const string db_SubmissionDate = "SubmissionDate";
+        internal const string db_DateDue = "DateDue";
+        internal const string db_DateSubmission = "DateSubmission";
         internal const string db_Grade = "Grade";
         internal const string db_Feedback = "Feedback";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_Size = "Size";
+        internal const string db_UserID= "UserID";
         #endregion
 
-        #region Public Properites
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
+        #region Public Properties
         public string Description
         {
             get { return _Description; }
             set { _Description = value; }
         }
 
-        public DateTime StartDate
-        {
-            get { return _StartDate; }
-            set { _StartDate = value; }
-        }
-
         [Display(Name = "Date Due")]
-        public DateTime DueDate
+        public DateTime DateDue
         {
-            get { return _DueDate; }
-            set { _DueDate = value; }
+            get { return _DateDue; }
+            set { _DateDue = value; }
         }
         [Display(Name = "Date Submitted")]
-        public DateTime SubmisionDate
+        public DateTime DateSubmission
         {
-            get { return _SubmissionDate; }
-            set { _SubmissionDate = value;}
+            get { return _DateSubmission; }
+            set { _DateSubmission = value; }
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set {
+            set
+            {
                 if (value > 100)
                 {
                     _Grade = 100;
@@ -103,10 +90,31 @@ namespace ClassWeb.Models
             set { _Feedback = value; }
         }
 
-        public string Name { get; internal set; }
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
+        }
+
+        public User User
+        {
+            get { return _User; }
+            set { _User = value; }
+        }
+        public int UserID
+        {
+            get { return _UserID; }
+            set { _UserID = value; }
+        }
+        public int Size
+        {
+            get { return _Size; }
+            set { _Size = value; }
+        }
         #endregion
 
         #region Public Functions
+
         public override int dbSave()
         {
             throw new NotImplementedException();
@@ -131,15 +139,17 @@ namespace ClassWeb.Models
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Title = dr.GetString(db_Title);
-            _Description = dr.GetString(db_Description);
-            _StartDate = dr.GetDateTime(db_StartDate);
-            _DueDate = dr.GetDateTime(db_DueDate);
-            _SubmissionDate = dr.GetDateTime(db_SubmissionDate);
-            _Grade = dr.GetInt32(db_Grade);
+            _Name = dr.GetString(db_Name);
+            //_Description = dr.GetString(db_Description);
+            //_DateDue = dr.GetDateTime(db_DateDue);
+            _DateSubmission = dr.GetDateTime(db_DateSubmission);
+            //_Grade = dr.GetChar(db_Grade);
             _Feedback = dr.GetString(db_Feedback);
-        }
+            _DateModified = dr.GetDateTime(db_DateModified);
+            //_Size = dr.GetInt32(db_Size);
+            _UserID = dr.GetInt32(db_UserID);        }
         #endregion
+
 
         public override string ToString()
         {

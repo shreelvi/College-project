@@ -8,10 +8,14 @@ using ClassWeb.Models;
 
 namespace ClassWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public IActionResult Index()
         {
+            var s = TempData["LoginError"];
+            if (s != null)
+                ViewData["LoginError"] = s;
+
             return View();
         }
 
@@ -20,7 +24,6 @@ namespace ClassWeb.Controllers
             //ViewData["Message"] = "Your application description page.";
 
             //return View();
-            ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
 
             return View();
         }

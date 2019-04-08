@@ -106,12 +106,8 @@ namespace ClassWeb.Controllers
             };
         }
 
+        
 
-        /// <summary>
-        /// Created by: Meshari
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
         [HttpPost]
         public ActionResult Save(string text)
         {
@@ -160,5 +156,6 @@ namespace ClassWeb.Controllers
         }
     }
 }
+    
 
-
+    

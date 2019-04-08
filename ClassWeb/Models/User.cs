@@ -39,21 +39,25 @@ namespace ClassWeb.Models
         private string _MiddleName;
         private string _LastName;
         private string _EmailAddress;
-        private string _Address;
+        //private string _Address;
         private string _UserName;
         private string _Password;
-        private int _RoleID;
         private string _Salt;
-        private long _PhoneNumber;
+        private int _RoleID;
+        private Role _Role;
+        private string _DirectoryPath;
+        private List<Assignment> _Assignments;
         private DateTime _DateCreated;
-        private DateTime _DateArchived;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
-        private bool _AccountExpired;
-        private bool _Enabled;
-        private bool _PasswordExpired;
-        private bool _AccountLocked;
-        private Role _Role;
+
+        //private long _PhoneNumber;
+        //private DateTime _DateArchived;
+        //private bool _AccountExpired;
+        //private bool _Enabled;
+        //private bool _PasswordExpired;
+        //private bool _AccountLocked;
+
         #endregion
 
         #region Database String
@@ -62,19 +66,24 @@ namespace ClassWeb.Models
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
         internal const string db_EmailAddress = "EmailAddress";
-        internal const string db_Address = "Address";
+        //internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
-        internal const string db_PhoneNumber = "PhoneNumber";
+        internal const string db_Salt = "Salt";
+        internal const string db_Role = "RoleID";
+        internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
+        //internal const string db_PhoneNumber = "PhoneNumber";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
-        internal const string db_DateArchived = "DateDeleted";
-        internal const string db_AccountExpired = "IsExpired";
-        internal const string db_Enabled = "IsEnabled";
-        internal const string db_PasswordExpired = "PasswordExpired";
-        internal const string db_AccountLocked = "AccountLocked";
-        internal const string db_Role = "RoleID";
-        internal const string db_Salt = "Salt";
+        internal const string db_DateDeleted = "DateDeleted";
+        //internal const string db_AccountExpired = "IsExpired";
+        //internal const string db_Enabled = "IsEnabled";
+        //internal const string db_PasswordExpired = "PasswordExpired";
+        //internal const string db_AccountLocked = "AccountLocked";
+        
+
+
         #endregion
 
         #region public Properites
@@ -99,11 +108,11 @@ namespace ClassWeb.Models
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-        public string Address
-        {
-            get { return _Address; }
-            set { _Address = value; }
-        }
+        //public string Address
+        //{
+        //    get { return _Address; }
+        //    set { _Address = value; }
+        //}
         public string UserName
         {
             get { return _UserName; }
@@ -139,11 +148,7 @@ namespace ClassWeb.Models
                 _RoleID = value;
             }
         }
-        public long PhoneNumber
-        {
-            get { return _PhoneNumber; }
-            set { _PhoneNumber = value; }
-        }
+        
         public DateTime DateCreated
         {
             get { return _DateCreated; }
@@ -159,34 +164,79 @@ namespace ClassWeb.Models
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
-        public bool AccountExpired
-        {
-            get { return _AccountExpired; }
-            set { _AccountExpired = value; }
-        }
+       
 
-        public bool AccountLocked
-        {
-            get { return _AccountLocked; }
-            set { _AccountLocked = value; }
-        }
-
-        public bool PasswordExpired
-        {
-            get { return _PasswordExpired; }
-            set { _PasswordExpired = value; }
-        }
-
-        public bool Enabled
-        {
-            get { return _Enabled; }
-            set { _Enabled = value; }
-        }
+        /// <summary>
+        /// Gets or sets the Role for this User object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
         public Role Role
         {
-            get { return _Role; }
-            set { _Role = value; }
+            get
+            {
+                if (_Role == null)
+                {
+                    _Role = Roles.Get(_RoleID);//DAL.GetRole(_RoleID);
+                }
+                return _Role;
+            }
+            set
+            {
+                _Role = value;
+                if (value == null)
+                {
+                    _RoleID = -1;
+                }
+                else
+                {
+                    _RoleID = value.ID;
+                }
+            }
         }
+
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
+        }
+
+        //public long PhoneNumber
+        //{
+        //    get { return _PhoneNumber; }
+        //    set { _PhoneNumber = value; }
+        //}
+
+        //public bool AccountExpired
+        //{
+        //    get { return _AccountExpired; }
+        //    set { _AccountExpired = value; }
+        //}
+
+        //public bool AccountLocked
+        //{
+        //    get { return _AccountLocked; }
+        //    set { _AccountLocked = value; }
+        //}
+
+        //public bool PasswordExpired
+        //{
+        //    get { return _PasswordExpired; }
+        //    set { _PasswordExpired = value; }
+        //}
+
+        //public bool Enabled
+        //{
+        //    get { return _Enabled; }
+        //    set { _Enabled = value; }
+        //}
         #endregion
 
         #region Public Functions
@@ -219,12 +269,12 @@ namespace ClassWeb.Models
             _MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-            _Address = dr.GetString(db_Address);
-            _UserName = dr.GetString(db_UserName);
+            //_Address = dr.GetString(db_Address);
+            //_UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _DateCreated = dr.GetDateTime(db_DateCreated);
             _DateModified = dr.GetDateTime(db_DateModified);
-            _DateArchived = dr.GetDateTime(db_DateArchived);
+            //_DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
         }

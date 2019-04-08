@@ -6,15 +6,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]ClassWeb</title>
+
+    <!-- Syncfusion Essential JS 2 Styles -->
+    <!-- these scripts are required to have File edit control. Commentout when running in debugging as it might not run -->
+    @*<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />*@
+
+    <!-- Syncfusion Essential JS 2 Scripts -->
+    @*<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>*@
+
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        @*<link rel="stylesheet" href="~/css/site.css" />*@
+
     </environment>
 </head>
 <body>
@@ -31,9 +42,6 @@
                 <br />
                 <a style="color:orange" asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ClassWeb</a>
             </div>
-            @*<h1 style=" color:black" class="text-success text-center font-weight-bold ">
-                ClassWeb
-            </h1>*@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
@@ -41,15 +49,27 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     @if (Context.Session.Get("CurrentUser") != null)
                     {
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Log Out</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a></li>
                     }
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav> <br /> <br />
     <partial name="_CookieConsentPartial" />
     <div class="container body-content">
         @RenderBody()
+        <!-- Syncfusion Essential JS 2 ScriptManager -->
+        <ejs-scripts>
+            document.getElementById('SaveEditedFiles').addEventListener('click', function () {
+            var obj = document.getElementById('types').ej2_instances[0];
+            var value = JSON.stringify({ text: obj.value });
+            const Http = new XMLHttpRequest();
+            const url = '@Url.Action("Save")';
+            Http.open("POST", url);
+            Http.setRequestHeader('Content-Type', 'application/json');
+            Http.send(value);
+            });
+        </ejs-scripts>
         <hr />
         <footer>
             <p>&copy; 2019 - ClassWeb</p>
