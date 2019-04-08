@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    // Author: Meshari
+   // Author: Meshari
    // Create date:	31 March 2019
     public class Section : DatabaseNamedRecord
     {
@@ -23,8 +23,13 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private int _SectionNumber;
+        private int _CRN;
         //private int _ClassID;
         private int _UserID;
+        private int _CourseID;
+        private Course _Course;
+        private User _User;
+
         #endregion
 
 
@@ -39,6 +44,19 @@ namespace ClassWeb.Models
             set
             {
                 _SectionNumber = value;
+            }
+        }
+
+        public int CRN
+        {
+            get
+            {
+                return _CRN;
+            }
+
+            set
+            {
+                _CRN = value;
             }
         }
 
@@ -69,13 +87,29 @@ namespace ClassWeb.Models
                 _UserID = value;
             }
         }
+
+        public int CourseID
+        {
+            get
+            {
+                return _CourseID;
+            }
+
+            set
+            {
+                _CourseID = value;
+            }
+        }
+
+
         #endregion
 
         #region Database String
         internal const string db_ID = "SectionID";
-        internal const string db_Name = "SectionName";
+        internal const string db_CRN = "CRN";
         internal const string db_Number = "SectionNumber";
         internal const string db_UserID = "UserID";
+        internal const string db_CourseID = "CourseID";
         #endregion
 
         #region Public Functions
@@ -104,9 +138,10 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Name = dr.GetString(db_Name);
+            _CRN = dr.GetInt32(db_CRN);
             _SectionNumber = dr.GetInt32(db_Number);
             _UserID = dr.GetInt32(db_UserID);
+            _CourseID = dr.GetInt32(db_CourseID);
         }
         #endregion
 
