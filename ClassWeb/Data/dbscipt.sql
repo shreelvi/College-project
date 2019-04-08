@@ -76,3 +76,36 @@ ADD DateDeleted datetime DEFAULT CURRENT_TIMESTAMP;
 
 
 
+-- -----------------Section------------------------------
+-- ======================================================
+
+-- Author: Meshari
+-- Create date:	31 March 2019
+-- Description:	Create section table in the database
+-- ======================================================
+  CREATE TABLE `Sections` (
+  `SectionID` int(11) NOT NULL AUTO_INCREMENT,
+  `CRN` int(11) NOT NULL,
+  `SectionNumber` int(45) DEFAULT NULL,
+  `UserID` int(11) NOT NULL,
+  `CourseID` int(11) NOT NULL,
+   PRIMARY KEY (`SectionID`),
+   CONSTRAINT `Section_Users`
+    FOREIGN KEY (`UserID`)
+    REFERENCES `Users` (`UserID`),
+   CONSTRAINT `Section_Courses`
+    FOREIGN KEY (`CourseID`)
+    REFERENCES `Courses` (`CourseID`)
+);
+
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (1, 25545, 02, 13, 1);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (2, 36758, 01, 12, 1);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (4, 36758, 01, 11, 2);
+
+
+
+CREATE TABLE `Courses` (
+  `CourseID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `CourseTitle` VARCHAR(45) NOT NULL,
+  `CourseName` VARCHAR(45)  NULL,
+  `CourseDescription` VARCHAR(128) NULL);

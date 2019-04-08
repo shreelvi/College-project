@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using ClassWeb.Model;
 using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-   // Author: Meshari
-   // Create date:	31 March 2019
-    public class Section : DatabaseNamedRecord
+    public class Section:DatabaseRecord
     {
         #region Constructors
         public Section()
@@ -37,13 +37,11 @@ namespace ClassWeb.Models
         public int SectionNumber
         {
             get
-            {
-                return _SectionNumber;
+            { return _SectionNumber;
             }
 
             set
-            {
-                _SectionNumber = value;
+            { _SectionNumber = value;
             }
         }
 
@@ -101,6 +99,66 @@ namespace ClassWeb.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the Course for this Section object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public Course Course
+        {
+            get
+            {
+                if (_Course == null)
+                {
+                    _Course = DAL.GetCourse(_CourseID);
+                }
+                return _Course;
+            }
+            set
+            {
+                _Course = value;
+                if (value == null)
+                {
+                    _CourseID = -1;
+                }
+                else
+                {
+                    _CourseID = value.ID;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the User for this Section object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public User User
+        {
+            get
+            {
+                if (_User == null)
+                {
+                    _User = DAL.GetUser(_UserID);
+                }
+                return _User;
+            }
+            set
+            {
+                _User = value;
+                if (value == null)
+                {
+                    _UserID = -1;
+                }
+                else
+                {
+                    _UserID = value.ID;
+                }
+            }
+        }
+
 
         #endregion
 
@@ -150,5 +208,7 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
+
+
     }
 }

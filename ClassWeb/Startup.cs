@@ -107,22 +107,7 @@ namespace ClassWeb
             });
 
            //Enables directory browsing and files serve of upload folder via "baseurl/myFiles"
-            app.UseFileServer(new FileServerOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
-                RequestPath = "/MyFiles",
-                EnableDirectoryBrowsing = true
-            });
-
-            //Enables directory browsing of user directory folder via "baseurl/directory"
-            app.UseFileServer(new FileServerOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserDirectory")),
-                RequestPath = "/UserDirectory",
-                EnableDirectoryBrowsing = true
-            });
+            app.UseFileServer();
             #endregion
 
             app.UseSession(); // requred to have sessions in our application.

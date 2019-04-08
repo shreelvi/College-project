@@ -1,33 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using ClassWeb.Models;
+using MySql.Data.MySqlClient;
+
+//Meshari, 02/14
+//Courses => A course is like 4430, 3307, etc.
+//Each course can be accessible to one to many users.
+//Each course can be taught by multiple professors, hence multiple classes.
+
 
 namespace ClassWeb.Models
 {
-    /// <summary>
-    ///Code by Meshari
-    ///Courses => A course is like 4430, 3307, etc.
-    ///Each course can be accessible to one to many users.
-    ///Each course can be taught by multiple professors, hence multiple classes.
-    /// </summary>
-    public class Course: DatabaseRecord
+    public class Course:DatabaseNamedRecord
     {
-        #region Private Variables
-        private string _CourseName;
-        private int _CourseNumber;
-        private Class _Class;
-        private int _ClassID;
-        #endregion
-
         #region Constructors
-        /// <summary>
-        /// Code By Elvis
-        /// Constructor to map results of sql query to the class
-        /// Reference: GitHub PeerVal Project
-        /// </summary>
         public Course()
         {
         }
@@ -38,35 +26,30 @@ namespace ClassWeb.Models
 
         #endregion
 
-        #region Database String
-        internal const string db_ID = "CourseID";
-        internal const string db_CourseName = "CourseName";
-        internal const string db_CourseNumber = "CourseNumber";
-        internal const string db_Class = "ClassID";
+        #region Private Variables
+        private string _Title;
+        private string _Description;
         #endregion
 
-        #region Public Properites
-        public string CourseName
+        #region Public Variables
+        public string Title
         {
-            get { return _CourseName; }
-            set { _CourseName = value; }
+            get { return _Title; }
+            set { _Title = value; }
         }
 
-        public int CourseNumber
+        public string Description
         {
-            get { return _CourseNumber; }
-            set { _CourseNumber = value; }
+            get { return _Description; }
+           private set { _Description = value; }
         }
-        public Class Class
-        {
-            get { return _Class; }
-            set { _Class = value; }
-        }
-        public int ClassID
-        {
-            get { return _ClassID; }
-            set { _ClassID = value; }
-        }
+        #endregion
+
+        #region Database String
+        internal const string db_ID = "CourseID";
+        internal const string db_Title = "CourseTitle";
+        internal const string db_Name = "CourseName";
+        internal const string db_Description = "CourseDescription";
         #endregion
 
         #region Public Functions
@@ -84,25 +67,26 @@ namespace ClassWeb.Models
         {
             throw new NotImplementedException();
         }
+
+        public int dbRemove()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Public Subs
-        /// <summary>
-        /// Fills object from a MySqlClient Data Reader
-        /// </summary>
-        /// <remarks></remarks>
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _CourseName = dr.GetString(db_CourseName);
-            _CourseNumber = dr.GetInt32(db_CourseNumber);
-            _ClassID = dr.GetInt32(Class.db_ID);
+            _Name = dr.GetString(db_Name);
+            _Title = dr.GetString(db_Title);
+            _Description = dr.GetString(db_Description);
         }
-        #endregion
 
         public override string ToString()
         {
-            return this.GetType().ToString();
+            throw new NotImplementedException();
         }
+        #endregion
     }
 }

@@ -18,19 +18,19 @@
                 <span asp-validation-for="SectionNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SectionStart" class="control-label"></label>
-                <input asp-for="SectionStart" class="form-control" />
-                <span asp-validation-for="SectionStart" class="text-danger"></span>
+                <label asp-for="CRN" class="control-label"></label>
+                <input asp-for="CRN" class="form-control" />
+                <span asp-validation-for="CRN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SectionEnd" class="control-label"></label>
-                <input asp-for="SectionEnd" class="form-control" />
-                <span asp-validation-for="SectionEnd" class="text-danger"></span>
+                <label asp-for="Course.Name" class="control-label"></label>
+                <input asp-for="Course.Name" class="form-control" />
+                <span asp-validation-for="Course.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <select asp-for="UserID" class="form-control" asp-items="ViewBag.UserID"></select>
-                <span asp-validation-for="UserID" class="text-danger"></span>
+                <label asp-for="User.FirstName" class="control-label"></label>
+                <input asp-for="User.FirstName" class="form-control" />
+                <span asp-validation-for="User.FirstName" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -44,6 +44,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

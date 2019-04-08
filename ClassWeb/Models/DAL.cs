@@ -519,6 +519,186 @@ namespace ClassWeb.Model
             return retList;
         }
         #endregion
-    }
 
+        #region Section
+        ///Created on: 04/01/2019
+        ///Created by: Meshari
+        ///CRUD methods for Section object in ClassWeb Database
+        ///Reference: Prof. Holmes PeerVal Project
+        ///Copied code for Roles CRUD and modified to use for the section
+        /// <summary>
+        /// Gets a list of all Sections objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Section> GetSections()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_SectionsGetAll");
+            List<Section> retList = new List<Section>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Section(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        /// <summary>
+        /// Gets the Classweb.Section corresponding with the given ID
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static Section GetSection(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_SectionGet");
+            Section retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Section.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Section(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+
+
+        /// <summary>
+        /// Attempts to add a database entry corresponding to the given Section
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddSection(Section obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_SectionAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
+                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
+                comm.Parameters.AddWithValue("@" + Section.db_UserID, obj.UserID);
+                comm.Parameters.AddWithValue("@" + Section.db_CourseID, obj.CourseID);
+                return AddObject(comm, "@" + Section.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Attempts to the database entry corresponding to the given Section
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int UpdateSection(Section obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
+                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
+                comm.Parameters.AddWithValue("@" + Section.db_UserID, obj.UserID);
+                comm.Parameters.AddWithValue("@" + Section.db_CourseID, obj.CourseID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Section
+        /// </summary>
+        /// <remarks></remarks
+        internal static int RemoveSection(Section obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandText = "sproc_SectionRemove";
+                comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        internal static Course GetCourse(int courseID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_CourseGet");
+            Course retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, courseID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Course(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static User GetUser(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        #endregion
+
+    }
 }
+

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ClassWeb.Models.Section>
+﻿@model List<ClassWeb.Models.Section>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,34 +13,32 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SectionNumber)
+                <p>CRN</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SectionStart)
+                <p>SectionNumber</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SectionEnd)
+                <p>CourseName</p>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
+            <th><p>ProfessorName</p></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CRN)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SectionNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SectionStart)
+                @Html.DisplayFor(modelItem => item.Course.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SectionEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.ID)
+                @item.User.FirstName @item.User.LastName
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
@@ -48,6 +46,6 @@
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
