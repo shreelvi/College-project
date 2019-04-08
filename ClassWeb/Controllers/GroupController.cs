@@ -96,7 +96,7 @@ namespace ClassWeb.Controllers
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetString("UserName", userName);
                 HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
@@ -173,39 +173,7 @@ namespace ClassWeb.Controllers
         //    return View();
         //}
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[AllowAnonymous]
-        //public ActionResult AddGroup(Group NewGroup)
-        //{
-        //    SetUserFolder(NewGroup);
-        //    int check = 0;// DAL.CheckGroupExists(NewGroup.Username);
-        //    if (check > 0)
-        //    {
-        //        ViewBag.Error = " Username not Unique! Please enter a new username.";
-        //        return View(); //Redirects to add user page
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            int GroupAdd = DAL.AddGroup(NewGroup);
-        //            // DAL.AddGroup(NewGroup);
-        //            if (GroupAdd < 1)
-        //            { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
-        //            else
-        //            {
-        //                TempData["GroupAddSuccess"] = "Group added successfully";
-        //            }
-
-        //        }
-        //        catch
-        //        {
-        //            TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later.";
-        //        }
-        //    }
-        //    return RedirectToAction("LoginGroup", "Group");
-        //}
+    
 
         /// <summary>
         /// Created on: 03/17/2019
@@ -218,7 +186,7 @@ namespace ClassWeb.Controllers
         private void SetGroupFolder(Group group)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\GroupDirectory\\";
-            group.DirectoryPath = dir_Path + group.Username;
+            group.DirectoryPath = dir_Path + group.UserName;
             string path = group.DirectoryPath;
 
             if (!Directory.Exists(path))
@@ -298,7 +266,7 @@ namespace ClassWeb.Controllers
                         int a = DAL.UpdateGroup(group);
                         if (a > 0)
                         {
-                            HttpContext.Session.SetString("username", group.Username);
+                            HttpContext.Session.SetString("username", group.UserName);
                             TempData["Message"] = "User Succesfully Updated!!";
                         }
                     }
@@ -316,8 +284,36 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Dashboard", "Group");
         }
 
-     
-      
+
+        // GET: Users/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Group g = DAL.GroupGetByID(id);
+            if (g == null)
+            {
+                return NotFound();
+            }
+
+            return View(g);
+        }
+
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            int test = DAL.DeleteGroupByID(id);
+            if (test > 0)
+            {
+                ViewBag.Message = "Group Succesfully Deleted!!";
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
         public IActionResult Logout()
         {

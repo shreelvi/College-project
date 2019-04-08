@@ -59,7 +59,7 @@ namespace ClassWeb.Models
 
         [Display(Name = "Group's Login Username",
             Description = "Username to login to group's account profile.")]
-        public string Username
+        public string UserName
         {
             get { return _UserName; }
             set { _UserName = value; }

@@ -740,7 +740,7 @@ namespace ClassWeb.Model
 
                 comm.Parameters.AddWithValue("g_" + Group.db_Name, obj.Name);
                 comm.Parameters.AddWithValue("g_" + Group.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("g_" + Group.db_UserName, obj.Username);
+                comm.Parameters.AddWithValue("g_" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("g_" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("g_" + Group.db_Salt, obj.Salt);
                 return AddObject(comm, "g_ID");
@@ -779,7 +779,7 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
                 comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
                 return UpdateObject(comm);
@@ -791,6 +791,26 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        internal static int DeleteGroupByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("delete_GroupByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
         ///<summary>
         /// Check if username exists in the database
         /// </summary>

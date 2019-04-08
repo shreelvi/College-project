@@ -74,9 +74,8 @@ namespace ClassWeb.Controllers
             {
                 Group g = Get<Group>("CurrentGroup");
                 if (g == null) g = new Group()
-                { 
-                 Name = "Anony"
-                   
+                {
+                 Name = "Class"
                 };
                 return g;
             }
