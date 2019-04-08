@@ -95,8 +95,8 @@ namespace ClassWeb.Controllers
             CurrentGroup = loggedIn;
             if (loggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", loggedIn.Username);
+                Tools.SessionHelper.Set(HttpContext, "CurrentGroup", loggedIn); //Sets the Session for the CurrentUser object
+                HttpContext.Session.SetString("username", userName);
                 HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
@@ -136,7 +136,8 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
-            SetUserFolder(NewGroup);
+            SetGroupFolder(NewGroup);
+            NewGroup.ID = 0;
             int check = 0;// DAL.CheckGroupExists(NewGroup.Username);
             if (check > 0)
             {
@@ -214,16 +215,16 @@ namespace ClassWeb.Controllers
         /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
         /// Used the references to understand and develop the feature in our website
         /// </summary>
-        private void SetUserFolder(Group group)
+        private void SetGroupFolder(Group group)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\GroupDirectory\\";
             group.DirectoryPath = dir_Path + group.Username;
             string path = group.DirectoryPath;
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
-        private void CreateUserDirectory(string UserName)
+        private void CreateGroupDirectory(string UserName)
         {
             string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);
             if (!Directory.Exists(path))

@@ -738,12 +738,12 @@ namespace ClassWeb.Model
                 obj.Password = newPass;
                 // now set object to Database.
 
-                comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.Username);
-                comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
-                comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
-                return AddObject(comm, "@" + Group.db_ID);
+                comm.Parameters.AddWithValue("g_" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("g_" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("g_" + Group.db_UserName, obj.Username);
+                comm.Parameters.AddWithValue("g_" + Group.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("g_" + Group.db_Salt, obj.Salt);
+                return AddObject(comm, "g_ID");
             }
             catch (Exception ex)
             {

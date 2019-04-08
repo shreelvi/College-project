@@ -72,20 +72,17 @@ namespace ClassWeb.Controllers
         {
             get
             {
-                Group g = Get<Group>("CurrentUser");
+                Group g = Get<Group>("CurrentGroup");
                 if (g == null) g = new Group()
-                {
-                  
+                { 
+                 Name = "Anony"
                    
-                    
-                        Name = "Anonymous",
-                    
                 };
                 return g;
             }
             set
             {
-                Set("CurrentUser", value);
+                Set("CurrentGroup", value);
             }
         }
         //Same method as above. Created because we used loginmodel
@@ -103,6 +100,20 @@ namespace ClassWeb.Controllers
             }
         }
 
+        //Same method as above. Created because we used loginmodel
+        internal Group LoggedInGroup
+        {
+            get
+            {
+               Group g = Get<Group>("LoggedInGroup");
+                if (g == null) g = new Group() {Name = "Anony" };
+                return g;
+            }
+            set
+            {
+                Set("LoggedInGroup", value);
+            }
+        }
         internal bool UserCan<T>(PermissionSet.Permissions perm)
         {
             User user = CurrentUser;

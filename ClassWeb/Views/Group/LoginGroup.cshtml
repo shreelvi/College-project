@@ -4,14 +4,14 @@
     ViewData["Title"] = "Group Login";
 }
 
-<p style="color:Blue">@ViewBag.Success</p>
+@*<p style="color:Blue">@ViewBag.Success</p>*@
 <p style="color:red">@ViewBag.Error</p>
 <p style="color:red">@ViewData["GroupAddError"]</p>
 <p style="color:Blue">@ViewData["GroupAddSuccess"]</p>
 <div class="row">
     <div class="col-md-4">
         <section>
-            <form method="post">
+            <form asp-controller="Group" asp-action="LoginGroup" method="post">
                 <h3 style="color:darkorange">Login to ClassWeb.</h3>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
@@ -40,10 +40,10 @@
                     @*<p>
                             <a asp-page="./ForgotPassword">Forgot your password?</a>
                         </p> *@
-                    <p>
-                        <a asp-action="AddGroup">Register as a new group</a>
+                    
+                        <a asp-controller="Group" asp-action="AddGroup">Register as a new group</a>
 
-                    </p>
+                    
 
                 </div>
             </form>
