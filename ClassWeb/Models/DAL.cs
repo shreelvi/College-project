@@ -260,7 +260,7 @@ namespace ClassWeb.Model
             catch (Exception ex)
             {
                 comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+               System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retObj;
         }

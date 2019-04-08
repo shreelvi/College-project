@@ -26,7 +26,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -48,16 +48,16 @@ namespace ClassWeb.Controllers
         {
             return View();
         }
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
-            await _emailService.SendEmail(email, subject, message);
-            if (_emailService.SendEmail(email, subject, message).IsCompleted)
+            Task t= _emailService.SendEmail(email, subject, message);
+            if (t.IsCompleted)
             {
-            TempData["Message"] = "Email Succesfully Send!!";
+                TempData["Message"] = "Email Succesfully Send!!";
             }
             else
             {
@@ -95,7 +95,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if(e != null)
+            else if (e != null)
                 ViewData["UserAddError"] = e;
             return RedirectToAction("index", "Home");
         }
@@ -141,7 +141,7 @@ namespace ClassWeb.Controllers
                         int a = DAL.UpdateUser(user);
                         if (a > 0)
                         {
-                            HttpContext.Session.SetString("username",user.UserName);
+                            HttpContext.Session.SetString("username", user.UserName);
                             TempData["Message"] = "User Succesfully Updated!!";
                         }
                     }
@@ -175,12 +175,12 @@ namespace ClassWeb.Controllers
         {
             User loggedIn = DAL.GetUser(userName, passWord);
             //Sets the session for user from base controller
-            CurrentUser = loggedIn; 
+            CurrentUser = loggedIn;
 
             if (loggedIn != null)
             {
                 //Sets the Session for the CurrentUser object
-                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); 
+                Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn);
                 HttpContext.Session.SetString("username", userName);
                 //Sets userid in the session
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID);
@@ -189,7 +189,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-               TempData["Error"] = "Invalid Username and/or Password";
+                TempData["Error"] = "Invalid Username and/or Password";
                 ViewBag.User = userName;
                 return RedirectToAction("index", "Home");
             }
@@ -224,11 +224,11 @@ namespace ClassWeb.Controllers
                 TempData["Message"] = "Input ID from system and Form doesnot match!";
                 return NotFound();
             }
-           
+
         }
-            public ActionResult ResetPassword(string Code,string UserName,string Email)
+        public ActionResult ResetPassword(string Code, string UserName, string Email)
         {
-            User u = DAL.UserGetByUserName(UserName,Email);
+            User u = DAL.UserGetByUserName(UserName, Email);
             if (u == null)
             {
                 return NotFound();
@@ -238,7 +238,8 @@ namespace ClassWeb.Controllers
                 TempData["Message"] = "UserValidated";
                 return View(u);
             }
-           else{
+            else
+            {
                 if (Request.Headers["Referer"] != "" || !String.IsNullOrEmpty(Request.Headers["Referer"]))
                 {
                     ViewData["Reffer"] = Request.Headers["Referer"].ToString();
@@ -247,26 +248,26 @@ namespace ClassWeb.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ResetPasswordEmail(string UserName,string EmailAddress)
+        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
         {
-            User u = DAL.UserGetByUserName(UserName,EmailAddress);
+            User u = DAL.UserGetByUserName(UserName, EmailAddress);
             if (u == null)
             {
                 TempData["Message"] = "Not a valid credentials";
-               return View();
+                return View();
             }
             else
             {
-               string resetCode = Guid.NewGuid().ToString();
-               string Subject = "Reset Password Classweb";                
-               string Message = "<h3>Hi "+UserName+",</h3></br>"+"Please click the link below to reset password for classweb " +
-                    "<a href=https://localhost:44373/Account/ResetPassword?Code="+resetCode+"&UserName="+u.UserName+"&Email="+u.EmailAddress+"> Reset Password </a>"
-                    + "<h3>ClasWeb Team</h3>";
-               Task t= SendEmailAsync(u.EmailAddress, Subject, Message);
+                string resetCode = Guid.NewGuid().ToString();
+                string Subject = "Reset Password Classweb";
+                string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
+                     "<a href=http://simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+                     + "<h3>ClasWeb Team</h3>";
+                Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
                 if (t.IsCompleted)
                 {
                     u.ResetCode = resetCode;
-                    int ret=DAL.UpdateUser(u);
+                    int ret = DAL.UpdateUser(u);
                 }
 
             }
@@ -294,7 +295,7 @@ namespace ClassWeb.Controllers
                 TempData["PermissionError"] = "Not Enough Permission";
                 return RedirectToAction("Login", "Account");
             }
-           
+
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -336,7 +337,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-               
+
             }
             else
             {
