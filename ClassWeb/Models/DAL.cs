@@ -653,6 +653,27 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Role
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveSection(int sectionID)
+        {
+            if (sectionID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandText = "sproc_SectionRemoveByID";
+                comm.Parameters.AddWithValue("@" + Section.db_ID, sectionID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         internal static Course GetCourse(int courseID)
         {
             MySqlCommand comm = new MySqlCommand("sproc_CourseGet");
@@ -697,6 +718,7 @@ namespace ClassWeb.Model
             return retObj;
         }
         #endregion
+
 
     }
 }

@@ -23,6 +23,10 @@ namespace ClassWeb.Controllers
             if (a != null)
                 ViewData["SectionAdd"] = a;
 
+            var d = TempData["SectionDelete"];
+            if (d != null)
+                ViewData["SectionDelete"] = d;
+
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
             {
@@ -30,19 +34,9 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            //Checks if the user has permission to view
-            //if (UserCan<Section>(PermissionSet.Permissions.View))
-            //{
             List<Section> Sections = new List<Section>();
             Sections = DAL.GetSections();
             return View(Sections);
-            //}
-            //else
-            //{
-            //    TempData["PermissionError"] = "You don't have permission to view the page.";
-            //    return RedirectToAction("Dashboard", "Account");
-            //}
-
         }
 
         // GET: Section/Details/5
@@ -136,39 +130,36 @@ namespace ClassWeb.Controllers
 
         }
 
-
         //        // GET: Section/Delete/5
-        //        public async Task<IActionResult> Delete(int? id)
-        //        {
-        //            if (id == null)
-        //            {
-        //                return NotFound();
-        //            }
+        public async Task<IActionResult> Delete(int id)
+        {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
 
-        //            var section = await _context.Section
-        //                .FirstOrDefaultAsync(m => m.ID == id);
-        //            if (section == null)
-        //            {
-        //                return NotFound();
-        //            }
+            Section retSection = DAL.GetSection(id);
+            if (retSection == null)
+            {
+                return NotFound();
+            }
+            return View(retSection);
+        }
 
-        //            return View(section);
-        //        }
+        //POST: Section/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            int retInt = DAL.RemoveSection(id);
 
-        //        // POST: Section/Delete/5
-        //        [HttpPost, ActionName("Delete")]
-        //        [ValidateAntiForgeryToken]
-        //        public async Task<IActionResult> DeleteConfirmed(int id)
-        //        {
-        //            var section = await _context.Section.FindAsync(id);
-        //            _context.Section.Remove(section);
-        //            await _context.SaveChangesAsync();
-        //            return RedirectToAction(nameof(Index));
-        //        }
+            if (retInt < 0)
+                TempData["SectionDelete"] = "Error occured when deleting the role";
 
-        //        private bool SectionExists(int id)
-        //        {
-        //            return _context.Section.Any(e => e.ID == id);
-        //        }
+            TempData["SectionDelete"] = "Successfully deleted the section";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -293,3 +293,21 @@ BEGIN
      WHERE users.UserID = UserID;
 END
 $$
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	8 April 2019
+-- Description:	Remove specific section from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_SectionRemoveByID(
+IN SectionID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM Sections
+          WHERE Sections.SectionID = SectionID;
+
+     -- SELECT -1 if we had an error
+END
+$$
