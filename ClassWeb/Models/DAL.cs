@@ -592,9 +592,8 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_SectionAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
                 comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
+                comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
                 comm.Parameters.AddWithValue("@" + Section.db_UserID, obj.UserID);
                 comm.Parameters.AddWithValue("@" + Section.db_CourseID, obj.CourseID);
                 return AddObject(comm, "@" + Section.db_ID);
@@ -615,7 +614,7 @@ namespace ClassWeb.Model
         internal static int UpdateSection(Section obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_RoleUpdate");
+            MySqlCommand comm = new MySqlCommand("sproc_SectionUpdate");
             try
             {
                 comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);

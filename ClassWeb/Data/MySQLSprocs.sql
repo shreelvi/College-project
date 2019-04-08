@@ -186,14 +186,15 @@ DELIMITER $$
 
 CREATE PROCEDURE sproc_SectionAdd(
 OUT SectionID int,
-IN Name nvarchar(45),
+IN CRN int(11),
 IN SectionNumber INT(45),
-IN UserID INT(11)
+IN UserID INT(11),
+IN CourseID INT(11)
 )
 BEGIN
-     INSERT INTO Roles(Name,SectionNumber, UserID)
-               VALUES(Name,SectionNumber, UserID);               
-     SET SectionID = LAST_INSERT_ID;
+     INSERT INTO Sections(CRN,SectionNumber, UserID, CourseID)
+               VALUES(CRN,SectionNumber, UserID, CourseID);               
+     SET SectionID = LAST_INSERT_ID();
 END
 $$
 
@@ -204,17 +205,19 @@ $$
 -- ================================================
 
 CREATE PROCEDURE sproc_SectionUpdate(
-IN SectionID int,
-IN Name nvarchar(45),
+IN SectionID int(11),
+IN CRN int(11),
 IN SectionNumber int(45),
-IN UserID INT(11)
+IN UserID INT(11),
+IN CourseID int(11)
 )
 BEGIN
      UPDATE Sections
           SET
-               Sections.Name = Name,
+               Sections.CRN = CRN,
                Sections.SectionNumber = SectionNumber,
-               Sections.UserID = UserID
+               Sections.UserID = UserID,
+			   Sections.CourseID = CourseID
           WHERE Sections.SectionID = SectionID;
 END
 $$

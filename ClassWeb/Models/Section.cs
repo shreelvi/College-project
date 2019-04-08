@@ -34,6 +34,19 @@ namespace ClassWeb.Models
 
 
         #region Public Properties
+
+        //public int ID
+        //{
+        //    get
+        //    {
+        //        return _ID;
+        //    }
+
+        //    set
+        //    {
+        //        _ID = value;
+        //    }
+        //}
         public int SectionNumber
         {
             get
@@ -57,21 +70,6 @@ namespace ClassWeb.Models
                 _CRN = value;
             }
         }
-
-
-        //public int ClassID
-        //{
-        //    get
-        //    {
-        //        return _ClassID;
-        //    }
-
-        //    set
-        //    {
-        //        _ClassID = value;
-        //    }
-        //}
-
 
         public int UserID
         {
