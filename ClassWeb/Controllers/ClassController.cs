@@ -92,7 +92,7 @@ namespace ClassWeb.Controllers
         // GET: Class/Details/5
         public IActionResult Details(int id)
         {
-            Class roleObj = DAL.GetClass(id);
+            Class roleObj = DAL.ClassGetByID(id);
             if (roleObj == null)
             {
                 return NotFound();
@@ -145,12 +145,12 @@ namespace ClassWeb.Controllers
             {
                 return NotFound();
             }
-            var classes = DAL.ClassGetByID(id);
-            if (classes == null)
+            var Class = DAL.ClassGetByID(id);
+            if (Class == null)
             {
                 return NotFound();
             }
-            return View(classes);
+            return View(Class);
         }
 
         // POST: Class/Edit/5

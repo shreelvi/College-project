@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Classes : DatabaseRecord
+    public class Class : DatabaseRecord
     {
         /// <summary>
         /// By: Ganesh Sapkota 
@@ -25,11 +25,7 @@ namespace ClassWeb.Models
         internal const string db_DateEnd = "DateEnd";
         internal const string db_SectionID = "SectionID";
         #endregion
-        public Classes()
-        {
-           
-        }
-        internal Classes(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal Class(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -133,7 +129,7 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-        internal static Classes Get(int id)
+        internal static Class Get(int id)
         {
             throw new NotImplementedException();
         }
