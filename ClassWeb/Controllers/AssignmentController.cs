@@ -18,7 +18,6 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-        List<Assignment> Assignments = new List<Assignment>();
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -40,7 +39,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
@@ -67,7 +66,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -88,7 +87,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -104,7 +103,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -121,7 +120,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -135,7 +134,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
@@ -173,7 +172,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -207,7 +206,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -255,7 +254,7 @@ namespace ClassWeb.Controllers
                         }
                         else
                         {
-                            TempData["Message"] = "File Upload Failed!!!";
+                            TempData["Error"] = "File Upload Failed!!!";
                         }
                         assign.Add(a);
                     }
@@ -304,7 +303,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 RedirectToAction("Login", "Account");
             }
 
@@ -347,7 +346,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to add Assignment";
                 return RedirectToAction("Login", "Account");
             }
             
@@ -388,7 +387,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
                return RedirectToAction("Login", "Account");
             }
            
@@ -447,7 +446,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
                 return RedirectToAction("Login", "Account");
             }
            
@@ -493,7 +492,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
                 return RedirectToAction("Login", "Account");
             }
             
@@ -510,7 +509,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }

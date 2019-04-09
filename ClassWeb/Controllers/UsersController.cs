@@ -44,7 +44,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit User";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
@@ -58,7 +58,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view User";
                 return RedirectToAction("Dashboard", "Account");
             }
           
@@ -84,19 +84,19 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
-                        TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                        TempData["Error"] = "You Dont Have Enough Previlage to edit User";
                         return RedirectToAction("Dashboard", "Account");
                     }
                 }
                 else
                 {
-                    TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                    TempData["Error"] = "You Dont Have Enough Previlage to edit User";
                     return RedirectToAction("Dashboard", "Account");
                 }
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to Create User";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
@@ -124,7 +124,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["error"] = "You Dont Have Enough Previlage to edit User";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
@@ -175,7 +175,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to edit User";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
@@ -213,7 +213,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
                 return RedirectToAction("Dashboard", "Account");
             }
 
@@ -235,7 +235,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
