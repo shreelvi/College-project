@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Class : DatabaseRecord
+    public class Classes : DatabaseRecord
     {
         /// <summary>
         /// By: Ganesh Sapkota 
@@ -25,18 +25,13 @@ namespace ClassWeb.Models
         internal const string db_DateEnd = "DateEnd";
         internal const string db_SectionID = "SectionID";
         #endregion
-        public Class()
+        public Classes()
         {
            
         }
-        internal Class(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal Classes(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
-        }
-
-        public Class(MySqlDataReader dr)
-        {
-            this.dr = dr;
         }
 
         public override void Fill(MySqlDataReader dr)
@@ -54,7 +49,6 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
-        private MySqlDataReader dr;
 
         #endregion
 
@@ -139,7 +133,7 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-        internal static Class Get(int id)
+        internal static Classes Get(int id)
         {
             throw new NotImplementedException();
         }

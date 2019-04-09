@@ -207,6 +207,7 @@ namespace ClassWeb.Controllers
                 User u = DAL.UserGetByID(id);
                 u.FirstName = user.FirstName;
                 u.LastName = u.LastName;
+                u.Password = user.Password;
                 u.ResetCode = null;
                 int i = DAL.UpdateUser(u);
                 if (i > 0)
@@ -261,7 +262,7 @@ namespace ClassWeb.Controllers
                 string resetCode = Guid.NewGuid().ToString();
                 string Subject = "Reset Password Classweb";
                 string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
-                     "<a href=http://simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+                     "<a href=https://localhost:44373/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
                      + "<h3>ClasWeb Team</h3>";
                 Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
                 if (t.IsCompleted)

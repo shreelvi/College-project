@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using MimeKit;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;

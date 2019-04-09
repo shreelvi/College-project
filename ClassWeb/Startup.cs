@@ -78,15 +78,15 @@ namespace ClassWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=index}/{id?}");
+                    template: "{controller=Users}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
                     template: "{UserName}/{Directory}/{FileName}",
-                    defaults: "{controller=Home}/{action=index}/{id?}");
+                    defaults: "{controller=Users}/{action=index}/{id?}");
                 routes.MapRoute(
                    name: "root",
                    template: "{UserName}/{FileName}",
-                   defaults: "{controller=Home}/{action=index}/{id?}");
+                   defaults: "{controller=Users}/{action=index}/{id?}");
             });
         }
     }

@@ -40,9 +40,9 @@ namespace ClassWeb.Model
             }
         }
 
-        internal static List<Class> ClassGetAll()
+        internal static List<Classes> ClassGetAll()
         {
-            List<Class> retObj = new List<Class>();
+            List<Classes> retObj = new List<Classes>();
             MySqlCommand comm = new MySqlCommand("sproc_ClassGetAll");
             try
             {
@@ -50,7 +50,7 @@ namespace ClassWeb.Model
                 while (dr.Read())
                 {
                     //
-                    retObj.Add(new Class(dr));
+                    retObj.Add(new Classes(dr));
                 }
                 comm.Connection.Close();
             }
@@ -60,6 +60,28 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retObj;
+        }
+        internal static List<Classes> GetClass()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_ClassesGetAll");
+            List<Classes> retList = new List<Classes>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Classes(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
         }
 
         public static int GetIntReader(MySqlCommand comm)
@@ -412,7 +434,7 @@ namespace ClassWeb.Model
             //Verify password matches.
             if (retObj != null)
             {
-                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password.TrimEnd('!')))
+                if (!Tools.Hasher.IsValid(password, retObj.Salt, _Pepper, _Stretches, retObj.Password))
                 {
                     retObj = null;
                 }
@@ -637,7 +659,6 @@ namespace ClassWeb.Model
                 string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
-                comm.Parameters.AddWithValue("@" + User.db_MiddleName, obj.MiddleName);
                 comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
