@@ -8,7 +8,7 @@
 
     <br /><br />
     <a style="color:darkblue; float: right" asp-controller="Group" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="Group" asp-action="Edit">Edit Profile <text>&nbsp;</text></a>
+    <a style="color:darkblue; float: right" asp-controller="Group" asp-action="EditGroup">Edit Profile <text>&nbsp;</text></a>
 </div>
 
 <div style="float:left">
@@ -16,6 +16,7 @@
     <p class="text-danger">@TempData["Message"]</p>
     <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("UserName")</h4><br />
 
+    <a style="color:blue">Add Users</a><br/><br/>
     <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
     <a style="color:blue" href="/Assignment/index" target="_blank">Classes Details</a><br /><br />
     <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
