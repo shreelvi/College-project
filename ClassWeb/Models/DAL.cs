@@ -45,6 +45,12 @@ namespace ClassWeb.Model
             {
             }
         }
+
+        internal static User UserGetByID(int? uid)
+        {
+            throw new NotImplementedException();
+        }
+
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -443,7 +449,7 @@ namespace ClassWeb.Model
         /// Reference: PeerVal project by Professor
         /// </summary>
         /// <remarks></remarks>
-        internal static int EditCourse(Course obj)
+        internal static int UpdateCourse(Course obj)
         {
             if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_EditCourse");

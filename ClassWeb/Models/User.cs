@@ -40,7 +40,7 @@ namespace ClassWeb.Models
         private bool _Enabled;
         private bool _PasswordExpired;
         private bool _AccountLocked;
-       //rivate Role _Role;
+        private Role _Role;
         private int _RoleID;
         private string _Salt;
         #endregion
