@@ -60,6 +60,8 @@ namespace ClassWeb.Model
                 return null;
             }
         }
+
+       
         public static int GetIntReader(MySqlCommand comm)
         {
             try
@@ -374,8 +376,8 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Number, obj.Number);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
                 comm.Parameters.AddWithValue("@" + Course.db_ClassID, obj.ClassID);
                 return AddObject(comm, "@" + Course.db_ID);
             }
@@ -396,7 +398,7 @@ namespace ClassWeb.Model
         internal static List<Course> GetAllCourses()
         {
             List<Course> retObj = new List<Course>();
-            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
             try
             {
                 MySqlDataReader dr = GetDataReader(comm);
@@ -414,7 +416,28 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
+        internal static List<Course> GetCourse()
+        {
 
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+            List<Course> retList = new List<Course>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Course(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         ///<summary>
         ///Edit Course 
         /// Reference: PeerVal project by Professor
@@ -427,8 +450,8 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Number, obj.Number);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

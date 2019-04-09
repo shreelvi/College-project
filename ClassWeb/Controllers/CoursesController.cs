@@ -21,10 +21,10 @@ namespace ClassWeb.Controllers
     {
         //hosting Envrironment to upload file in root path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-    
+
         List<Course> Courses = new List<Course>();
-        private readonly int ID;
-        private readonly object course;
+        private int ID;
+        private readonly string course;
 
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
@@ -35,47 +35,48 @@ namespace ClassWeb.Controllers
 
         // GET: Courses
         public IActionResult Index()
-        {   
-            return View(Courses);
-        }
-
-
-        // GET: Courses/Details/5
-        public IActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-
-             if (course == null)
-             {
-               return NotFound();
+           
             
-            }
-
-            return View(Courses);
+            List<Course> C = DAL.GetCourse();
+            return View(C);
         }
 
-        // GET: Courses/Create
-        public IActionResult Create()
+        // GET: Course/Details/5
+        public IActionResult Details(int id)
+        {
+            ViewData["Message"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            return View();
+
+        }
+            // GET: Course/Create
+         public IActionResult Create()
         {
             return View();
+           
         }
 
         // POST: Courses/Create
+        //Course will be created here.
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult Create([Bind("Number,Name,ClassID")]Course NewCourse)
+        public ActionResult Create([Bind("CourseTitle,CourseName")]Course NewCourse)
         {
-            if (ModelState.IsValid)
+            try
             {
-                int i=  DAL.CreateCourse(NewCourse);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    int i = DAL.CreateCourse(NewCourse);
+                    return RedirectToAction(nameof(Index));
+                    
+                }
+                return View(course);
             }
-            return View(course);
+            catch
+            {
+                return View();
+            }
         }
 
         // GET: Courses/Edit/5
@@ -99,7 +100,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Number,Name,ClassID,ID")] Course course)
+        public IActionResult Edit(int id, [Bind("CourseTitle,CourseName,ID")] Course course)
         {
             if (id != ID)
 
@@ -157,6 +158,7 @@ namespace ClassWeb.Controllers
             // _context.Course.Remove(course);
             // await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+           
         }
 
         private bool CourseExists(int id)

@@ -5,38 +5,49 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-//Meshari, 02/14
-//Courses => A course is like 4430, 3307, etc.
-//Each course can be accessible to one to many users.
-//Each course can be taught by multiple professors, hence multiple classes.
-
 
 namespace ClassWeb.Models
 {
+
+    /// <summary>
+    /// Created By: Mohan
+    /// Courses => A course is like 4430, 3307, etc.
+    /// Each course can be accessible to one to many users.
+    /// Each course can be taught by multiple professors, hence multiple classes.
+    /// A course has a course name and a number.
+    /// </summary>
+    ///
     public class Course : DatabaseRecord
     {
         public Course()
         {
 
         }
+
+        internal Course(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
+
+        #region Private Variables
+
+        private string _CourseTitle;
+        private string _CourseName;
+        private int _ClassID;
+        private List<Course> _Courses;
+        #endregion
+
         //database strings
         #region Database  String
+
         internal const string db_ID = "ID";
-        internal const string db_Name = "Name";
-        internal const string db_Number = "Number";
+        internal const string db_CourseTitle = "CourseTitle";
+        internal const string db_CourseName = "CourseName";
         internal const string db_ClassID = "ClassID";
         #endregion
 
-      //Fills the data from the database while making objects
-        public override void Fill(MySqlDataReader dr)
-        {
-            _ID = dr.GetInt32(db_ID);
-            _Name = dr.GetString(db_Name);
-            _Number = dr.GetInt32(db_Number);
-            _ClassID = dr.GetInt32(db_ClassID);
-            
-        }
 
+        #region Public Functions
         public override int dbSave()
         {
             throw new NotImplementedException();
@@ -62,37 +73,41 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-
-        #region Private Variables
-
-        private int _Number;
-        private string _Name;
-        private int _ClassID;
-
-        public Course(MySqlDataReader dr)
+        public override void Fill(MySqlDataReader dr)
         {
+            _ID = dr.GetInt32(db_ID);
+            _CourseTitle = dr.GetString(db_CourseTitle);
+            _CourseName = dr.GetString(db_CourseName);
+            _ClassID = dr.GetInt32(db_ClassID);
+
         }
+
         #endregion
 
+
         #region Public Variables
-        public int Number
+        public string CourseTitle
         {
-            get { return _Number; }
-            set { _Number = value; }
+            get { return _CourseTitle; }
+            set { _CourseTitle = value; }
         }
 
-        public string Name
+        public string CourseName
         {
-            get { return _Name; }
-            set { _Name = value; }
+            get { return _CourseName; }
+            set { _CourseName = value; }
         }
         public int ClassID
         {
             get { return _ClassID; }
             private set { _ClassID = value; }
         }
-       
-        #endregion
-    }
 
+        public List<Course> Courses
+        {
+            get { return _Courses; }
+            set { _Courses = value; }
+        }
+        #endregion
+    } 
 }
