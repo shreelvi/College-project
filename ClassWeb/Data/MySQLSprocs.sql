@@ -175,4 +175,134 @@ BEGIN
 $$
 -- ===============================================
 
+ -----------------Sections---------------------------------
 
+
+-- Author: Meshari
+-- Create date:	01 April 2019
+-- Description:	Add a new  section to the database.
+-- =============================================
+DELIMITER $$
+
+CREATE PROCEDURE sproc_SectionAdd(
+OUT SectionID int,
+IN CRN int(11),
+IN SectionNumber INT(45),
+IN UserID INT(11),
+IN CourseID INT(11)
+)
+BEGIN
+     INSERT INTO Sections(CRN,SectionNumber, UserID, CourseID)
+               VALUES(CRN,SectionNumber, UserID, CourseID);               
+     SET SectionID = LAST_INSERT_ID();
+END
+$$
+
+-- ================================================
+-- Author: Meshari
+-- Create date:	31 March 2019
+-- Description:	Update the  section in the database.
+-- ================================================
+
+CREATE PROCEDURE sproc_SectionUpdate(
+IN SectionID int(11),
+IN CRN int(11),
+IN SectionNumber int(45),
+IN UserID INT(11),
+IN CourseID int(11)
+)
+BEGIN
+     UPDATE Sections
+          SET
+               Sections.CRN = CRN,
+               Sections.SectionNumber = SectionNumber,
+               Sections.UserID = UserID,
+			   Sections.CourseID = CourseID
+          WHERE Sections.SectionID = SectionID;
+END
+$$
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	31 March 2019
+-- Description:	Get specific Section from the database.
+-- =============================================
+CREATE PROCEDURE sproc_SectionGet(
+IN SectionID int
+)
+BEGIN
+     SELECT * FROM Sections
+     WHERE Sections.SectionID = SectionID;
+END
+$$
+
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	31 March 2019
+-- Description:	Get all sections from the database.
+-- =============================================
+CREATE PROCEDURE sproc_SectionsGetAll()
+BEGIN
+     SELECT * FROM Sections;
+END
+$$
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	31 March 2019
+-- Description:	Remove specific section from the database.
+-- =============================================
+CREATE PROCEDURE sproc_SectionRemove(
+IN RoleID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM Sections
+          WHERE Sections.SectionID = SectionID;
+
+     -- SELECT -1 if we had an error
+END
+$$
+-- ===============================================
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	07 April 2019
+-- Description:	Get the specified course from the database.
+-- =============================================
+CREATE PROCEDURE sproc_CourseGet(
+IN CourseID int
+)
+BEGIN
+     SELECT * FROM courses
+     WHERE courses.CourseID = CourseID;
+END
+$$
+
+-- =============================================
+-- Author:		Meshari
+-- Create date:	07 April 2019
+-- Description:	Get the specified user from the database.
+-- =============================================
+CREATE PROCEDURE sproc_UserGet(
+IN UserID int
+)
+BEGIN
+     SELECT * FROM Users
+     WHERE users.UserID = UserID;
+END
+$$
+
+DELIMITER $$
+CREATE PROCEDURE sproc_SectionRemoveByID(
+IN SectionID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM Sections
+          WHERE Sections.SectionID = SectionID;
+
+     -- SELECT -1 if we had an error
+END
+$$

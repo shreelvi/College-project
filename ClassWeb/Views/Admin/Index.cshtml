@@ -20,9 +20,12 @@
 <div style="float:left">
     <br /><br /><br />
     <div style="height:40px; background-color:lightcyan"><h4>&nbsp; Welcome, @Context.Session.GetString("username"). You don't have any pending task today.</h4></div>
+    <p>Login as Admin- username: admin, pwd: test</p>
     <br />&nbsp;<a href="Default.aspx"><img style="width:15%; height:15%" src="images/ViewUsers.png" /></a>
     &nbsp;&nbsp;<a href="Default.aspx"><img style="width:15%; height:15%" src="images/RegisterUser.png" /></a>
     &nbsp;&nbsp;<a asp-controller="Role" asp-action="Index"><img style="width:18%; height:18%" src="images/ManageRoles.png" /></a>
+    <br />&nbsp;&nbsp;<a asp-controller="Section" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageSections.png" /></a>
+
 </div>
 
 <div class="UsersDisplay" style="float:right"> 
