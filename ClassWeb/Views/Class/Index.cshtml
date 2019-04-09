@@ -1,7 +1,7 @@
-﻿@model IEnumerable<ClassWeb.Models.Class>
+﻿@model List<Class>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Class-Index";
 }
 
 <h2>Index</h2>
@@ -13,34 +13,15 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
+                Title
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SectionID)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SectionID)
+                <span>@item.Title</span>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

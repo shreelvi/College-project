@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
- /// <summary>
- /// Created By: Kishor Simkhada
- /// Role is a designated position for each user.
- /// Each role can be assigned to zero to many users.
- /// Each role user can have one to multiple permissions. 
- /// </summary>
+    /// <summary>
+    /// Created By: Kishor Simkhada
+    /// Role is a designated position for each user.
+    /// Each role can be assigned to zero to many users.
+    /// Each role user can have one to multiple permissions. 
+    /// </summary>
 
-    public class Role:DatabaseRecord
+    public class Role : DatabaseRecord
     {
         #region Constructors
         public Role()
@@ -49,6 +49,8 @@ namespace ClassWeb.Models
         /// Gets or sets the Name for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+        /// 
+        [Required]
         public string Name
         {
             get
@@ -65,6 +67,8 @@ namespace ClassWeb.Models
         /// Gets or sets the IsAdmin for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+
+        [Required]
         public bool IsAdmin
         {
             get
@@ -81,6 +85,9 @@ namespace ClassWeb.Models
         /// Gets or sets the Users for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+
+        [Required]
+        [Display(Name = "Users Permissionset")]
         public PermissionSet Users
         {
             get
@@ -94,9 +101,11 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Role for this PeerVal.Role object.
+        /// Gets or sets the Role for this Classweb.Role object.
         /// </summary>
         /// <remarks></remarks>
+        [Required]
+        [Display(Name = "Roles Permissionset")]
         public PermissionSet Roles
         {
             get
@@ -110,9 +119,10 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Evaluation for this PeerVal.Role object.
+        /// Gets or sets the Evaluation for this Classweb.Role object.
         /// </summary>
-        /// <remarks></remarks>
+        [Required]
+        [Display(Name = "Assignment Permissionset")]
         public PermissionSet Assignment
         {
             get
@@ -126,7 +136,7 @@ namespace ClassWeb.Models
         }
         #endregion
 
-        
+
 
         #region Public Functions
 
@@ -172,6 +182,7 @@ namespace ClassWeb.Models
             _IsAdmin = dr.GetBoolean(db_IsAdmin);
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
+            _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
         }
         #endregion
     }
