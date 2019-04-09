@@ -1,19 +1,20 @@
-﻿@using ClassWeb.Models
+﻿
+@using ClassWeb.Models
 @model LoginModel
 @{
     ViewData["Title"] = "Login";
 }
-<p style="color:Blue">@ViewBag.Success</p>
-<p style="color:red">@ViewBag.Error</p>
-<p style="color:red">@ViewData["UserAddError"]</p>
-<p style="color:Blue">@ViewData["UserAddSuccess"]</p>
-<p style="color:Blue">@TempData["Message"]</p>
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <section>
-            <form method="post">
+            <form asp-controller="Account" asp-action="Login" method="post">
                 <h3 style="color:darkorange">Login to ClassWeb.</h3>
-                <p class="text-danger">@TempData["PermissionError"]</p>
+                <hr/>
+                <p class="alert-warning">@TempData["UserAddError"]</p>
+                <p class="alert-success">@TempData["UserAddSuccess"]</p>
+                <p class="alert-info">@TempData["Message"]</p>
+                <p class="alert-danger">@TempData["Error"]</p>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
@@ -39,9 +40,9 @@
                 </div>
                 <div class="form-group">
                     <div>
-                    <a asp-action="ResetPasswordEmail" asp-controller="Account" class="text-danger brea">Forget password?</a>
+                        <a asp-action="ResetPasswordEmail" asp-controller="Account" class="text-danger brea">Forget password?</a>
                     </div>
-                    <a asp-action="AddUser">Register as a new user</a>
+                    <a asp-controller="Account" asp-action="AddUser">Register as a new user</a>
                     </p>
                 </div>
             </form>

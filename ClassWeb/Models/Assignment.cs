@@ -29,6 +29,7 @@ namespace ClassWeb.Models
         internal const string db_FileSize = "FileSize";
         internal const string db_IsEditable = "IsEditable";
         internal const string db_DateModified = "DateModified";
+        internal const string db_UserName = "UserName";
         #endregion
         public Assignment(MySqlDataReader dr)
         {
@@ -48,6 +49,7 @@ namespace ClassWeb.Models
             _FileSize = dr.GetInt64(db_FileSize);
             _Grade = dr.GetInt32(db_Grade);
             _IsEditable = dr.GetBoolean(db_IsEditable);
+            _UserName = dr.GetString(db_UserName);
         }
 
         public override int dbSave()
@@ -80,6 +82,7 @@ namespace ClassWeb.Models
         protected DateTime _DateModified;
         protected string _FileName;
         protected string _FileLocation;
+        protected string _UserName;
         #endregion
 
         #region Public Properties
@@ -92,6 +95,17 @@ namespace ClassWeb.Models
             set
             {
                 _FileLocation = value;
+            }
+        }
+        public string UserName
+        {
+            get
+            {
+                return _UserName;
+            }
+            set
+            {
+                _UserName = value;
             }
         }
         public string FileName
