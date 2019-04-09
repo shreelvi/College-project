@@ -26,10 +26,10 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public IActionResult Index()
         {
-            string UserName = HttpContext.Session.GetString("username");
+            string UserName = HttpContext.Session.GetString("UserName");
             if (UserName == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Home", "Index");
             }
             CurrentDir(UserName);
             //string Current =// Directory.GetCurrentDirectory().Split(UserName);
@@ -43,7 +43,7 @@ namespace ClassWeb.Controllers
         {
             string url = "";
             string s = Directory.GetCurrentDirectory();
-            string UserName = HttpContext.Session.GetString("username");
+            string UserName = HttpContext.Session.GetString("UserName");
             if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
             {
                 url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
@@ -59,13 +59,13 @@ namespace ClassWeb.Controllers
         }
         public string RootDir()
         {
-            string _UserName = HttpContext.Session.GetString("username");
+            string _UserName = HttpContext.Session.GetString("UserName");
             int index = Directory.GetCurrentDirectory().IndexOf(_UserName) + _UserName.Length;
             return ("Home" + Directory.GetCurrentDirectory().Substring(index));
         }
         public IActionResult SetDefaultDir()
         {
-            string _UserName = HttpContext.Session.GetString("username");
+            string _UserName = HttpContext.Session.GetString("UserName");
             Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, _UserName));
             return RedirectToAction(nameof(Index));
         }

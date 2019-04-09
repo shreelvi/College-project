@@ -91,15 +91,15 @@ namespace ClassWeb.Controllers
         public ActionResult LoginGroup(String userName, String passWord)
         {
             
-            Group loggedIn = DAL.GetGroup(userName, passWord);
-            CurrentGroup = loggedIn;
-            if (loggedIn != null)
+            Group grouploggedIn = DAL.GetGroup(userName, passWord);
+            CurrentGroup = grouploggedIn;
+            if (grouploggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentGroup", loggedIn); //Sets the Session for the CurrentUser object
+                Tools.SessionHelper.Set(HttpContext, "CurrentGroup", grouploggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
-                HttpContext.Session.SetInt32("ID", loggedIn.ID); //Sets userid in the session
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
+                HttpContext.Session.SetInt32("ID", grouploggedIn.ID); //Sets userid in the session
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
             }
             else
@@ -112,10 +112,10 @@ namespace ClassWeb.Controllers
         public ActionResult Dashboard()
         {
             int id = (int)HttpContext.Session.GetInt32("ID");
-            string username = HttpContext.Session.GetString("username");
+            string username = HttpContext.Session.GetString("UserName");
 
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
+            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
 
             List<Assignment> GroupAssignments = new List<Assignment>();
             // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page

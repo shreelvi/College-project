@@ -73,7 +73,8 @@ namespace ClassWeb.Controllers
             get
             {
                 Group g = Get<Group>("CurrentGroup");
-                if (g == null) g = new Group()
+                if (g == null)
+                    g = new Group()
                 {
                  Name = "Class"
                 };
@@ -105,7 +106,7 @@ namespace ClassWeb.Controllers
             get
             {
                Group g = Get<Group>("LoggedInGroup");
-                if (g == null) g = new Group() {Name = "Anony" };
+                if (g == null) g = new Group() {Name = "Class" };
                 return g;
             }
             set
