@@ -12,11 +12,8 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-
-        //private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
-       // private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -136,7 +133,7 @@ namespace ClassWeb.Model
             return retInt;
         }
 
-       
+
         /// <summary>
         /// reference: Professor's DAL for PeerEval
         /// set connection and execute given command on the database
@@ -282,7 +279,7 @@ namespace ClassWeb.Model
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                  //
+                    //
                     retObj.Add(new User(dr));
                 }
                 comm.Connection.Close();
@@ -309,8 +306,7 @@ namespace ClassWeb.Model
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    //
-                    retObj.Add(new Assignment(dr));
+                    retObj=new Assignment(dr);
                 }
                 comm.Connection.Close();
             }
@@ -657,7 +653,7 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
-       
+
         internal static int UpdateUser(User obj)
         {
             if (obj == null) return -1;
@@ -769,166 +765,14 @@ namespace ClassWeb.Model
             return -1;
         }
         #endregion
-        #region Class
-        /// <summary>
-        /// Attempts to add classes in the database
-        /// Reference: PeerVal Project
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int AddClass(Class obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_ClassAdd");
-            try
-            {
-                // now set object to Database.
-                comm.Parameters.AddWithValue("@" + Class.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Class.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Class.db_IsAvailable, obj.IsAvailable);
-                comm.Parameters.AddWithValue("@" + Class.db_DateStart, obj.DateStart);
-                comm.Parameters.AddWithValue("@" + Class.db_DateEnd, obj.DateEnd);
-                comm.Parameters.AddWithValue("@" + Class.db_SectionID, obj.SectionID);
 
-                return AddObject(comm, "@" + Class.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        internal static int DeleteClassByID(int ID)
+        #region Classes
+        internal static List<Class> ClassGetAll()
         {
-            MySqlCommand comm = new MySqlCommand("sproc_ClassDeleteByID");
-            int retInt = 0;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Class.db_ID, ID);
-                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Connection.Open();
-                retInt = comm.ExecuteNonQuery();
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retInt;
-        }
-
-        internal static int UpdateClass(Class obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_ClassUpdate");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Class.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Class.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Class.db_IsAvailable, obj.IsAvailable);
-                comm.Parameters.AddWithValue("@" + Class.db_DateStart, obj.DateStart);
-                comm.Parameters.AddWithValue("@" + Class.db_DateEnd, obj.DateEnd);
-                comm.Parameters.AddWithValue("@" + Class.db_SectionID, obj.SectionID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// Attempts to delete the database entry corresponding to the User
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int RemoveClass(Class obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_ClassRemove");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Class.db_ID, obj.ID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
-        internal static Class ClassGetByID(int? id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_ClassGetByID");
-            Class retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Class.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-
-                while (dr.Read())
-                {
-                    retObj = new Class(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-        ///<summary>
-        /// Get salt of the User from the database corresponding to the title
-        /// </summary>
-        /// <remarks></remarks>
-
-        public static string GetSaltForClass(string title)
-        {
-            String salt = "";
-            MySqlCommand comm = new MySqlCommand("sproc_GetSaltForClass");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Class.db_Title, title);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    salt = dr.GetString(0);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return salt;
-        }
-
-        ///<summary>
-        /// Set salt of the User from the database corresponding to the ID
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int SetSaltForClass(int ClassID, string salt)
-        {
-            if (ClassID == 0 || salt == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_SetSaltForClass");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, ClassID);
-                //comm.Parameters.AddWithValue("@" + User.db_Salt, salt);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
+            throw new NotImplementedException();
         }
         #endregion
-
     }
+
 
 }
