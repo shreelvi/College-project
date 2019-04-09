@@ -9,29 +9,96 @@ using ClassWeb.Models;
 using ClassWeb.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-
 namespace ClassWeb.Controllers
 {
     public class UsersController : BaseController
-    {        
+    {
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            List<User> a =DAL.UserGetAll();
-            return View(a);
-        }
+            if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (uid != null)
+                {
+                    List<User> users = null;
+                    User U = DAL.UserGetByID(uid);
+                    if (U == null)
+                    {
+                        return NotFound();
+                    }
+                    if (U.Role.IsAdmin)
+                    {
+                        users = DAL.UserGetAll();
+                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
+                        return View(users);
+                    }
+                    else
+                    {
+                        users.Add(U);
+                        return View(users);
+                    }
+                }
 
+                return View();
+            }
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
+            }
+        }
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            User user = DAL.UserGetByID(id);
-            return View(user);
+            if (UserCan<User>(PermissionSet.Permissions.View))
+            {
+                User user = DAL.UserGetByID(id);
+                return View(user);
+            }
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
+            }
+          
         }
 
         // GET: Users/Create
         public IActionResult Create()
         {
-            return RedirectToAction("AddUser", "Account");
+            if (UserCan<User>(PermissionSet.Permissions.Add))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (uid != null)
+                {
+                    User U = DAL.UserGetByID(uid);
+                    if (U == null)
+                    {
+                        return NotFound();
+                    }
+                    if (U.Role.IsAdmin)
+                    {
+                        return RedirectToAction("AddUser", "Account");
+
+                    }
+                    else
+                    {
+                        TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                        return RedirectToAction("Dashboard", "Account");
+                    }
+                }
+                else
+                {
+                    TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                    return RedirectToAction("Dashboard", "Account");
+                }
+            }
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         // GET: Users/Edit/5
@@ -53,12 +120,12 @@ namespace ClassWeb.Controllers
                 {
                     return NotFound();
                 }
-            return View(user);
+                return View(user);
             }
             else
             {
                 TempData["Message"] = "You Dont Have Enough Previlage to edit User";
-                return RedirectToAction("Dashboard","Account");
+                return RedirectToAction("Dashboard", "Account");
             }
         }
 
@@ -69,46 +136,53 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,PhoneNumber,ID")] User user)
         {
+            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            {
+                if (id != user.ID)
+                {
 
-            if (id != user.ID)
-            {
-               
-                return NotFound();
-            }
-            int? uid =HttpContext.Session.GetInt32("ID");
-            if (id == null&&uid!=null)
-            {
-                id = uid;
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                   int a= DAL.UpdateUser(user);
-                    if (a > 0)
-                    {
-                        ViewBag.Message = "User Succesfully Updated!!";
-                    }
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (id == null && uid != null)
                 {
-                    if (!UserExists(user.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    id = uid;
                 }
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        int a = DAL.UpdateUser(user);
+                        if (a > 0)
+                        {
+                            ViewBag.Message = "User Succesfully Updated!!";
+                        }
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!UserExists(user.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(user);
             }
-            return View(user);
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
 
         private bool UserExists(int id)
         {
-           User u= DAL.UserGetByID(id);
+            User u = DAL.UserGetByID(id);
             if (u == null)
             {
                 return false;
@@ -122,18 +196,27 @@ namespace ClassWeb.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                User U = DAL.UserGetByID(id);
+                if (U == null)
+                {
+                    return NotFound();
+                }
+
+                return View(U);
+            }
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
             }
 
-            User U = DAL.UserGetByID(id);
-            if (U == null)
-            {
-                return NotFound();
-            }
-
-            return View(U);
         }
 
         // POST: Users/Delete/5
@@ -141,12 +224,20 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-           int test= DAL.DeleteUserByID(id);
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            {
+            int test = DAL.DeleteUserByID(id);
             if (test > 0)
             {
                 ViewBag.Message = "User Succesfully Deleted!!";
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));               
+            }
+            else
+            {
+                TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+                return RedirectToAction("Dashboard", "Account");
+            }
         }
     }
 }

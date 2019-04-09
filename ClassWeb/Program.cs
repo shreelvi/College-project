@@ -15,7 +15,7 @@ namespace ClassWeb
     {
         public static void Main(string[] args)
         {
-           CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
         //Sets the content root to the current directory
