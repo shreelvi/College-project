@@ -136,10 +136,11 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
-            SetGroupFolder(NewGroup);
-            NewGroup.ID = 0;
-            int check = 0;// DAL.CheckGroupExists(NewGroup.Username);
-            if (check > 0)
+            //SetGroupFolder(NewGroup);
+            // NewGroup.ID = 0;
+            int check = 0; 
+             check =  DAL.CheckGroupExists(NewGroup.UserName);
+            if (check < 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
@@ -199,9 +200,44 @@ namespace ClassWeb.Controllers
                 Directory.CreateDirectory(path);
         }
 
-       // List<Group> g = new List<Group>();
+        // List<Group> g = new List<Group>();
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+        //    {
+        //        int? gid = HttpContext.Session.GetInt32("ID");
+        //        if (gid != null)
+        //        {
+        //            List<Group> group = null;
+        //            Group g = DAL.GroupGetByID(gid);
+        //            if (g == null)
+        //            {
+        //                return NotFound();
+        //            }
+        //            if (U.Role.IsAdmin)
+        //            {
+        //                users = DAL.UserGetAll();
+        //                users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
+        //                return View(users);
+        //            }
+        //            else
+        //            {
+        //                users.Add(U);
+        //                return View(users);
+        //            }
+        //        }
+
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        TempData["Message"] = "You Dont Have Enough Previlage to edit User";
+        //        return RedirectToAction("Dashboard", "Group");
+        //    }
+        //}
         public IActionResult Index()
         {
            

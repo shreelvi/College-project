@@ -817,8 +817,9 @@ namespace ClassWeb.Model
         /// <remarks></remarks>
         internal static int CheckGroupExists(string username)
         {
-            if (username == null) return -1;
+            
             MySqlCommand comm = new MySqlCommand("CheckUserName_Group");
+            if (username == null)
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
