@@ -306,7 +306,7 @@ namespace ClassWeb.Model
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    retObj = new Assignment(dr);
+                  //  retObj = new Assignment(dr);    
                 }
                 comm.Connection.Close();
             }
