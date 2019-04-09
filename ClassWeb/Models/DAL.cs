@@ -12,6 +12,9 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
+
+        //private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
+       // private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=localhost;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
         private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
@@ -230,6 +233,11 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retList;
+        }
+
+        internal static int RemoveRole(int id)
+        {
+            throw new NotImplementedException();
         }
 
         internal static User UserGetByUserName(string userName, string emailAddress)

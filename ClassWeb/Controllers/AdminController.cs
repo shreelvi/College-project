@@ -13,7 +13,7 @@ namespace ClassWeb.Controllers
         public IActionResult Index()
         {
             List<User> UsersToDisplay = new List<User>();
-            UsersToDisplay = DAL.GetAllUsers();
+            UsersToDisplay = DAL.UserGetAll();
             return View(UsersToDisplay);
         }
     }

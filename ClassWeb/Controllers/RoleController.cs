@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
-using ClassWeb.Data;
+//using ClassWeb.Data;
 using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
@@ -18,11 +18,11 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-        private readonly ClassWebContext _context;
-        public RoleController(ClassWebContext context)
-        {
-            _context = context;
-        }
+       // private readonly ClassWebContext _context;
+       // public RoleController(ClassWebContext context)
+       // {
+       //     _context = context;
+       // }
 
         // GET: Role
         public IActionResult Index()
