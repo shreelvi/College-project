@@ -594,8 +594,6 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
-                comm.Parameters.AddWithValue("@" + Section.db_UserID, obj.UserID);
-                comm.Parameters.AddWithValue("@" + Section.db_CourseID, obj.CourseID);
                 return AddObject(comm, "@" + Section.db_ID);
             }
             catch (Exception ex)
@@ -620,8 +618,6 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
                 comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
-                comm.Parameters.AddWithValue("@" + Section.db_UserID, obj.UserID);
-                comm.Parameters.AddWithValue("@" + Section.db_CourseID, obj.CourseID);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -717,6 +713,61 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
+        #endregion
+
+        #region CourseSemester
+        /// <summary>
+        /// Gets the Classweb.CourseSemester corresponding with the given ID
+        /// </summary>
+        /// <remarks></remarks>
+
+        public static CourseSemester GetCourseSemester(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
+            CourseSemester retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new CourseSemester(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        /// <summary>
+        /// Attempts to add a database entry corresponding to the given CourseSemester
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddCourseSemester(CourseSemester obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_UserID, obj.UserID);
+                return AddObject(comm, "@" + CourseSemester.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         #endregion
 
     }
