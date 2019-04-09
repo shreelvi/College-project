@@ -118,7 +118,7 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
-            int id = (int)HttpContext.Session.GetInt32("ID");
+           // int id = (int)HttpContext.Session.GetInt32("ID");
             string username = HttpContext.Session.GetString("username");
 
             ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
