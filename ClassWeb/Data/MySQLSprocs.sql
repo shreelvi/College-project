@@ -55,10 +55,14 @@ DELIMITER ;
 
 DELIMITER $$
 
+-- Author: Elvis
+-- Description:	Get all the users from the database.
+-- =============================================
 CREATE PROCEDURE `sproc_GetAllUsers` ()  
 BEGIN
-	 SELECT * FROM login_users1;
+	 SELECT * FROM Users;
 END$$
+
 
 -- -----------------Role---------------------------------
 -----Description: sproc CRUD for ROLES-------------------
@@ -151,6 +155,23 @@ BEGIN
 
      -- SELECT -1 if we had an error
 END
+$$
+-- ===============================================
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	06 April 2019
+-- Description:	Returns users with their roles information.
+-- =============================================
+CREATE PROCEDURE sproc_GetUsersWithRoles( 
+IN UserID INT(11)
+) 
+BEGIN
+    SELECT u.UserName, u.RoleID, r.Name, r.IsAdmin, r.users, r.Role, r.Assignment 
+	From Users u
+    JOIN Roles r ON u.RoleID = r.RoleID
+    WHERE u.UserID = UserID;
+    END
 $$
 -- ===============================================
 
