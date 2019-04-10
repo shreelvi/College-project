@@ -175,6 +175,7 @@ BEGIN
 $$
 -- ===============================================
 
+
  -----------------Sections---------------------------------
 
 
@@ -280,28 +281,98 @@ BEGIN
 END
 $$
 
+ -----------------CourseSemesters---------------------------------
+
+
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Add a new  CourseSemester object to the database.
 -- =============================================
--- Author:		Meshari
--- Create date:	07 April 2019
--- Description:	Get the specified user from the database.
--- =============================================
-CREATE PROCEDURE sproc_UserGet(
-IN UserID int
+DELIMITER $$
+
+CREATE PROCEDURE sproc_CourseSemesterAdd(
+OUT CourseSemesterID int,
+IN CourseID int(11),
+IN SemesterID INT(11),
+IN YearID INT(11),
+IN SectionID INT(11),
+IN UserID INT(11)
+
 )
 BEGIN
-     SELECT * FROM Users
-     WHERE users.UserID = UserID;
+     INSERT INTO CourseSemesters(CourseID, SemesterID,YearID, SectionID, UserID )
+               VALUES(CourseID, SemesterID,YearID,SectionID, UserID);               
+     SET CourseSemesterID = LAST_INSERT_ID();
 END
 $$
 
+-- ================================================
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Update the  CourseSemester object in the database.
+-- ================================================
+
+CREATE PROCEDURE sproc_CourseSemesterEdit(
+IN SectionID int(11),
+IN CourseID int(11),
+IN SemesterID INT(11),
+IN YearID INT(11),
+IN SectionID INT(11),
+IN UserID INT(11)
+)
+BEGIN
+     UPDATE Sections
+          SET
+               CourseSemesters.CourseID = CourseID,
+			   CourseSemesters.SemesterID = SemesterID,
+			   CourseSemesters.YearID = YearID,
+			   CourseSemesters.SectionID = SectionID,
+			   CourseSemesters.CourseID = CourseID,
+               CourseSemesters.UserID = UserID
+          WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get specific CourseSemester object from the database.
+-- =============================================
 DELIMITER $$
-CREATE PROCEDURE sproc_SectionRemoveByID(
-IN SectionID int
+CREATE PROCEDURE sproc_CourseSemesterGet(
+IN CourseSemesterID int
+)
+BEGIN
+     SELECT * FROM coursesemesters
+     WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
+END
+$$
+
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get all CourseSemester from the database.
+-- =============================================
+CREATE PROCEDURE sproc_CourseSemestersGetAll()
+BEGIN
+     SELECT * FROM CourseSemesters;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Remove specific CourseSemester from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_CourseSemesterRemove(
+IN CourseSemesterID int
 )
 BEGIN
      DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM Sections
-          WHERE Sections.SectionID = SectionID;
+     DELETE FROM coursesemesters
+          WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
 
      -- SELECT -1 if we had an error
 END
