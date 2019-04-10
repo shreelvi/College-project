@@ -151,7 +151,7 @@ INSERT INTO `years`(`YearID`, `Year`) VALUES (1,2019);
 -- -----------------Semesters------------------------------
 -- ======================================================
 
-CREATE TABLE `SemsterID` (
+CREATE TABLE `Semsters` (
   `SemesterID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `SemesterName` NVARCHAR(128) NOT NULL DEFAULT 'FALL');
 

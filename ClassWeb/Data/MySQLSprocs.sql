@@ -281,31 +281,92 @@ BEGIN
 END
 $$
 
- -----------------CourseSemesters---------------------------------
+ -----------------Semesters---------------------------------
 
 
 -- Author: Elvis
 -- Create date:	09 April 2019
--- Description:	Add a new  CourseSemester object to the database.
+-- Description:	Add a new  Semester object to the database.
 -- =============================================
 DELIMITER $$
 
-CREATE PROCEDURE sproc_CourseSemesterAdd(
-OUT CourseSemesterID int,
-IN CourseID int(11),
-IN SemesterID INT(11),
-IN YearID INT(11),
-IN SectionID INT(11),
-IN UserID INT(11)
-
+CREATE PROCEDURE sproc_SemesterAdd(
+OUT SemesterID int,
+IN SemesterName varchar(128)
 )
 BEGIN
-     INSERT INTO CourseSemesters(CourseID, SemesterID,YearID, SectionID, UserID )
-               VALUES(CourseID, SemesterID,YearID,SectionID, UserID);               
-     SET CourseSemesterID = LAST_INSERT_ID();
+     INSERT INTO Semesters(SemesterName)
+               VALUES(SemesterName);               
+     SET SemesterID = LAST_INSERT_ID();
 END
 $$
 
+-- ================================================
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Update the  Semester object in the database.
+-- ================================================
+
+CREATE PROCEDURE sproc_SemesterEdit(
+IN SemesterID int,
+IN SemesterName varchar(128)
+)
+BEGIN
+     UPDATE Semesters
+          SET
+               Semesters.SemesterName = SemesterName
+			  
+          WHERE Semesters.SemesterID = SemesterID;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get specific Semester object from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_SemesterGet(
+IN SemesterID int
+)
+BEGIN
+     SELECT * FROM semesters
+     WHERE semesters.SemesterID = SemesterID;
+END
+$$
+
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get all Semester from the database.
+-- =============================================
+CREATE PROCEDURE sproc_SemesterGetAll()
+BEGIN
+     SELECT * FROM Semesters;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Remove specific Semester from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_SemesterRemove(
+IN SemesterID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM semesters
+          WHERE semesters.SemesterID = SemesterID;
+
+     -- SELECT -1 if we had an error
+END
+$$
+
+ -----------------CourseSemesters---------------------------------
+ 
 -- ================================================
 -- Author: Elvis
 -- Create date:	09 April 2019
@@ -373,6 +434,90 @@ BEGIN
      DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
      DELETE FROM coursesemesters
           WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
+
+     -- SELECT -1 if we had an error
+END
+$$
+
+ -----------------Years---------------------------------
+
+
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Add a new  year object to the database.
+-- =============================================
+DELIMITER $$
+
+CREATE PROCEDURE sproc_YearAdd(
+OUT YearID int,
+IN YEAR int(11)
+)
+BEGIN
+     INSERT INTO Years(Year)
+               VALUES(Year);               
+     SET YearID = LAST_INSERT_ID();
+END
+$$
+
+-- ================================================
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Update the  Year object in the database.
+-- ================================================
+
+CREATE PROCEDURE sproc_YearEdit(
+IN YearID int,
+IN Year int(11)
+)
+BEGIN
+     UPDATE Years
+          SET
+               Years.Year = Year
+			  
+          WHERE Years.YearID = YearID;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get specific Year object from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_YearGet(
+IN YearID int
+)
+BEGIN
+     SELECT * FROM Years
+     WHERE Years.YearID = YearID;
+END
+$$
+
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Get all the Year object from the database.
+-- =============================================
+CREATE PROCEDURE sproc_YearGetAll()
+BEGIN
+     SELECT * FROM Years;
+END
+$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Remove specific year from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_YearRemove(
+IN YearID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM years
+          WHERE years.YearID = YearID;
 
      -- SELECT -1 if we had an error
 END

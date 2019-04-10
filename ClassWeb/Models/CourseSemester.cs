@@ -10,16 +10,19 @@ namespace ClassWeb.Models
 {
     public class CourseSemester : DatabaseRecord
     {
+                
         #region Constructors
         public CourseSemester()
         {
         }
-        internal CourseSemester(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal CourseSemester
+(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
 
         #endregion
+
         #region Private Variables
         private int _CourseID;
         private int _SemesterID;
