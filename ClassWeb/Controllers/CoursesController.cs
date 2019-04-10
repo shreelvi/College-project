@@ -30,9 +30,9 @@ namespace ClassWeb.Controllers
 
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
-
+            
             _hostingEnvironment = hostingEnvironment;
-
+            
         }
 
         // GET: Courses
@@ -56,9 +56,9 @@ namespace ClassWeb.Controllers
                     }
 
                 }
-
-                return RedirectToAction("Dashboard", "Account");
-
+              
+                    return RedirectToAction("Dashboard", "Account");
+                
             }
             else
             {
@@ -82,11 +82,11 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
         }
-        // GET: Course/Create
-        public IActionResult Create()
+            // GET: Course/Create
+         public IActionResult Create()
         {
             return View();
-
+           
         }
 
         // POST: Courses/Create
@@ -125,7 +125,7 @@ namespace ClassWeb.Controllers
                         return RedirectToAction("Dashboard", "Account");
                     }
                 }
-
+               
                 {
                     if (ModelState.IsValid)
                     {
@@ -169,7 +169,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
         }
-
+           
 
         // POST: Courses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -281,11 +281,11 @@ namespace ClassWeb.Controllers
                 TempData["Error"] = "You Dont Have Enough Previlage to Delete Course";
                 return RedirectToAction("Dashboard", "Account");
             }
-
-
+            
+           
         }
 
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -293,3 +293,4 @@ namespace ClassWeb.Controllers
         }
     }
 }
+

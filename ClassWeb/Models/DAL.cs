@@ -46,6 +46,7 @@ namespace ClassWeb.Model
             }
         }
 
+       
         public static MySqlDataReader GetDataReader(MySqlCommand comm)
         {
             try
@@ -62,6 +63,7 @@ namespace ClassWeb.Model
             }
         }
 
+       
         public static int GetIntReader(MySqlCommand comm)
         {
             try
@@ -320,7 +322,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
-
+       
         public static Assignment GetAllAssignment()
         {
 
@@ -343,8 +345,8 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-
-
+        
+  
         internal static void UpdateAssignment(Assignment obj)
         {
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
@@ -413,7 +415,7 @@ namespace ClassWeb.Model
         }
         #endregion
 
-        #region User
+        #region Login
 
 
         ///<summary>
@@ -482,6 +484,10 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+
+        #endregion
+
+        #region user
 
         /// <summary>
         /// Attempts to add user in the database
@@ -675,6 +681,7 @@ namespace ClassWeb.Model
             throw new NotImplementedException();
         }
 
+
         #endregion
 
         #region Courses
@@ -806,7 +813,7 @@ namespace ClassWeb.Model
         }
         #endregion
 
-        #region Class
+        #region
         internal static List<Class> ClassGetAll()
         {
             List<Class> retObj = new List<Class>();
