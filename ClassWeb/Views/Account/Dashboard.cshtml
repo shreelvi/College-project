@@ -1,6 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard ";
+
+}
+@if (@Context.Session.GetString("UserRole") == "True")
+{
+    @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
 }
 <div style="float:right">
     <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>

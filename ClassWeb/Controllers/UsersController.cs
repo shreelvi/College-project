@@ -54,7 +54,9 @@ namespace ClassWeb.Controllers
             if (UserCan<User>(PermissionSet.Permissions.View))
             {
                 User user = DAL.UserGetByID(id);
-                return View(user);
+                List<Role> Role = DAL.GetRoles();
+                Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user,Role);
+                return View(User);
             }
             else
             {
@@ -62,6 +64,28 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
           
+        }
+        [HttpPost]
+        public IActionResult ChangeRole(int? UserID,int? Role)
+        {
+            if (UserID != null && Role != null)
+            {
+                User U = DAL.UserGetByID(UserID);
+                if (U == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    U.RoleID = (int)Role;
+                    int i = DAL.UpdateUserRole(U);
+                    return RedirectToAction("" + UserID,"Users/Details");
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Users/Create

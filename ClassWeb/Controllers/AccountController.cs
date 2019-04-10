@@ -184,7 +184,7 @@ namespace ClassWeb.Controllers
                 HttpContext.Session.SetString("username", userName);
                 //Sets userid in the session
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID);
-
+                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin==true)?"True":"False");
                 return RedirectToAction("Dashboard");
             }
             else
@@ -209,7 +209,7 @@ namespace ClassWeb.Controllers
                 u.LastName = u.LastName;
                 u.Password = user.Password;
                 u.ResetCode = null;
-                int i = DAL.UpdateUser(u);
+                int i = DAL.UpdateUserPassword(u);
                 if (i > 0)
                 {
                     TempData["Message"] = "User Info Succesfully Modified";
@@ -262,7 +262,7 @@ namespace ClassWeb.Controllers
                 string resetCode = Guid.NewGuid().ToString();
                 string Subject = "Reset Password Classweb";
                 string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
-                     "<a href=https://localhost:44373/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+                     "<a href=simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
                      + "<h3>ClasWeb Team</h3>";
                 Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
                 if (t.IsCompleted)
@@ -372,10 +372,9 @@ namespace ClassWeb.Controllers
         /// </summary>
         private void SetUserFolder(User user)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
-            user.DirectoryPath = dir_Path + user.UserName;
+            string dir_Path = _hostingEnvironment.WebRootPath;
+            user.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", user.UserName);
             string path = user.DirectoryPath;
-
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }

@@ -35,8 +35,8 @@ namespace ClassWeb.Controllers
         // GET: Class
         public ActionResult Index()
         {
-            ViewBag.Class = DAL.GetClass();
-            return View();
+            List<Classes> C = DAL.GetClass();
+            return View(C);
         }
 
         // GET: Class/Details/5

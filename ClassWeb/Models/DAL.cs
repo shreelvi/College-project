@@ -84,6 +84,40 @@ namespace ClassWeb.Model
             return retList;
         }
 
+        internal static int UpdateUserRole(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserRoleUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        internal static int UpdateUserPassword(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserPasswordUpdate");
+            try
+            {
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         public static int GetIntReader(MySqlCommand comm)
         {
             try
@@ -100,6 +134,30 @@ namespace ClassWeb.Model
                 return 0;
             }
         }
+
+        internal static Role GetRoleByID(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_RoleGetByID");
+            Role retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Role(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>
@@ -232,6 +290,27 @@ namespace ClassWeb.Model
             return retList;
         }
 
+        internal static int RoleRemoveByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_RoleDeleteByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+
         internal static User UserGetByUserName(string userName, string emailAddress)
         {
 
@@ -287,31 +366,50 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-        internal static int CheckUserExists(string userName)
+        internal static Assignment GetAssignmentByFileName(string fileName)
         {
-            throw new NotImplementedException();
-        }
-
-        public static Assignment GetAssignmentByFileName(string fileName)
-        {
-            List<Assignment> retObj = new List<Assignment>();
-            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
+            Assignment retObj =null;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByFileName");
             try
             {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    //
-                    retObj.Add(new Assignment(dr));
+                    retObj=new Assignment(dr);
                 }
                 comm.Connection.Close();
+
             }
             catch (Exception ex)
             {
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            return retObj[0];
+            return retObj;
+        }
+
+        public static List<Assignment> GetAssignmentAllByFileName(string fileName)
+        {
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAllGetByFileName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
         }
 
         public static Assignment GetAllAssignment()
@@ -336,20 +434,21 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-        internal static void UpdateAssignment(Assignment obj)
+        internal static int UpdateAssignment(Assignment obj)
         {
+            if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, obj.ID);
-                UpdateObject(comm);
+                return UpdateObject(comm);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
+            return -1;
         }
 
         internal static int ResubmitAssignment(Assignment obj)
@@ -514,9 +613,10 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Role.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Role.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Role.db_IsAdmin, obj.IsAdmin);
-                comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users);
-                comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles);
+                comm.Parameters.AddWithValue("@" + Role.db_IsAdmin, obj.Assignment.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Assignment, obj.Assignment.DAVESet);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -548,8 +648,6 @@ namespace ClassWeb.Model
             return -1;
         }
 
-
-
         /// <summary>
         /// Attempts to add a database entry corresponding to the given Role
         /// </summary>
@@ -565,6 +663,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Role.db_IsAdmin, obj.IsAdmin);
                 comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users);
                 comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles);
+                comm.Parameters.AddWithValue("@" + Role.db_Assignment, obj.Assignment);
                 return AddObject(comm, "@" + Role.db_ID);
             }
             catch (Exception ex)
@@ -656,12 +755,10 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
             try
             {
-                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
                 comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
                 comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
-                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
                 comm.Parameters.AddWithValue("@" + User.db_ResetCode, obj.ResetCode);
                 return UpdateObject(comm);
             }

@@ -1,15 +1,20 @@
 ﻿@model List<User>
+@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Index";
 }
+@if (@Context.Session.GetString("UserRole") == "True")
+{
+    @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
+}
 <div class="main">
     <main class="content">
-            <h2>Index</h2>
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
-            <span class="alert">@ViewBag.Message</span>
+        <h2>Index</h2>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <span class="alert">@ViewBag.Message</span>
         <div class="panel panel-primary filterable">
             <div class="panel-heading">
                 <h3 class="panel-title">Users</h3>
@@ -29,18 +34,18 @@
                 <tbody>
                     @foreach (User item in Model)
                     {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.ID)</td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.EmailAddress)</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.EmailAddress)</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>

@@ -261,10 +261,9 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            //_DateCreated = dr.GetDateTime(db_DateCreated);
+            // _DateModified = dr.GetDateTime(db_DateModified);
+           // _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);

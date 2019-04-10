@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ClassWeb.Models.Course>
+﻿@model List<Classes>
+@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Index";
@@ -6,35 +7,46 @@
 
 <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (@Context.Session.GetString("UserRole") == "True")
+{
+    @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Number)
+                ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ClassID)
+                Section ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Class Title
             </th>
-            <th></th>
+            <th>
+                Start Date
+            </th>
+            <th>End Date</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (Classes item in Model)
+        {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Number)
+                @item.ID
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ClassID)
+                @item.SectionID
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @item.Title
+            </td>
+            <td>
+                @item.DateStart
+            </td>
+            <td>
+                @item.DateEnd
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
@@ -42,6 +54,6 @@
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
