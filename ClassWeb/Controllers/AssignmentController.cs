@@ -447,7 +447,7 @@ namespace ClassWeb.Controllers
         private Tuple<List<Assignment>, List<string>> GetFiles()
         {
             string UserName = HttpContext.Session.GetString("username");
-            List<Assignment> all = DAL.GetAllAssignmentByUserName(UserName);
+         //   List<Assignment> all = DAL.GetAllAssignmentByUserName(UserName);
             string filepath = Directory.GetCurrentDirectory();
             var dir = new DirectoryInfo(filepath);
             var dire = Directory.GetDirectories(filepath);

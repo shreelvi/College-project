@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Section:DatabaseRecord
+    public class Section : DatabaseRecord
     {
         #region Constructors
         public Section()
@@ -27,13 +27,13 @@ namespace ClassWeb.Models
         //private int _ClassID;
         private int _UserID;
         private int _CourseID;
-        private Course _Course;
+        //private Course _Course;
         private User _User;
 
         #endregion
 
 
-        #region Public Properties
+        //#region Public Properties
 
         //public int ID
         //{
@@ -50,11 +50,13 @@ namespace ClassWeb.Models
         public int SectionNumber
         {
             get
-            { return _SectionNumber;
+            {
+                return _SectionNumber;
             }
 
             set
-            { _SectionNumber = value;
+            {
+                _SectionNumber = value;
             }
         }
 
@@ -102,63 +104,63 @@ namespace ClassWeb.Models
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
-        [XmlIgnore]
-        public Course Course
-        {
-            get
-            {
-                if (_Course == null)
-                {
-                    _Course = DAL.GetCourse(_CourseID);
-                }
-                return _Course;
-            }
-            set
-            {
-                _Course = value;
-                if (value == null)
-                {
-                    _CourseID = -1;
-                }
-                else
-                {
-                    _CourseID = value.ID;
-                }
-            }
-        }
+        //[XmlIgnore]
+        //public Course Course
+        //{
+        //    get
+        //    {
+        //        if (_Course == null)
+        //        {
+        //            _Course = DAL.GetCourse(_CourseID);
+        //        }
+        //        return _Course;
+        //    }
+        //    set
+        //    {
+        //        _Course = value;
+        //        if (value == null)
+        //        {
+        //            _CourseID = -1;
+        //        }
+        //        else
+        //        {
+        //            _CourseID = value.ID;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the User for this Section object.
-        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// Reference: Taken code from prof.Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
-        [XmlIgnore]
-        public User User
-        {
-            get
-            {
-                if (_User == null)
-                {
-                    _User = DAL.GetUser(_UserID);
-                }
-                return _User;
-            }
-            set
-            {
-                _User = value;
-                if (value == null)
-                {
-                    _UserID = -1;
-                }
-                else
-                {
-                    _UserID = value.ID;
-                }
-            }
-        }
+        //[XmlIgnore]
+        //public User User
+        //{
+        //    get
+        //    {
+        //        if (_User == null)
+        //        {
+        //            _User = DAL.GetUser(_UserID);
+        //        }
+        //        return _User;
+        //    }
+        //    set
+        //    {
+        //        _User = value;
+        //        if (value == null)
+        //        {
+        //            _UserID = -1;
+        //        }
+        //        else
+        //        {
+        //            _UserID = value.ID;
+        //        }
+        //    }
+        //}
 
 
-        #endregion
+        //#endregion
 
         #region Database String
         internal const string db_ID = "SectionID";
@@ -206,7 +208,6 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
-
+    }
 
     }
-}

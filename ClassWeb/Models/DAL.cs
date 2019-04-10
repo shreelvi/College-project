@@ -22,8 +22,8 @@ namespace ClassWeb.Model
         //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
         //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
 
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029";
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -692,134 +692,134 @@ namespace ClassWeb.Model
 
         #endregion
 
-        #region Courses
-        ///<summary>
-        /// Create/Add Course in database
-        /// </summary>
-        /// <remarks></remarks>
+        //#region Courses
+        /////<summary>
+        ///// Create/Add Course in database
+        ///// </summary>
+        ///// <remarks></remarks>
 
-        internal static int CreateCourse(Course obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
-                comm.Parameters.AddWithValue("@" + Course.db_ClassID, obj.ClassID);
-                return AddObject(comm, "@" + Course.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
+        //internal static int CreateCourse(Course obj)
+        //{
+        //    if (obj == null) return -1;
+        //    MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
+        //    try
+        //    {
+        //        comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+        //        comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
+        //        comm.Parameters.AddWithValue("@" + Course.db_ClassID, obj.ClassID);
+        //        return AddObject(comm, "@" + Course.db_ID);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return -1;
+        //}
 
 
-        ///<summary>
-        /// Get All Courses from the database
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
+        /////<summary>
+        ///// Get All Courses from the database
+        ///// Reference: PeerVal project by Professor
+        ///// </summary>
+        ///// <remarks></remarks>
 
-        internal static List<Course> GetAllCourses()
-        {
-            List<Course> retObj = new List<Course>();
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
-            try
-            {
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    //
-                    retObj.Add(new Course(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-        internal static List<Course> GetCourse()
-        {
+        //internal static List<Course> GetAllCourses()
+        //{
+        //    List<Course> retObj = new List<Course>();
+        //    MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+        //    try
+        //    {
+        //        MySqlDataReader dr = GetDataReader(comm);
+        //        while (dr.Read())
+        //        {
+        //            //
+        //            retObj.Add(new Course(dr));
+        //        }
+        //        comm.Connection.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        comm.Connection.Close();
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return retObj;
+        //}
+        //internal static List<Course> GetCourse()
+        //{
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
-            List<Course> retList = new List<Course>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Course(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-        ///<summary>
-        ///Edit Course 
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int UpdateCourse(Course obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
+        //    MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+        //    List<Course> retList = new List<Course>();
+        //    try
+        //    {
+        //        comm.CommandType = System.Data.CommandType.StoredProcedure;
+        //        MySqlDataReader dr = GetDataReader(comm);
+        //        while (dr.Read())
+        //        {
+        //            retList.Add(new Course(dr));
+        //        }
+        //        comm.Connection.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        comm.Connection.Close();
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return retList;
+        //}
+        /////<summary>
+        /////Edit Course 
+        ///// Reference: PeerVal project by Professor
+        ///// </summary>
+        ///// <remarks></remarks>
+        //internal static int UpdateCourse(Course obj)
+        //{
+        //    if (obj == null) return -1;
+        //    MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
+        //    try
+        //    {
+        //        comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
+        //        comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+        //        comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
+        //        return UpdateObject(comm);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return -1;
+        //}
 
-        ///<summary>
-        ///Delete Course by Id from the database
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
+        /////<summary>
+        /////Delete Course by Id from the database
+        ///// Reference: PeerVal project by Professor
+        ///// </summary>
+        ///// <remarks></remarks>
 
-        internal static int DeleteCourseByID(int ID)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_DeleteCourseByID");
-            int retInt = 0;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Course.db_ID, ID);
-                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Connection.Open();
-                MySqlParameter retParameter;
-                retParameter = comm.Parameters.Add("@" + Course.db_ID, MySqlDbType.Int32);
-                retParameter.Direction = System.Data.ParameterDirection.Output;
-                comm.ExecuteNonQuery();
-                retInt = (int)retParameter.Value;
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retInt;
-        }
-        #endregion
+        //internal static int DeleteCourseByID(int ID)
+        //{
+        //    MySqlCommand comm = new MySqlCommand("sproc_DeleteCourseByID");
+        //    int retInt = 0;
+        //    try
+        //    {
+        //        comm.Parameters.AddWithValue("@" + Course.db_ID, ID);
+        //        comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+        //        comm.CommandType = System.Data.CommandType.StoredProcedure;
+        //        comm.Connection.Open();
+        //        MySqlParameter retParameter;
+        //        retParameter = comm.Parameters.Add("@" + Course.db_ID, MySqlDbType.Int32);
+        //        retParameter.Direction = System.Data.ParameterDirection.Output;
+        //        comm.ExecuteNonQuery();
+        //        retInt = (int)retParameter.Value;
+        //        comm.Connection.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        comm.Connection.Close();
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return retInt;
+        //}
+        //#endregion
 
         #region Class
         internal static List<Class> ClassGetAll()
