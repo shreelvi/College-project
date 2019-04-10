@@ -26,10 +26,10 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public IActionResult Index()
         {
-            string UserName = HttpContext.Session.GetString("username");
+            string UserName = HttpContext.Session.GetString("UserName");
             if (UserName == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Home", "Index");
             }
             CurrentDir(UserName);
             //string Current =// Directory.GetCurrentDirectory().Split(UserName);
@@ -43,7 +43,7 @@ namespace ClassWeb.Controllers
         {
             string url = "";
             string s = Directory.GetCurrentDirectory();
-            string UserName = HttpContext.Session.GetString("username");
+            string UserName = HttpContext.Session.GetString("UserName");
             if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
             {
                 url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
@@ -59,13 +59,13 @@ namespace ClassWeb.Controllers
         }
         public string RootDir()
         {
-            string _UserName = HttpContext.Session.GetString("username");
+            string _UserName = HttpContext.Session.GetString("UserName");
             int index = Directory.GetCurrentDirectory().IndexOf(_UserName) + _UserName.Length;
             return ("Home" + Directory.GetCurrentDirectory().Substring(index));
         }
         public IActionResult SetDefaultDir()
         {
-            string _UserName = HttpContext.Session.GetString("username");
+            string _UserName = HttpContext.Session.GetString("UserName");
             Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, _UserName));
             return RedirectToAction(nameof(Index));
         }
@@ -152,6 +152,7 @@ namespace ClassWeb.Controllers
             {
                 DirectoryInfo dir = new DirectoryInfo(file.FileName);
                 Assignment a = new Assignment();
+                a.UserName = HttpContext.Session.GetString("username");
                 if (!Directory.Exists(dir.Parent.ToString()))
                 {
                     Directory.CreateDirectory(dir.Parent.ToString());
@@ -165,7 +166,9 @@ namespace ClassWeb.Controllers
                     a.IsEditable = false;
                     a.FileSize = file.Length;
                     a.FileLocation = file.FileName.ToString();
-                    a.FileName = file.Name;
+                    a.UserName= HttpContext.Session.GetString("username");
+                    int lastindex = file.Name.LastIndexOf("/");
+                    a.FileName = file.FileName.ToString().Substring(lastindex);
                     a.Grade = 0;
                     a.DateSubmited = DateTime.Now;
                     a.Feedback = "File Submitted";
@@ -182,7 +185,7 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "File Upload Failed!!!";
+                     TempData["Message"] = "File Upload Failed!!!";
                     }
                     assign.Add(a);
                 }
@@ -212,6 +215,7 @@ namespace ClassWeb.Controllers
                             a.FileName = file.FileName.ToString();
                             a.Grade = 0;
                             a.DateSubmited = DateTime.Now;
+                            a.UserName = HttpContext.Session.GetString("username");
                             a.Feedback = "File Submitted";
                             a.DateModified = DateTime.Now;
                             int test = DAL.AddAssignment(a);
@@ -221,7 +225,7 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "File Upload Failed!!!";
+                        TempData["Message"] = "File Upload Failed!!!";
                     }
                     assign.Add(a);
                 }
@@ -303,6 +307,8 @@ namespace ClassWeb.Controllers
             {
                 if (Directory.Exists(path))
                 {
+                    string UserName = HttpContext.Session.GetString("username");
+                    DAL.GetAllAssignmentByUserName(UserName);
                     var dire = Directory.GetDirectories(path);
                     List<string> root = GetDirectory(dire, path);
                     foreach(string s in root)
@@ -333,7 +339,7 @@ namespace ClassWeb.Controllers
                         }
                     }                  
                     Directory.Delete(path);
-                    ViewBag.Message = "Folder sucessfully deleted Succesfully Deleted!!!";
+                    TempData["Message"] = "Folder sucessfully deleted Succesfully Deleted!!!";
                 }            
             }
             catch
@@ -440,6 +446,8 @@ namespace ClassWeb.Controllers
 
         private Tuple<List<Assignment>, List<string>> GetFiles()
         {
+            string UserName = HttpContext.Session.GetString("username");
+            List<Assignment> all=DAL.GetAllAssignmentByUserName(UserName);
             string filepath = Directory.GetCurrentDirectory();
             var dir = new DirectoryInfo(filepath);
             var dire = Directory.GetDirectories(filepath);

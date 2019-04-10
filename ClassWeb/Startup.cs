@@ -1,5 +1,4 @@
 ﻿using System;
-using ClassWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,9 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ClassWeb.Models;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
 
 namespace ClassWeb
 {
@@ -22,6 +18,7 @@ namespace ClassWeb
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -31,20 +28,19 @@ namespace ClassWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDirectoryBrowser();
-
             //Reference: PeerVal Project
             // Add the following to start using a session.
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
-            services.AddSession(sessOptions =>
-            {
-                sessOptions.IdleTimeout = TimeSpan.FromSeconds(1000); // short time for testing. 
+            services.AddSession(sessOptions => {
+                sessOptions.IdleTimeout = TimeSpan.FromSeconds(10); // short time for testing. 
                 //TimeSpan.FromMinutes(20) // default 20 minutes.
                 sessOptions.Cookie.HttpOnly = true;
             });
-            services.AddHttpContextAccessor();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddTransient<IEmailService, EmailService>();
+
+           
+
         }
 
 
@@ -60,25 +56,17 @@ namespace ClassWeb
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            app.UseSession(); // requred to have sessions in our application.
+
+            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions() {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
-            });
+            app.UseSession(); // requred to have sessions in our application.
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Users}/{action=index}/{id?}");
-                routes.MapRoute(
-                    name: "fileDirectory",
-                    template: "{UserName}/{Directory}/{FileName}",
-                    defaults: "{controller=Users}/{action=index}/{id?}");
-                routes.MapRoute(
-                   name: "root",
-                   template: "{UserName}/{FileName}",
-                   defaults: "{controller=Users}/{action=index}/{id?}");
+                    template: "{controller=Courses}/{action=Index}/{id?}");
             });
         }
     }

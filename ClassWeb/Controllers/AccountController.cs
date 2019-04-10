@@ -1,35 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using ClassWeb.Services;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using System.IO;
 
 namespace ClassWeb.Controllers
 {
-    public class AccountController : BaseController
+    public class AccountController : Controller
     {
         #region Private Variables
-        private readonly IEmailService _emailService; //Use classes to send email in serivices folder
+       //rivate readonly IEmailService _emailService; //Use classes to send email in serivices folder
 
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment )
         {
             _hostingEnvironment = hostingEnvironment;
-            _emailService = emailService;
+           
         }
         #endregion
 
@@ -48,25 +43,16 @@ namespace ClassWeb.Controllers
         {
             return View();
         }
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
-            await _emailService.SendEmail(email, subject, message);
+            
             return Ok();
         }
         [AllowAnonymous]
-        //public ActionResult ConfirmEmail(string username, string token )
-        //{
-        //    //string UserToken = DAL.GetUserToken(username);
-        //    if (UserToken == token)
-        //    {
-        //        ViewBag.Success = "Successfully verified email.";
-        //    }
-        //    return View("login");
-        //}
         #endregion
 
         #region Login
@@ -87,7 +73,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if(e != null)
+            else if (e != null)
                 ViewData["UserAddError"] = e;
 
             return View();
@@ -110,17 +96,13 @@ namespace ClassWeb.Controllers
             //string salt = DAL.GetSaltForUser(login.Username);
             //if (!String.IsNullOrEmpty(salt))
             //{
-            //User LoggedIn = DAL.GetUser(userName, passWord);
-            //CurrentUser = LoggedIn; //Sets the session for user from base controller
-
             User loggedIn = DAL.GetUser(userName, passWord);
-            CurrentUser = loggedIn; //Sets the session for user from base controller
 
             if (loggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", userName);
-                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
+                HttpContext.Session.SetString("username", loggedIn.UserName);
+              
                 ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//alhames5";
                 ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
@@ -136,26 +118,16 @@ namespace ClassWeb.Controllers
 
         public ActionResult Dashboard()
         {
-            //Display Permission check message that is passed from Assignment index
-            if (UserCan<User>(PermissionSet.Permissions.View))
-            {
-                var s = TempData["PermissionError"];
-                if (s != null)
-                    ViewData["PermissionErr"] = s;
+            int id = (int)HttpContext.Session.GetInt32("ID");
+            string username = HttpContext.Session.GetString("username");
 
-                int id = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
+            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
 
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-                return View();
-            }
-            else
-            {
-                TempData["PermissionError"] = "Not Enough Permission";
-                return RedirectToAction("Login", "Account");
-            }
-           
+            List<Assignment> UserAssignments = new List<Assignment>();
+            // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+
+            return View(UserAssignments);
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -192,27 +164,21 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            SetUserFolder(NewUser); //Sets the default user directory 
-            int check = 0; //DAL.CheckUserExists(NewUser.UserName);
+            int check = 0; // DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-               
+
             }
             else
             {
                 try
                 {
-                    int UserAdd = DAL.AddUser(NewUser);
-                    if (UserAdd < 1)
-                    {
-                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
-                    }
-                    else
-                    {
-                        TempData["UserAddSuccess"] = "User added successfully";
-                    }
+                    //int UserAdd = DAL.AddUser(NewUser);
+                    DAL.AddUser(NewUser);
+                    TempData["UserAddSuccess"] = "User added successfully";
+                    CreateUserDirectory(NewUser.UserName);
                 }
                 catch
                 {
@@ -222,20 +188,9 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Login", "Account"); //Directs to Login page after success
         }
 
-        /// <summary>
-        /// Created on: 03/17/2019
-        /// Created by: Elvis
-        /// Sets the default root folder for each user when registration
-        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
-        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
-        /// Used the references to understand and develop the feature in our website
-        /// </summary>
-        private void SetUserFolder(User user)
+        private void CreateUserDirectory(string UserName)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
-            user.DirectoryPath = dir_Path + user.UserName;
-            string path = user.DirectoryPath;
-
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }

@@ -1,56 +1,51 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-
-//Meshari, 02/14
-//Courses => A course is like 4430, 3307, etc.
-//Each course can be accessible to one to many users.
-//Each course can be taught by multiple professors, hence multiple classes.
 
 
 namespace ClassWeb.Models
 {
-    public class Course:DatabaseNamedRecord
+
+    /// <summary>
+    /// Created By: Mohan
+    /// Courses => A course is like 4430, 3307, etc.
+    /// Each course can be accessible to one to many users.
+    /// Each course can be taught by multiple professors, hence multiple classes.
+    /// A course has a course name and a number.
+    /// </summary>
+    ///
+    public class Course : DatabaseRecord
     {
-        #region Constructors
         public Course()
         {
+
         }
+
         internal Course(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
 
-        #endregion
-
         #region Private Variables
-        private string _Title;
-        private string _Description;
+
+        private string _CourseTitle;
+        private string _CourseName;
+        private int _ClassID;
+        private List<Course> _Courses;
         #endregion
 
-        #region Public Variables
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; }
-        }
+        //database strings
+        #region Database  String
 
-        public string Description
-        {
-            get { return _Description; }
-           private set { _Description = value; }
-        }
+        internal const string db_ID = "ID";
+        internal const string db_CourseTitle = "CourseTitle";
+        internal const string db_CourseName = "CourseName";
+        internal const string db_ClassID = "ClassID";
         #endregion
 
-        #region Database String
-        internal const string db_ID = "CourseID";
-        internal const string db_Title = "CourseTitle";
-        internal const string db_Name = "CourseName";
-        internal const string db_Description = "CourseDescription";
-        #endregion
 
         #region Public Functions
         public override int dbSave()
@@ -68,25 +63,51 @@ namespace ClassWeb.Models
             throw new NotImplementedException();
         }
 
-        public int dbRemove()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        #region Public Subs
-        public override void Fill(MySqlDataReader dr)
-        {
-            _ID = dr.GetInt32(db_ID);
-            _Name = dr.GetString(db_Name);
-            _Title = dr.GetString(db_Title);
-            _Description = dr.GetString(db_Description);
-        }
 
         public override string ToString()
         {
+            return this.GetType().ToString();
+        }
+        internal static Task FirstOrDefaultAsync(Func<object, bool> p)
+        {
             throw new NotImplementedException();
         }
+
+        public override void Fill(MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _CourseTitle = dr.GetString(db_CourseTitle);
+            _CourseName = dr.GetString(db_CourseName);
+            _ClassID = dr.GetInt32(db_ClassID);
+
+        }
+
         #endregion
-    }
+
+
+        #region Public Variables
+        public string CourseTitle
+        {
+            get { return _CourseTitle; }
+            set { _CourseTitle = value; }
+        }
+
+        public string CourseName
+        {
+            get { return _CourseName; }
+            set { _CourseName = value; }
+        }
+        public int ClassID
+        {
+            get { return _ClassID; }
+            private set { _ClassID = value; }
+        }
+
+        public List<Course> Courses
+        {
+            get { return _Courses; }
+            set { _Courses = value; }
+        }
+        #endregion
+    } 
 }

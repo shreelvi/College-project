@@ -2,72 +2,67 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using ClassWeb.Models;
+using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    /// <summary>
-    ///Code by Meshari
-    /// Class specified based on professor and year.
-    /// </summary>
     public class Class : DatabaseRecord
     {
-        #region Private Variables
-        private string _Title;
-        private bool _Available;
-        private DateTime _DateStart;
-        private DateTime _DateEnd;
-        private Section _Section;
-        private int _SectionID;
-        #endregion
-
-        #region Constructors
         /// <summary>
-        /// Code By Elvis
-        /// Constructor to map results of sql query to the class
-        /// Reference: GitHub PeerVal Project
+        /// By: Ganesh Sapkota 
+        /// Ref: Professor's code for PeerEval
+        /// Creating  classes model for our project.
+        /// Class is like Fall 2018, Spring 2019
+        /// Course will have classes and classes will have sections. 
+        /// Start date and end date are the first and last day of the semester respectively.
         /// </summary>
-        public Class()
-        {
-        }
+
+        #region Database String
+        internal const string db_ID = "ID";
+        internal const string db_Title = "Title";
+        internal const string db_IsAvailable = "Availability";
+        internal const string db_DateStart = "DateStart";
+        internal const string db_DateEnd = "DateEnd";
+        internal const string db_SectionID = "SectionID";
+        #endregion
         internal Class(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
-
-        #endregion
-
-        #region Database String
-        internal const string db_ID = "ClassID";
-        internal const string db_Title = "Title";
-        internal const string db_Available = "Available";
-        internal const string db_DateStart = "DateStart";
-        internal const string db_DateEnd = "DateEnd";
-        internal const string db_Section = "SectionID";
-        #endregion
-
-        #region Public Properites
-        public string Title
+        public Class()
         {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                _Title = value;
-            }
+
         }
-        public bool Available
+
+        public override void Fill(MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _Title = dr.GetString(db_Title);
+            _IsAvailable = dr.GetBoolean(db_IsAvailable);
+            //_DateStart = dr.GetDateTime(db_DateStart);
+            //_DateEnd = dr.GetDateTime(db_DateEnd);
+        }
+
+        #region Private Variables
+        private string _Title;
+        private bool _IsAvailable;
+        private DateTime _DateStart;
+        private DateTime _DateEnd;
+        private int _SectionID;
+
+        #endregion
+
+        #region public class
+
+        public bool IsAvailable
         {
             get
             {
-                return _Available;
+                return _IsAvailable;
             }
             set
             {
-                _Available = value;
+                _IsAvailable = value;
             }
         }
 
@@ -95,7 +90,7 @@ namespace ClassWeb.Models
             }
         }
 
-        public int SectionId
+        public int SectionID
         {
             get
             {
@@ -106,23 +101,26 @@ namespace ClassWeb.Models
                 _SectionID = value;
             }
         }
-        public Section Section
-        {
+
+        public string Title {
             get
             {
-                return _Section;
+                return _Title;
             }
             set
             {
-                _Section = value;
+                _Title = value;
             }
         }
-        #endregion
 
-        #region Public Functions
         public override int dbSave()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
         }
 
         protected override int dbAdd()
@@ -134,31 +132,11 @@ namespace ClassWeb.Models
         {
             throw new NotImplementedException();
         }
-        #endregion
 
-        #region Public Subs
-        /// <summary>
-        /// Fills object from a MySqlClient Data Reader
-        /// </summary>
-        /// <remarks></remarks>
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal static Class Get(int id)
         {
-            _ID = dr.GetInt32(db_ID);
-            _Title = dr.GetString(db_Title);
-            _Available = dr.GetBoolean(db_Available);
-            _DateStart = dr.GetDateTime(db_DateStart);
-            _DateEnd = dr.GetDateTime(db_DateEnd);
-            _SectionID = dr.GetInt32(Section.db_ID);
+            throw new NotImplementedException();
         }
         #endregion
-
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
     }
 }
-
-
-
-    
