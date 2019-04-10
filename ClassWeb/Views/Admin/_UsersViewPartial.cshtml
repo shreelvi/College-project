@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ClassWeb.Models.User>
+
+<h3 style="color:cadetblue"> List of Users:</h3>
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>FirstName</th>
+            <th>IsAdmin</th>
+            <th>Date Created</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr class="mt-5">
+                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Role.IsAdmin)</td>
+                <td>@Html.DisplayFor(modelItem => item.DateCreated)</td>
+
+                <td><a asp-action="Edit" asp-route-Name="@item.ID"><span class="btn-outline-success btn glyphicon glyphicon-edit"></span>Edit</a></td>
+                <td><a asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
+            </tr>
+        </tbody>
+    }
+</table>

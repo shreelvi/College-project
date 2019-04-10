@@ -49,6 +49,8 @@ namespace ClassWeb.Models
         /// Gets or sets the Name for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+        /// 
+        [Required]
         public string Name
         {
             get
@@ -65,6 +67,8 @@ namespace ClassWeb.Models
         /// Gets or sets the IsAdmin for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+        
+        [Required]
         public bool IsAdmin
         {
             get
@@ -81,6 +85,9 @@ namespace ClassWeb.Models
         /// Gets or sets the Users for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
+        
+        [Required]
+        [Display(Name = "Users Permissionset")]
         public PermissionSet Users
         {
             get
@@ -94,9 +101,11 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Role for this PeerVal.Role object.
+        /// Gets or sets the Role for this Classweb.Role object.
         /// </summary>
         /// <remarks></remarks>
+        [Required]
+        [Display(Name = "Roles Permissionset")]
         public PermissionSet Roles
         {
             get
@@ -110,9 +119,10 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Evaluation for this PeerVal.Role object.
+        /// Gets or sets the Evaluation for this Classweb.Role object.
         /// </summary>
-        /// <remarks></remarks>
+        [Required]
+        [Display(Name = "Assignment Permissionset")]
         public PermissionSet Assignment
         {
             get
