@@ -34,7 +34,7 @@ namespace ClassWeb.Controllers
             CurrentDir(UserName);
             //string Current =// Directory.GetCurrentDirectory().Split(UserName);
             //ViewBag.Location = //;
-            Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+           Tuple<List<Assignment>, List<string>> assignments = GetFiles();
             ViewBag.Dir = RootDir();
             return View(assignments);
         }
@@ -166,7 +166,7 @@ namespace ClassWeb.Controllers
                     a.IsEditable = false;
                     a.FileSize = file.Length;
                     a.FileLocation = file.FileName.ToString();
-                    a.UserName= HttpContext.Session.GetString("username");
+                    a.UserName = HttpContext.Session.GetString("username");
                     int lastindex = file.Name.LastIndexOf("/");
                     a.FileName = file.FileName.ToString().Substring(lastindex);
                     a.Grade = 0;
@@ -185,7 +185,7 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
-                     TempData["Message"] = "File Upload Failed!!!";
+                        TempData["Message"] = "File Upload Failed!!!";
                     }
                     assign.Add(a);
                 }
@@ -196,8 +196,8 @@ namespace ClassWeb.Controllers
                     Assignment db = DAL.GetAssignmentByFileName(dir.Name);
                     if (db != null)
                     {
-                    db.Feedback = "File Re-Submitted";
-                    db.DateModified = DateTime.Now;
+                        db.Feedback = "File Re-Submitted";
+                        db.DateModified = DateTime.Now;
                         DAL.UpdateAssignment(a);
                         using (var stream = new FileStream(dir.FullName, FileMode.Create))
                         {
@@ -205,7 +205,7 @@ namespace ClassWeb.Controllers
                             ViewBag.Message = "File Succesfully Re-Uploaded!!!";
                         }
                     }
-                    else if(db==null)
+                    else if (db == null)
                     {
                         using (var stream = new FileStream(dir.FullName, FileMode.Create))
                         {
@@ -311,9 +311,9 @@ namespace ClassWeb.Controllers
                     DAL.GetAllAssignmentByUserName(UserName);
                     var dire = Directory.GetDirectories(path);
                     List<string> root = GetDirectory(dire, path);
-                    foreach(string s in root)
+                    foreach (string s in root)
                     {
-                        string newpath= Path.Combine(path, s);
+                        string newpath = Path.Combine(path, s);
                         var dirs = Directory.GetDirectories(newpath);
                         List<string> roots = GetDirectory(dirs, newpath);
                         //while()
@@ -337,10 +337,10 @@ namespace ClassWeb.Controllers
                                 }
                             }
                         }
-                    }                  
+                    }
                     Directory.Delete(path);
                     TempData["Message"] = "Folder sucessfully deleted Succesfully Deleted!!!";
-                }            
+                }
             }
             catch
             {
@@ -447,7 +447,7 @@ namespace ClassWeb.Controllers
         private Tuple<List<Assignment>, List<string>> GetFiles()
         {
             string UserName = HttpContext.Session.GetString("username");
-            List<Assignment> all=DAL.GetAllAssignmentByUserName(UserName);
+            List<Assignment> all = DAL.GetAllAssignmentByUserName(UserName);
             string filepath = Directory.GetCurrentDirectory();
             var dir = new DirectoryInfo(filepath);
             var dire = Directory.GetDirectories(filepath);
