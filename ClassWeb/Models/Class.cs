@@ -29,6 +29,10 @@ namespace ClassWeb.Models
         {
             Fill(dr);
         }
+        public Class()
+        {
+
+        }
 
         public override void Fill(MySqlDataReader dr)
         {
@@ -116,7 +120,7 @@ namespace ClassWeb.Models
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
 
         protected override int dbAdd()
