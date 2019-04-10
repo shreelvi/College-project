@@ -15,7 +15,7 @@ namespace ClassWeb.Models
     /// Every user can login to the system unless deleted.
     /// </summary>
 
-    public class User:DatabaseRecord
+    public class User : DatabaseRecord
     {
 
         #region Constructors
@@ -47,7 +47,7 @@ namespace ClassWeb.Models
         private Role _Role;
         private string _DirectoryPath;
         private List<Assignment> _Assignments;
-        private DateTime  _DateCreated;
+        private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
         #endregion
@@ -76,7 +76,7 @@ namespace ClassWeb.Models
         public string FirstName
         {
             get { return _FirstName; }
-            set { _FirstName = value; }   
+            set { _FirstName = value; }
         }
         public string ResetCode
         {
@@ -138,7 +138,7 @@ namespace ClassWeb.Models
                 _RoleID = value;
             }
         }
-        
+
         public DateTime DateCreated
         {
             get { return _DateCreated; }
@@ -154,14 +154,14 @@ namespace ClassWeb.Models
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
-       
+
 
         /// <summary>
         /// Gets or sets the Role for this User object.
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
-        
+
         [XmlIgnore]
         public Role Role
         {
@@ -261,9 +261,9 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            DateTime DateCreated = dr.GetDateTime(db_DateCreated);
-           _DateModified = dr.GetDateTime(db_DateModified);
-           // _DateModified = DateTime.Parse(DateModified.ToString());
+            _DateCreated = dr.GetDateTime(db_DateCreated);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateModified = dr.GetDateTime(db_DateModified);
             _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
