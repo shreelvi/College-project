@@ -19,7 +19,7 @@ namespace ClassWeb.Controllers
     /// A course has a course name and a number.
     /// </summary>
     /// 
-    public class CoursesController : Controller
+    public class CoursesController : BaseController
     {
         //hosting Envrironment to upload file in root path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
@@ -30,13 +30,13 @@ namespace ClassWeb.Controllers
 
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
-            
+
             _hostingEnvironment = hostingEnvironment;
-            
+
         }
 
         // GET: Courses
-        public  IActionResult Index()
+        public IActionResult Index()
         {
             if (UserCan<Course>(PermissionSet.Permissions.ViewAndEdit))
             {
@@ -52,23 +52,22 @@ namespace ClassWeb.Controllers
                     if (U.Role.IsAdmin)
                     {
                         List<Course> C = DAL.GetCourse();
-                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
                         return View(users);
                     }
-                    
+
                 }
+
+                return RedirectToAction("Dashboard", "Account");
+
             }
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit Course";
                 return RedirectToAction("Dashboard", "Account");
             }
-
-           
         }
 
-        
-  
+
         // GET: Course/Details/5
         public IActionResult Details(int id)
         {
@@ -79,15 +78,15 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Course";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
-            // GET: Course/Create
-         public IActionResult Create()
+        // GET: Course/Create
+        public IActionResult Create()
         {
             return View();
-           
+
         }
 
         // POST: Courses/Create
@@ -116,17 +115,17 @@ namespace ClassWeb.Controllers
                         }
                         else
                         {
-                            TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                            TempData["Error"] = "You Dont Have Enough Previlage to edit Course";
                             return RedirectToAction("Dashboard", "Account");
                         }
                     }
                     else
                     {
-                        TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                        TempData["Error"] = "You Dont Have Enough Previlage to edit Course";
                         return RedirectToAction("Dashboard", "Account");
                     }
                 }
-               
+
                 {
                     if (ModelState.IsValid)
                     {
@@ -170,18 +169,18 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
         }
-           
+
 
         // POST: Courses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("CourseTitle,CourseName,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("CourseTitle,CourseName,ID")] Course course)
         {
             if (UserCan<Course>(PermissionSet.Permissions.Edit))
             {
-                if (id != user.ID)
+                if (id != course.ID)
                 {
 
                     return NotFound();
@@ -282,11 +281,11 @@ namespace ClassWeb.Controllers
                 TempData["Error"] = "You Dont Have Enough Previlage to Delete Course";
                 return RedirectToAction("Dashboard", "Account");
             }
-            
-           
+
+
         }
 
-        
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -294,4 +293,3 @@ namespace ClassWeb.Controllers
         }
     }
 }
-

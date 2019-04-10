@@ -96,7 +96,7 @@ namespace ClassWeb.Controllers
             //string salt = DAL.GetSaltForUser(login.Username);
             //if (!String.IsNullOrEmpty(salt))
             //{
-            LoginModel loggedIn = DAL.GetUser(userName, passWord);
+            User loggedIn = DAL.GetUser(userName, passWord);
 
             if (loggedIn != null)
             {

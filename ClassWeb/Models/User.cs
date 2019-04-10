@@ -1,5 +1,10 @@
-﻿using System;
+﻿using ClassWeb.Model;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
@@ -9,100 +14,100 @@ namespace ClassWeb.Models
     /// Special permission will be provided based on the roles assigned to them on the system.
     /// Every user can login to the system unless deleted.
     /// </summary>
-    public class User : DatabaseObject
+
+    public class User : DatabaseRecord
     {
+
         #region Constructors
+        /// <summary>
+        /// Code By Elvis
+        /// Constructor to map results of sql query to the class
+        /// Reference: GitHub PeerVal Project
+        /// </summary>
         public User()
         {
         }
         internal User(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
-            //Fill(dr);
+            Fill(dr);
         }
 
         #endregion
-
 
         #region private variable
         private string _FirstName;
         private string _MiddleName;
         private string _LastName;
         private string _EmailAddress;
-        private string _Address;
-        private string _Password;
-        private string _ConfirmPassword;
+        private string _ResetCode;
         private string _UserName;
-        private long _PhoneNumber;
+        private string _Password;
+        private string _Salt;
+        private int _RoleID;
+        private Role _Role;
+        private string _DirectoryPath;
+        private List<Assignment> _Assignments;
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
-        private bool _AccountExpired;
-        private bool _Enabled;
-        private bool _PasswordExpired;
-        private bool _AccountLocked;
-        private Role _Role;
-        private int _RoleID;
-        private string _Salt;
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
         internal const string db_EmailAddress = "EmailAddress";
-        internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
+        internal const string db_Salt = "Salt";
+        internal const string db_Role = "RoleID";
         internal const string db_Password = "Password";
-        internal const string db_PhoneNumber = "PhoneNumber";
+        internal const string db_ResetCode = "ResetCode";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
-        internal const string db_DateArchived = "DateDeleted";
-        internal const string db_AccountExpired = "IsExpired";
-        internal const string db_Enabled = "IsEnabled";
-        internal const string db_PasswordExpired = "PasswordExpired";
-        internal const string db_AccountLocked = "AccountLocked";
-        internal const string db_Role = "RoleID";
-        internal const string db_Salt = "Salt";
+        internal const string db_DateDeleted = "DateDeleted";
+
+
+
         #endregion
 
         #region public Properites
 
-        [Required(ErrorMessage = "Please provide First Name", AllowEmptyStrings = false)]
         public string FirstName
         {
             get { return _FirstName; }
             set { _FirstName = value; }
-
+        }
+        public string ResetCode
+        {
+            get { return _ResetCode; }
+            set { _ResetCode = value; }
         }
         public string MiddleName
         {
             get { return _MiddleName; }
             set { _MiddleName = value; }
         }
-
-        [Required(ErrorMessage = "Please provide Last Name", AllowEmptyStrings = false)]
         public string LastName
         {
             get { return _LastName; }
             set { _LastName = value; }
         }
-        [Required(ErrorMessage = "Please provide valid email address", AllowEmptyStrings = false)]
         public string EmailAddress
         {
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-
-        public string Address
+        //public string Address
+        //{
+        //    get { return _Address; }
+        //    set { _Address = value; }
+        //}
+        public string UserName
         {
-            get { return _Address; }
-            set { _Address = value; }
+            get { return _UserName; }
+            set { _UserName = value; }
         }
-
-        [Required(ErrorMessage = "Please provide password", AllowEmptyStrings = false)]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [StringLength(50, MinimumLength = 8, ErrorMessage = "Password must be 8 character long.")]
         public string Password
         {
             get { return _Password; }
@@ -110,7 +115,7 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Salt for user object
+        /// Gets or sets the Salt for this PeerVal.User object
         /// </summary>
         public string Salt
         {
@@ -118,91 +123,157 @@ namespace ClassWeb.Models
             set { _Salt = value; }
         }
 
-        [Compare("Password", ErrorMessage = "Confirm Password does not match")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        public string ConfirmPassword
-        {
-            get { return _ConfirmPassword; }
-            set { _ConfirmPassword = value; }
-        }
-
-        [Required(ErrorMessage = "Please provide username", AllowEmptyStrings = false)]
-        public string UserName
-        {
-            get { return _UserName; }
-            set { _UserName = value; }
-        }
-
-
-        public long PhoneNumber
-        {
-            get { return _PhoneNumber; }
-            set { _PhoneNumber = value; }
-        }
-
         /// <summary>
-        /// Gets or sets the RoleID for user.
+        /// Gets or sets the RoleID for this PeerVal.User object.
         /// </summary>
+        /// <remarks></remarks>
         public int RoleID
         {
-            get { return _RoleID; }
-            set { _RoleID = value; }
+            get
+            {
+                return _RoleID;
+            }
+            set
+            {
+                _RoleID = value;
+            }
         }
-        /// <summary>
-        /// Gets or sets the role for this user
-        /// </summary>
-        //[Required(ErrorMessage = "Please define role of user", AllowEmptyStrings = false)]
-        //public Role Roles
-        //{
-        //    get { return _Role; }
-        //    set { _Role = value; }
-
-        //}
 
         public DateTime DateCreated
         {
             get { return _DateCreated; }
             set { _DateCreated = value; }
         }
-
-
         public DateTime DateModified
         {
             get { return _DateModified; }
             set { _DateModified = value; }
         }
-
         public DateTime DateDeleted
         {
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
 
-        public bool AccountExpired
+
+        /// <summary>
+        /// Gets or sets the Role for this User object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+
+        [XmlIgnore]
+        public Role Role
         {
-            get { return _AccountExpired; }
-            set { _AccountExpired = value; }
+            get
+            {
+                if (_Role == null)
+                {
+                    _Role = Roles.Get(_RoleID);//DAL.GetRole(_RoleID);
+                }
+                return _Role;
+            }
+            set
+            {
+                _Role = value;
+                if (value == null)
+                {
+                    _RoleID = -1;
+                }
+                else
+                {
+                    _RoleID = value.ID;
+                }
+            }
         }
 
-        public bool AccountLocked
+        public string DirectoryPath
         {
-            get { return _AccountLocked; }
-            set { _AccountLocked = value; }
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
         }
 
-        public bool PasswordExpired
+        public List<Assignment> Assignments
         {
-            get { return _PasswordExpired; }
-            set { _PasswordExpired = value; }
+            get { return _Assignments; }
+            set { _Assignments = value; }
         }
 
-        public bool Enabled
+        //public long PhoneNumber
+        //{
+        //    get { return _PhoneNumber; }
+        //    set { _PhoneNumber = value; }
+        //}
+
+        //public bool AccountExpired
+        //{
+        //    get { return _AccountExpired; }
+        //    set { _AccountExpired = value; }
+        //}
+
+        //public bool AccountLocked
+        //{
+        //    get { return _AccountLocked; }
+        //    set { _AccountLocked = value; }
+        //}
+
+        //public bool PasswordExpired
+        //{
+        //    get { return _PasswordExpired; }
+        //    set { _PasswordExpired = value; }
+        //}
+
+        //public bool Enabled
+        //{
+        //    get { return _Enabled; }
+        //    set { _Enabled = value; }
+        //}
+        #endregion
+
+        #region Public Functions
+
+        public override int dbSave()
         {
-            get { return _Enabled; }
-            set { _Enabled = value; }
+            throw new NotImplementedException();
+        }
+
+        protected override int dbAdd()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
+        #region Public Subs
+        /// <summary>
+        /// Fills object from a MySqlClient Data Reader
+        /// </summary>
+        /// <remarks></remarks>
+        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _FirstName = dr.GetString(db_FirstName);
+            _ResetCode = dr.GetString(db_ResetCode);
+            _LastName = dr.GetString(db_LastName);
+            _EmailAddress = dr.GetString(db_EmailAddress);
+            _Password = dr.GetString(db_Password);
+            _DateCreated = dr.GetDateTime(db_DateCreated);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            _Salt = dr.GetString(db_Salt);
+            _RoleID = dr.GetInt32(db_Role);
+            _UserName = dr.GetString(db_UserName);
+        }
+        #endregion
 
+        public override string ToString()
+        {
+            return this.GetType().ToString();
+        }
     }
 }
