@@ -1,39 +1,45 @@
-﻿using ClassWeb.Model;
+﻿using ClassWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+
 namespace ClassWeb.Models
 {
     /// <summary>
-    /// Code by Elvis
-    /// Groups are a team of student members for a projects in class
+    /// Created By: Elvis
+    /// Copied by Sakshi for Group Login
+    /// Seperate Model for Login View.
+    /// This model is used to get information only required for login view.
+    /// It also model for add user now as I am testing to verify password using hashing. 
     /// </summary>
 
-    public class Group : DatabaseNamedRecord
+    public class GroupLoginModel : DatabaseNamedRecord
     {
+
         #region Constructors
-        /// <summary>
-        /// By Sakshi
-        /// Constructor to map results of sql query to the class
-        /// Reference: GitHub PeerVal Project
-        /// </summary>
-        public Group()
-        { }
-        internal Group(MySql.Data.MySqlClient.MySqlDataReader dr)
+        public GroupLoginModel()
+        {
+        }
+        internal GroupLoginModel(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
-        #region Private Variables
+
+        #endregion
+
+        #region private variable
         private string _EmailAddress;
         private string _UserName;
         private string _Password;
         private string _Salt;
-        private string _DirectoryPath;
-        private List<Assignment> _Assignments; 
-        private int _AssignmentID;
+        private string _ConfirmPassword;
+        private bool _IsEmailConfirmed = false;
+        private string _EmailToken;
+               private string _DirectoryPath;
+        
         #endregion
 
         #region Database String
@@ -43,93 +49,87 @@ namespace ClassWeb.Models
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
-        internal const string db_DirectoryPath = "DirectoryPath";
-        internal const string db_Assignments = "Assignments";
         internal const string db_AssignmentID = "AssignmentID";
 
         #endregion
-        #region Public Variables
-        [Display(Name = "Group's Email-address",
-            Description = "Email-address used to contact the group; which all members will have access.")]
+
+        #region public Properites
+        [Required]
+        
         public string EmailAddress
         {
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-
-        [Display(Name = "Group's Login Username",
-            Description = "Username to login to group's account profile.")]
+        
+        [Required]
         public string UserName
         {
             get { return _UserName; }
             set { _UserName = value; }
         }
 
-        [Display(Name = "Group's Login Password",
-            Description = "Password to login to group's account profile.")]
+        [Required]
+        [DataType(DataType.Password)]
         public string Password
         {
-            get
-            {
-                if (String.IsNullOrEmpty(_Password)) _Password = "";
-                return _Password;
-            }
-            set { _Password = value.Trim(); }
+            get { return _Password; }
+            set { _Password = value; }
         }
 
+        [Required]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword
+        {
+            get { return _ConfirmPassword; }
+            set { _ConfirmPassword = value; }
+        }
+        public string EmailToken
+        {
+            get { return _EmailToken; }
+            set { _EmailToken = value; }
+        }
+        public bool IsEmailConfirmed
+        {
+            get { return _IsEmailConfirmed; }
+            set { _IsEmailConfirmed = value; }
+        }
+    
+        /// <summary>
+        /// Gets or sets the Salt for this PeerVal.User object
+        /// </summary>
         public string Salt
         {
             get { return _Salt; }
-            set { _Salt = value.Trim(); }
+            set { _Salt = value; }
         }
         public string DirectoryPath
         {
             get { return _DirectoryPath; }
             set { _DirectoryPath = value; }
         }
-        public List<Assignment> Assignments
-        {
-            get { return _Assignments; }
-            set { _Assignments = value; }
-        }
-        //Foreign Key
-        public int AssignmentID
-        {
-            get { return _AssignmentID; }
-            set { _AssignmentID = value; }
-        }
+
+        [Display(Name = "Remember Me")]
+        public bool RememberMe { get; set; }
+        public string ReturnUrl { get; set; }
+
         #endregion
 
         #region Public Functions
 
         public override int dbSave()
         {
-          if(_ID < 0)
-            {
-                return dbAdd();
-
-            }
-            else
-            {
-                return dbUpdate();
-            }
+            throw new NotImplementedException();
         }
 
         protected override int dbAdd()
         {
-            _ID = DAL.AddGroup(this);
-            return ID;
-           
+            throw new NotImplementedException();
         }
 
         protected override int dbUpdate()
         {
-            return DAL.UpdateGroup(this);
-            
-        }
-        public int dbRemoveUserFromGroup()
-        {
-            return DAL.RemoveUserFromGroup(this);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -145,8 +145,6 @@ namespace ClassWeb.Models
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
-          //  _AssignmentID = dr.GetInt32(db_AssignmentID);
-
         }
         #endregion
 
@@ -154,11 +152,5 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
-
-        internal static Task FirstOrDefaultAsync(Func<object, bool> p)
-        {
-            throw new NotImplementedException();
-        }
     }
-    #endregion
 }

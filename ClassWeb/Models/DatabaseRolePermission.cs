@@ -14,9 +14,7 @@ namespace ClassWeb.Models
     {
         #region Private Variable
         private string _Description;
-        private DateTime _DateCreated;
-        private DateTime _DateModified;
-        private DateTime _DateDeleted;
+       
         #endregion
 
         #region Public properties
@@ -29,24 +27,9 @@ namespace ClassWeb.Models
             get { return _Description; }
             set { _Description = value; }
         }
-        public DateTime DateCreated
-        {
-            get { return _DateCreated; }
-            set { _DateCreated = value; }
-        }
+       
 
-
-        public DateTime DateModified
-        {
-            get { return _DateModified; }
-            set { _DateModified = value; }
-        }
-
-        public DateTime DateDeleted
-        {
-            get { return _DateDeleted; }
-            set { _DateDeleted = value; }
-        }
+       
         #endregion
 
     }
