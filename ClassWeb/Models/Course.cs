@@ -109,5 +109,5 @@ namespace ClassWeb.Models
             set { _Courses = value; }
         }
         #endregion
-    }
+    } 
 }

@@ -15,7 +15,7 @@ namespace ClassWeb.Models
     /// It also contains ID 
     /// Reference: GitHub Prof. Holmes PeerVal Project
     /// </summary>
-    public class Assignment:DatabaseRecord
+    public class Assignment : DatabaseRecord
     {
         #region Database String
         internal const string db_ID = "ID";
@@ -74,7 +74,7 @@ namespace ClassWeb.Models
         #region Private Variable
         protected DateTime _DateStarted;
         protected DateTime _DateDue;
-        protected  DateTime _DateSubmited;
+        protected DateTime _DateSubmited;
         protected int _Grade;
         protected string _Feedback;
         protected double _FileSize;
@@ -162,13 +162,14 @@ namespace ClassWeb.Models
         public DateTime DateSubmited
         {
             get { return _DateSubmited; }
-            set { _DateSubmited = value;}
+            set { _DateSubmited = value; }
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set {
+            set
+            {
                 if (value > 100)
                 {
                     _Grade = 100;

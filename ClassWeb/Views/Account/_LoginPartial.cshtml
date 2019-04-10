@@ -4,16 +4,17 @@
 @{
     ViewData["Title"] = "Login";
 }
-<p style="color:red">@TempData["UserAddError"]</p>
-<p style="color:Blue">@TempData["UserAddSuccess"]</p>
-<p style="color:Blue">@TempData["Message"]</p>
-<p style="color:Blue">@TempData["Error"]</p>
+
 <div class="row">
     <div class="col-md-6">
         <section>
             <form asp-controller="Account" asp-action="Login" method="post">
                 <h3 style="color:darkorange">Login to ClassWeb.</h3>
-                <p class="text-danger">@TempData["PermissionError"]</p>
+                <hr/>
+                <p class="alert-warning">@TempData["UserAddError"]</p>
+                <p class="alert-success">@TempData["UserAddSuccess"]</p>
+                <p class="alert-info">@TempData["Message"]</p>
+                <p class="alert-danger">@TempData["Error"]</p>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
