@@ -63,7 +63,8 @@ namespace ClassWeb.Controllers
                 string url = "";
                 string s = Directory.GetCurrentDirectory();
                 string UserName = HttpContext.Session.GetString("username");
-                if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
+                string path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", UserName);
+                if (s ==path )
                 {
                     url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
                 }

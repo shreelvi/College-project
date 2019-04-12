@@ -67,8 +67,6 @@ namespace ClassWeb.Models
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
 
-
-
         #endregion
 
         #region public Properites

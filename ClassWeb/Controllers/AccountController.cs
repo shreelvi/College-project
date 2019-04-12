@@ -66,39 +66,9 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Dashboard", "Account");
         }
         [AllowAnonymous]
-        //public ActionResult ConfirmEmail(string username, string token )
-        //{
-        //    //string UserToken = DAL.GetUserToken(username);
-        //    if (UserToken == token)
-        //    {
-        //        ViewBag.Success = "Successfully verified email.";
-        //    }
-        //    return View("login");
-        //}
         #endregion
 
-        #region Login
-        /// <summary>
-        /// Code By: Elvis
-        /// Date Created: 03/09/2019
-        /// Reference: Prof. PeerVal Project, GitHub
-        /// Taken code and modified return view and view data
-        /// Modified on: 03/16/2019
-        /// --Added view data as URI for the files directory
-        /// User can access their directory from the dashboard
-        /// </summary>
-        public ActionResult Login(string returnUrl)
-        {
-            var s = TempData["UserAddSuccess"];
-            var e = TempData["UserAddError"];
-
-
-            if (s != null)
-                ViewData["UserAddSuccess"] = s;
-            else if (e != null)
-                ViewData["UserAddError"] = e;
-            return RedirectToAction("index", "Home");
-        }
+        #region Edit Account
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -158,7 +128,38 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Dashboard", "Account");
         }
+        #endregion
 
+        #region Login
+        /// <summary>
+        /// Code By: Elvis
+        /// Date Created: 03/09/2019
+        /// Reference: Prof. PeerVal Project, GitHub
+        /// Taken code and modified return view and view data
+        /// Modified on: 03/16/2019
+        /// --Added view data as URI for the files directory
+        /// User can access their directory from the dashboard
+        /// </summary>
+        public ActionResult Login(string returnUrl)
+        {
+            return RedirectToAction("index", "Home");
+        }
+        public ActionResult Profile()
+        {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            int id = 0;
+            if (uid != null)
+            {
+               
+            User U = DAL.UserGetByID(uid);
+            return View(U);
+            }
+            else
+            {
+                return RedirectToAction("index", "Home");
+            }
+
+        }
         /// <summary>
         /// Created on: 03/07/2019
         /// Created By: Elvis
@@ -198,6 +199,7 @@ namespace ClassWeb.Controllers
         {
             return View();
         }
+        #region Password Reset
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ResetPassword(int? id, [Bind("FirstName,LastName,UserName,Password,ID")] User user)
@@ -274,27 +276,18 @@ namespace ClassWeb.Controllers
             }
             return View();
         }
-
+        #endregion
         public ActionResult Dashboard()
         {
-            //Display Permission check message that is passed from Assignment index
-            if (UserCan<User>(PermissionSet.Permissions.View))
+            int? id = (int)HttpContext.Session.GetInt32("UserID");
+            if (id != null)
             {
-                var s = TempData["PermissionError"];
-                if (s != null)
-                    ViewData["PermissionErr"] = s;
-
-                int id = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
-
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-                return View();
+            return View();
             }
             else
             {
-                TempData["PermissionError"] = "Not Enough Permission";
-                return RedirectToAction("Login", "Account");
+                TempData["Message"] = "User not Loggedin";
+                return RedirectToAction("index", "Home");
             }
 
         }
