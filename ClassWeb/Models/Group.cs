@@ -32,6 +32,7 @@ namespace ClassWeb.Models
         private string _Password;
         private string _Salt;
         private string _DirectoryPath;
+        private string _ResetCode; 
         private List<Assignment> _Assignments; 
         private int _AssignmentID;
         #endregion
@@ -42,6 +43,7 @@ namespace ClassWeb.Models
         internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
+        internal const string db_ResetCode = "ResetCode";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
         internal const string db_Assignments = "Assignments";
@@ -76,7 +78,11 @@ namespace ClassWeb.Models
             }
             set { _Password = value.Trim(); }
         }
-
+        public string ResetCode
+        {
+            get { return _ResetCode; }
+            set { _ResetCode = value; }
+        }
         public string Salt
         {
             get { return _Salt; }
@@ -144,6 +150,7 @@ namespace ClassWeb.Models
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
+            _ResetCode = dr.GetString(db_ResetCode);
             _Salt = dr.GetString(db_Salt);
           //  _AssignmentID = dr.GetInt32(db_AssignmentID);
 

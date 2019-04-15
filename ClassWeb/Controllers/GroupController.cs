@@ -13,9 +13,6 @@ using ClassWeb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using System.IO;
-using ClassWeb;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace ClassWeb.Controllers
 {
@@ -60,25 +57,32 @@ namespace ClassWeb.Controllers
         [Route("account/SendEmail")]
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
-            await _emailService.SendEmail(email, subject, message);
-            TempData["Message"] = "Email Successfully Sent!!";
+           Task t = _emailService.SendEmail(email, subject, message);
+            if (t.IsCompleted)
+            {
+                TempData["Message"] = "Email Successfully Sent!!";
+            }
+            else
+            {
+                TempData["Message"] = "Email cannot be Succesfully Send!!";
+            }
             return RedirectToAction("Dashboard","Group");
         }
-        [AllowAnonymous]
+        
         #endregion
         //Access the data from the database
 
 
         public ActionResult LoginGroup(string returnUrl)
         {
-            // ViewBag.ReturnUrl = returnUrl;
+            //ViewBag.ReturnUrl = returnUrl;
             //return View();
             var s = TempData["GroupAddSuccess"];
             var e = TempData["GroupAddError"];
 
 
             if (s != null)
-                ViewData["GrouprAddSuccess"] = s;
+                ViewData["GroupAddSuccess"] = s;
             else if (e != null)
                 ViewData["GroupAddError"] = e;
 
@@ -91,22 +95,24 @@ namespace ClassWeb.Controllers
         public ActionResult LoginGroup(String userName, String passWord)
         {
             
-            Group grouploggedIn = DAL.GetGroup(userName, passWord);
-            CurrentGroup = grouploggedIn;
-            if (grouploggedIn != null)
+            Group GroupLoggedIn = DAL.GetGroup(userName, passWord);
+            CurrentGroup = GroupLoggedIn;
+            if (GroupLoggedIn != null)
             {
-                Tools.SessionHelper.Set(HttpContext, "CurrentGroup", grouploggedIn); //Sets the Session for the CurrentGroup object
+                Tools.SessionHelper.Set(HttpContext, "CurrentGroup", GroupLoggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
-                HttpContext.Session.SetInt32("ID", grouploggedIn.ID); //Sets userid in the session
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
+                HttpContext.Session.SetInt32("ID", GroupLoggedIn.ID); //Sets userid in the session
+              //  HttpContext.Session.SetString("UserRole",(grouploggedIn.))
+                //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
+                //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
             }
             else
             {
-                ViewBag.Error = "Invalid Username and/or Password";
+                TempData["Error"] = "Invalid Username and/or Password";
                 ViewBag.Group = userName;
-                return View();
+                //return View();
+                return RedirectToAction("LoginGroup", "Group");
             }
         }
         public ActionResult Dashboard()
@@ -136,11 +142,11 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
-            //SetGroupFolder(NewGroup);
+            SetGroupFolder(NewGroup);
             // NewGroup.ID = 0;
             int check = 0; 
-             check =  DAL.CheckGroupExists(NewGroup.UserName);
-            if (check < 0)
+             //check =  DAL.CheckGroupExists(NewGroup.UserName);
+            if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
@@ -167,14 +173,40 @@ namespace ClassWeb.Controllers
             return RedirectToAction("LoginGroup", "Group");
         }
 
-        //[AllowAnonymous]
-        //public ActionResult AddUserToGroup(string returnUrl)
-        //{
-        //    ViewBag.ReturnUrl = returnUrl;
-        //    return View();
-        //}
+        [AllowAnonymous]
+        public async Task<IActionResult> AddUserToGroup(User NewUser)
+        {
+            int check = DAL.CheckUserExistsInGroup(NewUser.ID);
+          if(check>0)
+            {
+                ViewBag.Error = "User already exists in a Group.";
+                return View();
+            }
+            else
+            {
+                try
+                {
+                    int UserAdd = DAL.AddUserToGroup(NewUser);
+                    if (UserAdd < 1)
+                    {
+                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again.";
+                    }
+                    else
+                    {
+                        TempData["UserAddSuccess"] = "User Added Successfully";
+                    }
+                }
+                catch
+                {
+                    TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+                }
+            }
+            return RedirectToAction("Dashboard", "Group");
 
-    
+
+        }
+
+
 
         /// <summary>
         /// Created on: 03/17/2019
@@ -186,8 +218,9 @@ namespace ClassWeb.Controllers
         /// </summary>
         private void SetGroupFolder(Group group)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\GroupDirectory\\";
-            group.DirectoryPath = dir_Path + group.UserName;
+            string dir_Path = _hostingEnvironment.WebRootPath;// + "\\GroupDirectory\\";
+            //group.DirectoryPath = dir_Path + group.UserName;
+            group.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", group.UserName);
             string path = group.DirectoryPath;
 
             if (!Directory.Exists(path))
@@ -204,53 +237,58 @@ namespace ClassWeb.Controllers
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
-        //    {
-        //        int? gid = HttpContext.Session.GetInt32("ID");
-        //        if (gid != null)
-        //        {
-        //            List<Group> group = null;
-        //            Group g = DAL.GroupGetByID(gid);
-        //            if (g == null)
-        //            {
-        //                return NotFound();
-        //            }
-        //            if (U.Role.IsAdmin)
-        //            {
-        //                users = DAL.UserGetAll();
-        //                users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
-        //                return View(users);
-        //            }
-        //            else
-        //            {
-        //                users.Add(U);
-        //                return View(users);
-        //            }
-        //        }
-
-        //        return View();
-        //    }
-        //    else
-        //    {
-        //        TempData["Message"] = "You Dont Have Enough Previlage to edit User";
-        //        return RedirectToAction("Dashboard", "Group");
-        //    }
-        //}
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-           
-            List<Group> g = DAL.GetAllGroups();
-            return View(g);
-        }
+            if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (uid != null)
+                {
+                    List<User> users = null;
+                    User U = DAL.UserGetByID(uid);
+                    if (U == null)
+                    {
+                        return NotFound();
+                    }
+                    if (U.Role.IsAdmin)
+                    {
+                        users = DAL.UserGetAll();
+                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
+                        return View(users);
+                    }
+                    else
+                    {
+                        users.Add(U);
+                        return View(users);
+                    }
+                }
 
+                return View();
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit Group";
+                return RedirectToAction("Dashboard", "Group");
+            }
+        }
+            
+    
 
         public async Task<IActionResult> DetailGroup(int? id)
         {
-            Group group = DAL.GroupGetByID(id);
-            return View(group);
-            
+            if (UserCan<User>(PermissionSet.Permissions.View))
+            {
+                User user = DAL.UserGetByID(id);
+                List<Role> Role = DAL.GetRoles();
+                Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user, Role);
+                return View(User);
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to view Group";
+                return RedirectToAction("Dashboard", "Group");
+            }
+
         }
 
         public IActionResult Create()
@@ -262,29 +300,37 @@ namespace ClassWeb.Controllers
 
         public async Task<IActionResult> EditGroup(int? id)
         {
-            int? gid = HttpContext.Session.GetInt32("GroupID");
-            if (gid != null)
+            if (UserCan<User>(PermissionSet.Permissions.Edit))
             {
-                id = gid;
+                int? gid = HttpContext.Session.GetInt32("GroupID");
+                if (gid != null)
+                {
+                    id = gid;
+                }
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var group = DAL.GroupGetByID(id);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                return View(group);
             }
-            if (id == null)
+            else
             {
-                return NotFound();
+                TempData["error"] = "You Don't Have Enough Previlage to edit Group";
+                return RedirectToAction("Dashboard", "Group");
             }
-            var group = DAL.GroupGetByID(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            return View(group);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGroup(int? id, [Bind("EmailAddress,Name,UserName,ID")] Group group)
         {
-
-            if (id != group.ID)
+           
+                if (id != group.ID)
             {
                 return NotFound();
             }
@@ -317,25 +363,117 @@ namespace ClassWeb.Controllers
 
                 }
             }
-            return RedirectToAction("Dashboard", "Group");
+                    return RedirectToAction("Dashboard", "Group");
+            }
+           
+        
+
+        #region resetpassword
+        public ActionResult ResetPasswordEmail()
+        {
+            return View();
         }
 
-
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(int? id, [Bind("Name,EmailAddress, Username,Password")] Group group)
         {
-            if (id == null)
+            if (group.ID == id)
             {
+                Group g = DAL.GroupGetByID(id);
+                g.Name = group.Name;
+                g.EmailAddress = group.EmailAddress;
+                g.Password = group.Password;
+                g.ResetCode = null;
+                int i = DAL.UpdateGroupPassword(g);
+                if (i > 0)
+                {
+                    TempData["Message"] = "Group password succesfully modified";
+                    return RedirectToAction("LoginGroup");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Message"] = "Input ID from System and Form doesnot match!";
                 return NotFound();
             }
 
-            Group g = DAL.GroupGetByID(id);
+        }
+        public ActionResult ResetPassword(string Code, string UserName, string Email)
+        {
+            Group g = DAL.GetGroup(UserName, Email );
             if (g == null)
             {
                 return NotFound();
             }
+            if (g.ResetCode == Code)
+            {
+                TempData["Message"] = "UserValidated";
+                return View(g);
+            }
+            else
+            {
+                if (Request.Headers["Referer"] != "" || !String.IsNullOrEmpty(Request.Headers["Referer"]))
+                {
+                    ViewData["Reffer"] = Request.Headers["Referer"].ToString();
+                }
+            }
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
+        {
+            Group g = DAL.GetGroup(UserName, EmailAddress);
+            if (g == null)
+            {
+                TempData["Message"] = "Not a valid credentials";
+                return View();
+            }
+            else
+            {
+                string resetCode = Guid.NewGuid().ToString();
+                string Subject = "Reset Password Classweb";
+                string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
+                     "<a href=simkkish.net/Group/ResetPassword?Code=" + resetCode + "&UserName=" + g.UserName + "&Email=" + g.EmailAddress + "> Reset Password </a>"
+                     + "<h3>ClasWeb Team</h3>";
+                Task t = SendEmailAsync(g.EmailAddress, Subject, Message);
+                if (t.IsCompleted)
+                {
+                    g.ResetCode = resetCode;
+                    int ret = DAL.UpdateGroup(g);
+                }
 
-            return View(g);
+            }
+            return View();
+        }
+        #endregion reset password
+        // GET: Users/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                Group g = DAL.GroupGetByID(id);
+                if (g == null)
+                {
+                    return NotFound();
+                }
+
+                return View(g);
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Group";
+                return RedirectToAction("Dashboard", "Group");
+            }
         }
 
         // POST: Users/Delete/5
@@ -343,12 +481,21 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            int test = DAL.DeleteGroupByID(id);
-            if (test > 0)
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
             {
-                ViewBag.Message = "Group Succesfully Deleted!!";
+                int test = DAL.DeleteGroupByID(id);
+                if (test > 0)
+                {
+                    ViewBag.Message = "Group Succesfully Deleted!!";
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Group";
+                return RedirectToAction("Dashboard", "Group");
+
+            }
         }
 
         public IActionResult Logout()
@@ -359,10 +506,19 @@ namespace ClassWeb.Controllers
         }
         private bool GroupExists(int id)
         {
-            List<Group> g = new List<Group>();
-            return g.Any(e => e.ID == id);
+            //List<Group> g = new List<Group>();
+            //return g.Any(e => e.ID == id);
+            Group g = DAL.GroupGetByID(id);
+            if (g == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-        
+
     }
 
     internal class HttpStatusCodeResult : ActionResult

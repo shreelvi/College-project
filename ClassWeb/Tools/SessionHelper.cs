@@ -55,5 +55,28 @@ namespace ClassWeb.Tools {
 
 
         }
+
+        internal static bool GroupLoggedIn
+        {
+            get
+            {
+                return Get(_context, "CurrentUser") != null;
+            }
+
+        }
+
+        internal static Group CurrentGroup
+        {
+            get
+            {
+                return (Group)Get(_context, "CurrentGroup");
+            }
+            set
+            {
+                Set(_context, "CurrentGroup", value);
+            }
+
+
+        }
     }
 }
