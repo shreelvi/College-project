@@ -33,8 +33,7 @@ namespace ClassWeb
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            services.AddDirectoryBrowser();
+            services.AddSpaStaticFiles();
 
             //Reference: PeerVal Project
             // Add the following to start using a session.
@@ -67,13 +66,20 @@ namespace ClassWeb
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            app.UseSession(); // requred to have sessions in our application.
-            app.UseStaticFiles();
+            app.UseSession();
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/AssignmentDirectory"))
+                   Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+            });// requred to have sessions in our application.
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","AssignmentDirectory")),
+                RequestPath= "/AssignmentDirectory"
             });
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

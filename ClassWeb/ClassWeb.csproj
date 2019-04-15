@@ -24,8 +24,4 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\AssignmentDirectory\Admin\" />
-  </ItemGroup>
 </Project>

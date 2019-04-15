@@ -27,7 +27,6 @@ namespace ClassWeb.Controllers
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.View))
             {
-                Tuple<List<Assignment>, List<string>> assignments = GetFiles();
                 int? ID = HttpContext.Session.GetInt32("UserID");
                 if (ID != null)
                 {
@@ -39,15 +38,12 @@ namespace ClassWeb.Controllers
 
                             ViewBag.Dir = "Home" + RootDir();
                         }
-
+                        CurrentDir();
+                        Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+                        return View(assignments);
                     }
-                            CurrentDir();
                 }
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-                return View(assignments);
+                return RedirectToAction("Login", "Account");
             }
             else
             {
@@ -62,20 +58,49 @@ namespace ClassWeb.Controllers
             {
                 string url = "";
                 string s = Directory.GetCurrentDirectory();
-                string UserName = HttpContext.Session.GetString("username");
-                string path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", UserName);
-                if (s ==path )
+                s = s.Replace("\\", "/");
+                int? id = HttpContext.Session.GetInt32("UserID");
+                if (id != null)
                 {
-                    url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
+                    string path;
+                    User U = DAL.UserGetByID(id);
+                    if (U.Role.IsAdmin == true)
+                    {
+                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory");
+                        if (s == path)
+                        {
+                            url = Url.RouteUrl("root", new { UserName = "AssignmentDirectory", FileName = FileName });
+                        }
+                        else
+                        {
+                            int Index = s.Replace("\\","/").IndexOf("AssignmentDirectory");
+                            Index += "AssignmentDirectory".Length;
+                            string dir = s.Substring(Index, s.Length - Index++);
+                            url = Url.RouteUrl("fileDirectory", new { UserName = "AssignmentDirectory", Directory = dir, FileName = FileName });
+                        }
+                    }
+                    else
+                    {
+                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName);
+                        if (s == path)
+                        {
+                            url = Url.RouteUrl("root", new { UserName = U.UserName, FileName = FileName });
+                        }
+                        else
+                        {
+                            int Index = s.IndexOf(U.UserName);
+                            Index += U.UserName.Length;
+                            string dir = s.Substring(Index, s.Length - Index);
+                            url = Url.RouteUrl("fileDirectory", new { UserName = U.UserName, Directory = dir, FileName = FileName });
+                        }
+                    }
+               
+                return new RedirectResult(url);
                 }
                 else
                 {
-                    int Index = s.IndexOf(UserName);
-                    Index += UserName.Length;
-                    string dir = s.Substring(Index, s.Length - Index);
-                    url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
+                    return NotFound();
                 }
-                return new RedirectResult(url);
             }
             else
             {
@@ -165,7 +190,7 @@ namespace ClassWeb.Controllers
                     User U = DAL.UserGetByID(ID);
                     if (U != null)
                     {
-                        if (path!=(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory","")))
+                        if (path != (Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", "")))
                         {
                             int test = path.LastIndexOf("\\");
                             string s = path.Substring(0, test);
@@ -285,24 +310,17 @@ namespace ClassWeb.Controllers
                     try
                     {
                         DirectoryInfo dir = new DirectoryInfo(file.FileName);
+                        int index = dir.Parent.ToString().IndexOf("AssignmentDirectory");
+                        string location = dir.Parent.ToString().Substring(index + 1);
                         Assignment a = new Assignment();
                         a.UserName = HttpContext.Session.GetString("username");
                         if (!Directory.Exists(dir.Parent.ToString()))
                         {
                             Directory.CreateDirectory(dir.Parent.ToString());
-                            string t = dir.Extension;
-                            bool IsReadable = false;
-                            if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
-                            t == "text/html" || t == "text/javascript" || t == "text/css")
-                            {
-                                IsReadable = true;
-                            }
-                            a.IsEditable = IsReadable;
                             a.FileSize = file.Length;
-                            a.FileLocation = RootDir() + file.FileName.ToString();
-                            //a.UserName = HttpContext.Session.GetString("username");
+                            a.FileLocation = file.FileName.ToString();
                             int lastindex = file.FileName.LastIndexOf('/');
-                            a.FileName = file.FileName.ToString().Substring(lastindex + 1);
+                            a.FileName = file.FileName.ToString().Substring(lastindex+1);
                             a.Grade = 0;
                             a.DateSubmited = DateTime.Now;
                             a.Feedback = "File Submitted";
@@ -326,7 +344,7 @@ namespace ClassWeb.Controllers
                         if (Directory.Exists(dir.Parent.ToString()))
                         {
                             //Directory.CreateDirectory(dir.Parent.ToString());
-                            Assignment db = DAL.GetAssignmentByFileName(dir.Name);
+                            Assignment db = DAL.GetAssignmentByNameLocationUserName(dir.Name,location,a.UserName);
                             if (db != null)
                             {
                                 db.Feedback = "File Re-Submitted";
@@ -352,8 +370,16 @@ namespace ClassWeb.Controllers
                                     a.Feedback = "File Submitted";
                                     a.DateModified = DateTime.Now;
                                     int test = DAL.AddAssignment(a);
+                                    if (test > 0)
+                                    {
                                     file.CopyToAsync(stream);
                                     ViewBag.Message = "File Succesfully Uploaded!!!";
+                                    }
+                                    else
+                                    {
+                                        DAL.DeleteAssignmentByID(test);
+                                        ViewBag.Message = "File Could not be uploaded Succesfully!!!";
+                                    }
                                 }
                             }
                             else
@@ -592,9 +618,13 @@ namespace ClassWeb.Controllers
                 User U = DAL.UserGetByID(ID);
                 if (U != null)
                 {
+                   
                     if (U.Role.IsAdmin == true)
                     {
-                        Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
+                        if (!Directory.GetCurrentDirectory().Contains(_hostingEnvironment.WebRootPath))
+                        {
+                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
+                        }
                     }
                     else
                     {
@@ -650,25 +680,45 @@ namespace ClassWeb.Controllers
 
         private Tuple<List<Assignment>, List<string>> GetFiles()
         {
-            string UserName = HttpContext.Session.GetString("username");
-            List<Assignment> all = DAL.GetAllAssignmentByUserName(UserName);
-            string filepath = Directory.GetCurrentDirectory();
-            var dir = new DirectoryInfo(filepath);
-            var dire = Directory.GetDirectories(filepath);
-            List<string> root = GetDirectory(dire, filepath);
-
-            FileInfo[] fileNames = dir.GetFiles();
-            List<Assignment> items = new List<Assignment>();
-            foreach (var file in fileNames)
+             List<Assignment> items = new List<Assignment>();
+            List<string> root;
+            int? id = HttpContext.Session.GetInt32("UserID");
+            if (id != null)
             {
-                Assignment assign = new Assignment();
-                assign.FileName = file.Name;
-                double filesize = (double)(file.Length / 1024);
-                assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
-                items.Add(assign);
+                User U = DAL.UserGetByID(id);
+                string filepath = Directory.GetCurrentDirectory();
+                var dir = new DirectoryInfo(filepath);
+                var dire = Directory.GetDirectories(filepath);
+                root = GetDirectory(dire, filepath);
+                FileInfo[] fileNames = dir.GetFiles();
+                foreach (var file in fileNames)
+                {
+                    string FileLocation;
+                    int index = 0;
+                    if (U.Role.IsAdmin)
+                    {
+                         index = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory").ToString().Length;
+                    }
+                    else
+                    {
+                        FileLocation = file.FullName.ToString();
+                        index = FileLocation.LastIndexOf(U.UserName);
+                    }                    
+                    string location = file.FullName.ToString().Substring(index+1).Replace("\\","/");
+                    Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name,location, U.UserName);
+                    if (assign != null)
+                    {
+                    items.Add(assign);
+                    }
+                }
             }
-            Assignment Assign = DAL.GetAllAssignment();
-            return Tuple.Create(items, root);
+            else
+            {
+                items = null;
+                root = null;
+            }
+                return Tuple.Create(items, root);
+            
         }
 
         private List<string> GetDirectory(string[] full, string root)

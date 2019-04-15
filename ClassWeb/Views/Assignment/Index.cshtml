@@ -6,14 +6,15 @@
         <div class="form-group row">
             <label for="FileUpload" class="col-form-label">Type of file:</label>
             <div class="col-sm-10">
-            <select id="FileUpload" class="form-control">
-                <option value="File" selected="selected">File Upload</option>
-                <option value="Folder">Folder Upload</option>
-                <option value="MultipleFile">Multiple File Upload</option>
-            </select>
+                <select id="FileUpload" class="form-control">
+                    <option value="File" selected="selected">File Upload</option>
+                    <option value="Folder">Folder Upload</option>
+                    <option value="MultipleFile">Multiple File Upload</option>
+                </select>
             </div>
         </div>
-        
+        <p class="text-danger">@TempData["Message"]</p>
+        <p class="text-danger">@TempData["Error"]</p>
         <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
             <div class="form-group inline-block">
                 <div class="input-group">
@@ -129,6 +130,7 @@
             @for (int i = 0; i <= Model.Item1.Count - 1; i++)
             {
                 <tr>
+                    <td>@Model.Item1[i].ID</td>
                     <td contenteditable='true' id="FileName">@Model.Item1[i].FileName<span hidden>@Html.ActionLink("Save", "Save", new { FileName = Model.Item1[i].FileName })</span></td>
                     <td>@Model.Item1[i].FileSize KB</td>
                     <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>

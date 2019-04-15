@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+@using ClassWeb.Models
+@model LoginModel
 <p style="color:red">@ViewData["LoginError"]</p>
-
 <div class="row">
     <div class="col-md-5">
         <h1 style="color:darkorange">Idaho State University, College of Business -- Class Web</h1><br />
@@ -18,12 +18,48 @@
             username: Admin; Pwd: test
         </p>
     </div>
-    <div style="float:right; width:600px">
-        @await Html.PartialAsync("../Account/_LoginPartial.cshtml")
+    <div class="col-md-6">
+        <section>
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <h3 style="color:darkorange">Login to ClassWeb.</h3>
+                <hr />
+                <p class="alert-warning">@TempData["UserAddError"]</p>
+                <p class="alert-success">@TempData["UserAddSuccess"]</p>
+                <p class="alert-info">@TempData["Message"]</p>
+                <p class="alert-danger">@TempData["Error"]</p>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe" />
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Log in</button>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <a asp-action="ResetPasswordEmail" asp-controller="Account" class="text-danger brea">Forget password?</a>
+                    </div>
+                    <div>
+                        </br>
+                    <a asp-controller="Account" asp-action="AddUser">Register as a new user</a>
+                    </div>
+                </div>
+            </form>
+        </section>
     </div>
 </div>
-
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
