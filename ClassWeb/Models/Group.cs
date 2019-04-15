@@ -150,7 +150,7 @@ namespace ClassWeb.Models
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _ResetCode = dr.GetString(db_ResetCode);
+           // _ResetCode = dr.GetString(db_ResetCode);
             _Salt = dr.GetString(db_Salt);
           //  _AssignmentID = dr.GetInt32(db_AssignmentID);
 
