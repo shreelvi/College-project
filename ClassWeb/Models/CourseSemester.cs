@@ -30,6 +30,9 @@ namespace ClassWeb.Models
         private int _SectionID;
         private int _UserID;
         private Course _Course;
+        private Semester _Semester;
+        private Year _Year;
+        private Section _Section;
         private User _User;
 
         #endregion
@@ -102,7 +105,7 @@ namespace ClassWeb.Models
 
 
         /// <summary>
-        /// Gets or sets the Course for this Section object.
+        /// Gets or sets the Course for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
@@ -132,7 +135,97 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the User for this Section object.
+        /// Gets or sets the User for this object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public Year Year
+        {
+            get
+            {
+                if (_Year == null)
+                {
+                    _Year = DAL.GetYear(_YearID);
+                }
+                return _Year;
+            }
+            set
+            {
+                _Year = value;
+                if (value == null)
+                {
+                    _YearID = -1;
+                }
+                else
+                {
+                    _YearID = value.ID;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Semester for this object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public Semester Semester
+        {
+            get
+            {
+                if (_Semester == null)
+                {
+                    _Semester = DAL.GetSemester(_SemesterID);
+                }
+                return _Semester;
+            }
+            set
+            {
+                _Semester = value;
+                if (value == null)
+                {
+                    _SemesterID = -1;
+                }
+                else
+                {
+                    _SemesterID = value.ID;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the User for this object.
+        /// Reference: Taken code from prof. Holmes Peerval Project
+        /// </summary>
+        /// <remarks></remarks>
+        [XmlIgnore]
+        public Section Section
+        {
+            get
+            {
+                if (_Section == null)
+                {
+                    _Section = DAL.GetSection(_SectionID);
+                }
+                return _Section;
+            }
+            set
+            {
+                _Section = value;
+                if (value == null)
+                {
+                    _SectionID = -1;
+                }
+                else
+                {
+                    _SectionID = value.ID;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the User for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>

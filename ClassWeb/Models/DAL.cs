@@ -269,26 +269,6 @@ namespace ClassWeb.Model
 
         #endregion
 
-        #region User
-        /// public static User AddUser( User obj)
-        /// {
-        //if (obj == null)
-        //    return -1;
-        //MySqlCommand comm = new MySqlCommand();
-        //try
-        //{
-        //    //sprocs here
-        //    comm.Parameters.AddWithValue("@" + DatabaseObject._ID, obj.ID);
-        //    return UpdateObject(comm);
-        //}
-        //catch(Exception ex)
-        //{
-        //    System.Diagnostics.Debug.WriteLine(ex.Message);
-        //}
-        //return -1;
-        ////}
-
-        #endregion
 
         #region Login
 
@@ -588,6 +568,7 @@ namespace ClassWeb.Model
 
         internal static int AddSection(Section obj)
         {
+
             if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_SectionAdd");
             try
@@ -670,9 +651,34 @@ namespace ClassWeb.Model
             return -1;
         }
 
+
+        /// <summary>
+        /// Attempts to add a database entry corresponding to the given Course
+        /// </summary>
+        /// <remarks></remarks>
+
+        internal static int AddCourse(Course obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CourseAdd");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+
+                return AddObject(comm, "@" + Course.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         internal static Course GetCourse(int courseID)
         {
-            MySqlCommand comm = new MySqlCommand("sproc_CourseGet");
+            MySqlCommand comm = new MySqlCommand("sproc_GetCourse");
             Course retObj = null;
             try
             {
@@ -690,6 +696,53 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retObj;
+        }
+
+        /// <summary>
+        /// Gets a list of all Sections objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Course> GetCourses()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+            List<Course> retList = new List<Course>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Course(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Section
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveCourse(int courseID)
+        {
+            if (courseID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandText = "sproc_CourseRemove";
+                comm.Parameters.AddWithValue("@" + Course.db_ID, courseID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
         internal static User GetUser(int userID)
@@ -716,10 +769,42 @@ namespace ClassWeb.Model
         #endregion
 
         #region CourseSemester
+
         /// <summary>
-        /// Gets the Classweb.CourseSemester corresponding with the given ID
+        /// Get list of all CourseSemesters CLassweb.objects from the database
+        /// Reference: Taken code from the peerval project
         /// </summary>
-        /// <remarks></remarks>
+        /// <returns></returns>
+        public static List<CourseSemester> GetCourseSemesters()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGetAll");
+            List<CourseSemester> retList = new List<CourseSemester>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new CourseSemester(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        //<summary>
+        //Created on: 04/09/2019
+        //Created by: Elvis
+        //CRUD methods for CourseSemester object in ClassWeb Database
+        //Reference: Prof. Holmes PeerVal Project
+        //Copied code for Roles CRUD and modified to use for the section
+        //</summary>
+
 
         public static CourseSemester GetCourseSemester(int id)
         {
@@ -793,7 +878,26 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
+		/// <summary>
+        /// Attempts to delete the database entry corresponding to the CourseSemester
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveCourseSemester(int CourseSemesterID)
+        {
+            if ( CourseSemesterID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandText = "sproc_CourseSemesterRemove";
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, CourseSemesterID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
 
         #endregion
 
@@ -823,6 +927,32 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retObj;
+        }
+
+        /// <summary>
+        /// Gets a list of all semester objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Semester> GetSemesters()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_SemesterGetAll");
+            List<Semester> retList = new List<Semester>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Semester(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
         }
 
         /// <summary>
@@ -920,6 +1050,32 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Gets a list of all semester objects from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Year> GetYears()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_YearGetAll");
+            List<Year> retList = new List<Year>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Year(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        /// <summary>
         /// Attempts to add a database entry corresponding to the given Year
         /// </summary>
         /// <remarks></remarks>
@@ -985,6 +1141,125 @@ namespace ClassWeb.Model
 
         #endregion
 
+        #region User
+        internal static int DeleteUserByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserDeleteByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+
+        internal static int UpdateUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_FirstName, obj.FirstName);
+                comm.Parameters.AddWithValue("@" + User.db_LastName, obj.LastName);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
+                //comm.Parameters.AddWithValue("@" + User.db_ResetCode, obj.ResetCode);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the User
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveUser(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserRemove");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        internal static User UserGetByID(int? id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByID");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static int UpdateUserRole(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserRoleUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        internal static int UpdateUserPassword(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserPasswordUpdate");
+            try
+            {
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+        #endregion
     }
 }
 

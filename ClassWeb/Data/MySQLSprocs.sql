@@ -80,11 +80,16 @@ IN Name nvarchar(45),
 IN IsAdmin bit(1),
 IN Users bit(4),
 IN Role bit(4),
-IN Assignment bit(4)
+IN Assignment bit(4),
+IN Course bit(4),
+IN Semester bit(4),
+IN Year bit(4),
+IN Section bit(4),
+IN CourseSemester bit(4)
 )
 BEGIN
-     INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment)
-               VALUES(Name,IsAdmin,Users,Role, Assignment);               
+     INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment, Course, Semester, Year, Section, CourseSemester)
+               VALUES(Name,IsAdmin,Users,Role, Assignment, Course, Semester, Year, Section, CourseSemester);               
      SET RoleID = LAST_INSERT_ID;
 END
 $$
@@ -100,7 +105,12 @@ IN Name nvarchar(45),
 IN IsAdmin bit(1),
 IN Users bit(4),
 IN Role bit(4),
-IN Assignment bit(4)
+IN Assignment bit(4),
+IN Course bit(4),
+IN Semester bit(4),
+IN Year bit(4),
+IN Section bit(4),
+IN CourseSemester bit(4)
 )
 BEGIN
      UPDATE Roles
@@ -272,7 +282,7 @@ $$
 -- Create date:	07 April 2019
 -- Description:	Get the specified course from the database.
 -- =============================================
-CREATE PROCEDURE sproc_CourseGet(
+CREATE PROCEDURE sproc_GetCourse(
 IN CourseID int
 )
 BEGIN
@@ -439,6 +449,24 @@ BEGIN
 END
 $$
 
+-- =============================================
+-- Author:		Elvis
+-- Create date:	09 April 2019
+-- Description:	Remove specific CourseSemester from the database.
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_CourseSemesterRemove(
+IN CourseSemesterID int
+)
+BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM CourseSemesters
+          WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
+
+     -- SELECT -1 if we had an error
+END
+$$
+
  -----------------Years---------------------------------
 
 
@@ -520,5 +548,21 @@ BEGIN
           WHERE years.YearID = YearID;
 
      -- SELECT -1 if we had an error
+END
+$$
+
+
+DELIMITER $$
+CREATE PROCEDURE sproc_CourseAdd(
+OUT CourseID int,
+IN CourseTitle varchar(45)
+IN CourseName varchar(45)
+IN CourseDescription varchar(128)
+
+)
+BEGIN
+     INSERT INTO courses(CourseTitle, CourseName, CourseDescription)
+               VALUES(CourseTitle, CourseName, CourseDescription);               
+     SET CourseID = LAST_INSERT_ID();
 END
 $$
