@@ -25,9 +25,7 @@ namespace ClassWeb.Controllers
         private IHostingEnvironment _hostingEnvironment;
 
         List<Course> Courses = new List<Course>();
-        private int ID;
-        private readonly string course;
-
+      
         public CoursesController(IHostingEnvironment hostingEnvironment)
         {
             
@@ -133,7 +131,7 @@ namespace ClassWeb.Controllers
                         return RedirectToAction(nameof(Index));
 
                     }
-                    return View(course);
+                    return View(NewCourse);
                 }
             }
             catch

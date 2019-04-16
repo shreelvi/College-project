@@ -80,6 +80,12 @@ namespace ClassWeb.Model
                 return 0;
             }
         }
+
+        internal static string GetUserToken(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
         /// </summary>

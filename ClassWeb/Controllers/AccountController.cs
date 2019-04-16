@@ -52,7 +52,7 @@ namespace ClassWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
-        public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
+        public IActionResult SendEmail(string email, string subject, string message)
         {
             Task t = _emailService.SendEmail(email, subject, message);
             if (t.IsCompleted)
@@ -100,7 +100,7 @@ namespace ClassWeb.Controllers
             return RedirectToAction("index", "Home");
         }
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             int? uid = HttpContext.Session.GetInt32("UserID");
             if (uid != null)
@@ -120,7 +120,7 @@ namespace ClassWeb.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
+        public IActionResult Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
         {
 
             if (id != user.ID)
@@ -151,7 +151,7 @@ namespace ClassWeb.Controllers
                     }
                     return RedirectToAction("Dashboard", "Account");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -260,12 +260,11 @@ namespace ClassWeb.Controllers
             else
             {
                 string resetCode = Guid.NewGuid().ToString();
-                string Subject = "Reset Password Classweb";
                 string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
                      "<a href=https://localhost:44373/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
                      + "<h3>ClasWeb Team</h3>";
-                Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
-                if (t.IsCompleted)
+               // Task t = SendEmail(u.EmailAddress, Subject, Message);
+               // if (t.IsCompleted)
                 {
                     u.ResetCode = resetCode;
                     int ret = DAL.UpdateUser(u);

@@ -104,7 +104,7 @@ namespace ClassWeb.Controllers
                         ViewBag.Message = "File Has Been Succefully Modified";
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //return ex;
                 }
