@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ClassWeb.Model;
 using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace ClassWeb.Models
 {
