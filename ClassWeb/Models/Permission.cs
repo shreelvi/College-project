@@ -12,7 +12,7 @@ namespace ClassWeb.Models
     /// A set of authorizations for each user. 
     /// Each permission can be assigned to one to many user roles.
     /// </summary>
-    public class Permission : DatabaseRecord
+    public class Permission: DatabaseRecord
     {
         #region Private Variables
         private string _Title;
