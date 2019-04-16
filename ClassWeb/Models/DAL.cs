@@ -327,7 +327,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
-       
+
         public static Assignment GetAllAssignment()
         {
 
@@ -354,22 +354,72 @@ namespace ClassWeb.Model
         {
             throw new NotImplementedException();
         }
-
-        internal static void UpdateAssignment(Assignment obj)
+        internal static Assignment GetAssignmentByNameLocationUserName(string name, string location, string userName)
         {
+            Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByNameLocationUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, name);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, location);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        
+        public static List<Assignment> GetAssignmentAllByFileName(string fileName)
+        {
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentAllGetByFileName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, fileName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+      
+        internal static int UpdateAssignment(Assignment obj)
+        {
+            if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, obj.ID);
-                UpdateObject(comm);
+                return UpdateObject(comm);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
+            return -1;
         }
+
 
         internal static int ResubmitAssignment(Assignment obj)
         {

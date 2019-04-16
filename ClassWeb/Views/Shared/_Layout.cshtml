@@ -58,6 +58,10 @@
                     {
                         <li><a asp-controller="Account" asp-action="Logout">Log Out</a></li>
                     }
+                    @if (Context.Session.Get("CurrentGroup") != null)
+                    {
+                        <li><a asp-controller="Group" asp-action="Logout">Log Out</a></li>
+                    }
                 </ul>
             </div>
         </div>

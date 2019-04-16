@@ -1,28 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard ";
+
 }
-@*<div style="float:right">
-        <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
-        <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
-
-        <br /><br />
-        <a style="color:darkblue; float: right" asp-controller="Group" asp-action="logout">Logout</a>
-        <a style="color:darkblue; float: right" asp-controller="Group" asp-action="EditGroup">Edit Profile <text>&nbsp;</text></a>
-    </div>
-
-    <div style="float:left">
-        <h2 style="color:darkorange">Group Dashboard</h2><br />
-        <p class="text-danger">@TempData["Message"]</p>
-        <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("Name")</h4><br />
-
-        <a style="color:blue">Add Users</a><br/><br/>
-        <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
-        <a style="color:blue" href="/Assignment/index" target="_blank">Classes Details</a><br /><br />
-        <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
-
-    </div>*@
-
 <div>
     <h3 style="color:darkorange;display:inline-block">Group Dashboard</h3><br />
     <p class="text-danger">@TempData["Message"]</p>
@@ -33,3 +13,4 @@
     <a style="color:blue" href="/Class/index" target="_blank">Classes Details</a><br /><br />
     <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
 </div>
+
