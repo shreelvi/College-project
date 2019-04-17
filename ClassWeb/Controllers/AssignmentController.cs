@@ -1,220 +1,241 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
-using System.Text;
 using ClassWeb.Model;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace ClassWeb.Controllers
 {
-    public class AssignmentController : BaseController
+    public class AssignmentController : Controller
     {
-        #region Private Variables
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
-
-        //Access the data from the database
-        private readonly ClassWebContext _context;
-        #endregion
-
-        #region Constructor
-        public AssignmentController(IHostingEnvironment hostingEnvironment, ClassWebContext context)
+        List<Assignment> Assignments = new List<Assignment>();
+        public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            _context = context;
         }
-        #endregion
-
-        #region Index
-        //Form to upload files
         // GET: Assignments
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            string UserName = HttpContext.Session.GetString("UserName");
+            if (UserName == null)
             {
-                List<Assignment> UserAssignments = new List<Assignment>();
-                int userID = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
-                UserAssignments = DAL.GetUserAssignments(userID);
-                if (UserAssignments == null)
-                {
-                    TempData["AssignmentAddError"] = "Database error when getting assignment";
-                }
-                else
-                {
-                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
-                }
-
-                return View(UserAssignments);
+                return RedirectToAction("Home", "Index");
+            }
+            CurrentDir(UserName);
+            //string Current =// Directory.GetCurrentDirectory().Split(UserName);
+            //ViewBag.Location = //;
+            Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+            ViewBag.Dir = RootDir();
+            return View(assignments);
+        }
+        //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
+        public RedirectResult FileView(string FileName)
+        {
+            string url = "";
+            string s = Directory.GetCurrentDirectory();
+            string UserName = HttpContext.Session.GetString("UserName");
+            if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
+            {
+                url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
             }
             else
             {
-                TempData["PermissionError"] = "You don't have permission to view the page.";
-                return RedirectToAction("Dashboard", "Account");
+                int Index = s.IndexOf(UserName);
+                Index += UserName.Length;
+                string dir = s.Substring(Index, s.Length - Index);
+                url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
             }
-
+            return new RedirectResult(url);
         }
-        #endregion
-
-        #region File Details
-        // GET: Assignments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public string RootDir()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var assignment = await _context.Assignment
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (assignment == null)
-            {
-                return NotFound();
-            }
-
-            return View(assignment);
+            string _UserName = HttpContext.Session.GetString("UserName");
+            int index = Directory.GetCurrentDirectory().IndexOf(_UserName) + _UserName.Length;
+            return ("Home" + Directory.GetCurrentDirectory().Substring(index));
         }
-        #endregion
-
-        #region Upload Files
-        /// <summary>
-        /// Post method to Upload files
-        /// Date Created: 03/16/2019
-        /// Created by: Elvis
-        /// Reference: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-2.2
-        /// Code taken from the reference
-        /// Date Modified: 03/17/2019
-        /// Uploads one or more files to user's specific directory 
-        /// By getting username from the session
-        /// Modiefied: Update MySql Database table assignment on user upload
-        /// </summary>
-
-        [HttpPost("Assignment")]
-        public async Task<IActionResult> Index(List<IFormFile> files)
+        public IActionResult SetDefaultDir()
         {
-            //LoginModel user = Tools.SessionHelper.Get(HttpContext, "CurrentUser");
-            List<Assignment> UserAssignments = new List<Assignment>();
-            int userID = (int)HttpContext.Session.GetInt32("UserID");
+            string _UserName = HttpContext.Session.GetString("UserName");
+            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, _UserName));
+            return RedirectToAction(nameof(Index));
+        }
 
-            //Gets username from the session to create files in the user's default directory
-            string username = HttpContext.Session.GetString("username");
-            long size = files.Sum(f => f.Length);
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
-
-            foreach (var formFile in files)
+        public IActionResult ChangeDirUp(string dir)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult ChangeDirDown()
+        {
+            string path = Directory.GetCurrentDirectory();
+            int test = path.LastIndexOf("\\");
+            string s = path.Substring(0, test);
+            Directory.SetCurrentDirectory(s);
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult Close()
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult SaveEditedFile(string Content, string FileName)
+        {
+            if (Content != null && Content.Length > 0)
             {
-                //Ensure file names
-                string fileName = formFile.FileName; //ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
-                fileName = this.EnsureFilename(fileName, username); //Ensure Filename before storing to the DB
-                string path = dir_Path + fileName;
 
-                if (formFile.Length > 0)
+                string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
+
+                try
                 {
-                    path = dir_Path + fileName;
-                    using (var stream = new FileStream(path, FileMode.Create)) //Uploads the file in the path
+                    if (System.IO.File.Exists(path))
                     {
-                        await formFile.CopyToAsync(stream);
+                        using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                        {
+                            fileStream.SetLength(0);
+                            fileStream.Close();
+                        }
+                        StreamWriter sw = new StreamWriter(path);
+                        sw.Write(Content);
+                        sw.Close();
+                        ViewBag.Message = "File Has Been Succefully Modified";
                     }
+                }
+                catch (Exception ex)
+                {
+                    //return ex;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        //<summary>
+        //Post method to save the file
+        //Reference: https://www.youtube.com/watch?v=Xd00fildkiY&t=285s
+        //</summary>
+        [HttpPost]
+        public async Task<IActionResult> Index(List<IFormFile> file)
+        {
+            //Save files in the directory
+            try
+            {
+                string _UserName = HttpContext.Session.GetString("username");
+                string dir_Path = CurrentDir(_UserName);
+                CreateFolderDirectory(file);
+                var items = GetFiles();
+                return View(items);
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().ToString() == "System.NullReferenceException")
+                {
+                    ViewBag.Error = "Please Select The File To Upload";
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
-                    HandleHTMLFileEdit(path);
-
-                    //Add the assignment metadata in the database 
-                    Assignment assignment = new Assignment();
-                    assignment.Name = fileName;
-                    assignment.Feedback = "Not Graded";
-                    assignment.UserID = userID; 
-
-                    int AssignmentAdd = DAL.AddAssignment(assignment);
-                    if (AssignmentAdd == -1)
+        private void CreateFolderDirectory(List<IFormFile> files)
+        {
+            List<Assignment> assign = new List<Assignment>();
+            foreach (IFormFile file in files)
+            {
+                DirectoryInfo dir = new DirectoryInfo(file.FileName);
+                Assignment a = new Assignment();
+                a.UserName = HttpContext.Session.GetString("username");
+                if (!Directory.Exists(dir.Parent.ToString()))
+                {
+                    Directory.CreateDirectory(dir.Parent.ToString());
+                    string t = dir.Extension;
+                    bool IsReadable = false;
+                    if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+              t == "text/html" || t == "text/javascript" || t == "text/css")
                     {
-                        TempData["AssignmentAddError"] = "Database error when adding assignment";
+                        IsReadable = true;
+                    }
+                    a.IsEditable = false;
+                    a.FileSize = file.Length;
+                    a.FileLocation = file.FileName.ToString();
+                    a.UserName= HttpContext.Session.GetString("username");
+                    int lastindex = file.Name.LastIndexOf("/");
+                    a.FileName = file.FileName.ToString().Substring(lastindex);
+                    a.Grade = 0;
+                    a.DateSubmited = DateTime.Now;
+                    a.Feedback = "File Submitted";
+                    a.DateModified = DateTime.Now;
+                    int test = DAL.AddAssignment(a);
+                    //checking and validating the insert info into table
+                    if (test > 0)
+                    {
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
+                        }
                     }
                     else
                     {
-                        UserAssignments = DAL.GetUserAssignments(userID); //Gets the assignment list from database to update the view
-                        ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username + "//";
-                        ViewData["Success"] = "File Succesfully Uploaded and database updated!";
+                     TempData["Message"] = "File Upload Failed!!!";
                     }
+                    assign.Add(a);
+                }
+                if (Directory.Exists(dir.Parent.ToString()))
+                {
+
+                    //Directory.CreateDirectory(dir.Parent.ToString());
+                    Assignment db = DAL.GetAssignmentByFileName(dir.Name);
+                    if (db != null)
+                    {
+                    db.Feedback = "File Re-Submitted";
+                    db.DateModified = DateTime.Now;
+                        DAL.UpdateAssignment(a);
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Re-Uploaded!!!";
+                        }
+                    }
+                    else if(db==null)
+                    {
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            a.IsEditable = false;
+                            a.FileSize = file.Length;
+                            a.FileLocation = dir.FullName;
+                            a.FileName = file.FileName.ToString();
+                            a.Grade = 0;
+                            a.DateSubmited = DateTime.Now;
+                            a.UserName = HttpContext.Session.GetString("username");
+                            a.Feedback = "File Submitted";
+                            a.DateModified = DateTime.Now;
+                            int test = DAL.AddAssignment(a);
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
+                        }
+                    }
+                    else
+                    {
+                        TempData["Message"] = "File Upload Failed!!!";
+                    }
+                    assign.Add(a);
                 }
             }
-            return View(UserAssignments);
-            //return RedirectToAction("Index");
+            SetDefaultDir();
         }
-
-        /// <summary>
-        /// Replaces HTML file that contains <script> tag
-        /// Edit view was having issue displaying file with 
-        /// JS scripts
-        /// </summary>
-        private void HandleHTMLFileEdit(string path)
+        public async Task<FileResult> Download(string FileName)
         {
-            string type = GetContentType(path);
-
-            if(type == "text/html")
-            {
-                string text = System.IO.File.ReadAllText(path);
-                text = text.Replace("script", "sc");
-
-                System.IO.File.WriteAllText(path, text);
-
-            }
-
-        }
-
-        //<summary>
-        //Verify the file Name
-        //to remove '\\' from the file name
-        //And change the filename with index.html to username
-        //</summary>
-        private string EnsureFilename(string fileName, string user)
-        {
-            //Replace index.html with other name 
-            //as it opens the index file when browsing its directory
-            Random rnd = new Random();
-            int n = 0;
-            n = rnd.Next(20);
-
-            if (fileName.Contains("\\"))
-            {
-                fileName = fileName.Substring(fileName.LastIndexOf("\\") + 1);
-            }
-            else if(fileName == "index.html")
-            {
-                fileName = user + n + ".html";
-            }
-
-            return fileName;
-        }
-
-        //<summary>
-        //Get the Path of the File
-        //</summary>
-        private string GetPath(string fileName)
-        {
-            string path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            return path + fileName;
-        }
-
-        #endregion
-
-        #region File Download
-        public async Task<FileResult> Download(string Name)
-        {
-            string username = HttpContext.Session.GetString("username");
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
-            var FileVirtualPath = dir_Path + Name;
+            string dir_Path = Directory.GetCurrentDirectory();
+            var FileVirtualPath = Path.Combine(dir_Path, FileName);
             var memory = new MemoryStream();
             using (var stream = new FileStream(FileVirtualPath, FileMode.Open))
             {
@@ -222,7 +243,176 @@ namespace ClassWeb.Controllers
             }
             memory.Position = 0;
             return File(memory, GetContentType(FileVirtualPath), Path.GetFileName(FileVirtualPath));
-            // return File(FileVirtualPath, "application/force-download", Path.GetFileName(FileVirtualPath));
+        }
+        public IActionResult CreateFolder(string folderName)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    ViewBag.Message = "Folder Succesfully Created";
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
+
+                }
+
+            }
+            else
+            {
+                ViewBag.Message = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        #region Delete Assignement
+        [HttpPost]
+        public IActionResult DeleteFile(string FileName)
+        {
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FileName);
+            if (System.IO.File.Exists(path))
+            {
+                try
+                {
+                    Assignment assign = DAL.GetAssignmentByFileName(FileName);
+
+                    if (assign == null)
+                    {
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
+                    }
+                    if (assign.FileName == FileName && path == assign.FileLocation)
+                    {
+                        DAL.DeleteAssignmentByID(assign.ID);
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // return ex.Message;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult DeleteFolder(string FolderName)
+        {
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FolderName);
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    string UserName = HttpContext.Session.GetString("username");
+                    DAL.GetAllAssignmentByUserName(UserName);
+                    var dire = Directory.GetDirectories(path);
+                    List<string> root = GetDirectory(dire, path);
+                    foreach(string s in root)
+                    {
+                        string newpath= Path.Combine(path, s);
+                        var dirs = Directory.GetDirectories(newpath);
+                        List<string> roots = GetDirectory(dirs, newpath);
+                        //while()
+                        if (System.IO.File.Exists(newpath))
+                        {
+                            var dir = new DirectoryInfo(newpath);
+                            FileInfo[] files = dir.GetFiles();
+                            foreach (FileInfo file in files)
+                            {
+                                Assignment assign = DAL.GetAssignmentByFileName(FolderName);
+                                if (assign == null)
+                                {
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
+                                }
+                                if (assign.FileName == FolderName && path == assign.FileLocation)
+                                {
+                                    DAL.DeleteAssignmentByID(assign.ID);
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
+                                }
+                            }
+                        }
+                    }                  
+                    Directory.Delete(path);
+                    TempData["Message"] = "Folder sucessfully deleted Succesfully Deleted!!!";
+                }            
+            }
+            catch
+            {
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+        #region Edit Assignment
+        public IActionResult Edit(string FileName)
+        {
+            string dir_Path = Directory.GetCurrentDirectory();
+            string _UserName = HttpContext.Session.GetString("username");
+            string path = Path.Combine(dir_Path, FileName);
+            WebClient User = new WebClient();
+            Byte[] FileBuffer = User.DownloadData(path);
+            string fileBase64Data = Convert.ToBase64String(FileBuffer);
+            string t = GetContentType(path);
+            bool IsReadable = false;
+            if (t == "application/vnd.ms-word")
+            {
+                //Download the file
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName, _UserName)));
+            }
+            else
+
+            if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+                t == "text/html" || t == "text/javascript" || t == "text/css")
+            {
+                //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
+                byte[] b = Convert.FromBase64String(fileBase64Data);
+                string decodedString = Encoding.UTF8.GetString(b);
+                IsReadable = true;
+                ViewBag.Data = decodedString;
+            }
+            else
+            {
+                string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
+                ViewBag.Data = DataURL;
+            }
+            ViewBag.Readable = IsReadable;
+            ViewBag.FileName = FileName;
+            return View();
+        }
+        // POST: Assignments/Delete/5
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id)
+        {
+            ViewBag.Message = "On Progress";
+            return View();
+        }
+        #endregion
+
+        #region Custom Function
+        public string CurrentDir(string UserName)
+        {
+            if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath, UserName)))
+            {
+                Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, UserName));
+            }
+            return Directory.GetCurrentDirectory();
+        }
+        //<summary>
+        //Get the Path of the File
+        //</summary>
+        private string GetPath(string fileName, string _UserName)
+        {
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, _UserName);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path + fileName;
         }
 
         private string GetContentType(string path)
@@ -237,127 +427,58 @@ namespace ClassWeb.Controllers
         {
             return new Dictionary<string, string>
             {
-                {".txt", "text/plain"},
                 {".pdf", "application/pdf"},
                 {".doc", "application/vnd.ms-word"},
                 {".docx", "application/vnd.ms-word"},
+                {".txt", "text/plain"},
+                {".csv", "text/csv"},
+                {".html","text/html" },
+                {".js","text/javascript"},
+                {".css","text/css"},
                 {".png", "image/png"},
                 {".jpg", "image/jpeg"},
                 {".jpeg", "image/jpeg"},
                 {".gif", "image/gif"},
-                {".csv", "text/csv"},
-                {".html","text/html" },
-                {".js","text/javascript"},
-                { ".sql","text/sql"},
-                { ".css","text/css"},
                 {".mpeg","audio/mpeg"},
+                {".*",""}
             };
         }
-        #endregion
 
-        #region Delete Files
-        // GET: Assignments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private Tuple<List<Assignment>, List<string>> GetFiles()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            string UserName = HttpContext.Session.GetString("username");
+            List<Assignment> all=DAL.GetAllAssignmentByUserName(UserName);
+            string filepath = Directory.GetCurrentDirectory();
+            var dir = new DirectoryInfo(filepath);
+            var dire = Directory.GetDirectories(filepath);
+            List<string> root = GetDirectory(dire, filepath);
 
-            var assignment = await _context.Assignment
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (assignment == null)
+            FileInfo[] fileNames = dir.GetFiles();
+            List<Assignment> items = new List<Assignment>();
+            foreach (var file in fileNames)
             {
-                return NotFound();
+                Assignment assign = new Assignment();
+                assign.FileName = file.Name;
+                double filesize = (double)(file.Length / 1024);
+                assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
+                items.Add(assign);
             }
-
-            return View(assignment);
+            Assignment Assign = DAL.GetAllAssignment();
+            return Tuple.Create(items, root);
         }
 
-        // POST: Assignments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, string FileName)
+        private List<string> GetDirectory(string[] full, string root)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\Upload\\";
-            string path = dir_Path + FileName;
-            if (System.IO.File.Exists(path))
+            List<string> result = new List<string>();
+            foreach (string s in full)
             {
-                System.IO.File.Delete(path);
-                ViewBag.Message = "File Succesfully Deleted!!!";
+                int len = s.Length + 2 - root.Length;
+                string temp = s.Substring(root.Length + 1);
+                result.Add(temp);
             }
-
-            //Removes the assignment record from the database
-            var assignment = await _context.Assignment.FindAsync(id);
-            _context.Assignment.Remove(assignment);
-            await _context.SaveChangesAsync();
- 
-            return RedirectToAction(nameof(Index));
+            return result;
         }
-
-        private bool AssignmentExists(int id)
-        {
-            return _context.Assignment.Any(e => e.ID == id);
-        }
-        #endregion
-
-        #region View File
-        public async Task<IActionResult> View(string Name)
-        {
-            string username = HttpContext.Session.GetString("username");
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
-            string path = dir_Path + Name;
-
-            WebClient User = new WebClient();
-            Byte[] FileBuffer = User.DownloadData(path);
-            string fileBase64Data = Convert.ToBase64String(FileBuffer);
-            string t = GetContentType(path);
-            if (t == "application/vnd.ms-word")
-            {
-                //Download the file
-                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(Name)));
-            }
-            else
-            {
-                string imageDataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
-                ViewBag.ImageData = imageDataURL;
-            }
-            return View();
-        }
-
-        #endregion
-
-        public IActionResult CreateFolder()
-        {
-            return View();
-        }
-
-            public IActionResult CreateFolder1(string folderName)
-        {
-            string username = HttpContext.Session.GetString("username");
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\" + username + "\\";
-            string path = dir_Path + folderName;
-
-            if (!Directory.Exists(path))
-            {
-                try
-                {
-                    ViewBag.folder = "Folder Succesfully Created";
-                    Directory.CreateDirectory(path);
-                }
-                catch
-                {
-
-                }
-
-            }
-            else
-            {
-                ViewBag.folder = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
-            }
-            return View();
-        }
-
-
     }
+    #endregion
+
 }

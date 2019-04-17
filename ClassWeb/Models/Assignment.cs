@@ -1,57 +1,155 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Antiforgery.Internal;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Assignment:DatabaseNamedRecord
+    /// <summary>
+    /// Assignment class is used to add, update, and save objects
+    /// It also contains ID 
+    /// Reference: GitHub Prof. Holmes PeerVal Project
+    /// </summary>
+    public class Assignment : DatabaseRecord
     {
-        #region Constructors
-        /// <summary>
-        /// Code By Elvis
-        /// Constructor to map results of sql query to the class
-        /// Reference: GitHub PeerVal Project
-        /// </summary>
-        public Assignment()
-        {
-        }
-        internal Assignment(MySql.Data.MySqlClient.MySqlDataReader dr)
+        #region Database String
+        internal const string db_ID = "ID";
+        internal const string db_Location = "FileLocation";
+        internal const string db_FileName = "FileName";
+        internal const string db_DateStarted = "DateStarted";
+        internal const string db_DateDue = "DateDue";
+        internal const string db_DateSubmited = "DateSubmited";
+        internal const string db_Grade = "Grade";
+        internal const string db_Feedback = "Feedback";
+        internal const string db_FileSize = "FileSize";
+        internal const string db_IsEditable = "IsEditable";
+        internal const string db_DateModified = "DateModified";
+        internal const string db_UserName = "UserName";
+        #endregion
+        public Assignment(MySqlDataReader dr)
         {
             Fill(dr);
         }
-        #endregion
-        #region Private Variables
-        private string _Description;
-        private DateTime _DateDue;
-        private DateTime _DateSubmission;
-        private int _Grade;
-        private string _Feedback;
-        private DateTime _DateModified;
-        private int _Size;
-        private int _UserID;
-        private User _User;
-        #endregion
+        public Assignment()
+        {
+        }
+        public override void Fill(MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _FileName = dr.GetString(db_FileName);
+            _FileLocation = dr.GetString(db_Location);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            _DateSubmited = dr.GetDateTime(db_DateSubmited);
+            _Feedback = dr.GetString(db_Feedback);
+            _FileSize = dr.GetInt64(db_FileSize);
+            _Grade = dr.GetInt32(db_Grade);
+            _IsEditable = dr.GetBoolean(db_IsEditable);
+            _UserName = dr.GetString(db_UserName);
+        }
 
-        #region Database string
-        internal const string db_ID = "AssignmentID";
-        internal const string db_Name = "Name";
-        internal const string db_Description = "Description";
-        internal const string db_DateDue = "DateDue";
-        internal const string db_DateSubmission = "DateSubmission";
-        internal const string db_Grade = "Grade";
-        internal const string db_Feedback = "Feedback";
-        internal const string db_DateModified = "DateModified";
-        internal const string db_Size = "Size";
-        internal const string db_UserID= "UserID";
+        public override int dbSave()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int dbAdd()
+        {
+            throw new NotImplementedException();
+        }
+        #region Private Variable
+        protected DateTime _DateStarted;
+        protected DateTime _DateDue;
+        protected DateTime _DateSubmited;
+        protected int _Grade;
+        protected string _Feedback;
+        protected double _FileSize;
+        protected bool _IsEditable;
+        protected DateTime _DateModified;
+        protected string _FileName;
+        protected string _FileLocation;
+        protected string _UserName;
         #endregion
 
         #region Public Properties
-        public string Description
+        public string FileLocation
         {
-            get { return _Description; }
-            set { _Description = value; }
+            get
+            {
+                return _FileLocation;
+            }
+            set
+            {
+                _FileLocation = value;
+            }
+        }
+        public string UserName
+        {
+            get
+            {
+                return _UserName;
+            }
+            set
+            {
+                _UserName = value;
+            }
+        }
+        public string FileName
+        {
+            get
+            {
+                return _FileName;
+            }
+            set
+            {
+                _FileName = value;
+            }
+        }
+        public bool IsEditable
+        {
+            get
+            {
+                return _IsEditable;
+            }
+            set
+            {
+                _IsEditable = value;
+            }
+        }
+        public double FileSize
+        {
+            get
+            {
+                return _FileSize;
+            }
+            set
+            {
+                _FileSize = value;
+            }
+        }
+        public DateTime DateStarted
+        {
+            get { return _DateStarted; }
+            set { _DateStarted = value; }
+        }
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
         }
 
         [Display(Name = "Date Due")]
@@ -60,11 +158,11 @@ namespace ClassWeb.Models
             get { return _DateDue; }
             set { _DateDue = value; }
         }
-        [Display(Name = "Date Submitted")]
-        public DateTime DateSubmission
+        [Display(Name = "Date Submited")]
+        public DateTime DateSubmited
         {
-            get { return _DateSubmission; }
-            set { _DateSubmission = value; }
+            get { return _DateSubmited; }
+            set { _DateSubmited = value; }
         }
 
         public int Grade
@@ -89,71 +187,6 @@ namespace ClassWeb.Models
             get { return _Feedback; }
             set { _Feedback = value; }
         }
-
-        public DateTime DateModified
-        {
-            get { return _DateModified; }
-            set { _DateModified = value; }
-        }
-
-        public User User
-        {
-            get { return _User; }
-            set { _User = value; }
-        }
-        public int UserID
-        {
-            get { return _UserID; }
-            set { _UserID = value; }
-        }
-        public int Size
-        {
-            get { return _Size; }
-            set { _Size = value; }
-        }
         #endregion
-
-        #region Public Functions
-
-        public override int dbSave()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override int dbAdd()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override int dbUpdate()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        #region Public Subs
-        /// <summary>
-        /// Fills object from a MySqlClient Data Reader
-        /// </summary>
-        /// <remarks></remarks>
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-        {
-            _ID = dr.GetInt32(db_ID);
-            _Name = dr.GetString(db_Name);
-            //_Description = dr.GetString(db_Description);
-            //_DateDue = dr.GetDateTime(db_DateDue);
-            _DateSubmission = dr.GetDateTime(db_DateSubmission);
-            //_Grade = dr.GetChar(db_Grade);
-            _Feedback = dr.GetString(db_Feedback);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            //_Size = dr.GetInt32(db_Size);
-            _UserID = dr.GetInt32(db_UserID);        }
-        #endregion
-
-
-        public override string ToString()
-        {
-            return this.GetType().ToString();
-        }
     }
 }

@@ -1,10 +1,5 @@
-﻿using ClassWeb.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
@@ -41,14 +36,13 @@ namespace ClassWeb.Models
         private bool _IsEmailConfirmed = false;
         private string _EmailToken;
         private DateTime _DateCreated;
-        private int _RoleID;
         private string _Salt;
         private string _DirectoryPath;
 
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -56,10 +50,7 @@ namespace ClassWeb.Models
         internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
-        internal const string db_EmailToken = "EmailToken";
-        internal const string db_IsEmailConfirmed = "IsEmailConfirmed";
         internal const string db_DateCreated = "DateCreated";
-        internal const string db_RoleID = "RoleID";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
 
@@ -141,23 +132,6 @@ namespace ClassWeb.Models
             get { return _Salt; }
             set { _Salt = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the RoleID for this PeerVal.User object.
-        /// </summary>
-        /// <remarks></remarks>
-        public int RoleID
-        {
-            get
-            {
-                return _RoleID;
-            }
-            set
-            {
-                _RoleID = value;
-            }
-        }
-
         public string DirectoryPath
         {
             get { return _DirectoryPath; }
@@ -167,6 +141,7 @@ namespace ClassWeb.Models
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; }
+     
 
         #endregion
 
@@ -205,8 +180,6 @@ namespace ClassWeb.Models
             _Password = dr.GetString(db_Password);
             //_DateCreated = dr.GetDateTime(db_DateCreated);
             _Salt = dr.GetString(db_Salt);
-            _RoleID = dr.GetInt32(db_RoleID);
-            _DirectoryPath = dr.GetString(db_DirectoryPath);
         }
         #endregion
 
