@@ -1,0 +1,35 @@
+﻿
+@model IEnumerable<ClassWeb.Models.Semester>
+@*@model List<ClassWeb.Models.Course>*@
+
+@{
+    var semesters = (List<Semester>)ViewBag.Semesters; // Cast the list
+}
+<h3 style="color:cadetblue"> Semester Info:</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>ID</p>
+            </th>
+            <th>
+                <p>Title</p>
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in semesters) // Print the list
+        {
+            <tr>
+                <td>
+                    @s.ID
+                </td>
+                <td>
+                    @s.Name
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

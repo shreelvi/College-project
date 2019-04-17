@@ -13,7 +13,7 @@ namespace ClassWeb.Models
  /// Each role user can have one to multiple permissions. 
  /// </summary>
 
-    public class Role:DatabaseNamedRecord
+    public class Role:DatabaseRecord
     {
         #region Constructors
         public Role()
@@ -26,23 +26,116 @@ namespace ClassWeb.Models
 
         #endregion
 
+        #region Database String
+        internal const string db_ID = "RoleID";
+        internal const string db_Name = "Name";
+        internal const string db_IsAdmin = "IsAdmin";
+        internal const string db_Users = "Users";
+        internal const string db_Role = "Role";
+        internal const string db_Assignment = "Assignment";
+        #endregion
+
         #region Private Variables
-        private string _Description;
+        private string _Name;
+        private bool _IsAdmin;
+        private PermissionSet _Users;
+        private PermissionSet _Role;
+        private PermissionSet _Assignment;
         #endregion
 
         #region public Properites
-        public string Description
+        /// <summary>
+        /// Gets or sets the Name for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        /// 
+        [Required]
+        public string Name
         {
-            get { return _Description; }
-            set { _Description = value; }
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value.Trim();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the IsAdmin for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        
+        [Required]
+        public bool IsAdmin
+        {
+            get
+            {
+                return _IsAdmin;
+            }
+            set
+            {
+                _IsAdmin = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Users for this PeerVal.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        
+        [Required]
+        [Display(Name = "Users Permissionset")]
+        public PermissionSet Users
+        {
+            get
+            {
+                return _Users;
+            }
+            set
+            {
+                _Users = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Role for this Classweb.Role object.
+        /// </summary>
+        /// <remarks></remarks>
+        [Required]
+        [Display(Name = "Roles Permissionset")]
+        public PermissionSet Roles
+        {
+            get
+            {
+                return _Role;
+            }
+            set
+            {
+                _Role = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Evaluation for this Classweb.Role object.
+        /// </summary>
+        [Required]
+        [Display(Name = "Assignment Permissionset")]
+        public PermissionSet Assignment
+        {
+            get
+            {
+                return _Assignment;
+            }
+            set
+            {
+                _Assignment = value;
+            }
         }
         #endregion
 
-        #region Database String
-        internal const string db_ID = "ID";
-        internal const string db_Name = "Name";
-        internal const string db_Description = "Description";
-        #endregion
+        
 
         #region Public Functions
 
@@ -67,7 +160,7 @@ namespace ClassWeb.Models
         }
 
         #endregion
-
+        
         #region Public Subs
         /// <summary>
         /// Fills object from a MySqlClient Data Reader
@@ -77,7 +170,10 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _Name = dr.GetString(db_Name);
-            _Description = dr.GetString(db_Description);
+            _IsAdmin = dr.GetBoolean(db_IsAdmin);
+            _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
+            _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
+            _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
         }
         #endregion
     }
