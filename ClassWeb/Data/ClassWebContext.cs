@@ -21,5 +21,12 @@ namespace ClassWeb.Data
         public DbSet<ClassWeb.Models.Assignment> Assignment { get; set; }
         public DbSet<ClassWeb.Models.LoginModel> LoginModel { get; set; }
         public DbSet<ClassWeb.Models.User> User { get; set; }
+        public DbSet<ClassWeb.Models.Course> Course { get; set; }
+        public DbSet<ClassWeb.Models.Semester> Semester { get; set; }
+        public DbSet<ClassWeb.Models.CourseSemester> CourseSemester { get; set; }
+        public DbSet<ClassWeb.Models.Section> Section { get; set; }
+        public DbSet<ClassWeb.Models.Year> Year { get; set; }
+
+
     }
 }
