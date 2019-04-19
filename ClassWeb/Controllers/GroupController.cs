@@ -117,16 +117,23 @@ namespace ClassWeb.Controllers
         }
         public ActionResult Dashboard()
         {
-            int id = (int)HttpContext.Session.GetInt32("ID");
-            string username = HttpContext.Session.GetString("UserName");
+            if (CurrentGroup != null)
+            {
+                int id = (int)HttpContext.Session.GetInt32("ID");
+                string username = HttpContext.Session.GetString("UserName");
 
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
+                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
+                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
 
-            List<Assignment> GroupAssignments = new List<Assignment>();
-            // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+                List<Assignment> GroupAssignments = new List<Assignment>();
+                // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
 
-            return View(GroupAssignments);
+                return View(GroupAssignments);
+            }
+            else
+            {
+                return RedirectToAction("LoginGroup");
+            }
         }
 
         // GET: Group/AddGroup
@@ -143,10 +150,13 @@ namespace ClassWeb.Controllers
         public ActionResult AddGroup(Group NewGroup)
         {
             SetGroupFolder(NewGroup);
+           // int i = NewGroup.Nub;
+           // int check1 = DAL.CheckUserExists(NewGroup.EmailAddress); 
             // NewGroup.ID = 0;
-            int check = 0; 
-             //check =  DAL.CheckGroupExists(NewGroup.UserName);
-            if (check > 0)
+            int check =  
+              DAL.CheckGroupExists(NewGroup.UserName);
+
+            if (check == 1)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
@@ -162,6 +172,8 @@ namespace ClassWeb.Controllers
                     else
                     {
                         TempData["GroupAddSuccess"] = "Group added successfully";
+                        NewGroup.ID = GroupAdd;
+                        return RedirectToAction("AddUserToGroup"); //redirect ro currently logged in group
                     }
                     
                 }
@@ -170,44 +182,44 @@ namespace ClassWeb.Controllers
                     TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("LoginGroup", "Group");
+            return RedirectToAction("AddGroup", "Group");
         }
-
+        // GET: Group/AddUserToGroup
         [AllowAnonymous]
-        public async Task<IActionResult> AddUserToGroup(User NewUser)
+        public ActionResult AddUserToGroup(string returnUrl)
         {
-            int check = DAL.CheckUserExistsInGroup(NewUser.ID);
-          if(check>0)
-            {
-                ViewBag.Error = "User already exists in a Group.";
-                return View();
-            }
-            else
-            {
-                try
-                {
-                    int UserAdd = DAL.AddUserToGroup(NewUser);
-                    if (UserAdd < 1)
-                    {
-                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again.";
-                    }
-                    else
-                    {
-                        TempData["UserAddSuccess"] = "User Added Successfully";
-                    }
-                }
-                catch
-                {
-                    TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
-                }
-            }
-            return RedirectToAction("Dashboard", "Group");
-
-
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public ActionResult AddUserToGroup(User[] usersToAdd) //View should send email ids of multiple users
+        {
 
+            //foreach loop to go into each users in array and get their id with email and add the id to current group
+            //if success return t group dashboard
+            //else return to adduser to group view
+            //foreach (User user in usersToAdd)
+            //{
+            //    user.ID = DAL.GetUserByEmail(user.EmailAddress);
+            //    if (user.ID < 1)
+            //    {
+            //        //user doesn't exist
+            //        TempData["GroupAddError"] = "Sorry, One or more user not found";
+            //        return RedirectToAction("AddUserToGroup");
+            //    }
+            //    else
+            //    {
+            //        DAL.AddUserToGroup(user,CurrentGroup);
+            //        return RedirectToAction("Dashboard");
+            //    }
+            //}
 
+            return View();
+
+        }
         /// <summary>
         /// Created on: 03/17/2019
         /// Created by: Elvis

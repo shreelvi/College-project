@@ -734,10 +734,24 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static int CheckUserExists(string userName)
+        internal static int CheckUserExists(string username)
         {
-            throw new NotImplementedException();
+            if (username == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, username);
+                int dr = GetIntReader(comm);
+
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
+
 
 
         #endregion
@@ -1054,7 +1068,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+               // comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
@@ -1111,9 +1125,10 @@ namespace ClassWeb.Model
         /// <remarks></remarks>
         internal static int CheckGroupExists(string username)
         {
-
-            MySqlCommand comm = new MySqlCommand("CheckUserName_Group");
             if (username == null)
+                return -1; 
+            MySqlCommand comm = new MySqlCommand("CheckGroupUsernameExists");
+           
                 try
                 {
                     comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
@@ -1124,6 +1139,7 @@ namespace ClassWeb.Model
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.Message);
+                    
                 }
             return -1;
         }
@@ -1146,7 +1162,24 @@ namespace ClassWeb.Model
                 }
             return -1;
         }
+        
 
+             internal static int CheckUserExistsByEmailAddress(string emailAddress)
+        {
+
+            MySqlCommand comm = new MySqlCommand("CheckUserExistsByEmailAddress");
+            if (emailAddress == null)
+                try
+                {
+                   
+
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            return -1;
+        }
         internal static int RemoveUserFromGroup(Group obj)
         {
             if (obj == null)

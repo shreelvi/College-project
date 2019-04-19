@@ -31,9 +31,11 @@ namespace ClassWeb.Models
         #endregion
 
         #region private variable
-        private string _EmailAddress;
+       
         private string _UserName;
         private string _Password;
+        private string _FirstName;
+        private string _LastName; 
         private string _Salt;
         private string _ConfirmPassword;
         private bool _IsEmailConfirmed = false;
@@ -45,7 +47,9 @@ namespace ClassWeb.Models
         #region Database String
         internal const string db_ID = "ID";
         internal const string db_Name = "Name";
-        internal const string db_EmailAddress = "EmailAddress";
+        internal const string db_FirstName = "FirstName";
+        internal const string db_LastName = "LastName";
+     //   internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
@@ -56,12 +60,16 @@ namespace ClassWeb.Models
         #region public Properites
         [Required]
         
-        public string EmailAddress
-        {
-            get { return _EmailAddress; }
-            set { _EmailAddress = value; }
+     
+
+        public string FirstName        {
+            get { return _FirstName; }
+            set { _FirstName = value; }
         }
-        
+        public string LastName        {
+            get { return _LastName; }
+            set { _LastName = value; }
+        }
         [Required]
         public string UserName
         {
@@ -141,10 +149,12 @@ namespace ClassWeb.Models
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _EmailAddress = dr.GetString(db_EmailAddress);
+           // _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
+            _FirstName = dr.GetString(db_FirstName);
+            _LastName = dr.GetString(db_LastName);
         }
         #endregion
 

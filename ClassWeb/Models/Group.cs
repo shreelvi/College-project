@@ -41,7 +41,7 @@ namespace ClassWeb.Models
         internal const string db_ID = "ID";
         internal const string db_Name = "Name";
         internal const string db_EmailAddress = "EmailAddress";
-        internal const string db_UserName = "UserName";
+        internal const string db_UserName = "Username";
         internal const string db_Password = "Password";
         internal const string db_ResetCode = "ResetCode";
         internal const string db_Salt = "Salt";
@@ -51,13 +51,8 @@ namespace ClassWeb.Models
 
         #endregion
         #region Public Variables
-        [Display(Name = "Group's Email-address",
-            Description = "Email-address used to contact the group; which all members will have access.")]
-        public string EmailAddress
-        {
-            get { return _EmailAddress; }
-            set { _EmailAddress = value; }
-        }
+       
+       
 
         [Display(Name = "Group's Login Username",
             Description = "Username to login to group's account profile.")]

@@ -1,4 +1,5 @@
-﻿@model ClassWeb.Models.Group
+﻿@using ClassWeb.Models
+@model GroupLoginModel
 
 
 @{
@@ -14,14 +15,15 @@
     <div class="col-md-4">
         <form asp-action="AddUserToGroup">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EmailAddress" class="control-label"></label>
-                <input asp-for="EmailAddress" class="form-control" multiple/>
-                <span asp-validation-for="EmailAddress" class="text-danger"></span>
-            </div>
-         
+            <div>
+                <label for="Users">Number of users:</label>
+                <input name="Users" type="number" id="numberOfStudents" />
 
-            <input type="hidden" asp-for="ID" />
+            </div>
+            <div id="DynamicEmail">
+
+            </div>
+            @*<input type="hidden" asp-for="ID" />*@
 
 
             <div class="form-group">
