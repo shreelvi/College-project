@@ -311,7 +311,7 @@ namespace ClassWeb.Controllers
                     {
                         DirectoryInfo dir = new DirectoryInfo(file.FileName);
                         int index = dir.Parent.ToString().IndexOf("AssignmentDirectory");
-                        string location = dir.Parent.ToString().Substring(index + 1);
+                        string location = dir.Parent.ToString().Substring(index + "AssignmentDirectory".Length);
                         Assignment a = new Assignment();
                         a.UserName = HttpContext.Session.GetString("username");
                         if (!Directory.Exists(dir.Parent.ToString()))
@@ -362,7 +362,7 @@ namespace ClassWeb.Controllers
                                 {
                                     a.IsEditable = false;
                                     a.FileSize = file.Length;
-                                    a.FileLocation = RootDir() + file.FileName.ToString();
+                                    a.FileLocation =Path.Combine(RootDir() ,file.FileName.ToString().Replace("\\", "/"));
                                     a.FileName = file.FileName.ToString();
                                     a.Grade = 0;
                                     a.DateSubmited = DateTime.Now;
@@ -459,17 +459,22 @@ namespace ClassWeb.Controllers
                 {
                     try
                     {
-                        Assignment assign = DAL.GetAssignmentByFileName(FileName);
+                        string location = Path.Combine(RootDir(),FileName).Replace("\\", "/");
+                        Assignment assign = DAL.GetAssignmentByNameLocationUserName(FileName,location, HttpContext.Session.GetString("username"));
                         if (assign == null)
                         {
                             System.IO.File.Delete(path);
                             ViewBag.Message = "File Succesfully Deleted!!!";
                         }
-                        if (assign.FileName == FileName && path == assign.FileLocation)
+                        else if(assign.FileName == FileName)
                         {
                             DAL.DeleteAssignmentByID(assign.ID);
                             System.IO.File.Delete(path);
                             ViewBag.Message = "File Succesfully Deleted!!!";
+                        }
+                        else
+                        {
+                            ViewBag.Message = "Error Deleteting file!!!";
                         }
                     }
                     catch (Exception ex)
@@ -704,7 +709,7 @@ namespace ClassWeb.Controllers
                         FileLocation = file.FullName.ToString();
                         index = FileLocation.LastIndexOf(U.UserName);
                     }                    
-                    string location = file.FullName.ToString().Substring(index+1).Replace("\\","/");
+                    string location =Path.Combine(file.FullName.ToString().Substring(index));
                     Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name,location, U.UserName);
                     if (assign != null)
                     {
