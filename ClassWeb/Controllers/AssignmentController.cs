@@ -66,7 +66,7 @@ namespace ClassWeb.Controllers
                     User U = DAL.UserGetByID(id);
                     if (U.Role.IsAdmin == true)
                     {
-                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory");
+                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory").Replace("\\", "/");
                         if (s == path)
                         {
                             url = Url.RouteUrl("root", new { UserName = "AssignmentDirectory", FileName = FileName });
