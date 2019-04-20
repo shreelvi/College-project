@@ -92,7 +92,7 @@ namespace ClassWeb.Controllers
         {
             
             Group grouploggedIn = DAL.GetGroup(userName, passWord);
-            CurrentGroup = grouploggedIn;
+            //CurrentGroup = grouploggedIn;
             if (grouploggedIn != null)
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", grouploggedIn); //Sets the Session for the CurrentGroup object
