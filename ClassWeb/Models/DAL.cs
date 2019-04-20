@@ -466,6 +466,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, obj.ID);
                 return UpdateObject(comm);
             }
@@ -586,6 +587,29 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retList;
+        }
+
+        internal static List<Assignment> GetAllAssignmentByUserNameAndLocation(string userName, string folderName)
+        {
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetAllByUserNameAndLocation");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, folderName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
         }
 
         /// <summary>
