@@ -144,7 +144,7 @@ namespace ClassWeb.Controllers
                 users[i] = NewGroup.Users[i].EmailAddress;
                 retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
 
-                if (retInt == 0)
+                if (retInt > 0)
                 {
                     ViewBag.UserAddError = "User" + i + " is not registered in ClassWeb!";
                     return View();
