@@ -180,9 +180,9 @@ namespace ClassWeb.Controllers
                     return View();
                 }
             }
-
+            return RedirectToAction("LoginGroup");
             //Add users to the group
-            DAL.AddUserToGroup(retInt, NewGroup.ID);
+            //DAL.AddUserToGroup(retInt, NewGroup.ID);
 
 
         }

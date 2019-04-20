@@ -32,7 +32,7 @@ namespace ClassWeb.Models
         private string _Password;
         private string _Salt;
         private string _DirectoryPath;
-        private List<Assignment> _Assignments; 
+        private List<Assignment> _Assignments;
         private int _AssignmentID;
         private List<User> _Users;
         #endregion
@@ -111,7 +111,7 @@ namespace ClassWeb.Models
 
         public override int dbSave()
         {
-          if(_ID < 0)
+            if (_ID < 0)
             {
                 return dbAdd();
 
@@ -126,13 +126,13 @@ namespace ClassWeb.Models
         {
             _ID = DAL.AddGroup(this);
             return ID;
-           
+
         }
 
         protected override int dbUpdate()
         {
             return DAL.UpdateGroup(this);
-            
+
         }
         public int dbRemoveUserFromGroup()
         {
@@ -152,7 +152,7 @@ namespace ClassWeb.Models
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
-          //  _AssignmentID = dr.GetInt32(db_AssignmentID);
+            //  _AssignmentID = dr.GetInt32(db_AssignmentID);
 
         }
         #endregion

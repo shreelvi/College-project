@@ -70,7 +70,7 @@ namespace ClassWeb.Models
             {
                 if (_Group == null)
                 {
-                    _Group = DAL.GetGroup(_GroupID);
+                    //_Group = DAL.GetGroup(_GroupID);
                 }
                 return _Group;
             }

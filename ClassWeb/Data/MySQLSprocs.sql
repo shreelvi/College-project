@@ -566,3 +566,19 @@ BEGIN
      SET CourseID = LAST_INSERT_ID();
 END
 $$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	20 April 2019
+-- Description:	Checks if user exist and return their ID 
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE `sproc_CheckUserByEmail`
+(IN `EmailAddress` VARCHAR(128))
+BEGIN
+    SET @User_id = 0;
+    SELECT Users.UserID INTO @User_id
+    FROM `Users`
+    WHERE Users.`EmailAddress` = `EmailAddress`;
+    SELECT @User_id;
+END $$
