@@ -582,3 +582,22 @@ BEGIN
     WHERE Users.`EmailAddress` = `EmailAddress`;
     SELECT @User_id;
 END $$
+
+ -----------------Group---------------------------------
+-- Create date:	20 April 2019
+-- Copied code from Sakshi branch to work on adding users to group
+-------------------------------------------------------------
+
+CREATE PROCEDURE `add_Group` 
+(IN `g_Name` VARCHAR(50), 
+IN `g_EmailAddress` VARCHAR(50), 
+IN `g_UserName` VARCHAR(50), 
+IN `g_Password` CHAR(128), 
+IN `g_Salt` CHAR(128), 
+OUT `g_ID` INT)  
+BEGIN 
+INSERT INTO groups(Name, EmailAddress, Username, Password, Salt) values (g_Name, g_EmailAddress, g_UserName,g_Password, g_Salt); 
+SET g_ID = LAST_INSERT_ID();
+END$$
+
+

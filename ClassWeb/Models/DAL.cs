@@ -103,7 +103,7 @@ namespace ClassWeb.Model
         /// <param name="parameterName"></param>
         /// <returns></returns>
         internal static int AddObject(MySqlCommand comm, string parameterName)
-        {
+         {
             int retInt = 0;
             try
             {
@@ -1404,7 +1404,7 @@ namespace ClassWeb.Model
         internal static int AddGroup(Group obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("add_Group");
+            MySqlCommand comm = new MySqlCommand("Sproc_AddGroup");
             try
             {
                 // generate new password first.
@@ -1413,12 +1413,13 @@ namespace ClassWeb.Model
                 obj.Password = newPass;
                 // now set object to Database.
 
-                comm.Parameters.AddWithValue("g_" + Group.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("g_" + Group.db_EmailAddress, obj.EmailAddress);
-                comm.Parameters.AddWithValue("g_" + Group.db_UserName, obj.UserName);
-                comm.Parameters.AddWithValue("g_" + Group.db_Password, obj.Password);
-                comm.Parameters.AddWithValue("g_" + Group.db_Salt, obj.Salt);
-                return AddObject(comm, "g_ID");
+                comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
+                comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
+                comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
+                return AddObject(comm, "@" + Group.db_ID);
+
             }
             catch (Exception ex)
             {

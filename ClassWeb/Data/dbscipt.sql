@@ -157,3 +157,18 @@ CREATE TABLE `Semsters` (
 
   INSERT INTO `semesters`(`SemesterID`, `SemesterName`) VALUES (1,'Fall')
 INSERT INTO `semesters`(`SemesterID`, `SemesterName`) VALUES (2,'Spring')
+
+-- -----------------Group------------------------------
+-- Copied from Sakshi branch --- 
+-- ======================================================
+CREATE TABLE `groups` (
+  `ID` int(11) NOT NULL,
+  `Name` varchar(30) DEFAULT NULL,
+  `EmailAddress` varchar(64) DEFAULT NULL,
+  `Username` varchar(128) DEFAULT NULL,
+  `Password` varchar(64) DEFAULT NULL,
+  `ResetCode` varchar(128) DEFAULT NULL,
+  `Salt` char(128) DEFAULT NULL,
+  `DirectoryPath` varchar(264) DEFAULT NULL,
+  `AssignmentID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
