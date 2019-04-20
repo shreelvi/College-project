@@ -136,11 +136,26 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
+            //Verifies if users is registered before adding them and registering the group
+            int retInt = 0;
+            string[] users = new string[6];
+            for (int i = 0; i < 4; i++)
+            {
+                users[i] = NewGroup.Users[i].EmailAddress;
+                retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
+
+                if (retInt == 0)
+                {
+                    ViewBag.UserAddError = "User" + i + " is not registered in ClassWeb!";
+                    return View();
+                }
+            }
+
+            //Checks the groupname is unique and adds the group
             int check = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
             //SetGroupFolder(NewGroup);
 
-            //Checks the groupname is unique and adds the group
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -166,20 +181,7 @@ namespace ClassWeb.Controllers
                 }
             }
 
-            //Verifies if users is registered before adding them
-            int retInt = 0;
-            List<string> users = new List<string>();
-            for (int i = 0; i < 4; i++)
-            {
-                users[i] = NewGroup.Users[i].EmailAddress;
-                retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
-
-                if (retInt == 0)
-                {
-                    ViewBag.UserAddError = "User" + i + "is not registered in ClassWeb!";
-                    return View();
-                }
-            }
+            
             return RedirectToAction("LoginGroup");
             //Add users to the group
             //DAL.AddUserToGroup(retInt, NewGroup.ID);
