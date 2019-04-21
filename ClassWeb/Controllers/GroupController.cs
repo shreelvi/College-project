@@ -198,7 +198,7 @@ namespace ClassWeb.Controllers
                 int UserID = DAL.CheckUserExistsByEmail(users[i]); //This method can also be used to get userID
                 if(UserID > 0)
                 {
-                    int addGroup = DAL.AddUserToGroup(UserID, GroupAdd); //Add the user to group.
+                    int addGroup = DAL.AddUserToGroup(GroupAdd, UserID); //Add the user to group.
 
                 }
             }          
@@ -242,7 +242,7 @@ namespace ClassWeb.Controllers
                 int UserID = DAL.CheckUserExistsByEmail(emails[i]); //This method can also be used to get userID
                 if (UserID > 0)
                 {
-                    int addGroup = DAL.AddUserToGroup(UserID, groupid); //Add the user to group.
+                    int addGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
                 }
             }
             TempData["UserGroupAddSuccess"] = "Succesfully added users.";
