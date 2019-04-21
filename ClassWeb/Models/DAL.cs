@@ -1478,7 +1478,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
             try
             {
-                comm.Parameters.AddWithValue("@" + Group.db_ID, GroupID);
+                comm.Parameters.AddWithValue("@" + "GroupID", GroupID);
                 comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
 
                 return AddObject(comm, "@" + GroupUser.db_ID);

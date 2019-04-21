@@ -189,7 +189,10 @@ namespace ClassWeb.Controllers
             for (int i = 0; i < 4; i++)
             {
                 int UserID = DAL.CheckUserExistsByEmail(users[i]); //This method can also be used to get userID
-                int addGroup = DAL.AddUserToGroup(UserID, GroupAdd);
+                if(UserID > 0)
+                {
+                    int addGroup = DAL.AddUserToGroup(UserID, GroupAdd);
+                }
             }
             
             return RedirectToAction("LoginGroup");
