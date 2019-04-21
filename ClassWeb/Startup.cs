@@ -45,7 +45,7 @@ namespace ClassWeb
             // Add the following to start using a session.
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
             services.AddSession(sessOptions => {
-                sessOptions.IdleTimeout = TimeSpan.FromSeconds(1000); // short time for testing. 
+                sessOptions.IdleTimeout = TimeSpan.FromMinutes(10); // short time for testing. 
                 //TimeSpan.FromMinutes(20) // default 20 minutes.
                 sessOptions.Cookie.HttpOnly = true;
             });

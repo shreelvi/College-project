@@ -136,25 +136,24 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(Group NewGroup)
         {
-            //Verifies if users is registered before adding them and registering the group
+            //Verifies if user is registered before adding them and registering the group
             int retInt = 0;
-            string[] users = new string[6];
-            for (int i = 0; i < 4; i++)
+            string[] users = new string[6]; //Array to hold emails from input field
+            for (int i = 0; i < 4; i++) //Verfies each email 
             {
                 users[i] = NewGroup.Users[i].EmailAddress;
-                //string chk = users[i];
                 retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
 
-                if (retInt <= 0)
+                if (retInt <= 0) 
                 {
-                    if (users[i] != null) {
+                    if (users[i] != null) { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                         return View();
                     }                                 
                 }
             }
 
-            //Checks the groupname is unique and adds the group
+            //Checks if the groupname is unique and adds the group
             int check = 0;
             int GroupAdd = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
@@ -169,7 +168,7 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after insert
+                    GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after adding the group
                     // DAL.AddGroup(NewGroup);
                     if (GroupAdd < 1)
                     { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
@@ -185,23 +184,19 @@ namespace ClassWeb.Controllers
                 }
             }
 
-            //Finally after registering group we can add users to it
+            //Finally after registering the group, we can add users to it
             for (int i = 0; i < 4; i++)
             {
                 int UserID = DAL.CheckUserExistsByEmail(users[i]); //This method can also be used to get userID
                 if(UserID > 0)
                 {
-                    int addGroup = DAL.AddUserToGroup(UserID, GroupAdd);
+                    int addGroup = DAL.AddUserToGroup(UserID, GroupAdd); //Add the user to group.
                 }
-            }
-            
+            }          
             return RedirectToAction("LoginGroup");
-            //Add users to the group
-            //DAL.AddUserToGroup(retInt, NewGroup.ID);
-
-
         }
-           
+
+ 
         
 
         //[AllowAnonymous]

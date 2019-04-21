@@ -209,7 +209,8 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            SetUserFolder(NewUser); //Sets the default user directory 
+            string userPath = SetUserFolder(NewUser); //Sets the default user directory 
+            NewUser.DirectoryPath = userPath;
             int check = DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
@@ -247,7 +248,7 @@ namespace ClassWeb.Controllers
         /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
         /// Used the references to understand and develop the feature in our website
         /// </summary>
-        private void SetUserFolder(User user)
+        private string SetUserFolder(User user)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
             user.DirectoryPath = dir_Path + user.UserName;
@@ -255,6 +256,7 @@ namespace ClassWeb.Controllers
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+            return path;
         }
         #endregion
 

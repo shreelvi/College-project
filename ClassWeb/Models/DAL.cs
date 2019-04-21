@@ -23,8 +23,8 @@ namespace ClassWeb.Model
         //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
 
         //Database information for the hosting website db
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -120,6 +120,11 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
             return retInt;
+        }
+
+        internal static List<User> GetGroupUsers(int iD)
+        {
+            throw new NotImplementedException();
         }
 
         internal static int RemoveRole(Role role)
@@ -553,7 +558,7 @@ namespace ClassWeb.Model
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            MySqlCommand comm = new MySqlCommand("sproc_AddUser");
             try
             {
                 // generate new password first.
@@ -569,6 +574,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
                 //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                comm.Parameters.AddWithValue("@" + User.db_DirectoryPath, obj.DirectoryPath);
                 return AddObject(comm, "@" + User.db_ID);
             }
             catch (Exception ex)

@@ -118,7 +118,7 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Evaluation for this Classweb.Role object.
+        /// Gets or sets the Assignment for this Classweb.Role object.
         /// </summary>
         [Required]
         [Display(Name = "Assignment Permissionset")]

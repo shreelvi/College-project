@@ -101,7 +101,14 @@ namespace ClassWeb.Models
         }
         public List<User> Users
         {
-            get { return _Users; }
+            get
+            {
+                if (_Users == null)
+                {
+                    _Users = DAL.GetGroupUsers(_ID);
+                }
+                return _Users;
+            }
             set { _Users = value; }
         }
 
