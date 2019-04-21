@@ -19,12 +19,12 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
 
         //Database information for the hosting website db
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -1472,16 +1472,16 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static int AddUserToGroup(Group obj)
+        internal static int AddUserToGroup(int GroupID, int UserID)
         {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("add_UserToGroup");
+            if (GroupID == 0 || UserID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
             try
             {
+                comm.Parameters.AddWithValue("@" + Group.db_ID, GroupID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
 
-                comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
-
-                return AddObject(comm, "@" + Group.db_EmailAddress);
+                return AddObject(comm, "@" + GroupUser.db_ID);
             }
             catch (Exception ex)
             {

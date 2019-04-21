@@ -605,3 +605,21 @@ CREATE PROCEDURE `get_GroupByUserName` (IN `username` VARCHAR(128))
 BEGIN 
 SELECT * from groups g where g.Username = username; 
 END$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	20 April 2019
+-- Description:	Add users to group by adding data to groupuser association
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_AddUserToGroup(
+OUT GroupUserID int,
+IN GroupID int(11),
+IN UserID INT(11)
+)
+BEGIN
+	INSERT INTO GroupsUsers(GroupID, UserID)
+    			VALUES (GroupID, UserID);
+    SET GroupUserID = LAST_INSERT_ID();
+END
+$$

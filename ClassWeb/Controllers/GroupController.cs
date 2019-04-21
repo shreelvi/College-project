@@ -78,7 +78,7 @@ namespace ClassWeb.Controllers
 
 
             if (s != null)
-                ViewData["GrouprAddSuccess"] = s;
+                ViewData["GroupAddSuccess"] = s;
             else if (e != null)
                 ViewData["GroupAddError"] = e;
 
@@ -142,18 +142,21 @@ namespace ClassWeb.Controllers
             for (int i = 0; i < 4; i++)
             {
                 users[i] = NewGroup.Users[i].EmailAddress;
-                string chk = users[i];
+                //string chk = users[i];
                 retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
 
                 if (retInt <= 0)
                 {
-                    ViewBag.UserAddError = "User" + (i+1) + " is not registered in ClassWeb!";
-                    return View();
+                    if (users[i] != null) {
+                        ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
+                        return View();
+                    }                                 
                 }
             }
 
             //Checks the groupname is unique and adds the group
             int check = 0;
+            int GroupAdd = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
             //SetGroupFolder(NewGroup);
 
@@ -166,7 +169,7 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    int GroupAdd = DAL.AddGroup(NewGroup);
+                    GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after insert
                     // DAL.AddGroup(NewGroup);
                     if (GroupAdd < 1)
                     { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
@@ -182,6 +185,12 @@ namespace ClassWeb.Controllers
                 }
             }
 
+            //Finally after registering group we can add users to it
+            for (int i = 0; i < 4; i++)
+            {
+                int UserID = DAL.CheckUserExistsByEmail(users[i]); //This method can also be used to get userID
+                int addGroup = DAL.AddUserToGroup(UserID, GroupAdd);
+            }
             
             return RedirectToAction("LoginGroup");
             //Add users to the group

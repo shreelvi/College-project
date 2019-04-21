@@ -159,6 +159,7 @@ CREATE TABLE `Semsters` (
 INSERT INTO `semesters`(`SemesterID`, `SemesterName`) VALUES (2,'Spring')
 
 -- -----------------Group------------------------------
+-- Description:	Create Groups table in the database
 -- Copied from Sakshi branch --- 
 -- ======================================================
 CREATE TABLE `groups` (
@@ -172,3 +173,20 @@ CREATE TABLE `groups` (
   `DirectoryPath` varchar(264) DEFAULT NULL,
   `AssignmentID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Author: Elvis
+-- Create date:	20 April 2019
+-- Description:	Create GroupsUsers association table in the database
+-- ======================================================
+CREATE TABLE `GroupsUsers` (
+  `GroupUserID` int(11) NOT NULL AUTO_INCREMENT,
+  `GroupID` int(11) NOT NULL DEFAULT 1,
+  `UserID` int(11) NOT NULL DEFAULT 1,
+   PRIMARY KEY (`GroupUserID`),
+   CONSTRAINT `Groups`
+    FOREIGN KEY (`GroupID`)
+    REFERENCES `Groups` (`id`),
+   CONSTRAINT `Users`
+    FOREIGN KEY (`UserID`)
+    REFERENCES `Users` (`UserID`)
+ );
