@@ -92,7 +92,7 @@ namespace ClassWeb.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create([Bind("CourseTitle,CourseName")]Course NewCourse)
+        public ActionResult Create([Bind("Subject, CourseNumber, CourseTitle")]Course NewCourse)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, [Bind("CourseTitle,CourseName,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
         {
             if (UserCan<Course>(PermissionSet.Permissions.Edit))
             {

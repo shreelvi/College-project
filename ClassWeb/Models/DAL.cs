@@ -531,7 +531,7 @@ namespace ClassWeb.Model
 
         /// <summary>
         /// Created by: Mohan 
-        /// Attempts to add user in the database
+        /// add user in the database
         /// Reference: PeerVal Project by Professor from github.
         /// </summary>
         /// <remarks></remarks>
@@ -563,6 +563,12 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Created by: Mohan 
+        /// get all users from the database
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
         internal static List<User> UserGetAll()
         {
             List<User> retObj = new List<User>();
@@ -585,6 +591,13 @@ namespace ClassWeb.Model
             return retObj;
         }
 
+
+        /// <summary>
+        /// Created by: Mohan 
+        /// Delete user from the database
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
         internal static int DeleteUserByID(int ID)
         {
             MySqlCommand comm = new MySqlCommand("sproc_UserDeleteByID");
@@ -606,6 +619,13 @@ namespace ClassWeb.Model
             return retInt;
         }
 
+
+        /// <summary>
+        /// Created by: Mohan 
+        /// Update user from the database
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
         internal static int UpdateUser(User obj)
         {
             if (obj == null) return -1;
@@ -628,7 +648,9 @@ namespace ClassWeb.Model
             return -1;
         }
         /// <summary>
-        /// Attempts to delete the database entry corresponding to the User
+        /// Created by: Mohan 
+        /// Remove user from the database
+        /// Reference: PeerVal Project by Professor from github.
         /// </summary>
         /// <remarks></remarks>
         internal static int RemoveUser(User obj)
@@ -647,6 +669,12 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Created by: Mohan 
+        /// get a user from the database
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
         internal static User UserGetByID(int? id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_UserGetByID");
@@ -670,10 +698,11 @@ namespace ClassWeb.Model
             return retObj;
         }
         ///<summary>
+        ///  Created by: Mohan 
         /// Get salt of the User from the database corresponding to the Username
+        /// Reference: PeerVal Project by Professor from github.
         /// </summary>
         /// <remarks></remarks>
-
         public static string GetSaltForUser(string username)
         {
             String salt = "";
@@ -697,7 +726,9 @@ namespace ClassWeb.Model
         }
 
         ///<summary>
-        /// Set salt of the User from the database corresponding to the ID
+        ///  Created by: Mohan 
+        /// Set salt for the User from the database corresponding to the Username
+        /// Reference: PeerVal Project by Professor from github.
         /// </summary>
         /// <remarks></remarks>
         internal static int SetSaltForUser(int userID, string salt)
@@ -717,6 +748,12 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        ///  Created by: Mohan 
+        /// Update User password
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
         internal static int UpdateUserPassword(User obj)
         {
             if (obj == null) return -1;
