@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -18,13 +17,7 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class CourseSemesterController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseSemesterController(ClassWebContext context)
-        {
-            _context = context;
-        }
-
+        
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
         {
@@ -63,10 +56,10 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester
-                .Include(c => c.Course)
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var courseSemester = id;//await _context.CourseSemester
+               // .Include(c => c.Course)
+               // .Include(c => c.User)
+               // .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
                 return NotFound();
@@ -137,13 +130,13 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester.FindAsync(id);
+            var courseSemester = id; //await _context.CourseSemester.FindAsync(id);
             if (courseSemester == null)
             {
                 return NotFound();
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            //ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            //ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -163,8 +156,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(courseSemester);
-                    await _context.SaveChangesAsync();
+                   // _context.Update(courseSemester);
+                   // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -179,8 +172,8 @@ namespace ClassWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+           // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+           // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -218,7 +211,7 @@ namespace ClassWeb.Controllers
 
         private bool CourseSemesterExists(int id)
         {
-            return _context.CourseSemester.Any(e => e.ID == id);
+            return false;// _context.CourseSemester.Any(e => e.ID == id);
         }
     }
 }

@@ -236,7 +236,7 @@ namespace ClassWeb.Models
             {
                 if (_User == null)
                 {
-                    _User = DAL.GetUser(_UserID);
+                    _User = DAL.UserGetByID(_UserID);
                 }
                 return _User;
             }

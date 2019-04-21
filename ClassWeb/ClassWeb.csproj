@@ -15,12 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.AnalysisServices.AdomdClient">
-      <HintPath>C:\Program Files (x86)\Microsoft.NET\ADOMD.NET\140\Microsoft.AnalysisServices.AdomdClient.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="Views\Account\Details.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

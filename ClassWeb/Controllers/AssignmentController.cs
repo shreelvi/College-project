@@ -52,7 +52,7 @@ namespace ClassWeb.Controllers
             }
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
-        public RedirectResult FileView(string FileName)
+        public ActionResult FileView(string FileName)
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.View))
             {
@@ -288,6 +288,7 @@ namespace ClassWeb.Controllers
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
+        }
 
         private void CreateFolderDirectory(List<IFormFile> files)
         {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClassWeb.Data;
 using ClassWeb.Model;
 using ClassWeb.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +26,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
+        public AccountController( IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -85,9 +84,36 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
         {
-
-            return View();
-        }
+            if (id != user.ID)
+            {
+                return NotFound();
+            }
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (id == null && uid != null)
+            {
+                id = uid;
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == uid)
+                    {
+                        int a = DAL.UpdateUser(user);
+                        if (a > 0)
+                        {
+                            HttpContext.Session.SetString("username", user.UserName);
+                            TempData["Message"] = "User Succesfully Updated!!";
+                        }
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Trick!!";
+                    }
+                    return RedirectToAction("Dashboard", "Account");
+                }
+                catch (Exception ex)
+                {
 
                 }
             }
@@ -191,14 +217,15 @@ namespace ClassWeb.Controllers
                 TempData["Message"] = "Input ID from system and Form doesnot match!";
                 return NotFound();
             }
+        }
 
-        public ActionResult Dashboard()
+        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
         {
-            User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
+            User u = DAL.UserGetByUserName(UserName, EmailAddress);
+            if (u == null)
             {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
+                TempData["Message"] = "Not a valid credentials";
+                return View();
             }
             else
             {
@@ -220,17 +247,27 @@ namespace ClassWeb.Controllers
         #endregion
         public ActionResult Dashboard()
         {
-            int? id = (int)HttpContext.Session.GetInt32("UserID");
-            if (id != null)
+            User LoggedIn = CurrentUser;
+            List<Assignment> UserAssignments = new List<Assignment>();
+            if (LoggedIn.FirstName == "Anonymous")
             {
-            return View();
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                TempData["Message"] = "User not Loggedin";
-                return RedirectToAction("index", "Home");
-            }
+                //Display Permission check message that is passed from Assignment index
+                var s = TempData["PermissionError"];
+                if (s != null)
+                    ViewData["PermissionErr"] = s;
 
+                int id = (int)HttpContext.Session.GetInt32("UserID");
+                string username = HttpContext.Session.GetString("username");
+                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+                return View(UserAssignments);
+
+            }
+            return View(UserAssignments);
         }
         /// <summary>
         /// Created on: 03/09/2019
