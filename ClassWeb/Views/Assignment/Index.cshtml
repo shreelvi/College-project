@@ -13,8 +13,6 @@
                 </select>
             </div>
         </div>
-        <p class="text-danger">@TempData["Message"]</p>
-        <p class="text-danger">@TempData["Error"]</p>
         <form asp-controller="Assignment" asp-action="index" method="post" enctype="multipart/form-data">
             <div class="form-group inline-block">
                 <div class="input-group">
@@ -96,10 +94,10 @@
                     </td>
                     <td>
                         <!-- Button trigger modal-->
-                        <button type="button" class="btn-outline-danger btn-danger btn" data-toggle="modal" data-target="#DeleteFolderModalCenter">
+                        <button type="button" class="btn-outline-danger btn-danger btn" data-toggle="modal" data-target="#@j">
                             Delete <span class="glyphicon glyphicon-trash" />
                         </button>
-                        <div class="modal fade" id="DeleteFolderModalCenter" tabindex="-1" role="dialog" aria-labelledby="DeleteFolderModalCenterTitle" aria-hidden="true">
+                        <div class="modal fade" id="@j" tabindex="-1" role="dialog" aria-labelledby="DeleteFolderModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -109,7 +107,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form asp-action="DeleteFolder" id="DeleteFolderForm" asp-controller="Assignment" method="post">
+                                        <form asp-action="DeleteFolder" id="Form+@j" asp-controller="Assignment" method="post">
                                             <span>Are you sure You want to Delete Folder?</span>
                                             <div>
                                                 <span class="text-danger">@Model.Item2[j]</span>
@@ -119,7 +117,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class=" btn btn-primary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-danger" onclick="event.preventDefault();document.getElementById('DeleteFolderForm').submit();">Delete Folder</button>
+                                        <button type="submit" class="btn btn-danger" onclick="event.preventDefault();document.getElementById('Form+@j').submit();">Delete Folder</button>
                                     </div>
                                 </div>
                             </div>
@@ -136,10 +134,10 @@
                     <td><span class=" glyphicon glyphicon-save"> @Html.ActionLink("Download", "Download", new { FileName = Model.Item1[i].FileName })</span></td>
                     <td>
                         <!-- Button trigger modal-->
-                        <button type="button" class="btn-outline-danger btn-danger btn" data-toggle="modal" data-target="#FileDeleteModalCenter">
+                        <button type="button" class="btn-outline-danger btn-danger btn" data-toggle="modal" data-target="#@i">
                             Delete <span class="glyphicon glyphicon-trash" />
                         </button>
-                        <div class="modal fade" id="FileDeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="FileDeleteModalCenterTitle" aria-hidden="true">
+                        <div class="modal fade" id="@i" tabindex="-1" role="dialog" aria-labelledby="FileDeleteModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -149,7 +147,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form asp-action="DeleteFile" id="DeleteFileForm" asp-controller="Assignment" method="post">
+                                        <form asp-action="DeleteFile" id="@Model.Item1[i].ID" asp-controller="Assignment" method="post">
                                             <span>Are you sure you want to Delete?</span>
                                             <div>
                                                 <span class="text-danger">
@@ -161,7 +159,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class=" btn btn-primary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-danger" onclick="event.preventDefault();document.getElementById('DeleteFileForm').submit();">Delete File</button>
+                                        <button type="submit" class="btn btn-danger" onclick="event.preventDefault();document.getElementById('@Model.Item1[i].ID').submit();">Delete File</button>
                                     </div>
                                 </div>
                             </div>
