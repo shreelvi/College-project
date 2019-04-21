@@ -18,8 +18,12 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+
+        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+
+        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -419,6 +423,36 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
+
+        /// <summary>
+        /// Gets a list of all ClassWeb.Assignment objects for the user from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Assignment> GetUserAssignments(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentsByUserID");
+            List<Assignment> retList = new List<Assignment>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue(User.db_ID, userID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    Assignment a = new Assignment(dr);
+                    //a.User = new User(dr);
+                    retList.Add(a);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
         #endregion
 
         #region Login
@@ -496,8 +530,9 @@ namespace ClassWeb.Model
         #region user
 
         /// <summary>
+        /// Created by: Mohan 
         /// Attempts to add user in the database
-        /// Reference: PeerVal Project
+        /// Reference: PeerVal Project by Professor from github.
         /// </summary>
         /// <remarks></remarks>
         internal static int AddUser(User obj)
@@ -682,6 +717,24 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        internal static int UpdateUserPassword(User obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UserPasswordUpdate");
+            try
+            {
+                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
+                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
         internal static int CheckUserExists(string userName)
         {
             throw new NotImplementedException();
@@ -692,7 +745,9 @@ namespace ClassWeb.Model
 
         #region Courses
         ///<summary>
-        /// Create/Add Course in database
+        ///Created by: Mohan
+        ///Create/Add Course in database
+        /// Reference: Professor peerVal project from github. 
         /// </summary>
         /// <remarks></remarks>
 
@@ -702,9 +757,9 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
                 comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
-                comm.Parameters.AddWithValue("@" + Course.db_ClassID, obj.ClassID);
                 return AddObject(comm, "@" + Course.db_ID);
             }
             catch (Exception ex)
@@ -716,6 +771,7 @@ namespace ClassWeb.Model
 
 
         ///<summary>
+        /// Created BY: Mohan
         /// Get All Courses from the database
         /// Reference: PeerVal project by Professor
         /// </summary>
@@ -765,7 +821,8 @@ namespace ClassWeb.Model
             return retList;
         }
         ///<summary>
-        ///Edit Course 
+        /// Created By: Mohan 
+        /// Edit Course 
         /// Reference: PeerVal project by Professor
         /// </summary>
         /// <remarks></remarks>
@@ -776,8 +833,9 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
                 comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseName, obj.CourseName);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -788,7 +846,8 @@ namespace ClassWeb.Model
         }
 
         ///<summary>
-        ///Delete Course by Id from the database
+        /// Created By: Mohan
+        /// Delete Course by Id from the database
         /// Reference: PeerVal project by Professor
         /// </summary>
         /// <remarks></remarks>

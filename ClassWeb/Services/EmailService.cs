@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -12,28 +15,34 @@ namespace ClassWeb.Services
         {
             _configuration = configuration;
         }
-        public async Task SendEmail(string email, string subject, string body)
+        public async Task SendEmail(string email, string subject, string message)
         {
-            string Host = _configuration["Email:Host"];
-            string Email = _configuration["Email:Email"];
-            int Port = int.Parse(_configuration["Email:Port"]);
-            string UserName = _configuration["Email:Email"];
-            string Password = _configuration["Email:Password"];
-            SmtpClient client = new SmtpClient(Host);
-            client.Port = Port;
-            client.UseDefaultCredentials = true;
-            client.EnableSsl = true;
-            client.Credentials = new NetworkCredential(UserName,Password);
+            using (var client = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = _configuration["Email:Email"],
+                    Password = _configuration["Email:Password"]
+                };
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.IsBodyHtml = true;
-            mailMessage.From = new MailAddress(Email);
-            mailMessage.To.Add(email.ToString());
-            mailMessage.Body = body;
-            mailMessage.Subject =subject;
-            client.Send(mailMessage);
+                client.Credentials = credential;
+                client.Host = _configuration["Email:Host"];
+                client.Port = int.Parse(_configuration["Email:Port"]);
+                client.EnableSsl = true;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.UseDefaultCredentials = false;
+
+
+                using (var emailMessage = new MailMessage())
+                {
+                    emailMessage.To.Add(new MailAddress(email));
+                    emailMessage.From = new MailAddress(_configuration["Email:Email"]);
+                    emailMessage.Subject = subject;
+                    emailMessage.Body = message;
+                    client.Send(emailMessage);
+                }
+            }
             await Task.CompletedTask;
         }
     }
 }
-

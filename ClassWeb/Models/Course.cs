@@ -31,9 +31,9 @@ namespace ClassWeb.Models
 
         #region Private Variables
 
+        private string _Subject;
+        private int _CourseNumber;
         private string _CourseTitle;
-        private string _CourseName;
-        private int _ClassID;
         private List<Course> _Courses;
         #endregion
 
@@ -41,9 +41,10 @@ namespace ClassWeb.Models
         #region Database  String
 
         internal const string db_ID = "ID";
+        internal const string db_Subject = "Subject";
+        internal const string db_CourseNumber = "CourseNumber";
         internal const string db_CourseTitle = "CourseTitle";
-        internal const string db_CourseName = "CourseName";
-        internal const string db_ClassID = "ClassID";
+        
         #endregion
 
 
@@ -76,9 +77,9 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _Subject = dr.GetString(db_Subject);
+            _CourseNumber = dr.GetInt32(db_CourseNumber);
             _CourseTitle = dr.GetString(db_CourseTitle);
-            _CourseName = dr.GetString(db_CourseName);
-            _ClassID = dr.GetInt32(db_ClassID);
 
         }
 
@@ -86,22 +87,25 @@ namespace ClassWeb.Models
 
 
         #region Public Variables
+
+        public string Subject
+        {
+            get { return _Subject; }
+            set { _Subject = value; }
+        }
+
         public string CourseTitle
         {
             get { return _CourseTitle; }
             set { _CourseTitle = value; }
         }
 
-        public string CourseName
+        public int CourseNumber
         {
-            get { return _CourseName; }
-            set { _CourseName = value; }
+            get { return _CourseNumber; }
+            set { _CourseNumber = value; }
         }
-        public int ClassID
-        {
-            get { return _ClassID; }
-            private set { _ClassID = value; }
-        }
+        
 
         public List<Course> Courses
         {
