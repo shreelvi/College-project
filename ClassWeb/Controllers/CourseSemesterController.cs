@@ -56,6 +56,24 @@ namespace ClassWeb.Controllers
 
         }
 
+        public async Task<IActionResult> ClassViewForStudents()
+        {
+            User LoggedIn = CurrentUser;
+            Group LoggedInGroup = CurrentGroup;
+            
+            //Checks if the user is logged in
+            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
+            CourseSemesters = DAL.GetCourseSemesters();
+            return View(CourseSemesters);
+
+        }
+
         // GET: CourseSemesters/Details/5
         public async Task<IActionResult> Details(int? id)
         {
