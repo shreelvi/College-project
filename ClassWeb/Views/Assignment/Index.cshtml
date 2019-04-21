@@ -173,7 +173,7 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                     <span class=" glyphicon glyphicon-eye-open">@Html.ActionLink("View", "FileView", new { FileName = Model.Item1[i].FileName })</span>
-                                    <span class=" glyphicon glyphicon-edit"> @Html.ActionLink("Edit", "Edit", new { FileName = Model.Item1[i].FileName })</span>
+                                    <span class=" glyphicon glyphicon-edit"> @Html.ActionLink("Edit", "Edit", new { FileName = Model.Item1[i].FileName , ID = Model.Item1[i].ID })</span>
                                 </div>
                             </div>
                         </div>

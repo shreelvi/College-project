@@ -559,7 +559,7 @@ namespace ClassWeb.Controllers
         }
         #endregion
         #region Edit Assignment
-        public IActionResult Edit(string FileName)
+        public IActionResult Edit(string FileName,int ID)
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.Edit))
             {
@@ -594,7 +594,8 @@ namespace ClassWeb.Controllers
                 }
                 ViewBag.Readable = IsReadable;
                 ViewBag.FileName = FileName;
-                return View();
+                Assignment a = DAL.AssignmentGetByID(ID);
+                return View(a);
             }
             else
             {

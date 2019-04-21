@@ -5,6 +5,7 @@
         return Xsrf.GetAndStoreTokens(Context).RequestToken;
     }
 }
+@model Assignment
 <script>
     var editor_js = CodeMirror.fromTextArea(document.getElementById("js"), {
         mode: 'text/javascript',
@@ -12,23 +13,73 @@
         styleActiveLine: true,
         lineNumbers: true,
         lineWrapping: true,
-        option:"FullScreen"
+        option: "FullScreen"
     });
 </script>
-<div class="Fileaction">
+<div>
+    <div class="container-fluid bootstrap snippet" id="messages">
+        <div class="row">
+            <div class="col-9">
+                <ul class="nav nav-tabs">
+                    <li><a data-toggle="tab" href="#Edit">Edit</a></li>
+                    <li><a data-toggle="tab" href="#Grade">Grade</a></li>
+                    <li><a data-toggle="tab" href="#Comments">Comments</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="Edit">
+                        <form asp-controller="Assignment" method="post">
+                            <div class="pull-right" style="margin-right:24vw">
+                                <button href="#" id="SaveFile" asp-action="SaveEditedFile" type="submit" class="btn btn-success glyphicon glyphicon-save">Save</button>
+                                <button href="#" id="Exit" type="submit" asp-action="Close" class="btn btn-danger glyphicon glyphicon-remove">Close</button>
+                            </div>
+                            <div>
+                                <input type="hidden" value=@ViewBag.FileName name="FileName" />
+                                @if (ViewBag.Readable == true)
+                                {
+                                    <textarea id="EditedText" name="Content" style="min-height:60vh;min-width:55vw;padding-top:20px;margin-top:10px;">@ViewBag.Data </textarea>
+                                }
+                                else
+                                {
+                                    <iframe src="@ViewBag.Data" class="embed-responsive-item" style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+                                }
+                            </div>
+                        </form>
+                    </div><!--/tab-pane-->
+                    <div class="tab-pane" id="Grade">
+                        <h2>Grade</h2>
+                        <div class="list-group">
+                            <button type="button" class="list-group-item list-group-item-action">
+                                Submition Assignment
+                            </button>
+                            <button type="button" class="list-group-item list-group-item-action">
+                                Feedback:
+                                @if (Model.DateSubmited > Model.DateDue)
+                                {
+                                    <span class="text-danger">@Model.Feedback</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">@Model.Feedback</span>
+                                }
+                            </button>
+                            <button type="button" class="list-group-item list-group-item-action">
+                                Grade:
+                                @if (Model.Grade == 0)
+                                {<span class="text-danger">Not Marked!!</span> }
+                                else
+                                {<span class="text-danger">@Model.Grade</span><span> out of 100</span>}
+                            </button>
+                            <button type="button" class="list-group-item list-group-item-action">Date Submitted: @Model.DateSubmited</button>
+                            <button type="button" class="list-group-item list-group-item-action">Date Due: @Model.DateDue</button>
+                            <button type="button" class="list-group-item list-group-item-action">Date Last Modified: @Model.DateModified</button>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Comments">
+                        <h2>Comments</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<form  asp-controller="Assignment" method="post">
-    <button href="#" id="SaveFile" asp-action="SaveEditedFile" type="submit" class="btn btn-success pull-left glyphicon glyphicon-save">Save</button>
-    <button href="#" id="Exit" type="submit" asp-action="Close" class="btn btn-danger pull-Right glyphicon glyphicon-remove">Close</button>
-    <input type="hidden" value=@ViewBag.FileName name="FileName" />
-    @if (ViewBag.Readable == true)
-    {
-
-<textarea id="EditedText" name="Content"  class="p-4 " style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%">@ViewBag.Data </textarea>
-    }
-    else
-    {
-        <iframe src="@ViewBag.Data"  class="embed-responsive-item" style="min-height:700px;min-width:100%;padding-top:20px;margin-top:10px;max-height:100%;max-width:100%" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
-    }
-
-</form>

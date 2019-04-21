@@ -265,10 +265,10 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static List<Assignment> AssignmentsGetByID(int id)
+        internal static Assignment AssignmentGetByID(int id)
         {
-            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentsByUserID");
-            List<Assignment> retList = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByID");
+            Assignment retList = new Assignment();
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
@@ -278,7 +278,7 @@ namespace ClassWeb.Model
                 {
                     Assignment a = new Assignment(dr);
                     //a.User = new User(dr);
-                    retList.Add(a);
+                    retList=a;
                 }
                 comm.Connection.Close();
             }
