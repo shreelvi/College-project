@@ -111,7 +111,15 @@ namespace ClassWeb.Controllers
         }
         public ActionResult Dashboard()
         {
-            int id = (int)HttpContext.Session.GetInt32("ID");
+            var s = TempData["UserGroupAddSuccess"];
+            var e = TempData["UserGroupAddError"];
+
+            if (s != null)
+                ViewData["UserGroupAddSuccess"] = s;
+            else if (e != null)
+                ViewData["UserGroupAddError"] = e;
+
+            int id = (int)HttpContext.Session.GetInt32("GroupID");
             string username = HttpContext.Session.GetString("UserName");
 
             ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
@@ -191,13 +199,56 @@ namespace ClassWeb.Controllers
                 if(UserID > 0)
                 {
                     int addGroup = DAL.AddUserToGroup(UserID, GroupAdd); //Add the user to group.
+
                 }
             }          
             return RedirectToAction("LoginGroup");
         }
 
- 
-        
+        #region AddUserToGroup
+        // GET: Group/AddGroup
+        [AllowAnonymous]
+        public ActionResult AddUserToGroup(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public ActionResult AddUserToGroup(List<User> Users)
+        {
+            int retInt = 0;
+            int groupid = (int)HttpContext.Session.GetInt32("GroupID");
+            string[] emails = new string[6];
+            for (int i = 0; i < 4; i++) //Verfies each email 
+            {
+                emails[i] = Users[i].EmailAddress;
+                retInt = DAL.CheckUserExistsByEmail(emails[i]); //Checks user and returns user id
+
+                if (retInt <= 0)
+                {
+                    if (emails[i] != null)
+                    { //If input field is blank, doesn't display error msg
+                        ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
+                        return View();
+                    }
+                }
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int UserID = DAL.CheckUserExistsByEmail(emails[i]); //This method can also be used to get userID
+                if (UserID > 0)
+                {
+                    int addGroup = DAL.AddUserToGroup(UserID, groupid); //Add the user to group.
+                }
+            }
+            TempData["UserGroupAddSuccess"] = "Succesfully added users.";
+            return RedirectToAction("Dashboard");
+        }
+        #endregion
 
         //[AllowAnonymous]
         //public ActionResult AddUserToGroup(string returnUrl)
@@ -206,7 +257,7 @@ namespace ClassWeb.Controllers
         //    return View();
         //}
 
-    
+
 
         /// <summary>
         /// Created on: 03/17/2019

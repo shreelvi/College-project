@@ -168,7 +168,7 @@ namespace ClassWeb.Controllers
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
                     List<User> users = DAL.GetGroupUsers(6);
-                    return View("GroupDashboard");
+                    return RedirectToAction("Dashboard", "Group");
                 }
 
                 
