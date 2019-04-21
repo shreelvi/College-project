@@ -1,22 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Models;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using ClassWeb.Model;
-using Microsoft.AspNetCore.Authorization;
+using ClassWeb.Models;
+using System;
 using Microsoft.AspNetCore.Http;
+
 namespace ClassWeb.Controllers
 {
-    public class UsersController : BaseController
+    /// <summary>
+    /// Created By: Mohan
+    /// Courses => A course is like 4430, 3307, etc.
+    /// Each course can be accessible to one to many users.
+    /// Each course can be taught by multiple professors, hence multiple classes.
+    /// A course has a course name and a number.
+    /// </summary>
+    /// 
+    public class CoursesController : BaseController
     {
-        // GET: Users
-        public async Task<IActionResult> Index()
+        //hosting Envrironment to upload file in root path (wwwroot)
+        private IHostingEnvironment _hostingEnvironment;
+
+        List<Course> Courses = new List<Course>();
+      
+        public CoursesController(IHostingEnvironment hostingEnvironment)
         {
-            if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+            
+            _hostingEnvironment = hostingEnvironment;
+            
+        }
+
+        // GET: Courses
+        public IActionResult Index()
+        {
+            if (UserCan<Course>(PermissionSet.Permissions.ViewAndEdit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
                 if (uid != null)
@@ -29,106 +49,101 @@ namespace ClassWeb.Controllers
                     }
                     if (U.Role.IsAdmin)
                     {
-                        users = DAL.UserGetAll();
-                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
+                        List<Course> C = DAL.GetCourse();
                         return View(users);
                     }
-                    else
-                    {
-                        users.Add(U);
-                        return View(users);
-                    }
-                }
 
-                return View();
+                }
+              
+                    return RedirectToAction("Dashboard", "Account");
+                
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit User";
+                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit Course";
                 return RedirectToAction("Dashboard", "Account");
             }
         }
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+
+        // GET: Course/Details/5
+        public IActionResult Details(int id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.View))
+            if (UserCan<Course>(PermissionSet.Permissions.View))
             {
                 User user = DAL.UserGetByID(id);
-                List<Role> Role = DAL.GetRoles();
-                Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user,Role);
-                return View(User);
+                return View(user);
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view User";
+                TempData["Error"] = "You Dont Have Enough Previlage to view Course";
                 return RedirectToAction("Dashboard", "Account");
             }
-          
         }
+            // GET: Course/Create
+         public IActionResult Create()
+        {
+            return View();
+           
+        }
+
+        // POST: Courses/Create
+        //Course will be created here.
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult ChangeRole(int? UserID,int? Role)
+        public ActionResult Create([Bind("Subject, CourseNumber, CourseTitle")]Course NewCourse)
         {
-            if (UserID != null && Role != null)
+            try
             {
-                User U = DAL.UserGetByID(UserID);
-                if (U == null)
+                if (UserCan<Course>(PermissionSet.Permissions.Add))
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    U.RoleID = (int)Role;
-                    int i = DAL.UpdateUserRole(U);
-                    return RedirectToAction("" + UserID,"Users/Details");
-                }
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            if (UserCan<User>(PermissionSet.Permissions.Add))
-            {
-                int? uid = HttpContext.Session.GetInt32("UserID");
-                if (uid != null)
-                {
-                    User U = DAL.UserGetByID(uid);
-                    if (U == null)
+                    int? uid = HttpContext.Session.GetInt32("UserID");
+                    if (uid != null)
                     {
-                        return NotFound();
-                    }
-                    if (U.Role.IsAdmin)
-                    {
-                        return RedirectToAction("AddUser", "Account");
+                        User U = DAL.UserGetByID(uid);
+                        if (U == null)
+                        {
+                            return NotFound();
+                        }
+                        if (U.Role.IsAdmin)
+                        {
+                            return RedirectToAction("CreateCourse", "Course");
 
+                        }
+                        else
+                        {
+                            TempData["Error"] = "You Dont Have Enough Previlage to edit Course";
+                            return RedirectToAction("Dashboard", "Account");
+                        }
                     }
                     else
                     {
-                        TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                        TempData["Error"] = "You Dont Have Enough Previlage to edit Course";
                         return RedirectToAction("Dashboard", "Account");
                     }
                 }
-                else
+               
                 {
-                    TempData["Error"] = "You Dont Have Enough Previlage to edit User";
-                    return RedirectToAction("Dashboard", "Account");
+                    if (ModelState.IsValid)
+                    {
+                        int i = DAL.CreateCourse(NewCourse);
+                        return RedirectToAction(nameof(Index));
+
+                    }
+                    return View(NewCourse);
                 }
             }
-            else
+            catch
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to Create User";
-                return RedirectToAction("Dashboard", "Account");
+                return View();
             }
         }
 
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Courses/Edit/5
+        public IActionResult Edit(int? id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            if (UserCan<Course>(PermissionSet.Permissions.Edit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
                 if (id == null && uid != null)
@@ -152,17 +167,18 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
         }
+           
 
-        // POST: Users/Edit/5
+        // POST: Courses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,PhoneNumber,ID")] User user)
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            if (UserCan<Course>(PermissionSet.Permissions.Edit))
             {
-                if (id != user.ID)
+                if (id != course.ID)
                 {
 
                     return NotFound();
@@ -176,15 +192,15 @@ namespace ClassWeb.Controllers
                 {
                     try
                     {
-                        int a = DAL.UpdateUser(user);
+                        int a = DAL.UpdateCourse(course);
                         if (a > 0)
                         {
-                            ViewBag.Message = "User Succesfully Updated!!";
+                            ViewBag.Message = "Course Succesfully Updated!!";
                         }
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!UserExists(user.ID))
+                        if (!CourseExists(course.ID))
                         {
                             return NotFound();
                         }
@@ -195,7 +211,7 @@ namespace ClassWeb.Controllers
                     }
                     return RedirectToAction(nameof(Index));
                 }
-                return View(user);
+                return View(course);
             }
             else
             {
@@ -204,7 +220,7 @@ namespace ClassWeb.Controllers
             }
         }
 
-        private bool UserExists(int id)
+        private bool CourseExists(int id)
         {
             User u = DAL.UserGetByID(id);
             if (u == null)
@@ -217,10 +233,11 @@ namespace ClassWeb.Controllers
             }
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+
+        // GET: Courses/Delete/5
+        public IActionResult Delete(int? id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            if (UserCan<Course>(PermissionSet.Permissions.Delete))
             {
                 if (id == null)
                 {
@@ -243,25 +260,35 @@ namespace ClassWeb.Controllers
 
         }
 
-        // POST: Users/Delete/5
+        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            if (UserCan<Course>(PermissionSet.Permissions.Delete))
             {
-            int test = DAL.DeleteUserByID(id);
-            if (test > 0)
-            {
-                ViewBag.Message = "User Succesfully Deleted!!";
-            }
-            return RedirectToAction(nameof(Index));               
+                int test = DAL.DeleteCourseByID(id);
+                if (test > 0)
+                {
+                    ViewBag.Message = "Course Succesfully Deleted!!";
+                }
+                return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Course";
                 return RedirectToAction("Dashboard", "Account");
             }
+            
+           
+        }
+
+        
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
+
