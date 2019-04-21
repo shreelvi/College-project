@@ -29,6 +29,7 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
+            Group LoggedInGroup = CurrentGroup;
             //string ss = LoggedIn.FirstName;
 
             //Gets error message to display from Create method 
@@ -41,7 +42,7 @@ namespace ClassWeb.Controllers
                 ViewData["CourseSemDelete"] = d;
 
             //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous")
+            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
                 {
                     TempData["LoginError"] = "Please login to view the page.";
                     return RedirectToAction("Index", "Home");

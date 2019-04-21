@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ClassWeb.Models.Group>
+﻿@model List<ClassWeb.Models.Group>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,26 +14,29 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.EmailAddress)
+                <p>Name</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <p>EmailAddress</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                <p>UserName</p>
+            </th>
+            <th>
+                <p>Users in Group</p>
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateModified)
-            </th>*@
+                    @Html.DisplayNameFor(model => model.DateCreated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateDeleted)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateModified)
+                </th>
             <th>
                 @Html.DisplayNameFor(model => model.AssignmentID)
-            </th>
+            </th>*@
 
             <th></th>
         </tr>
@@ -43,27 +46,30 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.EmailAddress)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.EmailAddress)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
-  
+            <td>
+                @Html.DisplayFor(modelItem => item.Users)
+            </td>
+
             @*<td>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.DateDeleted)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.DateModified)
-            </td>*@
-            <td>
-                @Html.DisplayNameFor(model => model.AssignmentID)
-            </td>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.DateDeleted)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.DateModified)
+        </td>*@
+            @*<td>
+            @Html.DisplayNameFor(model => model.AssignmentID)
+        </td>*@
 
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
