@@ -34,4 +34,47 @@ namespace ClassWeb.Models
 
         public abstract override string ToString();
     }
+
+    public abstract class DatabaseNamedRecord : DatabaseRecord
+    {
+        protected string _Name;
+        private DateTime _DateCreated;
+        private DateTime _DateModified;
+        private DateTime _DateDeleted;
+        /// <summary>
+        /// The User given Name for the Object.
+        /// </summary>
+        //[Display(Name = "Name")]
+        [DataType(DataType.Text)]
+        //[Required]
+        [Display(Name = "Name")]
+        public String Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
+        }
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateCreated")]
+        public DateTime DateCreated
+        {
+            get { return _DateCreated; }
+            set { _DateCreated = value; }
+        }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateModified")]
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
+        }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateDeleted")]
+        public DateTime DateDeleted
+        {
+            get { return _DateDeleted; }
+            set { _DateDeleted = value; }
+        }
+    }
 }
