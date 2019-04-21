@@ -167,6 +167,7 @@ namespace ClassWeb.Controllers
                     id = (int)HttpContext.Session.GetInt32("GroupID");
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
+                    List<User> users = DAL.GetGroupUsers(6);
                     return View("GroupDashboard");
                 }
 

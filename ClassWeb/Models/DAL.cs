@@ -1670,13 +1670,14 @@ namespace ClassWeb.Model
         #endregion
 
         #region Group
-        internal static List<User> GetGroupUsers(int iD)
+        internal static List<User> GetGroupUsers(int id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_GetUsersFromGroup");
             List<User> retList = new List<User>();
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue("@" + "GroupID", id);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
