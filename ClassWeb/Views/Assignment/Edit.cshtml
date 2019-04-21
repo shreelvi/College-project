@@ -48,31 +48,33 @@
                     <div class="tab-pane" id="Grade">
                         <h2>Grade</h2>
                         <div class="list-group">
-                            <button type="button" class="list-group-item list-group-item-action">
+                            <button type="button" class="list-group-item list-group-item-action active text-center center-block">
                                 Submition Assignment
                             </button>
                             <button type="button" class="list-group-item list-group-item-action">
-                                Feedback:
+                                <span class="align-baseline">File Name:</span> <span class="align-text-top">@Model.FileName</span>
+                            </button>
+                            <button type="button" class="list-group-item list-group-item-action">
+                                <span class="align-baseline">Feedback:</span>                                
                                 @if (Model.DateSubmited > Model.DateDue)
                                 {
-                                    <span class="text-danger">@Model.Feedback</span>
+                                    <span class="text-danger align-text-top">@Model.Feedback</span>
                                 }
                                 else
                                 {
-                                    <span class="text-success">@Model.Feedback</span>
+                                    <span class="text-success align-text-top">@Model.Feedback</span>
                                 }
                             </button>
                             <button type="button" class="list-group-item list-group-item-action">
                                 Grade:
                                 @if (Model.Grade == 0)
-                                {<span class="text-danger">Not Marked!!</span> }
+                                {<span class="text-danger align-baseline">Not Marked!!</span> }
                                 else
                                 {<span class="text-danger">@Model.Grade</span><span> out of 100</span>}
                             </button>
-                            <button type="button" class="list-group-item list-group-item-action">Date Submitted: @Model.DateSubmited</button>
-                            <button type="button" class="list-group-item list-group-item-action">Date Due: @Model.DateDue</button>
-                            <button type="button" class="list-group-item list-group-item-action">Date Last Modified: @Model.DateModified</button>
-
+                            <button type="button" class="list-group-item list-group-item-action"><span class="align-baseline">Date Submitted:</span><span class="align-text-top">@Model.DateSubmited</span></button>
+                            <button type="button" class="list-group-item list-group-item-action"><span class="align-baseline">Date Due:</span><span class="align-text-top">@Model.DateDue</span></button>
+                            <button type="button" class="list-group-item list-group-item-action"><span class="align-baseline">Date Last Modified:</span class="align-text-top"><span>@Model.DateModified</span></button>
                         </div>
                     </div>
                     <div class="tab-pane" id="Comments">
