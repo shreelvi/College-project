@@ -2,92 +2,173 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using ClassWeb.Models;
+using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
-    public class SemesterController : Controller
+    public class SemesterController : BaseController
     {
         // GET: Semester
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            User LoggedIn = CurrentUser;
+
+            var a = TempData["YearAdd"];
+            if (a != null)
+                ViewData["YearAdd"] = a;
+
+            var d = TempData["YearDelete"];
+            if (d != null)
+                ViewData["YearDelete"] = d;
+
+            //Checks if the user is logged in
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            List<Semester> Semesters = new List<Semester>();
+            Semesters = DAL.GetSemesters();
+            return View(Semesters);
         }
 
         // GET: Semester/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var semester = id;//await _context.Semester
+              //  .FirstOrDefaultAsync(m => m.ID == id);
+            if (semester == null)
+            {
+                return NotFound();
+            }
+
+            return View(semester);
         }
 
         // GET: Semester/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
 
         // POST: Semester/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create([Bind("Name,ID")] Semester semester)
         {
-            try
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
             {
-                // TODO: Add insert logic here
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            int retInt = DAL.AddSemester(semester);
+            if (retInt < 0)
+                TempData["SemesterAdd"] = "Database problem occured when adding the semester";
+            else { TempData["SemesterAdd"] = "Semester added successfully"; }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Semester/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var semester = id;//await _context.Semester.FindAsync(id);
+            if (semester == null)
+            {
+                return NotFound();
+            }
+            return View(semester);
         }
 
         // POST: Semester/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,ID")] Semester semester)
         {
-            try
+            if (id != semester.ID)
             {
-                // TODO: Add update logic here
+                return NotFound();
+            }
 
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //_context.Update(semester);
+                    //await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SemesterExists(semester.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(semester);
         }
 
         // GET: Semester/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            Semester retSemester = DAL.GetSemester(id);
+            if (retSemester == null)
+            {
+                return NotFound();
+            }
+            return View(retSemester);
         }
 
         // POST: Semester/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            int retInt = DAL.RemoveSemester(id);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            if (retInt < 0)
+                TempData["SemesterDelete"] = "Error occured when deleting the semester";
+
+            TempData["SemesterDelete"] = "Successfully deleted the semester";
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool SemesterExists(int id)
+        {
+            return true; //_context.Semester.Any(e => e.ID == id);
         }
     }
 }

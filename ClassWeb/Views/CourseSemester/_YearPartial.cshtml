@@ -1,0 +1,36 @@
+﻿
+@model IEnumerable<ClassWeb.Models.Year>
+@*@model List<ClassWeb.Models.Course>*@
+
+@{
+    var years = (List<Year>)ViewBag.Years; // Cast the list
+}
+<h3 style="color:cadetblue"> Year Info:</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>ID</p>
+            </th>
+            <th>
+                <p>Year</p>
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var y in years) // Print the list
+        {
+            <tr>
+                <td>
+                    @y.ID
+                </td>
+                <td>
+                    @y.Year1
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

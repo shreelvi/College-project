@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using ClassWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,11 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ClassWeb.Models;
 using Microsoft.Extensions.FileProviders;
-using System.IO;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace ClassWeb
 {
@@ -23,8 +20,9 @@ namespace ClassWeb
         }
 
         public IConfiguration Configuration { get; }
-        public object UIFramework { get; private set; }
+        public bool EnableDirectoryBrowsing { get; private set; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -38,19 +36,15 @@ namespace ClassWeb
             //Reference: PeerVal Project
             // Add the following to start using a session.
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-2.2
-            services.AddSession(sessOptions =>
-            {
+            services.AddSession(sessOptions => {
                 sessOptions.IdleTimeout = TimeSpan.FromSeconds(1000); // short time for testing. 
                 //TimeSpan.FromMinutes(20) // default 20 minutes.
                 sessOptions.Cookie.HttpOnly = true;
             });
-            services.AddHttpContextAccessor();
-            services.AddDefaultIdentity<IdentityUser>(config =>
-            {
-                config.SignIn.RequireConfirmedEmail = true;
-            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient<IEmailService, EmailService>();
+
         }
 
 
@@ -75,8 +69,8 @@ namespace ClassWeb
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "AssignmentDirectory")),
-                RequestPath = "/AssignmentDirectory"
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","AssignmentDirectory")),
+                RequestPath= "/AssignmentDirectory"
             });
             app.UseDefaultFiles();
             app.UseStaticFiles();

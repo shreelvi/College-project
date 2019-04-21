@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
-//using ClassWeb.Data;
 using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
@@ -18,11 +17,6 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-       // private readonly ClassWebContext _context;
-       // public RoleController(ClassWebContext context)
-       // {
-       //     _context = context;
-       // }
 
         // GET: Role
         public IActionResult Index()
@@ -125,7 +119,7 @@ namespace ClassWeb.Controllers
             {
                 int retInt = DAL.AddRole(role);
                 if (retInt < 0)
-                    ViewBag.RoleAdd = "Database problem occured when adding the role";
+                    TempData["RoleAdd"] = "Database problem occured when adding the role";
                 else { TempData["RoleAdd"] = "Role added successfully"; }
 
                 return RedirectToAction(nameof(Index));
@@ -151,7 +145,7 @@ namespace ClassWeb.Controllers
             //Checks if the user has permission to edit
             if (UserCan<Role>(PermissionSet.Permissions.Edit))
             {
-                Role role = DAL.GetRole(id);
+                Role role = DAL.GetRoleByID(id);
                 if (role == null)
                 {
                     return NotFound();
@@ -183,13 +177,20 @@ namespace ClassWeb.Controllers
                 try
                 {
                     int retInt = DAL.UpdateRole(role);
-                    ViewBag.RoleUpdate = "Role updated successfully";
+                    if (retInt > 0)
+                    {
+                        TempData["Message"] = "Role updated successfully";
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Role Cannot be updated";
+                    }
                 }
                 catch //(DbUpdateConcurrencyException)
                 {
-                    ViewBag.RoleUpdate("Database error occured when updating the role");
+                    TempData["Message"]="Database error occured when updating the role";
                 }
-                return View(role);
+                return RedirectToAction("index");
             }
             else
             {
@@ -238,7 +239,8 @@ namespace ClassWeb.Controllers
             }
             if (UserCan<Role>(PermissionSet.Permissions.Delete))
             {
-                int retInt = DAL.RemoveRole(id);
+
+                int retInt = DAL.RoleRemoveByID(id);
 
                 if (retInt < 0)
                     TempData["RoleDelete"] = "Error occured when deleting the role";

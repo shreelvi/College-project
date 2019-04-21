@@ -133,14 +133,7 @@ namespace ClassWeb.Controllers
             }
             else if (typeof(T) == typeof(User))
             {
-                if (user.FirstName == "Anony" || user.Role.Name== "Anonymous")
-                {
-                    return false;
-                }
-                else
-                {
-                    return user.Role.Users >= perm;
-                }
+                return user.Role.Users >= perm;
             }
             else
                 return false;

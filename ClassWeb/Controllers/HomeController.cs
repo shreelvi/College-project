@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ClassWeb.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ClassWeb.Controllers
 {
@@ -12,6 +13,11 @@ namespace ClassWeb.Controllers
     {
         public IActionResult Index()
         {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (uid != null)
+            {
+                return RedirectToAction("Dashboard","Account");
+            }
             var s = TempData["LoginError"];
             if (s != null)
                 ViewData["LoginError"] = s;

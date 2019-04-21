@@ -11,6 +11,7 @@
             <th>FirstName</th>
             <th>IsAdmin</th>
             <th>Date Created</th>
+            <th>Role Name</th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -20,6 +21,8 @@
                 <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Role.IsAdmin)</td>
                 <td>@Html.DisplayFor(modelItem => item.DateCreated)</td>
+                <td>@Html.DisplayFor(modelItem => item.Role.Name)</td>
+
 
                 <td><a asp-action="Edit" asp-route-Name="@item.ID"><span class="btn-outline-success btn glyphicon glyphicon-edit"></span>Edit</a></td>
                 <td><a asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
