@@ -122,15 +122,6 @@ namespace ClassWeb.Model
             return retInt;
         }
 
-        internal static List<User> GetGroupUsers(int iD)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal static int RemoveRole(Role role)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// reference: Professor's DAL for PeerEval
@@ -251,6 +242,11 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        internal static int RemoveRole(Role role)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Attempts to delete the database entry corresponding to the Role
@@ -275,10 +271,6 @@ namespace ClassWeb.Model
 
 
         #endregion
-
-
-
-  
 
         #region Assignment
         internal static int AddAssignment(Assignment obj)
@@ -543,10 +535,6 @@ namespace ClassWeb.Model
         }
 
         #endregion
-
-
-
-        
 
         #region user
 
@@ -1679,6 +1667,30 @@ namespace ClassWeb.Model
         }
 
 
+        #endregion
+
+        #region Group
+        internal static List<User> GetGroupUsers(int iD)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetUsersFromGroup");
+            List<User> retList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new User(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         #endregion
 
 

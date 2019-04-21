@@ -623,3 +623,22 @@ BEGIN
     SET GroupUserID = LAST_INSERT_ID();
 END
 $$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	21 April 2019
+-- Description:	Gets the list of users in group corresponding to the groupID
+-- =============================================
+CREATE PROCEDURE sproc_GetUsersFromGroup(
+IN GroupID int
+)
+BEGIN
+    SELECT groups.id, users.UserID, users.FirstName, users.EmailAddress
+    FROM groups
+    INNER JOIN groupsusers
+    ON groups.id = groupsusers.GroupID
+    INNER JOIN users
+    ON groupsusers.UserID = users.UserID
+    WHERE groups.id = GroupID;
+END
+$$
