@@ -1,78 +1,85 @@
-﻿@model ClassWeb.Models.User
-
+﻿@model Tuple<User, List<Role>>
 @{
     ViewData["Title"] = "Details";
 }
-
 <h2>Details</h2>
-
 <div>
     <h4>User</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.Item1.FirstName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.Item1.FirstName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.MiddleName)
+            @Html.DisplayNameFor(model => model.Item1.MiddleName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.MiddleName)
+            @Html.DisplayFor(model => model.Item1.MiddleName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.Item1.LastName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.Item1.LastName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.EmailAddress)
+            @Html.DisplayNameFor(model => model.Item1.EmailAddress)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.EmailAddress)
+            @Html.DisplayFor(model => model.Item1.EmailAddress)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayNameFor(model => model.Item1.UserName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UserName)
+            @Html.DisplayFor(model => model.Item1.UserName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Password)
+            @Html.DisplayNameFor(model => model.Item1.DateCreated)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Password)
+            @Html.DisplayFor(model => model.Item1.DateCreated)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Salt)
+            @Html.DisplayNameFor(model => model.Item1.DateModified)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Salt)
+            @Html.DisplayFor(model => model.Item1.DateModified)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DateCreated)
+            @Html.DisplayNameFor(model => model.Item1.DateDeleted)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DateModified)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateModified)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DateDeleted)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateDeleted)
+            @Html.DisplayFor(model => model.Item1.DateDeleted)
         </dd>
     </dl>
+    <div class="form-group">
+        <form asp-action="ChangeRole" asp-controller="Users" method="post">
+            <label>Select Role</label>
+            <select name="Role" class="form-control">
+                @foreach (Role role in Model.Item2)
+                {
+                    int ID = role.ID;
+                    string Name = role.Name;
+                    if (Model.Item1.RoleID == ID)
+                    {
+                        <option value="@ID" selected>@Name</option>
+                    }
+                    else
+                    {
+                        <option value="@ID">@Name</option>
+                    }
+                }
+            </select>
+            <input name="UserID" value="@Model.Item1.ID" type="hidden"/>
+            <input type="submit" value="Change role"  class="btn btn-primary" />
+        </form>
+    </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Item1.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

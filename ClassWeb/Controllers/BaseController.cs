@@ -120,15 +120,16 @@ namespace ClassWeb.Controllers
             if (user == null) return false;
             if (typeof(T) == typeof(Assignment))
             {
-                //List<Role> rr = DAL.GetRoles();
-                //Role r = user.Role;
-                //PermissionSet n = r.Assignment;
+                if (user.FirstName == "Anony" || user.Role.Name == "Anonymous")
+                {
+                    return false;
+                }
+                else
+                {
                 return user.Role.Assignment >= perm;
             }
             else if (typeof(T) == typeof(Role))
             {
-                Role r = user.Role;
-                PermissionSet nn = r.Roles;
                 return user.Role.Roles >= perm;
             }
             else if (typeof(T) == typeof(User))

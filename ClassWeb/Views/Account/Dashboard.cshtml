@@ -1,25 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard ";
+
 }
-<div style="float:right">
-    <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
-    <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
-
-    <br /><br />
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="Account" asp-action="Edit">Edit Profile <text>&nbsp;</text></a>
-</div>
-
-<div style="float:left">
-    <h2 style="color:darkorange">User Dashboard</h2><br />
-    <p class="text-danger">@TempData["Message"]</p>
-    <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
+<div>
+        <h3 style="color:darkorange;display:inline-block">User Dashboard</h3><br />
+        <p class="text-danger">@TempData["Message"]</p>
+        <p class="text-danger">@TempData["Error"]</p>
+        <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
 
     <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
     @*<a style="color:blue" href="/Class/index" target="_blank">Classes Details</a><br /><br />*@
     <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
 
-</div>
 
 

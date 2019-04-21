@@ -38,8 +38,7 @@ namespace ClassWeb
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            services.AddDirectoryBrowser();
+            services.AddSpaStaticFiles();
 
             //Reference: PeerVal Project
             // Add the following to start using a session.
@@ -70,68 +69,33 @@ namespace ClassWeb
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
-            #region Static Files Serve 
-            //Created by: Elvis
-            //Date Created: 03/16/2019
-            //This configuratiion enables viewing of static files through URI
-            //Reference:Followed and copied code from Microsoft doc to serve  
-            //static files, enable Directory browsing and map file providers
-            //Date Modified: 03/17 -- Added directory browsing to the UserDirectory folder
-            //which contains each user default root folder
-            //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-2.2
-
-
-            // Set up custom content types - associating file extension to MIME type
-            var provider = new FileExtensionContentTypeProvider();
-            // Add new mappings
-            provider.Mappings[".myapp"] = "application/x-msdownload";
-            provider.Mappings[".html"] = "text/html";
-            provider.Mappings[".txt"] = "text/txt";
-            provider.Mappings[".image"] = "image/png";
-            provider.Mappings[".js"] = "text/js";
-            provider.Mappings[".sql"] = "text/sql";
-
-
-            app.UseHttpsRedirection();
-            app.UseCookiePolicy();
+            app.UseSession();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                   Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+            });// requred to have sessions in our application.
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","AssignmentDirectory")),
+                RequestPath= "/AssignmentDirectory"
+            });
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
-                RequestPath = "/MyImages",
-                ContentTypeProvider = provider,
-                ServeUnknownFileTypes = true,
-                DefaultContentType = "image/png"
-            });
-
-            //Enables directory browsing and files serve of upload folder via "baseurl/myFiles"
-            app.UseFileServer(new FileServerOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
-                RequestPath = "/MyFiles",
-                EnableDirectoryBrowsing = true
-            });
-
-            //Enables directory browsing of user directory folder via "baseurl/directory"
-            app.UseFileServer(new FileServerOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserDirectory")),
-                RequestPath = "/UserDirectory",
-                EnableDirectoryBrowsing = true
-            });
-            #endregion
-
-            app.UseSession(); // requred to have sessions in our application.
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Admin}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=index}/{id?}");
+                routes.MapRoute(
+                    name: "fileDirectory",
+                    template: "{UserName}/{Directory}/{FileName}",
+                    defaults: "{controller=Home}/{action=index}/{id?}");
+                routes.MapRoute(
+                   name: "root",
+                   template: "{UserName}/{FileName}",
+                   defaults: "{controller=Home}/{action=index}/{id?}");
             });
         }
     }
