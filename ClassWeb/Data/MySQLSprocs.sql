@@ -600,4 +600,8 @@ INSERT INTO groups(Name, EmailAddress, Username, Password, Salt) values (g_Name,
 SET g_ID = LAST_INSERT_ID();
 END$$
 
-
+DELIMITER $$
+CREATE PROCEDURE `get_GroupByUserName` (IN `username` VARCHAR(128)) 
+BEGIN 
+SELECT * from groups g where g.Username = username; 
+END$$

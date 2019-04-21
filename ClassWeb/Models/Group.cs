@@ -38,7 +38,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "GroupID";
+        internal const string db_ID = "ID";
         internal const string db_Name = "Name";
         internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";

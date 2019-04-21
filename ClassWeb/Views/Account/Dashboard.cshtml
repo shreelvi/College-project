@@ -16,22 +16,17 @@
     <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
 </div>
 
-<div style="float:left">
-    <h2 style="color:darkorange">User Dashboard</h2><br />
+<div>
+    <h3 style="color:darkorange;display:inline-block">User Dashboard</h3><br />
+    <p class="text-danger">@TempData["Message"]</p>
+    <p class="text-danger">@TempData["Error"]</p>
     <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
 
-    <a style="color:blue" href="@ViewData["Directory"]" target="_blank">Browse Your Files Directory</a><br /><br />
-    <a style="color:blue" href="@ViewData["Sample"]" target="_blank">View sample files</a><br /><br />
-    <a style="color:blue" asp-controller="Role" asp-action="Index"> View Roles</a><br /><br />
-
-
-
-    <a style="color:blue" asp-controller="Assignment" asp-action="CreateFolder"><strong>Create Folder</strong></a> <br /><br />
-
+    <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
+    <a style="color:blue" href="/Class/index" target="_blank">Classes Details</a><br /><br />
     <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
-
-    <h3 style="color:orange">List of your files:</h3>
 </div>
+
 <table class="table">
 
     <thead>

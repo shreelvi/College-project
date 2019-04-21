@@ -97,10 +97,10 @@ namespace ClassWeb.Controllers
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", grouploggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
-                HttpContext.Session.SetInt32("ID", grouploggedIn.ID); //Sets userid in the session
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
-                return RedirectToAction("Dashboard");
+                HttpContext.Session.SetInt32("GroupID", grouploggedIn.ID); //Sets userid in the session
+                //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//";
+                //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
+                return RedirectToAction("Dashboard", "Account");
             }
             else
             {

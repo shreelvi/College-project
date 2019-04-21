@@ -139,7 +139,9 @@ namespace ClassWeb.Controllers
         public ActionResult Dashboard()
         {
             User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
+            Group LoggedInGroup = CurrentGroup;
+
+            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
@@ -151,16 +153,24 @@ namespace ClassWeb.Controllers
                 if (s != null)
                     ViewData["PermissionErr"] = s;
 
-                int id = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
+                int id = 0;
+                if (LoggedInGroup.Name == "Anonymous") {
+                    id = (int)HttpContext.Session.GetInt32("UserID");
+                    string username = HttpContext.Session.GetString("username");
+                    ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+                    List<Assignment> UserAssignments = new List<Assignment>();
+                    UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+                    return View(UserAssignments);
+                }
+                else {
+                    id = (int)HttpContext.Session.GetInt32("GroupID");
+                    string username = HttpContext.Session.GetString("username");
+                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
+                    return View("GroupDashboard");
+                }
 
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-
-                List<Assignment> UserAssignments = new List<Assignment>();
-                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-
-                return View(UserAssignments);
+                
             }
             
         }

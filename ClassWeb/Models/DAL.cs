@@ -19,12 +19,12 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
 
         //Database information for the hosting website db
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -69,10 +69,7 @@ namespace ClassWeb.Model
             }
         }
 
-        internal static Course GetCourse(int courseID)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public static int GetIntReader(MySqlCommand comm)
         {
@@ -91,10 +88,6 @@ namespace ClassWeb.Model
             }
         }
 
-        internal static User GetUser(int userID)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// reference: Proffesor's PeerEval Project. 
@@ -760,7 +753,59 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Attempts to Get the user corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static User GetUser(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        #endregion
 
+        #region Courses
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Section
+        /// </summary>
+        /// <remarks></remarks>
+        internal static Course GetCourse(int courseID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetCourse");
+            Course retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, courseID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Course(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         /// <summary>
         /// Attempts to add a database entry corresponding to the given Course
         /// </summary>
@@ -788,7 +833,7 @@ namespace ClassWeb.Model
         
 
         /// <summary>
-        /// Gets a list of all Sections objects from the database.
+        /// Gets a list of all Course object from the database.
         /// </summary>
         /// <remarks></remarks>
         public static List<Course> GetCourses()
@@ -833,7 +878,6 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
         
         #endregion
 
@@ -1418,7 +1462,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
-                return AddObject(comm, "@" + Group.db_ID);
+                return AddObject(comm, "@" + "GroupID");
 
             }
             catch (Exception ex)
