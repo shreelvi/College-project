@@ -1,72 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 
-namespace ClassWeb.Models
-{
-    public class Year:DatabaseRecord
-    {
+//namespace ClassWeb.Models
+//{
+//    public class Year:DatabaseRecord
+//    {
 
-        #region Constructors
-        public Year()
-        {
-        }
-        internal Year(MySql.Data.MySqlClient.MySqlDataReader dr)
-        {
-            Fill(dr);
-        }
+//        #region Constructors
+//        public Year()
+//        {
+//        }
+//        internal Year(MySql.Data.MySqlClient.MySqlDataReader dr)
+//        {
+//            Fill(dr);
+//        }
 
-        #endregion
+//        #endregion
 
-        private int _Year;
+//        private int _Year;
 
 
 
-        public int Year1
-        {
-            get { return _Year; }
-            set { _Year = value; }
-        }
+//        public int Year1
+//        {
+//            get { return _Year; }
+//            set { _Year = value; }
+//        }
 
-        #region Database String
-        internal const string db_ID = "YearID";
-        internal const string db_Year = "Year";
-        #endregion
+//        #region Database String
+//        internal const string db_ID = "YearID";
+//        internal const string db_Year = "Year";
+//        #endregion
 
-        #region Public Functions
-        public override int dbSave()
-        {
-            throw new NotImplementedException();
-        }
+//        #region Public Functions
+//        public override int dbSave()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        protected override int dbAdd()
-        {
-            throw new NotImplementedException();
-        }
+//        protected override int dbAdd()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        protected override int dbUpdate()
-        {
-            throw new NotImplementedException();
-        }
+//        protected override int dbUpdate()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        public int dbRemove()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
+//        public int dbRemove()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        #endregion
 
-        #region Public Subs
-        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-        {
-            _ID = dr.GetInt32(db_ID);
-            _Year = dr.GetInt32(db_Year);
-        }
+//        #region Public Subs
+//        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+//        {
+//            _ID = dr.GetInt32(db_ID);
+//            _Year = dr.GetInt32(db_Year);
+//        }
 
-        public override string ToString()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-    }
-}
+//        public override string ToString()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        #endregion
+//    }
+//}

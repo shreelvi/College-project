@@ -1,357 +1,357 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ClassWeb.Model;
-using ClassWeb.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using ClassWeb.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
-using System.IO;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using ClassWeb.Model;
+//using ClassWeb.Models;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore.Metadata.Internal;
+//using Microsoft.AspNetCore.Mvc.Rendering;
+//using ClassWeb.Services;
+//using Microsoft.AspNetCore.Hosting;
+//using Microsoft.AspNetCore.Hosting.Internal;
+//using System.IO;
 
-namespace ClassWeb.Controllers
-{
-    public class AccountController : BaseController
-    {
-        #region Private Variables
-        private readonly IEmailService _emailService; //Use classes to send email in serivices folder
+//namespace ClassWeb.Controllers
+//{
+//    public class AccountController : BaseController
+//    {
+//        #region Private Variables
+//        private readonly IEmailService _emailService; //Use classes to send email in serivices folder
 
-        //hosting Envrironment is used to create the user directory 
-        private IHostingEnvironment _hostingEnvironment;
-        #endregion
+//        //hosting Envrironment is used to create the user directory 
+//        private IHostingEnvironment _hostingEnvironment;
+//        #endregion
 
-        #region constructor
-        public AccountController( IHostingEnvironment hostingEnvironment, IEmailService emailService)
-        {
-            _hostingEnvironment = hostingEnvironment;
-            _emailService = emailService;
-        }
-        #endregion
+//        #region constructor
+//        public AccountController( IHostingEnvironment hostingEnvironment, IEmailService emailService)
+//        {
+//            _hostingEnvironment = hostingEnvironment;
+//            _emailService = emailService;
+//        }
+//        #endregion
 
-        #region sendEmail
-        /// <summary>
-        /// Code By: Elvis
-        /// Date Created: 03/15/2019
-        /// Reference: https://steemit.com/utopian-io/@babelek/how-to-send-email-using-asp-net-core-2-0
-        /// https://stackoverflow.com/questions/35881641/how-can-i-send-a-confirmation-email-in-asp-net-mvc
-        /// Used the code in these References to add feature to send confirmation email to user when registering
-        /// Not complete yet. Some issue to fix when sending an email.
-        /// </summary>
+//        #region sendEmail
+//        /// <summary>
+//        /// Code By: Elvis
+//        /// Date Created: 03/15/2019
+//        /// Reference: https://steemit.com/utopian-io/@babelek/how-to-send-email-using-asp-net-core-2-0
+//        /// https://stackoverflow.com/questions/35881641/how-can-i-send-a-confirmation-email-in-asp-net-mvc
+//        /// Used the code in these References to add feature to send confirmation email to user when registering
+//        /// Not complete yet. Some issue to fix when sending an email.
+//        /// </summary>
 
-        [AllowAnonymous]
-        public ActionResult SendEmail()
-        {
-            return View();
-        }
+//        [AllowAnonymous]
+//        public ActionResult SendEmail()
+//        {
+//            return View();
+//        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("account/SendEmail")]
-        public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
-        {
-            await _emailService.SendEmail(email, subject, message);
-            return Ok();
-        }
-        [AllowAnonymous]
-        #endregion
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        [Route("account/SendEmail")]
+//        public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
+//        {
+//            await _emailService.SendEmail(email, subject, message);
+//            return Ok();
+//        }
+//        [AllowAnonymous]
+//        #endregion
 
-        #region Edit Account
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            int? uid = HttpContext.Session.GetInt32("UserID");
-            if (uid != null)
-            {
-                id = uid;
-            }
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var user = DAL.UserGetByID(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
-        {
-            if (id != user.ID)
-            {
-                return NotFound();
-            }
-            int? uid = HttpContext.Session.GetInt32("UserID");
-            if (id == null && uid != null)
-            {
-                id = uid;
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (id == uid)
-                    {
-                        int a = DAL.UpdateUser(user);
-                        if (a > 0)
-                        {
-                            HttpContext.Session.SetString("username", user.UserName);
-                            TempData["Message"] = "User Succesfully Updated!!";
-                        }
-                    }
-                    else
-                    {
-                        TempData["Message"] = "Trick!!";
-                    }
-                    return RedirectToAction("Dashboard", "Account");
-                }
-                catch (Exception ex)
-                {
+//        #region Edit Account
+//        // GET: Users/Edit/5
+//        public async Task<IActionResult> Edit(int? id)
+//        {
+//            int? uid = HttpContext.Session.GetInt32("UserID");
+//            if (uid != null)
+//            {
+//                id = uid;
+//            }
+//            if (id == null)
+//            {
+//                return NotFound();
+//            }
+//            var user = DAL.UserGetByID(id);
+//            if (user == null)
+//            {
+//                return NotFound();
+//            }
+//            return View(user);
+//        }
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
+//        {
+//            if (id != user.ID)
+//            {
+//                return NotFound();
+//            }
+//            int? uid = HttpContext.Session.GetInt32("UserID");
+//            if (id == null && uid != null)
+//            {
+//                id = uid;
+//            }
+//            if (ModelState.IsValid)
+//            {
+//                try
+//                {
+//                    if (id == uid)
+//                    {
+//                        int a = DAL.UpdateUser(user);
+//                        if (a > 0)
+//                        {
+//                            HttpContext.Session.SetString("username", user.UserName);
+//                            TempData["Message"] = "User Succesfully Updated!!";
+//                        }
+//                    }
+//                    else
+//                    {
+//                        TempData["Message"] = "Trick!!";
+//                    }
+//                    return RedirectToAction("Dashboard", "Account");
+//                }
+//                catch (Exception ex)
+//                {
 
-                }
-            }
-            return RedirectToAction("Dashboard", "Account");
-        }
-        #endregion
+//                }
+//            }
+//            return RedirectToAction("Dashboard", "Account");
+//        }
+//        #endregion
 
-        #region Login
-        /// <summary>
-        /// Code By: Elvis
-        /// Date Created: 03/09/2019
-        /// Reference: Prof. PeerVal Project, GitHub
-        /// Taken code and modified return view and view data
-        /// Modified on: 03/16/2019
-        /// --Added view data as URI for the files directory
-        /// User can access their directory from the dashboard
-        /// </summary>
-        public ActionResult Login(string returnUrl)
-        {
-            return RedirectToAction("index", "Home");
-        }
-        public ActionResult Profile()
-        {
-            int? uid = HttpContext.Session.GetInt32("UserID");
-            int id = 0;
-            if (uid != null)
-            {
+//        #region Login
+//        /// <summary>
+//        /// Code By: Elvis
+//        /// Date Created: 03/09/2019
+//        /// Reference: Prof. PeerVal Project, GitHub
+//        /// Taken code and modified return view and view data
+//        /// Modified on: 03/16/2019
+//        /// --Added view data as URI for the files directory
+//        /// User can access their directory from the dashboard
+//        /// </summary>
+//        public ActionResult Login(string returnUrl)
+//        {
+//            return RedirectToAction("index", "Home");
+//        }
+//        public ActionResult Profile()
+//        {
+//            int? uid = HttpContext.Session.GetInt32("UserID");
+//            int id = 0;
+//            if (uid != null)
+//            {
                
-            User U = DAL.UserGetByID(uid);
-            return View(U);
-            }
-            else
-            {
-                return RedirectToAction("index", "Home");
-            }
+//            User U = DAL.UserGetByID(uid);
+//            return View(U);
+//            }
+//            else
+//            {
+//                return RedirectToAction("index", "Home");
+//            }
 
-        }
-        /// <summary>
-        /// Created on: 03/07/2019
-        /// Created By: Elvis
-        /// Attempts to login the user with the provided username and password
-        /// Modified On: 03/18/2019
-        /// --Return User directory link to the dashboard page
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="passWord"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(String userName, String passWord)
-        {
-            User loggedIn = DAL.GetUser(userName, passWord);
-            CurrentUser = loggedIn; //Sets the session for user from base controller
+//        }
+//        /// <summary>
+//        /// Created on: 03/07/2019
+//        /// Created By: Elvis
+//        /// Attempts to login the user with the provided username and password
+//        /// Modified On: 03/18/2019
+//        /// --Return User directory link to the dashboard page
+//        /// </summary>
+//        /// <param name="userName"></param>
+//        /// <param name="passWord"></param>
+//        /// <returns></returns>
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public ActionResult Login(String userName, String passWord)
+//        {
+//            User loggedIn = DAL.GetUser(userName, passWord);
+//            CurrentUser = loggedIn; //Sets the session for user from base controller
 
-            if (loggedIn != null)
-            {
-                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
-                HttpContext.Session.SetString("username", userName);
-                //Sets userid in the session
-                HttpContext.Session.SetInt32("UserID", loggedIn.ID);
-                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin==true)?"True":"False");
-                return RedirectToAction("Dashboard");
-                //return View("Dashboard");
-            }
-            else
-            {
-                ViewBag.Error = "Invalid Username and/or Password";
-                ViewBag.User = userName;
-                return RedirectToAction("index", "Home");
-            }
-        }
-        public ActionResult ResetPasswordEmail()
-        {
-            return View();
-        }
-        #region Password Reset
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(int? id, [Bind("FirstName,LastName,UserName,Password,ID")] User user)
-        {
-            if (user.ID == id)
-            {
-                User u = DAL.UserGetByID(id);
-                u.FirstName = user.FirstName;
-                u.LastName = u.LastName;
-                u.Password = user.Password;
-                u.ResetCode = null;
-                int i = DAL.UpdateUserPassword(u);
-                if (i > 0)
-                {
-                    TempData["Message"] = "User Info Succesfully Modified";
-                    return RedirectToAction("Login");
-                }
-                else
-                {
-                    return View();
-                }
-            }
-            else
-            {
-                TempData["Message"] = "Input ID from system and Form doesnot match!";
-                return NotFound();
-            }
-        }
+//            if (loggedIn != null)
+//            {
+//                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
+//                HttpContext.Session.SetString("username", userName);
+//                //Sets userid in the session
+//                HttpContext.Session.SetInt32("UserID", loggedIn.ID);
+//                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin==true)?"True":"False");
+//                return RedirectToAction("Dashboard");
+//                //return View("Dashboard");
+//            }
+//            else
+//            {
+//                ViewBag.Error = "Invalid Username and/or Password";
+//                ViewBag.User = userName;
+//                return RedirectToAction("index", "Home");
+//            }
+//        }
+//        public ActionResult ResetPasswordEmail()
+//        {
+//            return View();
+//        }
+//        #region Password Reset
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public ActionResult ResetPassword(int? id, [Bind("FirstName,LastName,UserName,Password,ID")] User user)
+//        {
+//            if (user.ID == id)
+//            {
+//                User u = DAL.UserGetByID(id);
+//                u.FirstName = user.FirstName;
+//                u.LastName = u.LastName;
+//                u.Password = user.Password;
+//                u.ResetCode = null;
+//                int i = DAL.UpdateUserPassword(u);
+//                if (i > 0)
+//                {
+//                    TempData["Message"] = "User Info Succesfully Modified";
+//                    return RedirectToAction("Login");
+//                }
+//                else
+//                {
+//                    return View();
+//                }
+//            }
+//            else
+//            {
+//                TempData["Message"] = "Input ID from system and Form doesnot match!";
+//                return NotFound();
+//            }
+//        }
 
-        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
-        {
-            User u = DAL.UserGetByUserName(UserName, EmailAddress);
-            if (u == null)
-            {
-                TempData["Message"] = "Not a valid credentials";
-                return View();
-            }
-            else
-            {
-                string resetCode = Guid.NewGuid().ToString();
-                string Subject = "Reset Password Classweb";
-                string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
-                     "<a href=simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
-                     + "<h3>ClasWeb Team</h3>";
-                Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
-                if (t.IsCompleted)
-                {
-                    u.ResetCode = resetCode;
-                    int ret = DAL.UpdateUser(u);
-                }
+//        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
+//        {
+//            User u = DAL.UserGetByUserName(UserName, EmailAddress);
+//            if (u == null)
+//            {
+//                TempData["Message"] = "Not a valid credentials";
+//                return View();
+//            }
+//            else
+//            {
+//                string resetCode = Guid.NewGuid().ToString();
+//                string Subject = "Reset Password Classweb";
+//                string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
+//                     "<a href=simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+//                     + "<h3>ClasWeb Team</h3>";
+//                Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
+//                if (t.IsCompleted)
+//                {
+//                    u.ResetCode = resetCode;
+//                    int ret = DAL.UpdateUser(u);
+//                }
 
-            }
-            return View();
-        }
-        #endregion
-        public ActionResult Dashboard()
-        {
-            User LoggedIn = CurrentUser;
-            List<Assignment> UserAssignments = new List<Assignment>();
-            if (LoggedIn.FirstName == "Anonymous")
-            {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                //Display Permission check message that is passed from Assignment index
-                var s = TempData["PermissionError"];
-                if (s != null)
-                    ViewData["PermissionErr"] = s;
+//            }
+//            return View();
+//        }
+//        #endregion
+//        public ActionResult Dashboard()
+//        {
+//            User LoggedIn = CurrentUser;
+//            List<Assignment> UserAssignments = new List<Assignment>();
+//            if (LoggedIn.FirstName == "Anonymous")
+//            {
+//                TempData["LoginError"] = "Please login to view the page.";
+//                return RedirectToAction("Index", "Home");
+//            }
+//            else
+//            {
+//                //Display Permission check message that is passed from Assignment index
+//                var s = TempData["PermissionError"];
+//                if (s != null)
+//                    ViewData["PermissionErr"] = s;
 
-                int id = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
-                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-                return View(UserAssignments);
+//                int id = (int)HttpContext.Session.GetInt32("UserID");
+//                string username = HttpContext.Session.GetString("username");
+//                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+//                return View(UserAssignments);
 
-            }
-            return View(UserAssignments);
-        }
-        /// <summary>
-        /// Created on: 03/09/2019
-        /// Created by: Elvis
-        /// Logs out the user and clears their session information
-        /// </summary>
-        public IActionResult Logout()
-        {
-            //await _signManager.SignOutAsync();
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
-        }
-        #endregion
+//            }
+//            return View(UserAssignments);
+//        }
+//        /// <summary>
+//        /// Created on: 03/09/2019
+//        /// Created by: Elvis
+//        /// Logs out the user and clears their session information
+//        /// </summary>
+//        public IActionResult Logout()
+//        {
+//            //await _signManager.SignOutAsync();
+//            HttpContext.Session.Clear();
+//            return RedirectToAction("Login", "Account");
+//        }
+//        #endregion
 
-        #region Registration
-        /// <summary>        
-        /// Created on: 03/09/2019
-        /// Code by: Elvis
-        /// Method to Add/Register user to the database.
-        /// Modified on: 03/18/2019
-        /// Added feature to check the username is unique
-        /// </summary>
+//        #region Registration
+//        /// <summary>        
+//        /// Created on: 03/09/2019
+//        /// Code by: Elvis
+//        /// Method to Add/Register user to the database.
+//        /// Modified on: 03/18/2019
+//        /// Added feature to check the username is unique
+//        /// </summary>
 
-        // GET: /Account/AddUser
-        [AllowAnonymous]
-        public ActionResult AddUser(string returnUrl)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
-        }
+//        // GET: /Account/AddUser
+//        [AllowAnonymous]
+//        public ActionResult AddUser(string returnUrl)
+//        {
+//            ViewBag.ReturnUrl = returnUrl;
+//            return View();
+//        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [AllowAnonymous]
-        public ActionResult AddUser(User NewUser)
-        {
-            SetUserFolder(NewUser); //Sets the default user directory 
-            int check = DAL.CheckUserExists(NewUser.UserName);
-            if (check > 0)
-            {
-                ViewBag.Error = " Username not Unique! Please enter a new username.";
-                return View(); //Redirects to add user page
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        [AllowAnonymous]
+//        public ActionResult AddUser(User NewUser)
+//        {
+//            SetUserFolder(NewUser); //Sets the default user directory 
+//            int check = DAL.CheckUserExists(NewUser.UserName);
+//            if (check > 0)
+//            {
+//                ViewBag.Error = " Username not Unique! Please enter a new username.";
+//                return View(); //Redirects to add user page
 
-            }
-            else
-            {
-                try
-                {
-                    int UserAdd = DAL.AddUser(NewUser);
-                    if (UserAdd < 1)
-                    {
-                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
-                    }
-                    else
-                    {
-                        TempData["UserAddSuccess"] = "User added successfully";
-                    }
-                }
-                catch
-                {
-                    TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
-                }
-            }
-            return RedirectToAction("Login", "Account"); //Directs to Login page after success
-        }
+//            }
+//            else
+//            {
+//                try
+//                {
+//                    int UserAdd = DAL.AddUser(NewUser);
+//                    if (UserAdd < 1)
+//                    {
+//                        TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+//                    }
+//                    else
+//                    {
+//                        TempData["UserAddSuccess"] = "User added successfully";
+//                    }
+//                }
+//                catch
+//                {
+//                    TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
+//                }
+//            }
+//            return RedirectToAction("Login", "Account"); //Directs to Login page after success
+//        }
 
-        /// <summary>
-        /// Created on: 03/17/2019
-        /// Created by: Elvis
-        /// Sets the default root folder for each user when registration
-        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
-        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
-        /// Used the references to understand and develop the feature in our website
-        /// </summary>
-        private void SetUserFolder(User user)
-        {
-            string dir_Path = _hostingEnvironment.WebRootPath;
-            user.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", user.UserName);
-            string path = user.DirectoryPath;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
-        #endregion
+//        /// <summary>
+//        /// Created on: 03/17/2019
+//        /// Created by: Elvis
+//        /// Sets the default root folder for each user when registration
+//        /// Reference:https://stackoverflow.com/questions/47215461/how-to-create-directory-on-user-login-for-net-core-2
+//        /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
+//        /// Used the references to understand and develop the feature in our website
+//        /// </summary>
+//        private void SetUserFolder(User user)
+//        {
+//            string dir_Path = _hostingEnvironment.WebRootPath;
+//            user.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", user.UserName);
+//            string path = user.DirectoryPath;
+//            if (!Directory.Exists(path))
+//                Directory.CreateDirectory(path);
+//        }
+//        #endregion
 
 
-    }
-}
+//    }
+//}
