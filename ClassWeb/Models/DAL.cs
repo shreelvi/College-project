@@ -914,6 +914,13 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
+
+        ///<summary>
+        /// Created By: Mohan 
+        /// Get Course 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
         internal static List<Course> GetCourse()
         {
 
