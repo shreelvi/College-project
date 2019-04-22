@@ -76,7 +76,7 @@ namespace ClassWeb.Controllers
                 
                 if (g == null) g = new Group() {
                 
-                 Name = "Class"
+                 Name = "Anonymous"
                 };
                 return g;
             }

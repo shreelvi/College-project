@@ -41,7 +41,8 @@ namespace ClassWeb.Models
         private bool _IsEmailConfirmed = false;
         private string _EmailToken;
                private string _DirectoryPath;
-        
+        private List<User> _Users;
+
         #endregion
 
         #region Database String
@@ -117,9 +118,16 @@ namespace ClassWeb.Models
             set { _DirectoryPath = value; }
         }
 
+
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; }
+
+        public List<User> Users
+        {
+            get { return _Users; }
+            set { _Users = value; }
+        }
 
         #endregion
 

@@ -1,9 +1,10 @@
-﻿@model IEnumerable<ClassWeb.Models.Group>
+﻿@model List<ClassWeb.Models.Group>
 
 @{
     ViewData["Title"] = "Index";
 
 }
+@{var i = 1;}
 
 <h2>Index</h2>
 <p>
@@ -14,33 +15,29 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.EmailAddress)
+                <p>Name</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <p>EmailAddress</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
+                <p>UserName</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Salt)
+                <p>Users in Group</p>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateModified)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AssignmentID)
-            </th>
+            @*<th>
+                        @Html.DisplayNameFor(model => model.DateCreated)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateDeleted)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateModified)
+                    </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssignmentID)
+                </th>*@
 
             <th></th>
         </tr>
@@ -48,41 +45,47 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmailAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salt)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.DateCreated)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.DateDeleted)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.DateModified)
-            </td>
-            <td>
-                @Html.DisplayNameFor(model => model.AssignmentID)
-            </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Users)
+                </td>
+                @*<td>
+                        @foreach (var name in item.Users)
+                        {
+                            @Html.DisplayFor(modelItem => item.Users[i].FirstName) <br />
+                            i = i + 1;
+                            <br />
+                        }
+                    </td>*@
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+                @*<td>
+                        @Html.DisplayNameFor(model => model.DateCreated)
+                    </td>
+                    <td>
+                        @Html.DisplayNameFor(model => model.DateDeleted)
+                    </td>
+                    <td>
+                        @Html.DisplayNameFor(model => model.DateModified)
+                    </td>*@
+                @*<td>
+                        @Html.DisplayNameFor(model => model.AssignmentID)
+                    </td>*@
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

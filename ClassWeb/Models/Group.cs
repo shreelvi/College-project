@@ -32,9 +32,10 @@ namespace ClassWeb.Models
         private string _Password;
         private string _Salt;
         private string _DirectoryPath;
-        private string _ResetCode; 
+       // private string _ResetCode; 
         private List<Assignment> _Assignments; 
         private int _AssignmentID;
+        private List<User> _Users; 
         #endregion
 
         #region Database String
@@ -73,11 +74,7 @@ namespace ClassWeb.Models
             }
             set { _Password = value.Trim(); }
         }
-        public string ResetCode
-        {
-            get { return _ResetCode; }
-            set { _ResetCode = value; }
-        }
+       
         public string Salt
         {
             get { return _Salt; }
@@ -99,6 +96,20 @@ namespace ClassWeb.Models
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
+
+        public List<User> Users
+        {
+            get
+            {
+                if (_Users == null)
+                {
+                    _Users = DAL.GetGroupUsers(_ID);
+                }
+                return _Users;
+            }
+            set { _Users = value; }
+        }
+
         #endregion
 
         #region Public Functions
@@ -142,6 +153,7 @@ namespace ClassWeb.Models
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _Name = dr.GetString(db_Name);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);

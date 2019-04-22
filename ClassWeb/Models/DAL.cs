@@ -519,7 +519,7 @@ namespace ClassWeb.Model
         /// Gets List of usernames from the database to check for same names
         /// </summary>
         /// <returns>List of Usernames string</returns>
-        internal static List<User> GetAllUsers()
+        internal static List<User> GetAllUsers(int _UserID)
         {
             MySqlCommand comm = new MySqlCommand("sproc_GetAllUsers");
             List<User> retList = new List<User>();
@@ -542,6 +542,7 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+
 
         #endregion
 
@@ -1026,16 +1027,16 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static int AddUserToGroup(User obj)
+        internal static int AddUserToGroup(int GroupID, int UserID)
         {
-            if (obj == null) return -1;
+            if (GroupID == 0 || UserID == 0) return -1;
             MySqlCommand comm = new MySqlCommand("add_UserToGroup");
             try
             {
+                comm.Parameters.AddWithValue("@" + "GroupID", GroupID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
 
-                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
-
-                return AddObject(comm, "@" + Group.db_ID);
+                return AddObject(comm, "@" + GroupUser.db_ID);
             }
             catch (Exception ex)
             {
@@ -1043,6 +1044,7 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+
         internal static int RemoveUserFromGroup(int userID)
         {
             if (userID == 0) return -1;
@@ -1068,7 +1070,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-               // comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
@@ -1119,16 +1121,41 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
+
+        /// <summary>
+        /// Attempts to Get the user corresponding to the ID
+        /// </summary>
+        /// <remarks></remarks>
+        internal static User GetUser(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGet");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         ///<summary>
         /// Check if username exists in the database
         /// </summary>
         /// <remarks></remarks>
         internal static int CheckGroupExists(string username)
         {
-            if (username == null)
-                return -1; 
+            
             MySqlCommand comm = new MySqlCommand("CheckGroupUsernameExists");
-           
+            if (username != null)
                 try
                 {
                     comm.Parameters.AddWithValue("@" + Group.db_UserName, username);
@@ -1168,11 +1195,12 @@ namespace ClassWeb.Model
         {
 
             MySqlCommand comm = new MySqlCommand("CheckUserExistsByEmailAddress");
-            if (emailAddress == null)
+            if (emailAddress != null)
                 try
                 {
-                   
-
+                    comm.Parameters.AddWithValue("@" + User.db_EmailAddress, emailAddress);
+                    int dr = GetIntReader(comm);
+                    return dr;
                 }
                 catch (Exception ex)
                 {
@@ -1274,8 +1302,67 @@ namespace ClassWeb.Model
             return -1;
         }
 
-
+        //copied from ELvis's code 
+        internal static List<User> GetGroupUsers(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupUserByUserName");
+            List<User> retList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue("@" + "GroupID", id);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new User(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         #endregion
+
+
+        /// <summary>
+        /// Gets a list of all ClassWeb.Assignment objects for the user from the database.
+        /// </summary>
+        /// <remarks></remarks>
+        public static List<Assignment> GetUserAssignments(int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentsByUserID");
+            List<Assignment> retList = new List<Assignment>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue(User.db_ID, userID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    Assignment a = new Assignment(dr);
+                    //a.User = new User(dr);
+                    retList.Add(a);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+       
+        
+
+
+
+
         //#region Class
         ///// <summary>
         ///// Attempts to add classes in the database
