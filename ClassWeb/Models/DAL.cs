@@ -534,10 +534,10 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static List<Assignment> AssignmentGetByID(int id)
+        internal static Assignment AssignmentGetByID(int id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentByUserID");
-            List<Assignment> retList = new List<Assignment>();
+            Assignment retList = new Assignment();
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
@@ -547,7 +547,7 @@ namespace ClassWeb.Model
                 {
                     Assignment a = new Assignment(dr);
                     //a.User = new User(dr);
-                    retList.Add(a);
+                    retList=a;
                 }
                 comm.Connection.Close();
             }
@@ -583,8 +583,9 @@ namespace ClassWeb.Model
 
 
 
-        internal static void UpdateAssignment(Assignment obj)
+        internal static int UpdateAssignment(Assignment obj)
         {
+            if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
             try
             {
@@ -596,7 +597,7 @@ namespace ClassWeb.Model
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
+            return -1;
         }
 
         internal static int ResubmitAssignment(Assignment obj)
