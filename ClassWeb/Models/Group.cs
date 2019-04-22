@@ -9,7 +9,7 @@ namespace ClassWeb.Models
 {
     /// <summary>
     /// Code by Elvis
-    /// Groups are a team of student members for a projects in class
+    /// Groups are a team of student members for a project in class
     /// </summary>
 
     public class Group : DatabaseNamedRecord
@@ -32,19 +32,17 @@ namespace ClassWeb.Models
         private string _Password;
         private string _Salt;
         private string _DirectoryPath;
-       // private string _ResetCode; 
-        private List<Assignment> _Assignments; 
+        private List<Assignment> _Assignments;
         private int _AssignmentID;
-        private List<User> _Users; 
+        private List<User> _Users;
         #endregion
 
         #region Database String
         internal const string db_ID = "ID";
         internal const string db_Name = "Name";
         internal const string db_EmailAddress = "EmailAddress";
-        internal const string db_UserName = "Username";
+        internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
-        internal const string db_ResetCode = "ResetCode";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
         internal const string db_Assignments = "Assignments";
@@ -52,8 +50,13 @@ namespace ClassWeb.Models
 
         #endregion
         #region Public Variables
-       
-       
+        [Display(Name = "Group's Email-address",
+            Description = "Email-address used to contact the group; which all members will have access.")]
+        public string EmailAddress
+        {
+            get { return _EmailAddress; }
+            set { _EmailAddress = value; }
+        }
 
         [Display(Name = "Group's Login Username",
             Description = "Username to login to group's account profile.")]
@@ -74,7 +77,7 @@ namespace ClassWeb.Models
             }
             set { _Password = value.Trim(); }
         }
-       
+
         public string Salt
         {
             get { return _Salt; }
@@ -96,7 +99,6 @@ namespace ClassWeb.Models
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
-
         public List<User> Users
         {
             get
@@ -116,7 +118,7 @@ namespace ClassWeb.Models
 
         public override int dbSave()
         {
-          if(_ID < 0)
+            if (_ID < 0)
             {
                 return dbAdd();
 
@@ -131,13 +133,13 @@ namespace ClassWeb.Models
         {
             _ID = DAL.AddGroup(this);
             return ID;
-           
+
         }
 
         protected override int dbUpdate()
         {
             return DAL.UpdateGroup(this);
-            
+
         }
         public int dbRemoveUserFromGroup()
         {
@@ -157,9 +159,8 @@ namespace ClassWeb.Models
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-           // _ResetCode = dr.GetString(db_ResetCode);
             _Salt = dr.GetString(db_Salt);
-          //  _AssignmentID = dr.GetInt32(db_AssignmentID);
+            //  _AssignmentID = dr.GetInt32(db_AssignmentID);
 
         }
         #endregion

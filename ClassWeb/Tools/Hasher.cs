@@ -66,8 +66,7 @@ namespace ClassWeb.Tools {
         public static bool IsValid(string passToCheck, string salt, string pepper, int stretches, string hashToCompare) {
             string hash = (Get(passToCheck, salt, pepper, stretches, hashToCompare.Length));
 
-            //Removes last character from hash and hash to compare
-            //To solve the issue
+            
             
             if (hash == hashToCompare)
                 return true;

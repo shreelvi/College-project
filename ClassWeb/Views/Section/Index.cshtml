@@ -1,10 +1,18 @@
-﻿@*@model List<ClassWeb.Models.Section>
+﻿@model List<ClassWeb.Models.Section>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Index</h2>
+
+<p style="color:blue">
+    @ViewData["SectionAdd"]
+</p>
+
+<p style="color:red">
+    @ViewData["SectionDelete"]
+</p>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,15 +21,14 @@
     <thead>
         <tr>
             <th>
+                <p>ID</p>
+            </th>
+            <th>
                 <p>CRN</p>
             </th>
             <th>
                 <p>SectionNumber</p>
             </th>
-            <th>
-                <p>CourseName</p>
-            </th>
-            <th><p>ProfessorName</p></th>
         </tr>
     </thead>
     <tbody>
@@ -29,17 +36,15 @@
         {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.CRN)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SectionNumber)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Name)
-            </td>
-            <td>
-                @item.User.FirstName @item.User.LastName
-            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
@@ -48,4 +53,4 @@
         </tr>
         }
     </tbody>
-</table>*@
+</table>

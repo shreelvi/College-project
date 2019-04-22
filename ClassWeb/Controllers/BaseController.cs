@@ -54,13 +54,7 @@ namespace ClassWeb.Controllers
             get
             {
                 User u = Get<User>("CurrentUser");
-                if (u == null) u = new User() {
-                    FirstName = "Anony",
-                    Role = new Role()
-                    {
-                        Name = "Anonymous",
-                    }
-                };
+                if (u == null) u = new User() { FirstName = "Anonymous" };
                 return u;
             }
             set
@@ -68,16 +62,13 @@ namespace ClassWeb.Controllers
                 Set("CurrentUser", value);
             }
         }
+
         internal Group CurrentGroup
         {
             get
             {
                 Group g = Get<Group>("CurrentGroup");
-                
-                if (g == null) g = new Group() {
-                
-                 Name = "Anonymous"
-                };
+                if (g == null) g = new Group() { Name = "Anonymous" };
                 return g;
             }
             set
@@ -85,13 +76,14 @@ namespace ClassWeb.Controllers
                 Set("CurrentGroup", value);
             }
         }
+
         //Same method as above. Created because we used loginmodel
-        internal User LoggedInUser
+        internal LoginModel LoggedInUser
         {
             get
             {
-                User u = Get<User>("LoggedInUser");
-                if (u == null) u = new User() { FirstName = "Anony" };
+                LoginModel u = Get<LoginModel>("LoggedInUser");
+                if (u == null) u = new LoginModel() { FirstName = "Anonymous" };
                 return u;
             }
             set
@@ -100,20 +92,6 @@ namespace ClassWeb.Controllers
             }
         }
 
-        //Same method as above. Created because we used loginmodel
-        internal Group GroupLoggedIn
-        {
-            get
-            {
-               Group g = Get<Group>("GroupLoggedIn");
-                if (g == null) g = new Group() {Name = "Class" };
-                return g;
-            }
-            set
-            {
-                Set("GroupLoggedIn", value);
-            }
-        }
         internal bool UserCan<T>(PermissionSet.Permissions perm)
         {
             User user = CurrentUser;
@@ -133,14 +111,7 @@ namespace ClassWeb.Controllers
             }
             else if (typeof(T) == typeof(User))
             {
-                if (user.FirstName == "Anony" || user.Role.Name== "Anonymous")
-                {
-                    return false;
-                }
-                else
-                {
-                    return user.Role.Users >= perm;
-                }
+                return user.Role.Users >= perm;
             }
             else
                 return false;

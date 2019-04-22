@@ -2,51 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Semester:DatabaseRecord
+    public class Semester:DatabaseNamedRecord
     {
-        /// <summary>
-        /// By: Ganesh Sapkota 
-        /// Ref: Professor's code for PeerEval
-        /// Creating  semester model for our project.
-        /// Class is like Fall , Spring 
-        /// </summary>
+
+        #region Constructors
+        public Semester()
+        {
+        }
+        internal Semester(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
+
+        #endregion
+
 
         #region Database String
-        internal const string db_ID = "ID";
-        internal const string db_Name = "Name";
+        internal const string db_ID = "SemesterID";
+        internal const string db_Name = "SemesterName";
         #endregion
 
-        #region Private Variables
-        private string _Name;
-        #endregion
-
-        public string Name
-        {
-            get
-            {
-                return _Name;
-            }
-            set
-            {
-                _Name = value;
-            }
-        }
-
+        #region Public Functions
         public override int dbSave()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Fill(MySqlDataReader dr)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
         {
             throw new NotImplementedException();
         }
@@ -60,6 +40,24 @@ namespace ClassWeb.Models
         {
             throw new NotImplementedException();
         }
-    }
 
+        public int dbRemove()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Public Subs
+        public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            _ID = dr.GetInt32(db_ID);
+            _Name = dr.GetString(db_Name);
+        }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
 }

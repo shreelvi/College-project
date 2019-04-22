@@ -14,10 +14,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ClassWeb.Controllers
 {
-    public class AssignmentController : BaseController
+    public class AssignmentController : Controller
     {
         //hosting Envrironment is used to upload file in the web root directory path (wwwroot)
         private IHostingEnvironment _hostingEnvironment;
+        List<Assignment> Assignments = new List<Assignment>();
         public AssignmentController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -25,245 +26,98 @@ namespace ClassWeb.Controllers
         // GET: Assignments
         public IActionResult Index()
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            string UserName = HttpContext.Session.GetString("UserName");
+            if (UserName == null)
             {
-                int? ID = HttpContext.Session.GetInt32("UserID");
-                if (ID != null)
-                {
-                    User U = DAL.UserGetByID(ID);
-                    if (U != null)
-                    {
-                        if (U.Role.IsAdmin)
-                        {
-
-                            ViewBag.Dir = "Home" + RootDir();
-                        }
-                        CurrentDir();
-                        Tuple<List<Assignment>, List<string>> assignments = GetFiles();
-                        return View(assignments);
-                    }
-                }
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Home", "Index");
             }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
+            CurrentDir(UserName);
+            //string Current =// Directory.GetCurrentDirectory().Split(UserName);
+            //ViewBag.Location = //;
+            Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+            ViewBag.Dir = RootDir();
+            return View(assignments);
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
-        public ActionResult FileView(string FileName)
+        public RedirectResult FileView(string FileName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            string url = "";
+            string s = Directory.GetCurrentDirectory();
+            string UserName = HttpContext.Session.GetString("UserName");
+            if (s == Path.Combine(_hostingEnvironment.WebRootPath, UserName))
             {
-                string url = "";
-                string s = Directory.GetCurrentDirectory();
-                s = s.Replace("\\", "/");
-                int? id = HttpContext.Session.GetInt32("UserID");
-                if (id != null)
-                {
-                    string path;
-                    User U = DAL.UserGetByID(id);
-                    if (U.Role.IsAdmin == true)
-                    {
-                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory");
-                        if (s == path)
-                        {
-                            url = Url.RouteUrl("root", new { UserName = "AssignmentDirectory", FileName = FileName });
-                        }
-                        else
-                        {
-                            int Index = s.Replace("\\", "/").IndexOf("AssignmentDirectory");
-                            Index += "AssignmentDirectory".Length;
-                            string dir = s.Substring(Index, s.Length - Index++);
-                            url = Url.RouteUrl("fileDirectory", new { UserName = "AssignmentDirectory", Directory = dir, FileName = FileName });
-                        }
-                    }
-                    else
-                    {
-                        path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName);
-                        if (s == path)
-                        {
-                            url = Url.RouteUrl("root", new { UserName = U.UserName, FileName = FileName });
-                        }
-                        else
-                        {
-                            int Index = s.IndexOf(U.UserName);
-                            Index += U.UserName.Length;
-                            string dir = s.Substring(Index, s.Length - Index);
-                            url = Url.RouteUrl("fileDirectory", new { UserName = U.UserName, Directory = dir, FileName = FileName });
-                        }
-                    }
-
-                    return new RedirectResult(url);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                url = Url.RouteUrl("root", new { UserName = UserName, FileName = FileName });
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
+                int Index = s.IndexOf(UserName);
+                Index += UserName.Length;
+                string dir = s.Substring(Index, s.Length - Index);
+                url = Url.RouteUrl("fileDirectory", new { UserName = UserName, Directory = dir, FileName = FileName });
             }
-
+            return new RedirectResult(url);
         }
         public string RootDir()
         {
-            int? ID = HttpContext.Session.GetInt32("UserID");
-            int index = 0;
-            if (ID != null)
-            {
-                User U = DAL.UserGetByID(ID);
-                if (U != null)
-                {
-                    if (U.Role.IsAdmin == true)
-                    {
-
-                        index = Directory.GetCurrentDirectory().IndexOf("AssignmentDirectory") + 19;
-                    }
-                    else
-                    {
-                        index = Directory.GetCurrentDirectory().IndexOf(U.UserName) + U.UserName.Length;
-                    }
-
-                }
-            }
-            return (Directory.GetCurrentDirectory().Substring(index));
+            string _UserName = HttpContext.Session.GetString("UserName");
+            int index = Directory.GetCurrentDirectory().IndexOf(_UserName) + _UserName.Length;
+            return ("Home" + Directory.GetCurrentDirectory().Substring(index));
         }
         public IActionResult SetDefaultDir()
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
-            {
-                int? ID = HttpContext.Session.GetInt32("UserID");
-                if (ID != null)
-                {
-                    User U = DAL.UserGetByID(ID);
-                    if (U != null)
-                    {
-                        if (U.Role.IsAdmin == true)
-                        {
-
-                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
-                        }
-                        else
-                        {
-                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName));
-                        }
-
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
-
+            string _UserName = HttpContext.Session.GetString("UserName");
+            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, _UserName));
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult ChangeDirUp(string dir)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
-            {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
-                Directory.SetCurrentDirectory(path);
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
-
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
         }
         public IActionResult ChangeDirDown()
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
-            {
-                string path = Directory.GetCurrentDirectory();
-                int? ID = HttpContext.Session.GetInt32("UserID");
-                if (ID != null)
-                {
-                    User U = DAL.UserGetByID(ID);
-                    if (U != null)
-                    {
-                        if (path != (Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", "")))
-                        {
-                            int test = path.LastIndexOf("\\");
-                            string s = path.Substring(0, test);
-                            Directory.SetCurrentDirectory(s);
-                        }
-                        else
-                        {
-                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
-                        }
-
-                    }
-
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
-
+            string path = Directory.GetCurrentDirectory();
+            int test = path.LastIndexOf("\\");
+            string s = path.Substring(0, test);
+            Directory.SetCurrentDirectory(s);
+            return RedirectToAction(nameof(Index));
         }
         [HttpPost]
         public IActionResult Close()
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
+            return RedirectToAction(nameof(Index));
         }
         [HttpPost]
         public IActionResult SaveEditedFile(string Content, string FileName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.ViewAndEdit))
+            if (Content != null && Content.Length > 0)
             {
-                if (Content != null && Content.Length > 0)
+
+                string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
+
+                try
                 {
-
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
-
-                    try
+                    if (System.IO.File.Exists(path))
                     {
-                        if (System.IO.File.Exists(path))
+                        using (FileStream fileStream = new FileStream(path, FileMode.Open))
                         {
-                            using (FileStream fileStream = new FileStream(path, FileMode.Open))
-                            {
-                                fileStream.SetLength(0);
-                                fileStream.Close();
-                            }
-                            StreamWriter sw = new StreamWriter(path);
-                            sw.Write(Content);
-                            sw.Close();
-                            ViewBag.Message = "File Has Been Succefully Modified";
+                            fileStream.SetLength(0);
+                            fileStream.Close();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        //return ex;
+                        StreamWriter sw = new StreamWriter(path);
+                        sw.Write(Content);
+                        sw.Close();
+                        ViewBag.Message = "File Has Been Succefully Modified";
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    //return ex;
+                }
             }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
-                return RedirectToAction("Login", "Account");
-            }
-
+            return RedirectToAction(nameof(Index));
         }
         //<summary>
         //Post method to save the file
@@ -272,136 +126,111 @@ namespace ClassWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(List<IFormFile> file)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            //Save files in the directory
+            try
             {
-                //Save files in the directory
-                try
-                {
-                    string _UserName = HttpContext.Session.GetString("username");
-                    string dir_Path = CurrentDir();
-                    CreateFolderDirectory(file);
-                    var items = GetFiles();
-                    return View(items);
-                }
-                catch (Exception ex)
-                {
-                    if (ex.GetType().ToString() == "System.NullReferenceException")
-                    {
-                        ViewBag.Error = "Please Select The File To Upload";
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                string _UserName = HttpContext.Session.GetString("username");
+                string dir_Path = CurrentDir(_UserName);
+                CreateFolderDirectory(file);
+                var items = GetFiles();
+                return View(items);
             }
-            else
+            catch (Exception ex)
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
+                if (ex.GetType().ToString() == "System.NullReferenceException")
+                {
+                    ViewBag.Error = "Please Select The File To Upload";
+                }
             }
-
+            return RedirectToAction(nameof(Index));
         }
 
         private void CreateFolderDirectory(List<IFormFile> files)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.Add))
+            List<Assignment> assign = new List<Assignment>();
+            foreach (IFormFile file in files)
             {
-                List<Assignment> assign = new List<Assignment>();
-                foreach (IFormFile file in files)
+                DirectoryInfo dir = new DirectoryInfo(file.FileName);
+                Assignment a = new Assignment();
+                a.UserName = HttpContext.Session.GetString("username");
+                if (!Directory.Exists(dir.Parent.ToString()))
                 {
-                    try
+                    Directory.CreateDirectory(dir.Parent.ToString());
+                    string t = dir.Extension;
+                    bool IsReadable = false;
+                    if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+              t == "text/html" || t == "text/javascript" || t == "text/css")
                     {
-                        DirectoryInfo dir = new DirectoryInfo(file.FileName);
-                        int index = dir.Parent.ToString().IndexOf("AssignmentDirectory");
-                        string location = dir.Parent.ToString().Substring(index + 1);
-                        Assignment a = new Assignment();
-                        a.UserName = HttpContext.Session.GetString("username");
-                        if (!Directory.Exists(dir.Parent.ToString()))
+                        IsReadable = true;
+                    }
+                    a.IsEditable = false;
+                    a.FileSize = file.Length;
+                    a.FileLocation = file.FileName.ToString();
+                    a.UserName= HttpContext.Session.GetString("username");
+                    int lastindex = file.Name.LastIndexOf("/");
+                    a.FileName = file.FileName.ToString().Substring(lastindex);
+                    a.Grade = 0;
+                    a.DateSubmited = DateTime.Now;
+                    a.Feedback = "File Submitted";
+                    a.DateModified = DateTime.Now;
+                    int test = DAL.AddAssignment(a);
+                    //checking and validating the insert info into table
+                    if (test > 0)
+                    {
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
                         {
-                            Directory.CreateDirectory(dir.Parent.ToString());
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
+                        }
+                    }
+                    else
+                    {
+                     TempData["Message"] = "File Upload Failed!!!";
+                    }
+                    assign.Add(a);
+                }
+                if (Directory.Exists(dir.Parent.ToString()))
+                {
+
+                    //Directory.CreateDirectory(dir.Parent.ToString());
+                    Assignment db = DAL.GetAssignmentByFileName(dir.Name);
+                    if (db != null)
+                    {
+                    db.Feedback = "File Re-Submitted";
+                    db.DateModified = DateTime.Now;
+                        DAL.UpdateAssignment(a);
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Re-Uploaded!!!";
+                        }
+                    }
+                    else if(db==null)
+                    {
+                        using (var stream = new FileStream(dir.FullName, FileMode.Create))
+                        {
+                            a.IsEditable = false;
                             a.FileSize = file.Length;
-                            a.FileLocation = file.FileName.ToString();
-                            int lastindex = file.FileName.LastIndexOf('/');
-                            a.FileName = file.FileName.ToString().Substring(lastindex + 1);
+                            a.FileLocation = dir.FullName;
+                            a.FileName = file.FileName.ToString();
                             a.Grade = 0;
                             a.DateSubmited = DateTime.Now;
+                            a.UserName = HttpContext.Session.GetString("username");
                             a.Feedback = "File Submitted";
                             a.DateModified = DateTime.Now;
                             int test = DAL.AddAssignment(a);
-                            //checking and validating the insert info into table
-                            if (test > 0)
-                            {
-                                using (var stream = new FileStream(dir.FullName, FileMode.Create))
-                                {
-                                    file.CopyToAsync(stream);
-                                    ViewBag.Message = "File Succesfully Uploaded!!!";
-                                }
-                            }
-                            else
-                            {
-                                TempData["Error"] = "File Upload Failed!!!";
-                            }
-                            assign.Add(a);
+                            file.CopyToAsync(stream);
+                            ViewBag.Message = "File Succesfully Uploaded!!!";
                         }
-                        if (Directory.Exists(dir.Parent.ToString()))
-                        {
-                            //Directory.CreateDirectory(dir.Parent.ToString());
-                            Assignment db = DAL.GetAssignmentByNameLocationUserName(dir.Name, location, a.UserName);
-                            if (db != null)
-                            {
-                                db.Feedback = "File Re-Submitted";
-                                db.DateModified = DateTime.Now;
-                                int i = DAL.UpdateAssignment(a);
-                                using (var stream = new FileStream(dir.FullName, FileMode.Create))
-                                {
-                                    file.CopyToAsync(stream);
-                                    ViewBag.Message = "File Succesfully Re-Uploaded!!!";
-                                }
-                            }
-                            else if (db == null)
-                            {
-                                using (var stream = new FileStream(dir.FullName, FileMode.Create))
-                                {
-                                    a.IsEditable = false;
-                                    a.FileSize = file.Length;
-                                    a.FileLocation = RootDir() + file.FileName.ToString();
-                                    a.FileName = file.FileName.ToString();
-                                    a.Grade = 0;
-                                    a.DateSubmited = DateTime.Now;
-                                    a.UserName = HttpContext.Session.GetString("username");
-                                    a.Feedback = "File Submitted";
-                                    a.DateModified = DateTime.Now;
-                                    int test = DAL.AddAssignment(a);
-                                    if (test > 0)
-                                    {
-                                        file.CopyToAsync(stream);
-                                        ViewBag.Message = "File Succesfully Uploaded!!!";
-                                    }
-                                    else
-                                    {
-                                        DAL.DeleteAssignmentByID(test);
-                                        ViewBag.Message = "File Could not be uploaded Succesfully!!!";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                TempData["Message"] = "File Upload Failed!!!";
-                            }
-                            assign.Add(a);
-                        }
-                        SetDefaultDir();
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        ViewBag.Message = ex.Message;
+                        TempData["Message"] = "File Upload Failed!!!";
                     }
+                    assign.Add(a);
                 }
             }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                RedirectToAction("Login", "Account");
-            }
-
+            SetDefaultDir();
         }
         public async Task<FileResult> Download(string FileName)
         {
@@ -417,224 +246,161 @@ namespace ClassWeb.Controllers
         }
         public IActionResult CreateFolder(string folderName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.Add))
+            string path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if (!Directory.Exists(path))
             {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (!Directory.Exists(path))
+                try
                 {
-                    try
-                    {
-                        ViewBag.Message = "Folder Succesfully Created";
-                        Directory.CreateDirectory(path);
-                    }
-                    catch
-                    {
-
-                    }
+                    ViewBag.Message = "Folder Succesfully Created";
+                    Directory.CreateDirectory(path);
+                }
+                catch
+                {
 
                 }
-                else
-                {
-                    ViewBag.Message = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
-                }
-                return RedirectToAction(nameof(Index));
+
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to add Assignment";
-                return RedirectToAction("Login", "Account");
+                ViewBag.Message = "Folder with the Name:" + folderName + "Cannot be created! Please try with different name";
             }
-
+            return RedirectToAction(nameof(Index));
         }
 
         #region Delete Assignement
         [HttpPost]
         public IActionResult DeleteFile(string FileName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.Delete))
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FileName);
+            if (System.IO.File.Exists(path))
             {
-                string dir_Path = Directory.GetCurrentDirectory();
-                string path = Path.Combine(dir_Path, FileName);
-                if (System.IO.File.Exists(path))
+                try
                 {
-                    try
+                    Assignment assign = DAL.GetAssignmentByFileName(FileName);
+
+                    if (assign == null)
                     {
-                        Assignment assign = DAL.GetAssignmentByFileName(FileName);
-                        if (assign == null)
-                        {
-                            System.IO.File.Delete(path);
-                            ViewBag.Message = "File Succesfully Deleted!!!";
-                        }
-                        if (assign.FileName == FileName && path == assign.FileLocation)
-                        {
-                            DAL.DeleteAssignmentByID(assign.ID);
-                            System.IO.File.Delete(path);
-                            ViewBag.Message = "File Succesfully Deleted!!!";
-                        }
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
                     }
-                    catch (Exception ex)
+                    if (assign.FileName == FileName && path == assign.FileLocation)
                     {
-                        ViewBag.Message = "File could not be Succesfully Deleted!!!";
+                        DAL.DeleteAssignmentByID(assign.ID);
+                        System.IO.File.Delete(path);
+                        ViewBag.Message = "File Succesfully Deleted!!!";
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    // return ex.Message;
+                }
             }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
-                return RedirectToAction("Login", "Account");
-            }
-
+            return RedirectToAction(nameof(Index));
         }
         [HttpPost]
         public IActionResult DeleteFolder(string FolderName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.Delete))
+            string dir_Path = Directory.GetCurrentDirectory();
+            string path = Path.Combine(dir_Path, FolderName);
+            try
             {
-                string dir_Path = Directory.GetCurrentDirectory();
-                string path = Path.Combine(dir_Path, FolderName);
-                try
+                if (Directory.Exists(path))
                 {
-                    if (Directory.Exists(path))
+                    string UserName = HttpContext.Session.GetString("username");
+                    DAL.GetAllAssignmentByUserName(UserName);
+                    var dire = Directory.GetDirectories(path);
+                    List<string> root = GetDirectory(dire, path);
+                    foreach(string s in root)
                     {
-                        string UserName = HttpContext.Session.GetString("username");
-                        DAL.GetAllAssignmentByUserName(UserName);
-                        var dire = Directory.GetDirectories(path);
-                        List<string> root = GetDirectory(dire, path);
-                        foreach (string s in root)
+                        string newpath= Path.Combine(path, s);
+                        var dirs = Directory.GetDirectories(newpath);
+                        List<string> roots = GetDirectory(dirs, newpath);
+                        //while()
+                        if (System.IO.File.Exists(newpath))
                         {
-                            string newpath = Path.Combine(path, s);
-                            var dirs = Directory.GetDirectories(newpath);
-                            List<string> roots = GetDirectory(dirs, newpath);
-                            //while()
-                            if (System.IO.File.Exists(newpath))
+                            var dir = new DirectoryInfo(newpath);
+                            FileInfo[] files = dir.GetFiles();
+                            foreach (FileInfo file in files)
                             {
-                                var dir = new DirectoryInfo(newpath);
-                                FileInfo[] files = dir.GetFiles();
-                                foreach (FileInfo file in files)
+                                Assignment assign = DAL.GetAssignmentByFileName(FolderName);
+                                if (assign == null)
                                 {
-                                    Assignment assign = DAL.GetAssignmentByFileName(FolderName);
-                                    if (assign == null)
-                                    {
-                                        System.IO.File.Delete(path);
-                                        ViewBag.Message = "File Succesfully Deleted!!!";
-                                    }
-                                    if (assign.FileName == FolderName && path == assign.FileLocation)
-                                    {
-                                        DAL.DeleteAssignmentByID(assign.ID);
-                                        System.IO.File.Delete(path);
-                                        ViewBag.Message = "File Succesfully Deleted!!!";
-                                    }
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
+                                }
+                                if (assign.FileName == FolderName && path == assign.FileLocation)
+                                {
+                                    DAL.DeleteAssignmentByID(assign.ID);
+                                    System.IO.File.Delete(path);
+                                    ViewBag.Message = "File Succesfully Deleted!!!";
                                 }
                             }
                         }
-                        Directory.Delete(path);
-                        TempData["Message"] = "Folder sucessfully deleted Succesfully Deleted!!!";
-                    }
-                }
-                catch
-                {
-
-                }
-                return RedirectToAction(nameof(Index));
+                    }                  
+                    Directory.Delete(path);
+                    TempData["Message"] = "Folder sucessfully deleted Succesfully Deleted!!!";
+                }            
             }
-            else
+            catch
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
-                return RedirectToAction("Login", "Account");
-            }
 
+            }
+            return RedirectToAction(nameof(Index));
         }
         #endregion
         #region Edit Assignment
         public IActionResult Edit(string FileName)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.Edit))
+            string dir_Path = Directory.GetCurrentDirectory();
+            string _UserName = HttpContext.Session.GetString("username");
+            string path = Path.Combine(dir_Path, FileName);
+            WebClient User = new WebClient();
+            Byte[] FileBuffer = User.DownloadData(path);
+            string fileBase64Data = Convert.ToBase64String(FileBuffer);
+            string t = GetContentType(path);
+            bool IsReadable = false;
+            if (t == "application/vnd.ms-word")
             {
-                string dir_Path = Directory.GetCurrentDirectory();
-                string _UserName = HttpContext.Session.GetString("username");
-                string path = Path.Combine(dir_Path, FileName);
-                WebClient User = new WebClient();
-                Byte[] FileBuffer = User.DownloadData(path);
-                string fileBase64Data = Convert.ToBase64String(FileBuffer);
-                string t = GetContentType(path);
-                bool IsReadable = false;
-                if (t == "application/vnd.ms-word")
-                {
-                    //Download the file
-                    return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName, _UserName)));
-                }
-                else
+                //Download the file
+                return File(FileBuffer, GetContentType(path), Path.GetFileName(GetPath(FileName, _UserName)));
+            }
+            else
 
-                if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
-                    t == "text/html" || t == "text/javascript" || t == "text/css")
-                {
-                    //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
-                    byte[] b = Convert.FromBase64String(fileBase64Data);
-                    string decodedString = Encoding.UTF8.GetString(b);
-                    IsReadable = true;
-                    ViewBag.Data = decodedString;
-                }
-                else
-                {
-                    string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
-                    ViewBag.Data = DataURL;
-                }
-                ViewBag.Readable = IsReadable;
-                ViewBag.FileName = FileName;
-                return View();
+            if (t == "application/vnd.ms-word" || t == "application/vnd.ms-word" || t == "text/plain" || t == "text/csv" ||
+                t == "text/html" || t == "text/javascript" || t == "text/css")
+            {
+                //https://www.devcurry.com/2009/01/convert-string-to-base64-and-base64-to.html
+                byte[] b = Convert.FromBase64String(fileBase64Data);
+                string decodedString = Encoding.UTF8.GetString(b);
+                IsReadable = true;
+                ViewBag.Data = decodedString;
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
-                return RedirectToAction("Login", "Account");
+                string DataURL = string.Format("data:" + t + ";base64,{0}", fileBase64Data);
+                ViewBag.Data = DataURL;
             }
-
+            ViewBag.Readable = IsReadable;
+            ViewBag.FileName = FileName;
+            return View();
         }
         // POST: Assignments/Delete/5
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id)
         {
-            if (UserCan<Assignment>(PermissionSet.Permissions.View))
-            {
-                ViewBag.Message = "On Progress";
-                return View();
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("Login", "Account");
-            }
+            ViewBag.Message = "On Progress";
+            return View();
         }
         #endregion
 
         #region Custom Function
-        public string CurrentDir()
+        public string CurrentDir(string UserName)
         {
-            int? ID = HttpContext.Session.GetInt32("UserID");
-            if (ID != null)
+            if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath, UserName)))
             {
-                User U = DAL.UserGetByID(ID);
-                if (U != null)
-                {
-
-                    if (U.Role.IsAdmin == true)
-                    {
-                        if (!Directory.GetCurrentDirectory().Contains(_hostingEnvironment.WebRootPath))
-                        {
-                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
-                        }
-                    }
-                    else
-                    {
-
-                        if (!Directory.GetCurrentDirectory().Contains(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName)))
-                        {
-                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName));
-                        }
-                    }
-                }
+                Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, UserName));
             }
             return Directory.GetCurrentDirectory();
         }
@@ -643,7 +409,7 @@ namespace ClassWeb.Controllers
         //</summary>
         private string GetPath(string fileName, string _UserName)
         {
-            string path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", _UserName);
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, _UserName);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path + fileName;
@@ -680,45 +446,25 @@ namespace ClassWeb.Controllers
 
         private Tuple<List<Assignment>, List<string>> GetFiles()
         {
-            List<Assignment> items = new List<Assignment>();
-            List<string> root;
-            int? id = HttpContext.Session.GetInt32("UserID");
-            if (id != null)
-            {
-                User U = DAL.UserGetByID(id);
-                string filepath = Directory.GetCurrentDirectory();
-                var dir = new DirectoryInfo(filepath);
-                var dire = Directory.GetDirectories(filepath);
-                root = GetDirectory(dire, filepath);
-                FileInfo[] fileNames = dir.GetFiles();
-                foreach (var file in fileNames)
-                {
-                    string FileLocation;
-                    int index = 0;
-                    if (U.Role.IsAdmin)
-                    {
-                        index = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory").ToString().Length;
-                    }
-                    else
-                    {
-                        FileLocation = file.FullName.ToString();
-                        index = FileLocation.LastIndexOf(U.UserName);
-                    }
-                    string location = file.FullName.ToString().Substring(index + 1).Replace("\\", "/");
-                    Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name, location, U.UserName);
-                    if (assign != null)
-                    {
-                        items.Add(assign);
-                    }
-                }
-            }
-            else
-            {
-                items = null;
-                root = null;
-            }
-            return Tuple.Create(items, root);
+            string UserName = HttpContext.Session.GetString("username");
+            List<Assignment> all=DAL.GetAllAssignmentByUserName(UserName);
+            string filepath = Directory.GetCurrentDirectory();
+            var dir = new DirectoryInfo(filepath);
+            var dire = Directory.GetDirectories(filepath);
+            List<string> root = GetDirectory(dire, filepath);
 
+            FileInfo[] fileNames = dir.GetFiles();
+            List<Assignment> items = new List<Assignment>();
+            foreach (var file in fileNames)
+            {
+                Assignment assign = new Assignment();
+                assign.FileName = file.Name;
+                double filesize = (double)(file.Length / 1024);
+                assign.FileSize = double.Parse(string.Format("{0:0.00}", filesize));
+                items.Add(assign);
+            }
+            Assignment Assign = DAL.GetAllAssignment();
+            return Tuple.Create(items, root);
         }
 
         private List<string> GetDirectory(string[] full, string root)

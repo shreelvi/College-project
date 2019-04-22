@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
-    public class GroupUser : DatabaseRecord
+    public class GroupUser: DatabaseRecord
     {
         #region Constructors
         public GroupUser()
@@ -57,7 +57,7 @@ namespace ClassWeb.Models
                 _UserID = value;
             }
         }
-
+        
         /// <summary>
         /// Gets or sets the Group for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
@@ -100,7 +100,7 @@ namespace ClassWeb.Models
             {
                 if (_User == null)
                 {
-                   _User = DAL.GetUser(_UserID);
+                    _User = DAL.GetUser(_UserID);
                 }
                 return _User;
             }
@@ -158,7 +158,7 @@ namespace ClassWeb.Models
             _ID = dr.GetInt32(db_ID);
             _GroupID = dr.GetInt32(db_GroupID);
             _UserID = dr.GetInt32(db_UserID);
-
+            
         }
         #endregion
 
