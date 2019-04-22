@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -13,7 +14,7 @@ namespace ClassWeb.Controllers
     public class SectionController : BaseController
     {
 
-        GET: Section
+        // GET: Section
         public IActionResult Index()
         {
             User LoggedIn = CurrentUser;
@@ -26,7 +27,7 @@ namespace ClassWeb.Controllers
             if (d != null)
                 ViewData["SectionDelete"] = d;
 
-            Checks if the user is logged in
+            //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
@@ -39,7 +40,7 @@ namespace ClassWeb.Controllers
 
         }
 
-        GET: Section/Details/5
+        // GET: Section/Details/5
         public async Task<IActionResult> Details(int id)
         {
             Section sectionObj = DAL.GetSection(id);
@@ -53,16 +54,16 @@ namespace ClassWeb.Controllers
 
 
 
-        GET: Section/Create
+        // GET: Section/Create
         public IActionResult Create()
         {
             return View();
         }
 
 
-        POST: Section/Create
-        To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-         more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Section/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SectionNumber,CRN,CourseID,UserID")] Section section)
@@ -83,7 +84,7 @@ namespace ClassWeb.Controllers
         }
 
 
-        GET: Section/Edit/5
+        // GET: Section/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             User LoggedIn = CurrentUser;
@@ -103,9 +104,9 @@ namespace ClassWeb.Controllers
 
 
 
-        POST: Section/Edit/5
-         To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-         more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Section/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SectionNumber,CRN, CourseID, UserID, ID")] Section section)
@@ -131,7 +132,7 @@ namespace ClassWeb.Controllers
         }
 
 
-        GET: Section/Delete/5
+        //GET: Section/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             User LoggedIn = CurrentUser;
@@ -149,7 +150,7 @@ namespace ClassWeb.Controllers
             return View(retSection);
         }
 
-        POST: Section/Delete/5
+        //POST: Section/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -166,4 +167,3 @@ namespace ClassWeb.Controllers
 
     }
 }
-

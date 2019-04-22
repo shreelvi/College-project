@@ -116,7 +116,7 @@ namespace ClassWeb.Models
             {
                 if (_Course == null)
                 {
-                    _Course = DAL.GetCourse(_CourseID);
+                   // _Course = DAL.GetCourse(_CourseID);
                 }
                 return _Course;
             }

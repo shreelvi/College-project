@@ -11,10 +11,10 @@
         <thead>
             <tr>
                 <th>
-                    <p>Course Title</p>
+                    <p>Course CourseTitle</p>
                 </th>
                 <th>
-                    <p>Course Name</p>
+                    <p>Course CourseNumber</p>
                 </th>
                 <th>
                     <p>Semester</p>
@@ -36,10 +36,10 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Course.Title)
+                        @Html.DisplayFor(modelItem => item.Course.CourseTitle)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Course.Name)
+                        @Html.DisplayFor(modelItem => item.Course.CourseNumber)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Semester.Name)

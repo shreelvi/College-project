@@ -80,7 +80,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             List<Course> CoursesPartial = new List<Course>();
-            CoursesPartial = DAL.GetCourses();
+            CoursesPartial = DAL.GetCourse();
             ViewBag.Courses = CoursesPartial;
 
             List<Semester> SemesterPartial = new List<Semester>();
