@@ -106,7 +106,7 @@ namespace ClassWeb
                 DefaultContentType = "image/png"
             });
 
-           //Enables directory browsing and files serve of upload folder via "baseurl/myFiles"
+            //Enables directory browsing and files serve of upload folder via "baseurl/myFiles"
             app.UseFileServer(new FileServerOptions
             {
                 FileProvider = new PhysicalFileProvider(
