@@ -18,7 +18,6 @@ namespace ClassWeb
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
         public bool EnableDirectoryBrowsing { get; private set; }
 
