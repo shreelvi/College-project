@@ -19,8 +19,8 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        private static string ReadOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=MYSQL5014.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=localhost.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
 
         //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
