@@ -250,6 +250,25 @@ namespace ClassWeb.Controllers
         }
         #endregion
 
+        #region View Users 
+        public ActionResult ViewGroupUsers()
+        {
+            string groupName = (string)HttpContext.Session.GetString("UserName");
+            int groupid = (int)HttpContext.Session.GetInt32("GroupID");
+            List<User> groupUsers = new List<User>(); //To hold user objects in the group
+            List<string> names = new List<string>(); //Hold the names of users in the group
+            groupUsers = DAL.GetGroupUsers(groupid);
+            for (int i = 0; i < groupUsers.Count(); i++)
+            {
+                names.Add(groupUsers[i].FirstName + " " + groupUsers[i].LastName);
+                //names[i] = groupUsers[i].FirstName + " " + groupUsers[i].LastName;
+            }
+            ViewBag.GroupName = groupName;
+            return View(names);
+        }
+
+        #endregion
+
         //[AllowAnonymous]
         //public ActionResult AddUserToGroup(string returnUrl)
         //{
