@@ -89,18 +89,12 @@ ADD DateDeleted datetime DEFAULT CURRENT_TIMESTAMP;
   `SectionNumber` int(45) DEFAULT NULL,
   `UserID` int(11) NOT NULL,
   `CourseID` int(11) NOT NULL,
-   PRIMARY KEY (`SectionID`),
-   CONSTRAINT `Section_Users`
-    FOREIGN KEY (`UserID`)
-    REFERENCES `Users` (`UserID`),
-   CONSTRAINT `Section_Courses`
-    FOREIGN KEY (`CourseID`)
-    REFERENCES `Courses` (`CourseID`)
+   PRIMARY KEY (`SectionID`)
 );
 
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (1, 25545, 02, 13, 1);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (2, 36758, 01, 12, 1);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`, `UserID`, `CourseID`) VALUES (4, 36758, 01, 11, 2);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (1, 25545, 02);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (2, 36758, 01);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (4, 36758, 01);
 
 
 
@@ -109,3 +103,57 @@ CREATE TABLE `Courses` (
   `CourseTitle` VARCHAR(45) NOT NULL,
   `CourseName` VARCHAR(45)  NULL,
   `CourseDescription` VARCHAR(128) NULL);
+
+INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (1, 'INFO 4407', 'Database Design', 'INFO Database Design');
+ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (2, 'INFO 3307', 'System Design', 'System Design for INFO')
+ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (3, 'INFO 4482', 'System Development Implementation Method', 'Informatics Course')
+-- -----------------CourseSemesters------------------------------
+-- ======================================================
+
+-- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Create CourseSemesters table in the database
+-- ======================================================
+  CREATE TABLE `CourseSemesters` (
+  `CourseSemesterID` int(11) NOT NULL AUTO_INCREMENT,
+  `CourseID` int(11) NOT NULL DEFAULT 1,
+  `SemesterID` int(11) NOT NULL DEFAULT 1,
+  `YearID` int(11) NOT NULL DEFAULT 1,
+  `SectionID` int(11) NOT NULL DEFAULT 1,
+  `UserID` int(11) NOT NULL,
+   PRIMARY KEY (`CourseSemesterID`),
+   CONSTRAINT `Courses`
+    FOREIGN KEY (`CourseID`)
+    REFERENCES `Courses` (`CourseID`),
+   CONSTRAINT `Semesters`
+    FOREIGN KEY (`SemesterID`)
+    REFERENCES `Semesters` (`SemesterID`),
+   CONSTRAINT `Years`
+    FOREIGN KEY (`YearID`)
+    REFERENCES `Years` (`YearID`),
+   CONSTRAINT `Sections`
+    FOREIGN KEY (`SectionID`)
+    REFERENCES `Sections` (`SectionID`),
+   CONSTRAINT `Users`
+    FOREIGN KEY (`UserID`)
+    REFERENCES `Users` (`UserID`)
+);
+
+-- -----------------Years------------------------------
+-- ======================================================
+
+CREATE TABLE `Years` (
+  `YearID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `Year` int(11) NOT NULL DEFAULT 2019);
+
+INSERT INTO `years`(`YearID`, `Year`) VALUES (1,2019);
+
+-- -----------------Semesters------------------------------
+-- ======================================================
+
+CREATE TABLE `Semsters` (
+  `SemesterID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `SemesterName` NVARCHAR(128) NOT NULL DEFAULT 'FALL');
+
+  INSERT INTO `semesters`(`SemesterID`, `SemesterName`) VALUES (1,'Fall')
+INSERT INTO `semesters`(`SemesterID`, `SemesterName`) VALUES (2,'Spring')

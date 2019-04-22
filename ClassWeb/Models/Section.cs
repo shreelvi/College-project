@@ -25,28 +25,13 @@ namespace ClassWeb.Models
         private int _SectionNumber;
         private int _CRN;
         //private int _ClassID;
-        private int _UserID;
-        private int _CourseID;
-        private Course _Course;
-        private User _User;
+        
 
         #endregion
 
 
         #region Public Properties
 
-        //public int ID
-        //{
-        //    get
-        //    {
-        //        return _ID;
-        //    }
-
-        //    set
-        //    {
-        //        _ID = value;
-        //    }
-        //}
         public int SectionNumber
         {
             get
@@ -71,92 +56,6 @@ namespace ClassWeb.Models
             }
         }
 
-        public int UserID
-        {
-            get
-            {
-                return _UserID;
-            }
-
-            set
-            {
-                _UserID = value;
-            }
-        }
-
-        public int CourseID
-        {
-            get
-            {
-                return _CourseID;
-            }
-
-            set
-            {
-                _CourseID = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Course for this Section object.
-        /// Reference: Taken code from prof. Holmes Peerval Project
-        /// </summary>
-        /// <remarks></remarks>
-        [XmlIgnore]
-        public Course Course
-        {
-            get
-            {
-                if (_Course == null)
-                {
-                    _Course = DAL.GetCourse(_CourseID);
-                }
-                return _Course;
-            }
-            set
-            {
-                _Course = value;
-                if (value == null)
-                {
-                    _CourseID = -1;
-                }
-                else
-                {
-                    _CourseID = value.ID;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the User for this Section object.
-        /// Reference: Taken code from prof. Holmes Peerval Project
-        /// </summary>
-        /// <remarks></remarks>
-        [XmlIgnore]
-        public User User
-        {
-            get
-            {
-                if (_User == null)
-                {
-                    _User = DAL.GetUser(_UserID);
-                }
-                return _User;
-            }
-            set
-            {
-                _User = value;
-                if (value == null)
-                {
-                    _UserID = -1;
-                }
-                else
-                {
-                    _UserID = value.ID;
-                }
-            }
-        }
-
 
         #endregion
 
@@ -164,8 +63,6 @@ namespace ClassWeb.Models
         internal const string db_ID = "SectionID";
         internal const string db_CRN = "CRN";
         internal const string db_Number = "SectionNumber";
-        internal const string db_UserID = "UserID";
-        internal const string db_CourseID = "CourseID";
         #endregion
 
         #region Public Functions
@@ -196,8 +93,6 @@ namespace ClassWeb.Models
             _ID = dr.GetInt32(db_ID);
             _CRN = dr.GetInt32(db_CRN);
             _SectionNumber = dr.GetInt32(db_Number);
-            _UserID = dr.GetInt32(db_UserID);
-            _CourseID = dr.GetInt32(db_CourseID);
         }
         #endregion
 

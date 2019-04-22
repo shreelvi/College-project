@@ -37,6 +37,7 @@ namespace ClassWeb.Controllers
             List<Section> Sections = new List<Section>();
             Sections = DAL.GetSections();
             return View(Sections);
+          
         }
 
         // GET: Section/Details/5
@@ -130,7 +131,8 @@ namespace ClassWeb.Controllers
 
         }
 
-        //        // GET: Section/Delete/5
+
+        //GET: Section/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             User LoggedIn = CurrentUser;
@@ -160,6 +162,9 @@ namespace ClassWeb.Controllers
 
             TempData["SectionDelete"] = "Successfully deleted the section";
             return RedirectToAction(nameof(Index));
+
         }
+
     }
 }
+

@@ -6,6 +6,14 @@
 
 <h2>Index</h2>
 
+<p style="color:blue">
+    @ViewData["SectionAdd"]
+</p>
+
+<p style="color:red">
+    @ViewData["SectionDelete"]
+</p>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -34,12 +42,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SectionNumber)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Name)
-            </td>
-            <td>
-                @item.User.FirstName @item.User.LastName
-            </td>
+  
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
