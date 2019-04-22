@@ -1,217 +1,217 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.Rendering;
-//using Microsoft.EntityFrameworkCore;
-//using ClassWeb.Models;
-//using ClassWeb.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using ClassWeb.Models;
+using ClassWeb.Model;
 
-//namespace ClassWeb.Controllers
-//{
-//    /// <summary>
-//    /// Created on: 04/09/2019
-//    /// Created by: Elvis
-//    /// CRUD controller for CourseSemester class
-//    /// </summary>
-//    public class CourseSemesterController : BaseController
-//    {
-        
-//        // GET: CourseSemesters
-//        public async Task<IActionResult> Index()
-//        {
-//            User LoggedIn = CurrentUser;
-//            //string ss = LoggedIn.FirstName;
+namespace ClassWeb.Controllers
+{
+    /// <summary>
+    /// Created on: 04/09/2019
+    /// Created by: Elvis
+    /// CRUD controller for CourseSemester class
+    /// </summary>
+    public class CourseSemesterController : BaseController
+    {
 
-//            //Gets error message to display from Create method 
-//            var a = TempData["CourseSemesterAdd"];
-//            if (a != null)
-//                ViewData["CourseSemesterAdd"] = a;
-//            //Gets error message to display from Delete method 
-//            var d = TempData["CourseSemDelete"];
-//            if (d != null)
-//                ViewData["CourseSemDelete"] = d;
+        // GET: CourseSemesters
+        public async Task<IActionResult> Index()
+        {
+            User LoggedIn = CurrentUser;
+            //string ss = LoggedIn.FirstName;
 
-//            //Checks if the user is logged in
-//            if (LoggedIn.FirstName == "Anonymous")
-//                {
-//                    TempData["LoginError"] = "Please login to view the page.";
-//                    return RedirectToAction("Index", "Home");
-//                }
+            //Gets error message to display from Create method 
+            var a = TempData["CourseSemesterAdd"];
+            if (a != null)
+                ViewData["CourseSemesterAdd"] = a;
+            //Gets error message to display from Delete method 
+            var d = TempData["CourseSemDelete"];
+            if (d != null)
+                ViewData["CourseSemDelete"] = d;
 
-            
+            //Checks if the user is logged in
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
 
-//            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
-//            CourseSemesters = DAL.GetCourseSemesters();
-//            return View(CourseSemesters);
 
-//        }
 
-//        // GET: CourseSemesters/Details/5
-//        public async Task<IActionResult> Details(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
+            CourseSemesters = DAL.GetCourseSemesters();
+            return View(CourseSemesters);
 
-//            var courseSemester = id;//await _context.CourseSemester
-//               // .Include(c => c.Course)
-//               // .Include(c => c.User)
-//               // .FirstOrDefaultAsync(m => m.ID == id);
-//            if (courseSemester == null)
-//            {
-//                return NotFound();
-//            }
+        }
 
-//            return View(courseSemester);
-//        }
+        // GET: CourseSemesters/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-//        // GET: CourseSemesters/Create
-//        public IActionResult Create()
-//        {
-//            User LoggedIn = CurrentUser;
+            var courseSemester = id;//await _context.CourseSemester
+                                    // .Include(c => c.Course)
+                                    // .Include(c => c.User)
+                                    // .FirstOrDefaultAsync(m => m.ID == id);
+            if (courseSemester == null)
+            {
+                return NotFound();
+            }
 
-//            //Checks if the user is logged in
-//            if (LoggedIn.FirstName == "Anonymous")
-//            {
-//                TempData["LoginError"] = "Please login to view the page.";
-//                return RedirectToAction("Index", "Home");
-//            }
-//            List<Course> CoursesPartial = new List<Course>();
-//            CoursesPartial = DAL.GetCourses();
-//            ViewBag.Courses = CoursesPartial;
+            return View(courseSemester);
+        }
 
-//            List<Semester> SemesterPartial = new List<Semester>();
-//            SemesterPartial = DAL.GetSemesters();
-//            ViewBag.Semesters = SemesterPartial;
+        // GET: CourseSemesters/Create
+        public IActionResult Create()
+        {
+            User LoggedIn = CurrentUser;
 
-//            List<Year> YearPartial = new List<Year>();
-//            YearPartial = DAL.GetYears();
-//            ViewBag.Years = YearPartial;
+            //Checks if the user is logged in
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            List<Course> CoursesPartial = new List<Course>();
+            CoursesPartial = DAL.GetCourses();
+            ViewBag.Courses = CoursesPartial;
 
-//            List<Section> SectionPartial = new List<Section>();
-//            SectionPartial = DAL.GetSections();
-//            ViewBag.Sections = SectionPartial;
+            List<Semester> SemesterPartial = new List<Semester>();
+            SemesterPartial = DAL.GetSemesters();
+            ViewBag.Semesters = SemesterPartial;
 
-//            return View();
+            List<Year> YearPartial = new List<Year>();
+            YearPartial = DAL.GetYears();
+            ViewBag.Years = YearPartial;
 
-//        }
+            List<Section> SectionPartial = new List<Section>();
+            SectionPartial = DAL.GetSections();
+            ViewBag.Sections = SectionPartial;
 
-//        // POST: CourseSemesters/Create
-//        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-//        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
-//        {
-//            User LoggedIn = CurrentUser;
-//            if (LoggedIn.FirstName == "Anonymous")
-//            {
-//                TempData["LoginError"] = "Please login to view the page.";
-//                return RedirectToAction("Index", "Home");
-//            }
-//            int retInt = DAL.AddCourseSemester(courseSemester);
-//            if (retInt < 0)
-//                TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
-//            else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
+            return View();
 
-            
-//            return RedirectToAction(nameof(Index));
-            
-//        }
+        }
 
-//        // GET: CourseSemesters/Edit/5
-//        public async Task<IActionResult> Edit(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+        // POST: CourseSemesters/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
+        {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+            int retInt = DAL.AddCourseSemester(courseSemester);
+            if (retInt < 0)
+                TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
+            else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
 
-//            var courseSemester = id; //await _context.CourseSemester.FindAsync(id);
-//            if (courseSemester == null)
-//            {
-//                return NotFound();
-//            }
-//            //ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-//            //ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
-//            return View(courseSemester);
-//        }
 
-//        // POST: CourseSemesters/Edit/5
-//        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-//        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Edit(int id, [Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
-//        {
-//            if (id != courseSemester.ID)
-//            {
-//                return NotFound();
-//            }
+            return RedirectToAction(nameof(Index));
 
-//            if (ModelState.IsValid)
-//            {
-//                try
-//                {
-//                   // _context.Update(courseSemester);
-//                   // await _context.SaveChangesAsync();
-//                }
-//                catch (DbUpdateConcurrencyException)
-//                {
-//                    if (!CourseSemesterExists(courseSemester.ID))
-//                    {
-//                        return NotFound();
-//                    }
-//                    else
-//                    {
-//                        throw;
-//                    }
-//                }
-//                return RedirectToAction(nameof(Index));
-//            }
-//           // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-//           // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
-//            return View(courseSemester);
-//        }
+        }
 
-//        // GET: CourseSemesters/Delete/5
-//        public async Task<IActionResult> Delete(int id)
-//        {
-//            User LoggedIn = CurrentUser;
-//            if (LoggedIn.FirstName == "Anonymous")
-//            {
-//                TempData["LoginError"] = "Please login to view the page.";
-//                return RedirectToAction("Index", "Home");
-//            }
+        // GET: CourseSemesters/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-//            CourseSemester retCourseSem = DAL.GetCourseSemester(id);
-//            if (retCourseSem == null)
-//            {
-//                return NotFound();
-//            }
-//            return View(retCourseSem);
-//        }
+            var courseSemester = id; //await _context.CourseSemester.FindAsync(id);
+            if (courseSemester == null)
+            {
+                return NotFound();
+            }
+            //ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            //ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            return View(courseSemester);
+        }
 
-//        // POST: CourseSemesters/Delete/5
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> DeleteConfirmed(int id)
-//        {
-//            int retInt = DAL.RemoveCourseSemester(id);
+        // POST: CourseSemesters/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
+        {
+            if (id != courseSemester.ID)
+            {
+                return NotFound();
+            }
 
-//            if (retInt < 0)
-//                TempData["CourseSemDelete"] = "Error occured when deleting the CourseSemester";
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // _context.Update(courseSemester);
+                    // await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CourseSemesterExists(courseSemester.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            return View(courseSemester);
+        }
 
-//            TempData["CourseSemDelete"] = "Successfully deleted the CourseSemester";
-//            return RedirectToAction(nameof(Index));
-//        }
+        // GET: CourseSemesters/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
 
-//        private bool CourseSemesterExists(int id)
-//        {
-//            return false;// _context.CourseSemester.Any(e => e.ID == id);
-//        }
-//    }
-//}
+            CourseSemester retCourseSem = DAL.GetCourseSemester(id);
+            if (retCourseSem == null)
+            {
+                return NotFound();
+            }
+            return View(retCourseSem);
+        }
+
+        // POST: CourseSemesters/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            int retInt = DAL.RemoveCourseSemester(id);
+
+            if (retInt < 0)
+                TempData["CourseSemDelete"] = "Error occured when deleting the CourseSemester";
+
+            TempData["CourseSemDelete"] = "Successfully deleted the CourseSemester";
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool CourseSemesterExists(int id)
+        {
+            return false;// _context.CourseSemester.Any(e => e.ID == id);
+        }
+    }
+}
