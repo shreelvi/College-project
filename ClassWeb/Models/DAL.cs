@@ -19,11 +19,11 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190";
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -996,7 +996,7 @@ namespace ClassWeb.Model
         internal static int AddGroup(Group obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("add_Group");
+            MySqlCommand comm = new MySqlCommand("Sproc_AddGroup");
             try
             {
                 // generate new password first.
@@ -1022,7 +1022,7 @@ namespace ClassWeb.Model
         internal static int AddUserToGroup(int GroupID, int UserID)
         {
             if (GroupID == 0 || UserID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand("add_UserToGroup");
+            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
             try
             {
                 comm.Parameters.AddWithValue("@" + "GroupID", GroupID);
@@ -1166,7 +1166,7 @@ namespace ClassWeb.Model
         internal static int CheckUserExistsInGroup(int userID)
         {
 
-            MySqlCommand comm = new MySqlCommand("CheckUserExistsInAGroup");
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserByEmail");
             if (userID == 0)
                 try
                 {
@@ -1186,7 +1186,7 @@ namespace ClassWeb.Model
              internal static int CheckUserExistsByEmailAddress(string emailAddress)
         {
 
-            MySqlCommand comm = new MySqlCommand("CheckUserExistsByEmailAddress");
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserByEmail");
             if (emailAddress != null)
                 try
                 {

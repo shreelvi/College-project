@@ -27,7 +27,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
