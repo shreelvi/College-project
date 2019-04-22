@@ -1,0 +1,68 @@
+﻿@model List<ClassWeb.Models.CourseSemester>
+@{
+    ViewData["Title"] = "ClassView";
+}
+<a style="color:blue" href='javascript:history.go(-1)'>Return to the dashboard</a><br /><br />
+<h2>List of Classes:</h2>
+
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <p>Course Title</p>
+                </th>
+                <th>
+                    <p>Course Name</p>
+                </th>
+                <th>
+                    <p>Semester</p>
+                </th>
+                <th>
+                    <p>Year</p>
+                </th>
+                <th>
+                    <p>Section</p>
+                </th>
+                <th>
+                    <p>Professor Name</p>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Course.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Course.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Semester.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year.Year1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Section.SectionNumber)
+                    </td>
+                    <td>
+                        <p>@item.User.FirstName @item.User.LastName</p>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Register" asp-route-id="@item.ID">Register</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+

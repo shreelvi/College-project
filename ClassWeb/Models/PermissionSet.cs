@@ -14,7 +14,7 @@ namespace ClassWeb.Models
     /// user roles in classweb
     /// DAVE (DELETE,ADD,VIEW,EDIT) (1,1,1,1)
     /// </summary>
-    public class PermissionSet: DatabaseRecord
+    public class PermissionSet : DatabaseRecord
     {
         private byte _DAVESet = 0;
 

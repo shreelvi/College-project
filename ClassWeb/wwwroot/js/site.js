@@ -5,6 +5,7 @@
             if ($(this).text() === "Folder Upload") {
                 $("#file").attr("webkitdirectory", true);
                 $("#file").attr("mozdirectory", true);
+
             }
             if ($(this).text() === "Multiple File Upload") {
                 $("#file").removeAttr("webkitdirectory");
@@ -20,11 +21,11 @@
     });
 });
 
-$(document).ready(function(){
-    $('.filterable .btn-filter').click(function(){
+$(document).ready(function () {
+    $('.filterable .btn-filter').click(function () {
         var $panel = $(this).parents('.filterable'),
-        $filters = $panel.find('.filters input'),
-        $tbody = $panel.find('.table tbody');
+            $filters = $panel.find('.filters input'),
+            $tbody = $panel.find('.table tbody');
         if ($filters.prop('disabled') === true) {
             $filters.prop('disabled', false);
             $filters.first().focus();
@@ -36,19 +37,19 @@ $(document).ready(function(){
     });
     //https://bootsnipp.com/snippets/8G2Q
 
-    $('.filterable .filters input').keyup(function(e){
+    $('.filterable .filters input').keyup(function (e) {
         /* Ignore tab key */
         var code = e.keyCode || e.which;
         if (code === '9') return;
         /* Useful DOM data and selectors */
         var $input = $(this),
-        inputContent = $input.val().toLowerCase(),
-        $panel = $input.parents('.filterable'),
-        column = $panel.find('.filters th').index($input.parents('th')),
-        $table = $panel.find('.table'),
-        $rows = $table.find('tbody tr');
+            inputContent = $input.val().toLowerCase(),
+            $panel = $input.parents('.filterable'),
+            column = $panel.find('.filters th').index($input.parents('th')),
+            $table = $panel.find('.table'),
+            $rows = $table.find('tbody tr');
         /* Dirtiest filter function ever ;) */
-        var $filteredRows = $rows.filter(function(){
+        var $filteredRows = $rows.filter(function () {
             var value = $(this).find('td').eq(column).text().toLowerCase();
             return value.indexOf(inputContent) === -1;
         });
@@ -59,8 +60,25 @@ $(document).ready(function(){
         $filteredRows.hide();
         /* Prepend no-result row if all rows are filtered */
         if ($filteredRows.length === $rows.length) {
-            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="' + $table.find('.filters th').length + '">No result found</td></tr>'));
         }
+    });
+});
+$(document).ready(function () {
+    $("#numberOfStudents").change(function () {
+        var num = $("#numberOfStudents").val();
+        var div = $("#DynamicEmail");
+        var input="";
+        for (var i = 1; i <= num; i++) {
+             input+=
+                "<div class="+"form-group"+"> " +
+             "<label for=" + "User.EmailAddress[" + i + "]>EmailAddress" + i +"</label>" +
+             "<input class='form-control' type='text' data-val='true' data-val-required='The EmailAddress field is required.' id='User.EmailAddress[" + i + "]' name='User.EmailAddress[" + i + "]' value='' />" +
+             "<span class='text-danger field-validation-valid' data-valmsg-for='EmailAddress" + i +"' data-valmsg-replace='true'></span>" +
+                "</div>"
+                 ;
+        }
+        div.append(input);
     });
 });
 $(document).ready(function () {

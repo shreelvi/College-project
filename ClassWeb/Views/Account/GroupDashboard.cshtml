@@ -6,9 +6,6 @@
 }
 <p style="color:blue">@ViewBag.folder</p>
 <p style="color:red">@ViewData["PermissionErr"]</p>
-<p style="color:red">@ViewData["UserGroupAddError"]</p>
-<p style="color:red">@ViewData["UserGroupAddSuccess"]</p>
-
 
 <div style="float:right">
     <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
@@ -27,7 +24,8 @@
 
     <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
     <a style="color:blue" href="/CourseSemester/ClassViewForStudents">Classes Details</a><br /><br />
-    <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br />
-    <a style="color:blue" asp-controller="Group" asp-action="AddUserToGroup"><strong>Add Users</strong></a> <br /><br />
-
+    <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
 </div>
+
+
+

@@ -38,6 +38,7 @@ namespace ClassWeb.Models
     public abstract class DatabaseNamedRecord : DatabaseRecord
     {
         protected string _Name;
+        private string _EmailAddress; 
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
@@ -52,6 +53,12 @@ namespace ClassWeb.Models
         {
             get { return _Name; }
             set { _Name = value; }
+        }
+
+        public string EmailAddress
+        {
+            get { return _EmailAddress; }
+            set { _EmailAddress = value; }
         }
         [DataType(DataType.DateTime)]
         [Display(Name = "DateCreated")]
