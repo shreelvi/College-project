@@ -85,7 +85,7 @@ namespace ClassWeb.Models
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
         #endregion
     }
