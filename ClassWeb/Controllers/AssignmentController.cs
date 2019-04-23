@@ -38,7 +38,7 @@ namespace ClassWeb.Controllers
                             ViewBag.Dir = "Home" + RootDir();
                         }
                         CurrentDir();
-                        Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+                        Tuple<List<Assignment>, List<string>,List<Assignment>> assignments = GetFiles();
                         return View(assignments);
                     }
                 }
@@ -680,10 +680,11 @@ namespace ClassWeb.Controllers
             };
         }
 
-        private Tuple<List<Assignment>, List<string>> GetFiles()
+        private Tuple<List<Assignment>, List<string>,List<Assignment>> GetFiles()
         {
             List<Assignment> items = new List<Assignment>();
             List<string> root;
+            List<Assignment> physical= new List<Assignment>();
             int? id = HttpContext.Session.GetInt32("UserID");
             if (id != null)
             {
@@ -713,6 +714,12 @@ namespace ClassWeb.Controllers
                     {
                         items.Add(assign);
                     }
+                    else
+                    {
+                        Assignment a = new Assignment();
+                        a.FileName = file.Name;
+                        physical.Add(a);
+                    }
                 }
             }
             else
@@ -720,8 +727,7 @@ namespace ClassWeb.Controllers
                 items = null;
                 root = null;
             }
-            return Tuple.Create(items, root);
-
+            return Tuple.Create(items, root,physical);
         }
 
         private List<string> GetDirectory(string[] full, string root)
