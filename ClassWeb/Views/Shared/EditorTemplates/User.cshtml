@@ -1,0 +1,7 @@
+﻿@using ClassWeb.Models
+@model User
+<div class="col-md-10">
+    @Html.HiddenFor(model => model.ID)
+    @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+</div>
+

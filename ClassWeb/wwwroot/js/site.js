@@ -1,53 +1,83 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(document).ready(function () {
+    $("#FileUpload").change(function () {
+        var str = "";
+        $("select option:selected").each(function () {
+            if ($(this).text() === "Folder Upload") {
+                $("#file").attr("webkitdirectory", true);
+                $("#file").attr("mozdirectory", true);
 
-// Write your JavaScript code.
-/*
-$("#EditedText").on('keypress', function (e) {
-    if (e.which === 13) {
-        var text = editor_js.getValue();
-        alert(text);
-    }
-});
-$("td").one("click mouseenter", function () {
-    var tabledata = $("td");
-    tabledata.foreach(function (tabledata) {
-        $("FileName").removeAttr('hidden');
+            }
+            if ($(this).text() === "Multiple File Upload") {
+                $("#file").removeAttr("webkitdirectory");
+                $("#file").removeAttr("mozdirectory");
+                $("#file").attr("multiple", true);
+            }
+            if ($(this).text() === "File Upload") {
+                $("#file").removeAttr("webkitdirectory");
+                $("#file").removeAttr("mozdirectory");
+                $("#file").removeAttr("multiple");
+            }
+        });
     });
-  
-    var link = "<span class='glyphicon glyphicon-edit'> @Html.ActionLink('Save', 'Save', new { FileName = Model[i].Name })</span>";
- //   $("#FileName").append(link);
 });
-$("#SaveFile").click(function () {
-});
-
-
 
 $(document).ready(function () {
-    $("#SaveFile").click(function () {
-        var div = $(".Fileaction");
-        var obj = {};
-        obj.FileName = $("#FileName").text();
-        obj.Data = $("#EditedText").text();
-        alert(obj.Data);
-        if ($("#EditedText").val.trim === null || $("#EditedText").val.trim === "") {
-            alert("Empty File Cannot be saved");
+    $('.filterable .btn-filter').click(function () {
+        var $panel = $(this).parents('.filterable'),
+            $filters = $panel.find('.filters input'),
+            $tbody = $panel.find('.table tbody');
+        if ($filters.prop('disabled') === true) {
+            $filters.prop('disabled', false);
+            $filters.first().focus();
         } else {
-            $.ajax({
-                url: "SaveEditedFile"
-                , type: "POST"
-                , dataType: "json"
-                , data: "Content=" + JSON.stringify(obj)
-                , sucesss: function () {
-                    var span = $("<span class='bg-sucess'></span>").text("File Succesfully Uploaded");
-                    div.append(span);
-                }
-                , error: function () {
-                    alert("There is an error");
-                }
-            });
-        } 
+            $filters.val('').prop('disabled', true);
+            $tbody.find('.no-result').remove();
+            $tbody.find('tr').show();
+        }
     });
+    //https://bootsnipp.com/snippets/8G2Q
 
+    $('.filterable .filters input').keyup(function (e) {
+        /* Ignore tab key */
+        var code = e.keyCode || e.which;
+        if (code === '9') return;
+        /* Useful DOM data and selectors */
+        var $input = $(this),
+            inputContent = $input.val().toLowerCase(),
+            $panel = $input.parents('.filterable'),
+            column = $panel.find('.filters th').index($input.parents('th')),
+            $table = $panel.find('.table'),
+            $rows = $table.find('tbody tr');
+        /* Dirtiest filter function ever ;) */
+        var $filteredRows = $rows.filter(function () {
+            var value = $(this).find('td').eq(column).text().toLowerCase();
+            return value.indexOf(inputContent) === -1;
+        });
+        /* Clean previous no-result if exist */
+        $table.find('tbody .no-result').remove();
+        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+        $rows.show();
+        $filteredRows.hide();
+        /* Prepend no-result row if all rows are filtered */
+        if ($filteredRows.length === $rows.length) {
+            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="' + $table.find('.filters th').length + '">No result found</td></tr>'));
+        }
+    });
 });
-*/
+$(document).ready(function () {
+    $("#numberOfStudents").change(function () {
+        var num = $("#numberOfStudents").val();
+        var div = $("#DynamicEmail");
+        var input="";
+        for (var i = 1; i <= num; i++) {
+             input+=
+                "<div class="+"form-group"+"> " +
+             "<label for=" + "User.EmailAddress[" + i + "]>EmailAddress" + i +"</label>" +
+             "<input class='form-control' type='text' data-val='true' data-val-required='The EmailAddress field is required.' id='User.EmailAddress[" + i + "]' name='User.EmailAddress[" + i + "]' value='' />" +
+             "<span class='text-danger field-validation-valid' data-valmsg-for='EmailAddress" + i +"' data-valmsg-replace='true'></span>" +
+                "</div>"
+                 ;
+        }
+        div.append(input);
+    });
+});

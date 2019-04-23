@@ -15,7 +15,7 @@ namespace ClassWeb.Models
     /// It also contains ID 
     /// Reference: GitHub Prof. Holmes PeerVal Project
     /// </summary>
-    public class Assignment:DatabaseRecord
+    public class Assignment : DatabaseRecord
     {
         #region Database String
         internal const string db_ID = "ID";
@@ -29,8 +29,9 @@ namespace ClassWeb.Models
         internal const string db_FileSize = "FileSize";
         internal const string db_IsEditable = "IsEditable";
         internal const string db_DateModified = "DateModified";
+        internal const string db_UserName = "UserName";
         #endregion
-        internal Assignment(MySqlDataReader dr)
+        public Assignment(MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -42,13 +43,13 @@ namespace ClassWeb.Models
             _ID = dr.GetInt32(db_ID);
             _FileName = dr.GetString(db_FileName);
             _FileLocation = dr.GetString(db_Location);
-            _DateStarted = dr.GetDateTime(db_DateStarted);
             _DateModified = dr.GetDateTime(db_DateModified);
             _DateSubmited = dr.GetDateTime(db_DateSubmited);
             _Feedback = dr.GetString(db_Feedback);
             _FileSize = dr.GetInt64(db_FileSize);
             _Grade = dr.GetInt32(db_Grade);
             _IsEditable = dr.GetBoolean(db_IsEditable);
+            _UserName = dr.GetString(db_UserName);
         }
 
         public override int dbSave()
@@ -73,7 +74,7 @@ namespace ClassWeb.Models
         #region Private Variable
         protected DateTime _DateStarted;
         protected DateTime _DateDue;
-        protected  DateTime _DateSubmited;
+        protected DateTime _DateSubmited;
         protected int _Grade;
         protected string _Feedback;
         protected double _FileSize;
@@ -81,6 +82,7 @@ namespace ClassWeb.Models
         protected DateTime _DateModified;
         protected string _FileName;
         protected string _FileLocation;
+        protected string _UserName;
         #endregion
 
         #region Public Properties
@@ -93,6 +95,17 @@ namespace ClassWeb.Models
             set
             {
                 _FileLocation = value;
+            }
+        }
+        public string UserName
+        {
+            get
+            {
+                return _UserName;
+            }
+            set
+            {
+                _UserName = value;
             }
         }
         public string FileName
@@ -149,13 +162,14 @@ namespace ClassWeb.Models
         public DateTime DateSubmited
         {
             get { return _DateSubmited; }
-            set { _DateSubmited = value;}
+            set { _DateSubmited = value; }
         }
 
         public int Grade
         {
             get { return _Grade; }
-            set {
+            set
+            {
                 if (value > 100)
                 {
                     _Grade = 100;

@@ -20,22 +20,27 @@ namespace ClassWeb.Models
         #region Database String
         internal const string db_ID = "ID";
         internal const string db_Title = "Title";
-        internal const string db_IsAvailable = "IsAvailable";
+        internal const string db_IsAvailable = "Availability";
         internal const string db_DateStart = "DateStart";
         internal const string db_DateEnd = "DateEnd";
         internal const string db_SectionID = "SectionID";
         #endregion
+        internal Class(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
         public Class()
         {
+
         }
+
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
             _Title = dr.GetString(db_Title);
             _IsAvailable = dr.GetBoolean(db_IsAvailable);
-            _DateStart = dr.GetDateTime(db_DateStart);
-            _DateEnd = dr.GetDateTime(db_DateEnd);
-            _SectionID = dr.GetInt32(db_SectionID);
+            //_DateStart = dr.GetDateTime(db_DateStart);
+            //_DateEnd = dr.GetDateTime(db_DateEnd);
         }
 
         #region Private Variables
@@ -44,12 +49,12 @@ namespace ClassWeb.Models
         private DateTime _DateStart;
         private DateTime _DateEnd;
         private int _SectionID;
-   
+
         #endregion
 
-         #region public class
-        [Key]
-        public bool Available
+        #region public class
+
+        public bool IsAvailable
         {
             get
             {
@@ -97,19 +102,25 @@ namespace ClassWeb.Models
             }
         }
 
+        public string Title {
+            get
+            {
+                return _Title;
+            }
+            set
+            {
+                _Title = value;
+            }
+        }
+
         public override int dbSave()
         {
             throw new NotImplementedException();
         }
 
-        //public override void Fill(MySqlDataReader dr)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
 
         protected override int dbAdd()
@@ -121,10 +132,11 @@ namespace ClassWeb.Models
         {
             throw new NotImplementedException();
         }
+
+        internal static Class Get(int id)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
-
-
-
-    

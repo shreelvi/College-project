@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Login";
 }
-<p style="color:Blue">@ViewBag.Success</p>
 <p style="color:red">@ViewBag.Error</p>
+<p style="color:red">@ViewData["UserAddError"]</p>
+<p style="color:Blue">@ViewData["UserAddSuccess"]</p>
 <div class="row">
     <div class="col-md-4">
         <section>
@@ -35,10 +36,13 @@
                 </div>
                 <div class="form-group">
                     @*<p>
-                            <a asp-page="./ForgotPassword">Forgot your password?</a>
-                        </p> *@
+            <a asp-page="./ForgotPassword">Forgot your password?</a>
+        </p> *@
                     <p>
                         <a asp-action="AddUser">Register as a new user</a>
+                    </p>
+                    <p>
+                        <a asp-controller="Group"asp-action="LoginGroup">Group Login</a>
                     </p>
                 </div>
             </form>

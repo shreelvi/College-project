@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model List<ClassWeb.Models.User>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+<div style="float:right">
+    <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
+    <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
+
+    <br /><br />
+    <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
+    <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
+</div>
+
+
+<!-- Page content -->
+<div style="float:left; width: 500px">
+    <br /><br /><br />
+    <div style="height:40px; width:300px; background-color:lightcyan"><h4>&nbsp; Welcome, @Context.Session.GetString("username").</h4></div>
+    <p>Login as Admin- username: admin, pwd: test</p>
+    <br /><a asp-controller="Section" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageSections.png" /></a>
+    <a asp-controller="CourseSemester" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageSemesters.png" /></a>
+    <a href="Default.aspx"><img style="width:15%; height:15%" src="images/ViewUsers.png" /></a><br />
+    <a href="Default.aspx"><img style="width:15%; height:15%" src="images/RegisterUser.png" /></a>
+    <a asp-controller="Role" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageRoles.png" /></a>
+    <a asp-controller="CourseSemester" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageCourseSemesters.png" /></a><br />
+    <br /><a style="color:darkblue;" asp-controller="CourseSemester" asp-action="Index">Manage Courses for Semester</a>
+    <br /><a style="color:darkblue;" asp-controller="Course" asp-action="Index">Manage Courses</a>
+    <br /><a style="color:darkblue;" asp-controller="Year" asp-action="Index">Manage Year </a>
+    <br /><a style="color:darkblue;" asp-controller="Group" asp-action="Index">Manage Group </a>
+
+
+
+</div>
+
+<div class="UsersDisplay" style="float:right"> 
+    @await Html.PartialAsync("_UsersViewPartial.cshtml", Model)
+</div>
+
+
+
