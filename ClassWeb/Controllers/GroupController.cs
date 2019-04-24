@@ -135,6 +135,17 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
+
+            var g = TempData["GroupAddSuccess"];
+            var s = TempData["UserGroupAddSuccess"];
+            var e = TempData["UserGroupAddError"];
+
+            if (s != null)
+                ViewData["UserGroupAddSuccess"] = s;
+            else if (e != null)
+                ViewData["UserGroupAddError"] = e;
+            else if (g != null)
+                ViewData["GroupAddSuccess"] = g;
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -152,12 +163,13 @@ namespace ClassWeb.Controllers
                 users[i] = NewGroup.Users[i].EmailAddress;
                 retInt = DAL.CheckUserExistsByEmail(users[i]); //Checks user and returns user id
 
-                if (retInt <= 0) 
+                if (retInt <= 0)
                 {
-                    if (users[i] != null) { //If input field is blank, doesn't display error msg
+                    if (users[i] != null)
+                    { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                         return View();
-                    }                                 
+                    }
                 }
             }
 
@@ -196,12 +208,12 @@ namespace ClassWeb.Controllers
             for (int i = 0; i < 4; i++)
             {
                 int UserID = DAL.CheckUserExistsByEmail(users[i]); //This method can also be used to get userID
-                if(UserID > 0)
+                if (UserID > 0)
                 {
                     int addGroup = DAL.AddUserToGroup(GroupAdd, UserID); //Add the user to group.
 
                 }
-            }          
+            }
             return RedirectToAction("LoginGroup");
         }
 
@@ -219,6 +231,7 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUserToGroup(List<User> Users)
         {
+            Group LoggedInGroup = CurrentGroup;
             int retInt = 0;
             int groupid = (int)HttpContext.Session.GetInt32("GroupID");
             string[] emails = new string[6];
@@ -232,6 +245,8 @@ namespace ClassWeb.Controllers
                     if (emails[i] != null)
                     { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
+                        if (LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
+
                         return View();
                     }
                 }
@@ -246,7 +261,9 @@ namespace ClassWeb.Controllers
                 }
             }
             TempData["UserGroupAddSuccess"] = "Succesfully added users.";
-            return RedirectToAction("Dashboard");
+            
+            if(LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
+            return RedirectToAction("Dashboard"); //If added users from the group dashboard
         }
         #endregion
 
