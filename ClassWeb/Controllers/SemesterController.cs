@@ -46,7 +46,7 @@ namespace ClassWeb.Controllers
             }
 
             var semester = id;//await _context.Semester
-              //  .FirstOrDefaultAsync(m => m.ID == id);
+                              //  .FirstOrDefaultAsync(m => m.ID == id);
             if (semester == null)
             {
                 return NotFound();

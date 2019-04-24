@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Semester:DatabaseNamedRecord
+    public class Semester : DatabaseNamedRecord
     {
 
         #region Constructors
@@ -56,7 +56,7 @@ namespace ClassWeb.Models
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
         #endregion
     }

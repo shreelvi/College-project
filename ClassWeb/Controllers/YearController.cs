@@ -45,8 +45,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = id;// await _context.Year
-               // .FirstOrDefaultAsync(m => m.ID == id);
+            var year = 0;// await _context.Year
+                //.FirstOrDefaultAsync(m => m.ID == id);
             if (year == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = id;//await _context.Year.FindAsync(id);
+            var year = 0;// await _context.Year.FindAsync(id);
             if (year == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //_context.Update(year);
+                  //  _context.Update(year);
                     //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -136,8 +136,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = id; //await _context.Year
-               // .FirstOrDefaultAsync(m => m.ID == id);
+            var year = 0; //await _context.Year
+                //.FirstOrDefaultAsync(m => m.ID == id);
             if (year == null)
             {
                 return NotFound();
@@ -151,15 +151,15 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var year = id; //await _context.Year.FindAsync(id);
+            var year = 0;// await _context.Year.FindAsync(id);
             //_context.Year.Remove(year);
-            //await _context.SaveChangesAsync();
+           // await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool YearExists(int id)
         {
-            return true;//_context.Year.Any(e => e.ID == id);
+            return false;// _context.Year.Any(e => e.ID == id);
         }
     }
 }

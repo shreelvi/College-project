@@ -13,7 +13,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Course:DatabaseNamedRecord
+    public class Course : DatabaseNamedRecord
     {
         #region Constructors
         public Course()
@@ -41,7 +41,7 @@ namespace ClassWeb.Models
         public string Description
         {
             get { return _Description; }
-           private set { _Description = value; }
+            private set { _Description = value; }
         }
         #endregion
 

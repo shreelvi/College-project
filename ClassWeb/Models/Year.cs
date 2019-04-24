@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
-    public class Year:DatabaseRecord
+    public class Year : DatabaseRecord
     {
 
         #region Constructors

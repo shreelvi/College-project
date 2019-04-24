@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class Section:DatabaseRecord
+    public class Section : DatabaseRecord
     {
         #region Constructors
         public Section()
@@ -25,7 +25,7 @@ namespace ClassWeb.Models
         private int _SectionNumber;
         private int _CRN;
         //private int _ClassID;
-        
+
 
         #endregion
 
@@ -35,11 +35,13 @@ namespace ClassWeb.Models
         public int SectionNumber
         {
             get
-            { return _SectionNumber;
+            {
+                return _SectionNumber;
             }
 
             set
-            { _SectionNumber = value;
+            {
+                _SectionNumber = value;
             }
         }
 

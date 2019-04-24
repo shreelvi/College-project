@@ -1,0 +1,17 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "ViewGroupUsers";
+}
+
+<h2>Group: @ViewBag.GroupName</h2>
+<b>Users List:</b>
+@foreach (var item in Model)
+{
+    <p>@item</p>
+}
+
+
+
+
+

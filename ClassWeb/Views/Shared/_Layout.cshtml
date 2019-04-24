@@ -57,10 +57,15 @@
                 </h1>*@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     @if (Context.Session.Get("CurrentUser") != null)
                     {
+
+                        <li><a asp-controller="Account" asp-action="Dashboard">Home</a></li>
                         <li><a asp-controller="Account" asp-action="Logout">Log Out</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-controller="Home" asp-action="index">Home</a></li>
                     }
 
                 </ul>
@@ -69,33 +74,33 @@
     </div>
     <div class="s-layout">
         <!-- Sidebar -->
-        @if (@Context.Session.GetString("UserRole") == "True")
+        @if ("True" == "True")
         {
             @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
-        }       
+        }
         <!-- Content -->
-    <partial name="_CookieConsentPartial" />
+        <partial name="_CookieConsentPartial" />
 
-    <main class="s-layout__content">
-        @RenderBody()
-        <!-- Syncfusion Essential JS 2 ScriptManager -->
-        <hr />
-        <footer>
-            <p>&copy; 2019 - ClassWeb</p>
-        </footer>
-    </main>
+        <main class="s-layout__content">
+            @RenderBody()
+            <!-- Syncfusion Essential JS 2 ScriptManager -->
+            <hr />
+            <footer>
+                <p>&copy; 2019 - ClassWeb</p>
+            </footer>
+        </main>
     </div>
-        <ejs-scripts>
-            document.getElementById('SaveEditedFiles').addEventListener('click', function () {
-            var obj = document.getElementById('types').ej2_instances[0];
-            var value = JSON.stringify({ text: obj.value });
-            const Http = new XMLHttpRequest();
-            const url = '@Url.Action("Save")';
-            Http.open("POST", url);
-            Http.setRequestHeader('Content-Type', 'application/json');
-            Http.send(value);
-            });
-        </ejs-scripts>
+    <ejs-scripts>
+        document.getElementById('SaveEditedFiles').addEventListener('click', function () {
+        var obj = document.getElementById('types').ej2_instances[0];
+        var value = JSON.stringify({ text: obj.value });
+        const Http = new XMLHttpRequest();
+        const url = '@Url.Action("Save")';
+        Http.open("POST", url);
+        Http.setRequestHeader('Content-Type', 'application/json');
+        Http.send(value);
+        });
+    </ejs-scripts>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -17,12 +17,11 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class CourseSemesterController : BaseController
     {
-        
+
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
             //string ss = LoggedIn.FirstName;
 
             //Gets error message to display from Create method 
@@ -35,31 +34,13 @@ namespace ClassWeb.Controllers
                 ViewData["CourseSemDelete"] = d;
 
             //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
-                {
-                    TempData["LoginError"] = "Please login to view the page.";
-                    return RedirectToAction("Index", "Home");
-                }
-
-            
-
-            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
-            CourseSemesters = DAL.GetCourseSemesters();
-            return View(CourseSemesters);
-
-        }
-
-        public async Task<IActionResult> ClassViewForStudents()
-        {
-            User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
-            
-            //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
+            if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+
 
             List<CourseSemester> CourseSemesters = new List<CourseSemester>();
             CourseSemesters = DAL.GetCourseSemesters();
@@ -76,9 +57,9 @@ namespace ClassWeb.Controllers
             }
 
             var courseSemester = id;//await _context.CourseSemester
-               // .Include(c => c.Course)
-               // .Include(c => c.User)
-               // .FirstOrDefaultAsync(m => m.ID == id);
+                                    // .Include(c => c.Course)
+                                    // .Include(c => c.User)
+                                    // .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
                 return NotFound();
@@ -99,7 +80,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             List<Course> CoursesPartial = new List<Course>();
-            CoursesPartial = DAL.GetCourses();
+            CoursesPartial = DAL.GetCourse();
             ViewBag.Courses = CoursesPartial;
 
             List<Semester> SemesterPartial = new List<Semester>();
@@ -136,9 +117,9 @@ namespace ClassWeb.Controllers
                 TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
             else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
 
-            
+
             return RedirectToAction(nameof(Index));
-            
+
         }
 
         // GET: CourseSemesters/Edit/5
@@ -175,8 +156,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                   // _context.Update(courseSemester);
-                   // await _context.SaveChangesAsync();
+                    // _context.Update(courseSemester);
+                    // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -191,8 +172,8 @@ namespace ClassWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-           // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-           // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 

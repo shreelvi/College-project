@@ -9,7 +9,6 @@ using System.IO;
 using System.Net;
 using ClassWeb.Model;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 
 namespace ClassWeb.Controllers
@@ -39,7 +38,7 @@ namespace ClassWeb.Controllers
                             ViewBag.Dir = "Home" + RootDir();
                         }
                         CurrentDir();
-                        Tuple<List<Assignment>, List<string>> assignments = GetFiles();
+                        Tuple<List<Assignment>, List<string>,List<Assignment>> assignments = GetFiles();
                         return View(assignments);
                     }
                 }
@@ -335,7 +334,7 @@ namespace ClassWeb.Controllers
                                 a.DateModified = DateTime.Now;
                                 int test = DAL.AddAssignment(a);
                                 if (test > 0)
-                                {                                    
+                                {
                                     using (var stream = new FileStream(dir.FullName, FileMode.Create))
                                     {
                                         file.CopyTo(stream);
@@ -549,7 +548,7 @@ namespace ClassWeb.Controllers
         }
         #endregion
         #region Edit Assignment
-        public IActionResult Edit(string FileName,int ID)
+        public IActionResult Edit(string FileName, int ID)
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.Edit))
             {
@@ -681,10 +680,11 @@ namespace ClassWeb.Controllers
             };
         }
 
-        private Tuple<List<Assignment>, List<string>> GetFiles()
+        private Tuple<List<Assignment>, List<string>,List<Assignment>> GetFiles()
         {
             List<Assignment> items = new List<Assignment>();
             List<string> root;
+            List<Assignment> physical= new List<Assignment>();
             int? id = HttpContext.Session.GetInt32("UserID");
             if (id != null)
             {
@@ -714,6 +714,12 @@ namespace ClassWeb.Controllers
                     {
                         items.Add(assign);
                     }
+                    else
+                    {
+                        Assignment a = new Assignment();
+                        a.FileName = file.Name;
+                        physical.Add(a);
+                    }
                 }
             }
             else
@@ -721,8 +727,7 @@ namespace ClassWeb.Controllers
                 items = null;
                 root = null;
             }
-            return Tuple.Create(items, root);
-
+            return Tuple.Create(items, root,physical);
         }
 
         private List<string> GetDirectory(string[] full, string root)

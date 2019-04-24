@@ -12,7 +12,7 @@ namespace ClassWeb.Models
     /// Code by Elvis
     /// Resources are files that are uploaded in the system
     /// </summary>
-    public class Resource: DatabaseNamedObject
+    public class Resource : DatabaseNamedObject
     {
 
         #region Private Variables
@@ -24,9 +24,9 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Variables
-       
 
- 
+
+
         public DateTime DateUploaded
         {
             get { return _DateUploaded; }

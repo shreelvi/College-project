@@ -188,7 +188,7 @@ namespace ClassWeb.Controllers
                 }
                 catch //(DbUpdateConcurrencyException)
                 {
-                    TempData["Message"]="Database error occured when updating the role";
+                    TempData["Message"] = "Database error occured when updating the role";
                 }
                 return RedirectToAction("index");
             }

@@ -36,17 +36,17 @@ namespace ClassWeb.Controllers
                 int recordsTotal = 0;
 
                 // Getting all Customer data  
-               List<User>customerData =DAL.UserGetAll();
+                List<User> customerData = DAL.UserGetAll();
 
                 //Sorting  
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
-                   // customerData = customerData.OrderBy(sortColumn + " " + sortColumnDirection);
+                    // customerData = customerData.OrderBy(sortColumn + " " + sortColumnDirection);
                 }
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                   // customerData = customerData.Where(m => m.Name == searchValue);
+                    // customerData = customerData.Where(m => m.Name == searchValue);
                 }
 
                 //total number of rows count   

@@ -12,7 +12,6 @@ namespace ClassWeb.Controllers
 {
     public class SectionController : BaseController
     {
-
         // GET: Section
         public IActionResult Index()
         {
@@ -36,7 +35,7 @@ namespace ClassWeb.Controllers
             List<Section> Sections = new List<Section>();
             Sections = DAL.GetSections();
             return View(Sections);
-          
+
         }
 
         // GET: Section/Details/5
@@ -166,4 +165,3 @@ namespace ClassWeb.Controllers
 
     }
 }
-
