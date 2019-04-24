@@ -19,6 +19,12 @@
 
             <div class="Users">
                 <label>Add users by email address:</label>
+                <div>
+                    <label for="Users">Number of users:</label>
+                    <input name="Users" type="number" id="numberOfStudents" />
+                </div>
+                <div id="DynamicEmail">
+                </div>
 
                 <input name="Users[0].ID" type="hidden" value="0" />
                 <div class="form-group">
@@ -41,7 +47,6 @@
                     <label>EmailAdress 4</label>
                     <input asp-for="Users[3].EmailAddress" class="form-control" />
                 </div>
-
             </div>
 
             <button type="submit" class="btn btn-default">Add</button>

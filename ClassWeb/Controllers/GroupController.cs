@@ -165,7 +165,7 @@ namespace ClassWeb.Controllers
             //Verifies if user is registered before adding them and registering the group
             int retInt = 0;
             string[] users = new string[6]; //Array to hold emails from input field
-            for (int i = 0; i < 4; i++) //Verfies each email 
+            for (int i = 0; i < users.  ; i++) //Verfies each email 
             {
                 users[i] = NewGroup.Users[i].EmailAddress;
                 retInt = DAL.CheckUserExistsByEmailAddress(users[i]); //Checks user and returns user id
