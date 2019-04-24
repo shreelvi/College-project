@@ -60,13 +60,14 @@ namespace ClassWeb.Models
         internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";
         internal const string db_Salt = "Salt";
-        internal const string db_DirectoryPath = "DirectoryPath";
         internal const string db_Role = "RoleID";
         internal const string db_Password = "Password";
         internal const string db_ResetCode = "ResetCode";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
+
+
 
         #endregion
 
@@ -260,11 +261,11 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            //_DateCreated = dr.GetDateTime(db_DateCreated);
-            // _DateModified = dr.GetDateTime(db_DateModified);
-            // _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+            _DateModified = dr.GetDateTime(db_DateModified);
+            // _DateModified = DateTime.Parse(DateModified.ToString());
+            _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
-            _DirectoryPath = dr.GetString(db_DirectoryPath);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
         }

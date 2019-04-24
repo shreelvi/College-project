@@ -19,9 +19,10 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=localhost.site4now.net;Database=db_a45fe7_classwe;Uid=a45fe7_classwe;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+       // private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
@@ -189,10 +190,6 @@ namespace ClassWeb.Model
             throw new NotImplementedException();
         }
 
-        internal static Role GetRoleByID(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// reference: Professor's DAL for PeerEval
@@ -476,30 +473,6 @@ namespace ClassWeb.Model
             throw new NotImplementedException();
         }
 
-        ///<summary>
-        ///  Created by: Mohan 
-        /// Update User password
-        /// Reference: PeerVal Project by Professor from github.
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int UpdateUserPassword(User obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserPasswordUpdate");
-            try
-            {
-                string newPass = Tools.Hasher.Get(obj.Password, obj.Salt, _Pepper, _Stretches, 64);
-                comm.Parameters.AddWithValue("@" + User.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
         internal static int CheckUserExists(string userName)
         {
             throw new NotImplementedException();
@@ -519,7 +492,7 @@ namespace ClassWeb.Model
         public static User GetUser(string userName, string password)
         {
 
-            MySqlCommand comm = new MySqlCommand("sproc_GetUserByUserName");
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByUserName");
             User retObj = null;
             try
             {
@@ -806,33 +779,6 @@ namespace ClassWeb.Model
         #endregion
 
         #region Role
-        /// <summary>
-        /// Get list of all Role CLassweb.objects from the database
-        /// Reference: Taken code from the peerval project
-        /// </summary>
-        /// <returns></returns>
-        public static List<Role> GetRoles()
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_RolesGetAll");
-            List<Role> retList = new List<Role>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Role(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-
         internal static int CheckUserExistsByEmailAddress(string v)
         {
             throw new NotImplementedException();
@@ -951,9 +897,9 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
-                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
                 return AddObject(comm, "@" + Course.db_ID);
             }
             catch (Exception ex)
@@ -1034,9 +980,9 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
-                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
+                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

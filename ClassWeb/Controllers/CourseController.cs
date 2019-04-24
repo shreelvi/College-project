@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -13,12 +12,6 @@ namespace ClassWeb.Controllers
 {
     public class CourseController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: Course
         public async Task<IActionResult> Index()
@@ -43,7 +36,7 @@ namespace ClassWeb.Controllers
             }
 
             List<Course> Courses = new List<Course>();
-            Courses = DAL.GetCourses();
+            Courses =null;//DAL.GetCourses();
             return View(Courses);
         }
 
@@ -55,8 +48,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Course
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var course = id; //await _context.Course
+               // .FirstOrDefaultAsync(m => m.ID == id);
             if (course == null)
             {
                 return NotFound();
@@ -90,7 +83,7 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-            int retInt = DAL.AddCourse(course);
+            int retInt = 0; //DAL.AddCourse(course);
             if (retInt < 0)
                 TempData["CourseAdd"] = "Database problem occured when adding the course";
             else { TempData["CourseAdd"] = "Course added successfully"; }
@@ -120,8 +113,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                   // _context.Update(course);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -167,7 +160,7 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-            int retInt = DAL.RemoveCourse(id);
+            int retInt = 0;// DAL.RemoveCourse(id);
 
             if (retInt < 0)
                 TempData["CourseDelete"] = "Error occured when deleting the course";
@@ -178,7 +171,7 @@ namespace ClassWeb.Controllers
 
         private bool CourseExists(int id)
         {
-            return _context.Course.Any(e => e.ID == id);
+            return false;//_context.Course.Any(e => e.ID == id);
         }
     }
 }
