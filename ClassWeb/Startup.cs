@@ -69,8 +69,8 @@ namespace ClassWeb
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "AssignmentDirectory")),
-                RequestPath = "/AssignmentDirectory"
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","AssignmentDirectory")),
+                RequestPath= "/AssignmentDirectory"
             });
             app.UseDefaultFiles();
             app.UseStaticFiles();

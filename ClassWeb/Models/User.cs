@@ -68,8 +68,6 @@ namespace ClassWeb.Models
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
 
-
-
         #endregion
 
         #region public Properites
@@ -262,10 +260,9 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            //_DateCreated = dr.GetDateTime(db_DateCreated);
+            // _DateModified = dr.GetDateTime(db_DateModified);
+           // _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _DirectoryPath = dr.GetString(db_DirectoryPath);
             _RoleID = dr.GetInt32(db_Role);

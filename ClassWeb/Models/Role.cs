@@ -164,10 +164,6 @@ namespace ClassWeb.Models
         /// Calls DAL function to remove Role from the database.
         /// </summary>
         /// <remarks></remarks>
-        public int dbRemove()
-        {
-            return DAL.RemoveRole(this);
-        }
         #endregion
 
         #region Public Subs

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ClassWeb.Models;
 
-namespace ClassWeb.Tools {
+namespace ClassWeb.Tools
+{
     /// <summary>
     /// This class is to make dealing with Session in ASP Core easier
     /// </summary>
@@ -53,30 +54,24 @@ namespace ClassWeb.Tools {
                 Set(_context, "CurrentUser", value);
             }
 
-
         }
 
-        internal static bool GroupLoggedIn
-        {
-            get
-            {
-                return Get(_context, "CurrentUser") != null;
-            }
-
-        }
-
-        internal static Group CurrentGroup
-        {
-            get
-            {
-                return (Group)Get(_context, "CurrentGroup");
-            }
-            set
-            {
-                Set(_context, "CurrentGroup", value);
-            }
-
-
-        }
+        //internal static bool UserCan(Type type, PermissionSet.Permissions perm) {
+        //    User user = CurrentUser;
+        //    if (type == typeof(Evaluation)) {
+        //        return user.Role.Evaluation >= perm;
+        //    } else if (type == typeof(EvaluationPrompt)) {
+        //        return user.Role.EvaluationPrompt >= perm;
+        //    } else if (type == typeof(Prompt)) {
+        //        return user.Role.Prompt >= perm;
+        //    } else if (type == typeof(Role)) {
+        //        return user.Role.Roles >= perm;
+        //    } else if (type == typeof(User)) {
+        //        return user.Role.Users >= perm;
+        //    } else if (type == typeof(TakenEvaluation)) {
+        //        return user.Role.TakenEvaluation >= perm;
+        //    } else
+        //        return false;
+        //}
     }
 }

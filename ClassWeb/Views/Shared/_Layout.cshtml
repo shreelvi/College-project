@@ -5,14 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-
-    <!-- Syncfusion Essential JS 2 Styles -->
-    <!-- these scripts are required to have File edit control. Commentout when running in debugging as it might not run -->
-    @*<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />*@
-
-    <!-- Syncfusion Essential JS 2 Scripts -->
-    @*<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>*@
+    <title>@ViewData["Title"]ClassWeb</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -20,6 +13,8 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="~/js/fullscreen.js"></script>
+        <link href="~/css/fullscreen.css" rel="stylesheet" />
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js"></script>
@@ -41,6 +36,12 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
 
     </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
 </head>
 <body class="container-fluid">
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -51,6 +52,9 @@
                 </button>
                 <a style="color:orange" asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ClassWeb</a>
             </div>
+            @*<h1 style=" color:black" class="text-success text-center font-weight-bold ">
+                    ClassWeb
+                </h1>*@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
@@ -58,10 +62,7 @@
                     {
                         <li><a asp-controller="Account" asp-action="Logout">Log Out</a></li>
                     }
-                    @if (Context.Session.Get("CurrentGroup") != null)
-                    {
-                        <li><a asp-controller="Group" asp-action="Logout">Log Out</a></li>
-                    }
+
                 </ul>
             </div>
         </div>
@@ -71,31 +72,30 @@
         @if (@Context.Session.GetString("UserRole") == "True")
         {
             @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
-        }
-       
+        }       
         <!-- Content -->
-        <partial name="_CookieConsentPartial" />
+    <partial name="_CookieConsentPartial" />
 
-        <main class="s-layout__content">
-            @RenderBody()
-            <!-- Syncfusion Essential JS 2 ScriptManager -->
-            <hr />
-            <footer>
-                <p>&copy; 2019 - ClassWeb</p>
-            </footer>
-        </main>
+    <main class="s-layout__content">
+        @RenderBody()
+        <!-- Syncfusion Essential JS 2 ScriptManager -->
+        <hr />
+        <footer>
+            <p>&copy; 2019 - ClassWeb</p>
+        </footer>
+    </main>
     </div>
-    <ejs-scripts>
-        document.getElementById('SaveEditedFiles').addEventListener('click', function () {
-        var obj = document.getElementById('types').ej2_instances[0];
-        var value = JSON.stringify({ text: obj.value });
-        const Http = new XMLHttpRequest();
-        const url = '@Url.Action("Save")';
-        Http.open("POST", url);
-        Http.setRequestHeader('Content-Type', 'application/json');
-        Http.send(value);
-        });
-    </ejs-scripts>
+        <ejs-scripts>
+            document.getElementById('SaveEditedFiles').addEventListener('click', function () {
+            var obj = document.getElementById('types').ej2_instances[0];
+            var value = JSON.stringify({ text: obj.value });
+            const Http = new XMLHttpRequest();
+            const url = '@Url.Action("Save")';
+            Http.open("POST", url);
+            Http.setRequestHeader('Content-Type', 'application/json');
+            Http.send(value);
+            });
+        </ejs-scripts>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
