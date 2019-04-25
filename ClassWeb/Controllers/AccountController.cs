@@ -212,7 +212,7 @@ namespace ClassWeb.Controllers
         {
             string userPath = SetUserFolder(NewUser); //Sets the default user directory 
             NewUser.DirectoryPath = userPath;
-            int check = DAL.CheckUserExists(NewUser.UserName);
+            int check = DAL.CheckUserExistsByEmail(NewUser.UserName);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -238,7 +238,7 @@ namespace ClassWeb.Controllers
                     TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("Login", "Account"); //Directs to Login page after success
+            return RedirectToAction("Login  ", "Account"); //Directs to Login page after success
         }
 
         /// <summary>

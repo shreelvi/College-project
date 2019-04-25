@@ -72,8 +72,8 @@ $(document).ready(function () {
         for (var i = 1; i <= num; i++) {
              input+=
                 "<div class="+"form-group"+"> " +
-             "<label for=" + "User.EmailAddress[" + i + "]>EmailAddress" + i +"</label>" +
-             "<input class='form-control' type='text' data-val='true' data-val-required='The EmailAddress field is required.' id='User.EmailAddress[" + i + "]' name='User.EmailAddress[" + i + "]' value='' />" +
+             "<label for=" + "User.EmailAddress(" + i + ")>EmailAddress" + i +"</label>" +
+             "<input class='form-control' type='text' data-val='true' data-val-required='The EmailAddress field is required.' id='User.EmailAddress(" + i + ")' name='EmailAddress" + i + "' value='' />" +
              "<span class='text-danger field-validation-valid' data-valmsg-for='EmailAddress" + i +"' data-valmsg-replace='true'></span>" +
                 "</div>"
                  ;

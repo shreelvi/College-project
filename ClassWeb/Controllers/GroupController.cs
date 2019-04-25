@@ -120,10 +120,12 @@ namespace ClassWeb.Controllers
             }
             else
             {
+
+                //return RedirectToAction("Dashboard");
                 TempData["Error"] = "Invalid Username and/or Password";
                 ViewBag.Group = userName;
                 return View();
-                //return RedirectToAction("LoginGroup", "Group");
+               // return RedirectToAction("LoginGroup", "Group");
             }
         }
         public ActionResult Dashboard()
@@ -165,14 +167,18 @@ namespace ClassWeb.Controllers
             //Verifies if user is registered before adding them and registering the group
             int retInt = 0;
             string[] users = new string[6]; //Array to hold emails from input field
-            for (int i = 0; i < users.  ; i++) //Verfies each email 
+            //int countOfMembers = int.Parse( Request.Form["#numberOfStudents"]);
+            int countOfMembers = int.Parse(Request.Form["Users"]);
+            for (int i = 0; i < countOfMembers  ; i++) //Verfies each email 
             {
-                users[i] = NewGroup.Users[i].EmailAddress;
-                retInt = DAL.CheckUserExistsByEmailAddress(users[i]); //Checks user and returns user id
+                String email =  Request.Form["EmailAddress" + (i+1)];
+               // users[i] = NewGroup.Users[i].EmailAddress;
+                retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
+
 
                 if (retInt <= 0)
                 {
-                    if (users[i] != null)
+                    if (email != null)
                     { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                         return View();
@@ -197,7 +203,7 @@ namespace ClassWeb.Controllers
                 {
                     GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after adding the group
                     // DAL.AddGroup(NewGroup);
-                    if (GroupAdd < 1)
+                    if (GroupAdd > 1)
                     { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
                     else
                     {
@@ -212,9 +218,10 @@ namespace ClassWeb.Controllers
             }
 
             //Finally after registering the group, we can add users to it
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < countOfMembers; i++)
             {
-                int UserID = DAL.CheckUserExistsByEmailAddress(users[i]); //This method can also be used to get userID
+                String email = Request.Form["EmailAddress" + (i + 1)];
+                int UserID = DAL.CheckUserExistsByEmail(email); //This method can also be used to get userID
                 if (UserID > 0)
                 {
                     int addGroup = DAL.AddUserToGroup(GroupAdd, UserID); //Add the user to group.
@@ -240,10 +247,11 @@ namespace ClassWeb.Controllers
             int retInt = 0;
             int groupid = (int)HttpContext.Session.GetInt32("GroupID");
             string[] emails = new string[6];
-            for (int i = 0; i < 4; i++) //Verfies each email 
+            int countOfMembers = int.Parse(Request.Form["Users"]);
+            for (int i = 0; i < countOfMembers; i++) //Verfies each email 
             {
                 emails[i] = Users[i].EmailAddress;
-                retInt = DAL.CheckUserExistsByEmailAddress(emails[i]); //Checks user and returns user id
+                retInt = DAL.CheckUserExistsByEmail(emails[i]); //Checks user and returns user id
 
                 if (retInt <= 0)
                 {
@@ -255,9 +263,9 @@ namespace ClassWeb.Controllers
                 }
             }
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < countOfMembers; i++)
             {
-                int UserID = DAL.CheckUserExistsByEmailAddress(emails[i]); //This method can also be used to get userID
+                int UserID = DAL.CheckUserExistsByEmail(emails[i]); //This method can also be used to get userID
                 if (UserID > 0)
                 {
                     int addGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
