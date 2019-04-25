@@ -695,3 +695,156 @@ BEGIN
 END
 $$
 
+CREATE PROCEDURE `sproc_AssignmentDeleteByID` (IN `ID` INT)  BEGIN
+DELETE FROM assignment
+Where Assignment.ID=`ID`;
+END$$
+
+CREATE  PROCEDURE `sproc_AssignmentGetAllByFileName` (IN `VARCHAR` (, ``)  )
+BEGIN
+Select * from assignment
+where  assignment.FileName=`FileName`;
+End$$
+
+CREATE  PROCEDURE `sproc_AssignmentGetAllByUserName` (IN `UserName` VARCHAR(45))  BEGIN
+Select * from assignment
+where assignment.UserName=`UserName`;
+End$$
+
+CREATE  PROCEDURE `sproc_AssignmentGetAllByUserNameAndLocation` (IN `UserName` VARCHAR(45), IN `FileLocation` VARCHAR(50))  BEGIN
+Select * from assignment
+where assignment.UserName=`UserName` AND assignment.FileLocation like CONCAT(`FileLocation` , '%');
+End$$
+
+CREATE PROCEDURE `sproc_AssignmentGetByID` (IN `ID` INT)  BEGIN
+Select * from assignment
+where assignment.ID=`ID`;
+End$$
+
+CREATE  PROCEDURE `sproc_AssignmentGetByLocation` (IN `FileLocation` VARCHAR(100))  BEGIN
+Select * from assignment
+where FileLocation LIKE assignment.FileLocation;
+End$$
+
+CREATE  PROCEDURE `sproc_AssignmentGetByNameLocationUserName` (IN `FileName` VARCHAR(50), IN `VARCHAR` (, ``)  ,IN `UserName` varchar(50))
+BEGIN
+Select * from assignment
+where assignment.FileLocation=`FileLocation`&&assignment.FileName=`FileName`&&assignment.UserName=`UserName`;
+End$$
+
+CREATE PROCEDURE `sproc_AssignmentResubmit` (IN `ID` INT, IN `VARCHAR` (, ``)  )
+BEGIN
+update Assignment
+set Assignment.Feedback=Feedback
+where Assignment.ID=ID;
+End$$
+
+CREATE PROCEDURE `sproc_ResubmitAssignment` (IN `ID` INT, IN `VARCHAR` (, ``)  )
+BEGIN
+update Assignment
+set Assignment.Feedback=Feedback
+where Assignment.ID=ID;
+End$$
+
+CREATE PROCEDURE `sproc_ClassesGetAll` ()  BEGIN
+select * From Classes;
+END$$
+
+CREATE PROCEDURE `sproc_GetAllAssignment` ()  BEGIN
+Select * From assignment;
+END$$
+
+CREATE  PROCEDURE `sproc_RoleAdd` (OUT `ID` INT, IN `Name` NVARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
+     INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment)
+               VALUES(Name,IsAdmin,Users,Role, Assignment);               
+     SET ID = last_insert_id();
+END$$
+
+CREATE PROCEDURE `sproc_RoleDeleteByID` (IN `ID` INT)  BEGIN
+delete from Users
+where Users.ID=`ID`;
+END$$
+
+CREATE PROCEDURE `sproc_RoleGet` (IN `RoleID` INT)  BEGIN
+     SELECT * FROM Roles
+     WHERE Roles.RoleID = RoleID;
+END$$
+
+CREATE PROCEDURE `sproc_RoleGetByID` (IN `ID` INT)  BEGIN SELECT * FROM roles WHERE roles.ID = `ID`;
+END$$
+
+CREATE PROCEDURE `sproc_RoleRemove` (IN `RoleID` INT)  BEGIN
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
+     DELETE FROM Roles
+          WHERE Roles.RoleID = RoleID;
+END$$
+
+CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
+     UPDATE Roles
+          SET
+               Roles.`Name` = `Name`,
+               Roles.`IsAdmin` = `IsAdmin`,
+               Roles.`Users` = `Users`,
+               Roles.`Role` = `Role`,
+               Roles.`Assignment` = `Assignment`
+          WHERE Roles.`ID` = `ID`;
+END$$
+
+CREATE PROCEDURE `sproc_SetSaltForUser` (IN `UserID` INT, IN `Salt` CHAR)  BEGIN
+UPDATE Users
+SET Users.Salt = Salt
+WHERE Users.UserID = UserID;
+END$$
+
+CREATE PROCEDURE `sproc_UserAdd` (OUT `ID` INT, IN `FirstName` VARCHAR(50), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(50), IN `EmailAddress` VARCHAR(50), IN `UserName` VARCHAR(50), IN `Password` VARCHAR(100), IN `Salt` VARCHAR(50))  BEGIN
+INSERT INTO Users (`FirstName`,`MiddleName`, `LastName`,
+ `EmailAddress`, `UserName`,`Password`, `Salt`)
+ VALUES (`FirstName`,`MiddleName`, `LastName`,
+ `EmailAddress`, `UserName`,`Password`, `Salt`);
+     SET ID = last_insert_id();
+End$$
+
+CREATE  PROCEDURE `sproc_UserByID` (IN `id` INT)  BEGIN
+Select * from users
+Where users.ID=id;
+END$$
+
+CREATE PROCEDURE `sproc_UserDeleteByID` (IN `ID` INT)  BEGIN
+delete from Users
+where Users.ID=`ID`;
+END$$
+
+CREATE  PROCEDURE `sproc_UserGetAll` ()  BEGIN
+Select * from users;
+END$$
+
+CREATE  PROCEDURE `sproc_UserGetByEmailAddress` (IN `u_EmailAddress` VARCHAR(50))  BEGIN SELECT a.FirstName, a.MiddleName, a.LastName, a.EmailAddress, a.Address, a.UserName, a.PhoneNumber, b.RoleID, b.Title FROM user u
+Inner JOIN userrole c on u.id = c.UserID
+LEFT OUTER JOIN role b on c.UserID = b.ID
+WHERE a.EmailAddress = u_EmailAddress; 
+END$$
+
+CREATE  PROCEDURE `sproc_UserGetByID` (IN `ID` INT)  BEGIN
+Select * From Users
+Where Users.ID=ID;
+END$$
+
+CREATE PROCEDURE `sproc_GetSaltForUser` (IN `Username` VARCHAR(256))  BEGIN
+SELECT Salt FROM Users
+WHERE Users.UserName = Username;
+END$$
+
+CREATE PROCEDURE `sproc_UserPasswordUpdate` (IN `ID` INT, IN `Password` VARCHAR(70))  BEGIN UPDATE users
+SET users.Password = `Password`
+where users.ID=`ID`;
+END$$
+
+CREATE PROCEDURE `sproc_UserUpdate` (IN `ID` INT, IN `FirstName` VARCHAR(50), IN `LastName` VARCHAR(50), IN `UserName` VARCHAR(50), IN `ResetCode` VARCHAR(50))  BEGIN UPDATE users
+SET users.FirstName = `FirstName`,
+users.LastName = `LastName`,users.UserName = `UserName`,users.DateModified= NOW(),
+users.ResetCode=`ResetCode`
+where users.ID=`ID`;
+END$$
+
+
+
