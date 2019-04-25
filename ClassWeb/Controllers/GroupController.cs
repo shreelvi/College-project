@@ -203,7 +203,7 @@ namespace ClassWeb.Controllers
                 {
                     GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after adding the group
                     // DAL.AddGroup(NewGroup);
-                    if (GroupAdd > 1)
+                    if (GroupAdd < 1)
                     { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
                     else
                     {
@@ -245,7 +245,7 @@ namespace ClassWeb.Controllers
         public ActionResult AddUserToGroup(List<User> Users)
         {
             int retInt = 0;
-            int groupid = (int)HttpContext.Session.GetInt32("GroupID");
+            int groupid = (int)HttpContext.Session.GetInt32("ID");
             string[] emails = new string[6];
             int countOfMembers = int.Parse(Request.Form["Users"]);
             for (int i = 0; i < countOfMembers; i++) //Verfies each email 

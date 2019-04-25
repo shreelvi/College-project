@@ -19,10 +19,10 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-       // private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters;Uid=root;Pwd=class";
+        private static string ReadOnlyConnectionString = "Server = localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
+       private static string EditOnlyConnectionString = "Server=localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters; Port = 3306; Uid=root;Pwd=class";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters; Port 3306; Uid=root;Pwd=class";
         //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
@@ -33,6 +33,7 @@ namespace ClassWeb.Model
         internal enum dbAction
         {
             Read,
+
             Edit
         }
         #region Database Connections
