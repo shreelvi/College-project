@@ -191,20 +191,19 @@ $$
 
 -- Author: Meshari
 -- Create date:	01 April 2019
+-- Update date: 04/26/2019
+-- Removed fks and CRN field
 -- Description:	Add a new  section to the database.
 -- =============================================
 DELIMITER $$
 
 CREATE PROCEDURE sproc_SectionAdd(
 OUT SectionID int,
-IN CRN int(11),
-IN SectionNumber INT(45),
-IN UserID INT(11),
-IN CourseID INT(11)
+IN SectionNumber INT(45)
 )
 BEGIN
-     INSERT INTO Sections(CRN,SectionNumber, UserID, CourseID)
-               VALUES(CRN,SectionNumber, UserID, CourseID);               
+     INSERT INTO Sections(SectionNumber)
+               VALUES(SectionNumber);               
      SET SectionID = LAST_INSERT_ID();
 END
 $$
@@ -212,23 +211,19 @@ $$
 -- ================================================
 -- Author: Meshari
 -- Create date:	31 March 2019
+-- Update date: 04/26/2019
+-- Removed fks and CRN field
 -- Description:	Update the  section in the database.
 -- ================================================
 
 CREATE PROCEDURE sproc_SectionUpdate(
 IN SectionID int(11),
-IN CRN int(11),
-IN SectionNumber int(45),
-IN UserID INT(11),
-IN CourseID int(11)
+IN SectionNumber int(45)
 )
 BEGIN
      UPDATE Sections
           SET
-               Sections.CRN = CRN,
-               Sections.SectionNumber = SectionNumber,
-               Sections.UserID = UserID,
-			   Sections.CourseID = CourseID
+               Sections.SectionNumber = SectionNumber
           WHERE Sections.SectionID = SectionID;
 END
 $$
@@ -380,10 +375,13 @@ $$
 -- ================================================
 -- Author: Elvis
 -- Create date:	09 April 2019
+-- Update date: 04/26/2019
+-- Added CRN field
 -- Description:	Update the  CourseSemester object in the database.
 -- ================================================
 
 CREATE PROCEDURE sproc_CourseSemesterEdit(
+IN CRN int(11),
 IN SectionID int(11),
 IN CourseID int(11),
 IN SemesterID INT(11),
@@ -394,6 +392,7 @@ IN UserID INT(11)
 BEGIN
      UPDATE Sections
           SET
+			   CourseSemesters.CRN = CRN,
                CourseSemesters.CourseID = CourseID,
 			   CourseSemesters.SemesterID = SemesterID,
 			   CourseSemesters.YearID = YearID,
