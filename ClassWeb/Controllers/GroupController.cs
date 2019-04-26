@@ -112,7 +112,7 @@ namespace ClassWeb.Controllers
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", GroupLoggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
-                HttpContext.Session.SetInt32("ID", GroupLoggedIn.ID); //Sets userid in the session
+                HttpContext.Session.SetInt32("GroupID", GroupLoggedIn.ID); //Sets userid in the session
               //  HttpContext.Session.SetString("UserRole",(grouploggedIn.))
                 //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
                 //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 

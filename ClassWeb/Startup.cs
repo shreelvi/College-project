@@ -22,7 +22,7 @@ namespace ClassWeb
         public bool EnableDirectoryBrowsing { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services
+        public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -68,8 +68,8 @@ namespace ClassWeb
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","AssignmentDirectory")),
-                RequestPath= "/AssignmentDirectory"
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "AssignmentDirectory")),
+                RequestPath = "/AssignmentDirectory"
             });
             app.UseDefaultFiles();
             app.UseStaticFiles();
