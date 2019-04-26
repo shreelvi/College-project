@@ -24,6 +24,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
+        private int _CRN;
         private int _CourseID;
         private int _SemesterID;
         private int _YearID;
@@ -38,6 +39,19 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Properties
+        public int CRN
+        {
+            get
+            {
+                return _CRN;
+            }
+
+            set
+            {
+                _CRN = value;
+            }
+        }
+
         public int CourseID
         {
             get
@@ -260,6 +274,7 @@ namespace ClassWeb.Models
 
         #region Database String
         internal const string db_ID = "CourseSemesterID";
+        internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";
         internal const string db_YearID = "YearID";
@@ -294,6 +309,7 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _CRN = dr.GetInt32(db_CRN);
             _CourseID = dr.GetInt32(db_CourseID);
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);

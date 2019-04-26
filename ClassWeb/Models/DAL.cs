@@ -670,7 +670,6 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_SectionAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
                 return AddObject(comm, "@" + Section.db_ID);
             }
@@ -695,7 +694,6 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
-                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -946,6 +944,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
             try
             {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
@@ -971,6 +970,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterEdit");
             try
             {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
