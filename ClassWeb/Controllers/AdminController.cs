@@ -16,5 +16,12 @@ namespace ClassWeb.Controllers
             UsersToDisplay = DAL.GetAllUsers();
             return View(UsersToDisplay);
         }
-    }
+
+       public IActionResult ProfessorDashboard()
+       {
+           List<User> UsersToDisplay = new List<User>();
+           UsersToDisplay = DAL.GetAllUsers();
+           return View(UsersToDisplay);
+       }
+}
 }
