@@ -190,3 +190,25 @@ CREATE TABLE `GroupsUsers` (
     FOREIGN KEY (`UserID`)
     REFERENCES `Users` (`UserID`)
  );
+
+ -- -----------------CourseSemesterUsers------------------------------
+-- Description:	Association Table for CourseSemesters and Users table.
+-- As these two have many to many relationship.
+-- ======================================================
+
+-- Author: Elvis
+-- Create date: 26 April 2019
+-- Description:	Create CourseSemesterUsers table in the database
+-- ======================================================
+  CREATE TABLE `CourseSemesterUsers` ( 
+  `CourseSemesterUserID` int(11) NOT NULL AUTO_INCREMENT, 
+  `CourseSemesterID` int(11) NOT NULL DEFAULT 1, 
+  `UserID` int(11) NOT NULL DEFAULT 1, 
+  PRIMARY KEY (`CourseSemesterUserID`), 
+  CONSTRAINT `CourseSemesters` 
+   FOREIGN KEY (`CourseSemesterID`) 
+   REFERENCES `CourseSemesters` (`CourseSemesterID`), 
+  CONSTRAINT `Users` 
+   FOREIGN KEY (`UserID`) 
+   REFERENCES `Users` (`UserID`)
+   );
