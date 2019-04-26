@@ -1,0 +1,51 @@
+﻿@using ClassWeb.Models
+@model GroupLoginModel
+@{
+    ViewData["Title"] = "AddUsersToGroup";
+}
+
+<p style="color:red">@ViewBag.UserAddError</p>
+<p style="color:red">@ViewBag.Error</p>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <h2 style="color: darkorange">Add a new group.</h2>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="Users">
+                <label>Add users by email address:</label>
+
+                <input name="Users[0].ID" type="hidden" value="0" />
+                <div class="form-group">
+                    <label>EmailAdress 1</label>
+                    <input asp-for="Users[0].EmailAddress" class="form-control" />
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+                <input name="Users[1].ID" type="hidden" value="0" />
+                <div class="form-group">
+                    <label>EmailAdress 2</label>
+                    <input asp-for="Users[1].EmailAddress" class="form-control" />
+                </div>
+                <input name="Users[2].ID" type="hidden" value="0" />
+                <div class="form-group">
+                    <label>EmailAdress 3</label>
+                    <input asp-for="Users[2].EmailAddress" class="form-control" />
+                </div>
+                <input name="Users[3].ID" type="hidden" value="0" />
+                <div class="form-group">
+                    <label>EmailAdress 4</label>
+                    <input asp-for="Users[3].EmailAddress" class="form-control" />
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-default">Add</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

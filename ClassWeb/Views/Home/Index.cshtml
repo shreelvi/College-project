@@ -10,8 +10,8 @@
         <h2>Welcome to Class Web</h2>
         <p>
             ClassWeb is a website where students can manage
-            Assignments for classes taken each semester. It is designed
-            for ISU College of Business Students and faculty members.<br /><br />
+            assignments for classes taken each semester. It is designed
+            for ISU College of Business students and faculty members.<br /><br />
             It is currently under development.
             <br /><br />
             Test Login for admin, students and grader with: <br />
@@ -20,6 +20,9 @@
     </div>
     <div style="float:right; width:600px">
         @await Html.PartialAsync("../Account/_LoginPartial.cshtml")
+        <div class="form-group">
+            <a asp-controller="Group" asp-action="LoginGroup">Group Login</a>
+        </div>
     </div>
 </div>
 

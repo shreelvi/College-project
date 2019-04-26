@@ -266,7 +266,7 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            _MiddleName = dr.GetString(db_MiddleName);
+            //_MiddleName = dr.GetString(db_MiddleName);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             //_Address = dr.GetString(db_Address);

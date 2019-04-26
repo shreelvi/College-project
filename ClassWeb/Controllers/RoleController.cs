@@ -125,7 +125,7 @@ namespace ClassWeb.Controllers
             {
                 int retInt = DAL.AddRole(role);
                 if (retInt < 0)
-                    ViewBag.RoleAdd = "Database problem occured when adding the role";
+                    TempData["RoleAdd"] = "Database problem occured when adding the role";
                 else { TempData["RoleAdd"] = "Role added successfully"; }
 
                 return RedirectToAction(nameof(Index));

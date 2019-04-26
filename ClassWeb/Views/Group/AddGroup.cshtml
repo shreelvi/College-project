@@ -1,0 +1,66 @@
+﻿@using ClassWeb.Models
+@model GroupLoginModel
+@{
+    ViewData["Title"] = "AddGroup";
+}
+<style>
+    .left {
+        float: left;
+        width: 50%;
+    }
+    
+</style>
+<p style="color:red">@ViewData["GroupAddSuccess"]</p>
+<p style="color:red">@ViewData["UserGroupAddSuccess"]</p>
+<p style="color:red">@ViewBag.UserAddError</p>
+<p style="color:red">@ViewBag.Error</p>
+<p style="color:red">@ViewData["UserAddGroupError"]</p>
+<div class="left">
+    <div class="col-md-4">
+        <form method="post">
+            <h2 style="color: darkorange">Add a new group.</h2>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="Group">
+                <div class="form-group">
+                    <label asp-for="EmailAddress"></label>
+                    <input asp-for="EmailAddress" class="form-control" />
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            
+
+        </form>
+    </div>
+</div>
+
+<div class="left">
+    @await Html.PartialAsync("_AddUserToGroupPartial.cshtml")
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

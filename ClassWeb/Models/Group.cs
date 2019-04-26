@@ -1,61 +1,57 @@
-﻿using System;
+﻿using ClassWeb.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using ClassWeb.Models;
-
+using System.Xml.Serialization;
 namespace ClassWeb.Models
 {
     /// <summary>
-    /// Code by Elvis and Meshari
-    /// Groups are a team of student members for a projects in class
+    /// Code by Elvis
+    /// Groups are a team of student members for a project in class
     /// </summary>
 
-    public class Group: DatabaseRecord
+    public class Group : DatabaseNamedRecord
     {
-        #region Private Variables
-        private string _GroupName;
-        private string _EmailAddress;
-        private string _UserName;
-        private string _Password;
-        private Assignment _Assignment;
-        private int _AssignmentID;
-        #endregion
-
         #region Constructors
         /// <summary>
-        /// Code By Elvis
+        /// By Sakshi
         /// Constructor to map results of sql query to the class
         /// Reference: GitHub PeerVal Project
         /// </summary>
         public Group()
-        {
-        }
+        { }
         internal Group(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
-
+        #region Private Variables
+        private string _EmailAddress;
+        private string _UserName;
+        private string _Password;
+        private string _Salt;
+        private string _DirectoryPath;
+        private List<Assignment> _Assignments;
+        private int _AssignmentID;
+        private List<User> _Users;
         #endregion
 
         #region Database String
-        internal const string db_ID = "GroupID";
-        internal const string db_GroupName = "GroupName";
+        internal const string db_ID = "ID";
+        internal const string db_Name = "Name";
         internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
-        internal const string db_Assignment = "AssignmentID";
-        #endregion
+        internal const string db_Salt = "Salt";
+        internal const string db_DirectoryPath = "DirectoryPath";
+        internal const string db_Assignments = "Assignments";
+        internal const string db_AssignmentID = "AssignmentID";
 
-        #region Public Properites
-        [Display(Name ="Group's Email-address",
+        #endregion
+        #region Public Variables
+        [Display(Name = "Group's Email-address",
             Description = "Email-address used to contact the group; which all members will have access.")]
-        public string GroupName
-        {
-            get { return _GroupName; }
-            set { _GroupName = value; }
-        }
         public string EmailAddress
         {
             get { return _EmailAddress; }
@@ -64,7 +60,7 @@ namespace ClassWeb.Models
 
         [Display(Name = "Group's Login Username",
             Description = "Username to login to group's account profile.")]
-        public string Username
+        public string UserName
         {
             get { return _UserName; }
             set { _UserName = value; }
@@ -74,36 +70,80 @@ namespace ClassWeb.Models
             Description = "Password to login to group's account profile.")]
         public string Password
         {
-            get { return _Password; }
-            set { _Password = value; }
+            get
+            {
+                if (String.IsNullOrEmpty(_Password)) _Password = "";
+                return _Password;
+            }
+            set { _Password = value.Trim(); }
+        }
+
+        public string Salt
+        {
+            get { return _Salt; }
+            set { _Salt = value.Trim(); }
+        }
+        public string DirectoryPath
+        {
+            get { return _DirectoryPath; }
+            set { _DirectoryPath = value; }
+        }
+        public List<Assignment> Assignments
+        {
+            get { return _Assignments; }
+            set { _Assignments = value; }
         }
         //Foreign Key
-        public Assignment Assignment
-        {
-            get { return _Assignment; }
-            set { _Assignment = value; }
-        }
         public int AssignmentID
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
+        public List<User> Users
+        {
+            get
+            {
+                if (_Users == null)
+                {
+                    _Users = DAL.GetGroupUsers(_ID);
+                }
+                return _Users;
+            }
+            set { _Users = value; }
+        }
+
         #endregion
 
         #region Public Functions
+
         public override int dbSave()
         {
-            throw new NotImplementedException();
+            if (_ID < 0)
+            {
+                return dbAdd();
+
+            }
+            else
+            {
+                return dbUpdate();
+            }
         }
 
         protected override int dbAdd()
         {
-            throw new NotImplementedException();
+            _ID = DAL.AddGroup(this);
+            return ID;
+
         }
 
         protected override int dbUpdate()
         {
-            throw new NotImplementedException();
+            return DAL.UpdateGroup(this);
+
+        }
+        public int dbRemoveUserFromGroup()
+        {
+            return DAL.RemoveUserFromGroup(this);
         }
         #endregion
 
@@ -115,11 +155,13 @@ namespace ClassWeb.Models
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _GroupName = dr.GetString(db_GroupName);
+            _Name = dr.GetString(db_Name);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _AssignmentID = dr.GetInt32(Assignment.db_ID);
+            _Salt = dr.GetString(db_Salt);
+            //  _AssignmentID = dr.GetInt32(db_AssignmentID);
+
         }
         #endregion
 
@@ -127,5 +169,11 @@ namespace ClassWeb.Models
         {
             return this.GetType().ToString();
         }
+
+        internal static Task FirstOrDefaultAsync(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
+        }
     }
+    #endregion
 }

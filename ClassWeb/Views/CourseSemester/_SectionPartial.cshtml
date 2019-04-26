@@ -1,0 +1,39 @@
+﻿
+@model IEnumerable<ClassWeb.Models.Section>
+@*@model List<ClassWeb.Models.Course>*@
+
+@{
+    var sections = (List<Section>)ViewBag.Sections; // Cast the list
+}
+<h3 style="color:cadetblue"> Section Info:</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>ID</p>
+            </th>
+            <th>
+                <p>CRN</p>
+            </th>
+            <th>
+                <p>Number</p>
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in sections) // Print the list
+        {
+        <tr>
+            <td>
+                @s.ID
+            </td>
+            <td>
+                @s.SectionNumber
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

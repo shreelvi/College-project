@@ -139,7 +139,9 @@ namespace ClassWeb.Controllers
         public ActionResult Dashboard()
         {
             User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
+            Group LoggedInGroup = CurrentGroup;
+
+            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
@@ -151,16 +153,25 @@ namespace ClassWeb.Controllers
                 if (s != null)
                     ViewData["PermissionErr"] = s;
 
-                int id = (int)HttpContext.Session.GetInt32("UserID");
-                string username = HttpContext.Session.GetString("username");
+                int id = 0;
+                if (LoggedInGroup.Name == "Anonymous") {
+                    id = (int)HttpContext.Session.GetInt32("UserID");
+                    string username = HttpContext.Session.GetString("username");
+                    ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
+                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
+                    List<Assignment> UserAssignments = new List<Assignment>();
+                    UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+                    return View(UserAssignments);
+                }
+                else {
+                    id = (int)HttpContext.Session.GetInt32("GroupID");
+                    string username = HttpContext.Session.GetString("username");
+                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
+                    List<User> users = DAL.GetGroupUsers(6);
+                    return RedirectToAction("Dashboard", "Group");
+                }
 
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-
-                List<Assignment> UserAssignments = new List<Assignment>();
-                UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-
-                return View(UserAssignments);
+                
             }
             
         }
@@ -199,7 +210,8 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(User NewUser)
         {
-            SetUserFolder(NewUser); //Sets the default user directory 
+            string userPath = SetUserFolder(NewUser); //Sets the default user directory 
+            NewUser.DirectoryPath = userPath;
             int check = DAL.CheckUserExists(NewUser.UserName);
             if (check > 0)
             {
@@ -237,7 +249,7 @@ namespace ClassWeb.Controllers
         /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
         /// Used the references to understand and develop the feature in our website
         /// </summary>
-        private void SetUserFolder(User user)
+        private string SetUserFolder(User user)
         {
             string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
             user.DirectoryPath = dir_Path + user.UserName;
@@ -245,6 +257,7 @@ namespace ClassWeb.Controllers
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+            return path;
         }
         #endregion
 

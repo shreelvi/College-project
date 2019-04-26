@@ -78,9 +78,9 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Name = dr.GetString(db_Name);
             _Title = dr.GetString(db_Title);
-            _Description = dr.GetString(db_Description);
+            _Name = dr.GetString(db_Name);
+            //_Description = dr.GetString(db_Description);
         }
 
         public override string ToString()
