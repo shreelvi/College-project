@@ -371,7 +371,27 @@ END
 $$
 
  -----------------CourseSemesters---------------------------------
- 
+ -- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Add a new  CourseSemester object to the database.
+-- =============================================
+DELIMITER $$
+
+CREATE PROCEDURE sproc_CourseSemesterAdd(
+OUT CourseSemesterID int,
+IN CRN int(11),
+IN CourseID int(11),
+IN SemesterID INT(11),
+IN YearID INT(11),
+IN SectionID INT(11),
+IN UserID INT(11)
+)
+BEGIN
+     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID, UserID)
+               VALUES(CRN, CourseID, SemesterID, YearID, SectionID, UserID);               
+     SET CourseSemesterID = LAST_INSERT_ID();
+END
+$$
 -- ================================================
 -- Author: Elvis
 -- Create date:	09 April 2019
@@ -381,8 +401,8 @@ $$
 -- ================================================
 
 CREATE PROCEDURE sproc_CourseSemesterEdit(
+IN CourseSemesterID int(11),
 IN CRN int(11),
-IN SectionID int(11),
 IN CourseID int(11),
 IN SemesterID INT(11),
 IN YearID INT(11),
@@ -390,14 +410,13 @@ IN SectionID INT(11),
 IN UserID INT(11)
 )
 BEGIN
-     UPDATE Sections
+     UPDATE CourseSemesters
           SET
 			   CourseSemesters.CRN = CRN,
                CourseSemesters.CourseID = CourseID,
 			   CourseSemesters.SemesterID = SemesterID,
 			   CourseSemesters.YearID = YearID,
 			   CourseSemesters.SectionID = SectionID,
-			   CourseSemesters.CourseID = CourseID,
                CourseSemesters.UserID = UserID
           WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
 END
