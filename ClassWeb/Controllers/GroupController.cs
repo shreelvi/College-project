@@ -184,8 +184,6 @@ namespace ClassWeb.Controllers
                 String email =  Request.Form["EmailAddress" + (i+1)];
                // users[i] = NewGroup.Users[i].EmailAddress;
                 retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
-
-
                 if (retInt <= 0)
                 {
                     if (email != null)
@@ -201,7 +199,6 @@ namespace ClassWeb.Controllers
             int GroupAdd = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
             SetGroupFolder(NewGroup);
-
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -212,7 +209,6 @@ namespace ClassWeb.Controllers
                 try
                 {
                     GroupAdd = DAL.AddGroup(NewGroup); //Returns groupID after adding the group
-                    // DAL.AddGroup(NewGroup);
                     if (GroupAdd < 1)
                     { TempData["GroupAddError"] = "Sorry, unexpected Database Error. Please try again later."; }
                     else
@@ -255,30 +251,32 @@ namespace ClassWeb.Controllers
         public ActionResult AddUserToGroup(List<User> Users)
         {
             int retInt = 0;
-            int groupid = (int)HttpContext.Session.GetInt32("ID");
+            int groupid = (int)HttpContext.Session.GetInt32("GroupID");
             string[] emails = new string[6];
             int countOfMembers = int.Parse(Request.Form["Users"]);
             for (int i = 0; i < countOfMembers; i++) //Verfies each email 
             {
-                emails[i] = Users[i].EmailAddress;
-                retInt = DAL.CheckUserExistsByEmail(emails[i]); //Checks user and returns user id
-
+                String email = Request.Form["EmailAddress" + (i + 1)];
+                // users[i] = NewGroup.Users[i].EmailAddress;
+                retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
                 if (retInt <= 0)
                 {
-                    if (emails[i] != null)
+                    if (email != null)
                     { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                         return View();
                     }
                 }
             }
+        
 
             for (int i = 0; i < countOfMembers; i++)
             {
-                int UserID = DAL.CheckUserExistsByEmail(emails[i]); //This method can also be used to get userID
+                String email = Request.Form["EmailAddress" + (i + 1)];
+                int UserID = DAL.CheckUserExistsByEmail(email); //This method can also be used to get userID
                 if (UserID > 0)
                 {
-                    int addGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
+                    int addUserToGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
                 }
             }
             TempData["UserGroupAddSuccess"] = "Succesfully added users.";
@@ -340,8 +338,7 @@ namespace ClassWeb.Controllers
 
         public async Task<IActionResult> EditGroup(int? id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Edit))
-            {
+           
                 int? gid = HttpContext.Session.GetInt32("GroupID");
                 if (gid != null)
                 {
@@ -357,12 +354,12 @@ namespace ClassWeb.Controllers
                     return NotFound();
                 }
                 return View(group);
-            }
-            else
-            {
-                TempData["error"] = "You Don't Have Enough Previlage to edit Group";
-                return RedirectToAction("Dashboard", "Group");
-            }
+            
+            //else
+            //{
+            //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
+            //    return RedirectToAction("Dashboard", "Group");
+            //}
         }
 
         [HttpPost]
