@@ -27,7 +27,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(ClassWebContext context, IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -49,7 +49,7 @@ namespace ClassWeb.Controllers
         {
             return View();
         }
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
@@ -88,7 +88,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if(e != null)
+            else if (e != null)
                 ViewData["UserAddError"] = e;
 
             return View();
@@ -122,11 +122,14 @@ namespace ClassWeb.Controllers
                 //Check if the user is admin
                 if (loggedIn.Role.IsAdmin)
                 {
+                    if (loggedIn.Role.Name == "Professor")
+                    {
+                        return RedirectToAction("ProfessorDashboard", "Admin"); //Redirects to the professor dashboard
+                    }
                     return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
                 }
 
                 return RedirectToAction("Dashboard");
-                //return View("Dashboard");
             }
             else
             {
@@ -154,7 +157,8 @@ namespace ClassWeb.Controllers
                     ViewData["PermissionErr"] = s;
 
                 int id = 0;
-                if (LoggedInGroup.Name == "Anonymous") {
+                if (LoggedInGroup.Name == "Anonymous")
+                {
                     id = (int)HttpContext.Session.GetInt32("UserID");
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
@@ -163,7 +167,8 @@ namespace ClassWeb.Controllers
                     UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
                     return View(UserAssignments);
                 }
-                else {
+                else
+                {
                     id = (int)HttpContext.Session.GetInt32("GroupID");
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
@@ -171,9 +176,9 @@ namespace ClassWeb.Controllers
                     return RedirectToAction("Dashboard", "Group");
                 }
 
-                
+
             }
-            
+
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -217,7 +222,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-               
+
             }
             else
             {

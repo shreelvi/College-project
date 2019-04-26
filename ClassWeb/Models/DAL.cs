@@ -19,12 +19,13 @@ namespace ClassWeb.Model
         /// DAL for Classweb project. 
         /// </summary
 
-        //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd=";
+
 
         //Database information for the hosting website db
         private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+
+
 
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
@@ -944,7 +945,6 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
@@ -970,7 +970,6 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterEdit");
             try
             {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
