@@ -475,7 +475,20 @@ namespace ClassWeb.Model
 
         internal static int CheckUserExists(string userName)
         {
-            throw new NotImplementedException();
+            if (userName == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+                int dr = GetIntReader(comm);
+
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
 
