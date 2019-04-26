@@ -14,7 +14,7 @@ namespace ClassWeb.Controllers
     {
 
         // GET: Course
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             User LoggedIn = CurrentUser;
             //string ss = LoggedIn.FirstName;
@@ -41,7 +41,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Course/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -75,7 +75,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Name,Description,ID")] Course course)
+        public IActionResult Create([Bind("Title,Name,Description,ID")] Course course)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -92,7 +92,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Course/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             return View();
         }
@@ -102,7 +102,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,Name,ID")] Course course)
+        public IActionResult Edit(int id, [Bind("Title,Description,Name,ID")] Course course)
         {
             if (id != course.ID)
             {
@@ -133,7 +133,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Course/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -152,7 +152,7 @@ namespace ClassWeb.Controllers
         // POST: Course/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")

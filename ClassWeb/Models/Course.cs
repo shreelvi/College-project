@@ -28,6 +28,7 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private string _Title;
+        private new string _Name;
         private string _Description;
         #endregion
 
@@ -36,6 +37,12 @@ namespace ClassWeb.Models
         {
             get { return _Title; }
             set { _Title = value; }
+        }
+
+        public new string Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
         }
 
         public string Description
@@ -80,7 +87,7 @@ namespace ClassWeb.Models
             _ID = dr.GetInt32(db_ID);
             _Title = dr.GetString(db_Title);
             _Name = dr.GetString(db_Name);
-            //_Description = dr.GetString(db_Description);
+            _Description = dr.GetString(db_Description);
         }
 
         public override string ToString()

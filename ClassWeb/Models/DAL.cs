@@ -883,7 +883,7 @@ namespace ClassWeb.Model
 
         #endregion
 
-        #region Courses
+        #region Course
         ///<summary>
         ///Created by: Mohan
         ///Create/Add Course in database
