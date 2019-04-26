@@ -155,6 +155,16 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
+            var g = TempData["GroupAddSuccess"];
+            var s = TempData["UserGroupAddSuccess"];
+            var e = TempData["UserGroupAddError"];
+
+            if (s != null)
+                ViewData["UserGroupAddSuccess"] = s;
+            else if (e != null)
+                ViewData["UserGroupAddError"] = e;
+            else if (g != null)
+                ViewData["GroupAddSuccess"] = g;
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -190,7 +200,7 @@ namespace ClassWeb.Controllers
             int check = 0;
             int GroupAdd = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
-            //SetGroupFolder(NewGroup);
+            SetGroupFolder(NewGroup);
 
             if (check > 0)
             {

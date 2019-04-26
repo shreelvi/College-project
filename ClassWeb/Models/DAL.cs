@@ -21,10 +21,10 @@ namespace ClassWeb.Model
 
         //private static string ReadOnlyConnectionString = "Server = localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
        //private static string EditOnlyConnectionString = "Server=localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters; Port = 3306; Uid=root;Pwd=class";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters; Port= 3306; Uid=root;Pwd=class";
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+      //  private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters; Port = 3306; Uid=root;Pwd=class";
+     //   private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters; Port= 3306; Uid=root;Pwd=class";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -247,8 +247,9 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                comm.Parameters.AddWithValue("@" + User.db_DirectoryPath, obj.DirectoryPath);
                 return AddObject(comm, "@" + User.db_ID);
             }
             catch (Exception ex)
@@ -1647,7 +1648,7 @@ namespace ClassWeb.Model
         internal static int AddGroup(Group obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("add_Group");
+            MySqlCommand comm = new MySqlCommand("sproc_AddGroup");
             try
             {
                 // generate new password first.

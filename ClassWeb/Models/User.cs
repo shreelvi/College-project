@@ -66,6 +66,7 @@ namespace ClassWeb.Models
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
+        internal const string db_DirectoryPath = "DirectoryPath";
 
 
 
@@ -264,10 +265,12 @@ namespace ClassWeb.Models
             DateTime DateCreated = dr.GetDateTime(db_DateCreated);
             _DateModified = dr.GetDateTime(db_DateModified);
             // _DateModified = DateTime.Parse(DateModified.ToString());
+
             _DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
+            _DirectoryPath = dr.GetString(db_DirectoryPath);
         }
         #endregion
 

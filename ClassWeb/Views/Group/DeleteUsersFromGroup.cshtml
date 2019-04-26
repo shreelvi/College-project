@@ -1,6 +1,5 @@
 ﻿@model ClassWeb.Models.GroupUser
-
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this?</h3><Span class="text-capitalize text-danger">@Html.DisplayFor(model => model.UserID)</Span> ?</h3>
 <div>
     <h4>GroupUser</h4>
     <hr />
@@ -24,7 +23,7 @@
             @Html.DisplayFor(model => model.User)
         </dd>
     </dl>
-    
+
     <form asp-action="DeleteUsersFromGroup">
         <input type="submit" value="Delete" class="btn btn-default" /> |
         <a asp-action="Index">Back to List</a>
