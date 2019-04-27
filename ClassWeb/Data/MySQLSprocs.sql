@@ -383,12 +383,12 @@ IN CRN int(11),
 IN CourseID int(11),
 IN SemesterID INT(11),
 IN YearID INT(11),
-IN SectionID INT(11),
-IN UserID INT(11)
+IN SectionID INT(11)
+
 )
 BEGIN
-     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID, UserID)
-               VALUES(CRN, CourseID, SemesterID, YearID, SectionID, UserID);               
+     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID)
+               VALUES(CRN, CourseID, SemesterID, YearID, SectionID);               
      SET CourseSemesterID = LAST_INSERT_ID();
 END
 $$
@@ -406,8 +406,7 @@ IN CRN int(11),
 IN CourseID int(11),
 IN SemesterID INT(11),
 IN YearID INT(11),
-IN SectionID INT(11),
-IN UserID INT(11)
+IN SectionID INT(11)
 )
 BEGIN
      UPDATE CourseSemesters
@@ -416,9 +415,8 @@ BEGIN
                CourseSemesters.CourseID = CourseID,
 			   CourseSemesters.SemesterID = SemesterID,
 			   CourseSemesters.YearID = YearID,
-			   CourseSemesters.SectionID = SectionID,
-               CourseSemesters.UserID = UserID
-          WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
+			   CourseSemesters.SectionID = SectionID
+	      WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
 END
 $$
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace ClassWeb.Controllers
 {
@@ -120,6 +121,8 @@ namespace ClassWeb.Controllers
             List<Section> SectionPartial = new List<Section>();
             SectionPartial = DAL.GetSections();
             ViewBag.Sections = SectionPartial;
+            
+            if(LoggedIn.Role.Name == "Professor") { ViewBag.Professor = "True"; } //If creating class by professor, will not display userid field
 
             return View();
 
@@ -132,16 +135,18 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
         {
+            int id = (int)HttpContext.Session.GetInt32("UserID");
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
             int retInt = DAL.AddCourseSemester(courseSemester);
             if (retInt < 0)
-                TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
-            else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
+                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
+            else { TempData["CourseSemesterAdd"] = "Courses for semester added successfully"; }
 
             
             return RedirectToAction(nameof(Index));

@@ -2,7 +2,10 @@
 
 @{
     ViewData["Title"] = "Create";
+    string check = ViewBag.Professor;
 }
+
+
 <a style="color:blue" href='javascript:history.go(-1)'>Return back</a><br /><br />
 
 <h2>Create</h2>
@@ -33,11 +36,15 @@
                 <input asp-for="SectionID" class="form-control" />
                 <span asp-validation-for="SectionID" class="text-danger"></span>
             </div>
+            
+            @if(check != "True"){
             <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
+            <label>Professor ID</label>
+            <input asp-for="UserID" class="form-control" />
+            <span asp-validation-for="UserID" class="text-danger"></span>
             </div>
+            }
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
