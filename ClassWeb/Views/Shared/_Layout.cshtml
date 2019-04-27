@@ -74,7 +74,7 @@
     </div>
     <div class="s-layout">
         <!-- Sidebar -->
-        @if ("True" == "True")
+        @if (@Context.Session.GetString("UserRole") == "True")
         {
             @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
         }
