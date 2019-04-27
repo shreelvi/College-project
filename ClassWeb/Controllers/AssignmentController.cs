@@ -543,7 +543,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("Login", "Account");
             }
 
         }

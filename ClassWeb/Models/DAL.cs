@@ -741,11 +741,7 @@ namespace ClassWeb.Model
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
-                MySqlParameter retParameter;
-                retParameter = comm.Parameters.Add("@" + Assignment.db_ID, MySqlDbType.Int32);
-                retParameter.Direction = System.Data.ParameterDirection.Output;
                 comm.ExecuteNonQuery();
-                retInt = (int)retParameter.Value;
                 comm.Connection.Close();
             }
             catch (Exception ex)
@@ -755,7 +751,6 @@ namespace ClassWeb.Model
             }
             return retInt;
         }
-
         /// <summary>
         /// Gets a list of all ClassWeb.Assignment objects for the user from the database.
         /// </summary>
