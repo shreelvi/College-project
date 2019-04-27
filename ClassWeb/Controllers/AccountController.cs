@@ -90,7 +90,7 @@ namespace ClassWeb.Controllers
             else if(e != null)
                 ViewData["UserAddError"] = e;
 
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = "Invalid Username and/or Password";
                 ViewBag.User = userName;
-                return View();
+                return RedirectToAction("Index", "Home");
             }
         }
 
