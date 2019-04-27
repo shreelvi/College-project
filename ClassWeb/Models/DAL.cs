@@ -871,10 +871,18 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-        
+
         #endregion
 
         #region CourseSemester
+        //<summary>
+        //Created on: 04/09/2019
+        //Created by: Elvis
+        //CRUD methods for CourseSemester object in ClassWeb Database
+        //Reference: Prof. Holmes PeerVal Project
+        //Copied code for Roles CRUD and modified to use for the section
+        //</summary>
+
 
         /// <summary>
         /// Get list of all CourseSemesters CLassweb.objects from the database
@@ -902,15 +910,6 @@ namespace ClassWeb.Model
             }
             return retList;
         }
-
-        //<summary>
-        //Created on: 04/09/2019
-        //Created by: Elvis
-        //CRUD methods for CourseSemester object in ClassWeb Database
-        //Reference: Prof. Holmes PeerVal Project
-        //Copied code for Roles CRUD and modified to use for the section
-        //</summary>
-
 
         public static CourseSemester GetCourseSemester(int id)
         {
@@ -1005,6 +1004,32 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Get list of all CourseSemesters CLassweb.objects from the database associated with the userID
+        /// </summary>
+        /// <returns></returns>
+        public static List<CourseSemester> GetCourseSemestersForUser(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetClassesForUser");
+            List<CourseSemester> retList = new List<CourseSemester>();
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, id);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new CourseSemester(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
         #endregion
 
         #region Semester
