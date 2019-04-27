@@ -138,6 +138,7 @@ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescriptio
 );
 
 ALTER TABLE `coursesemesters` ADD `CRN` INT(11) NULL AFTER `CourseSemesterID`;
+ALTER TABLE `coursesemesters` ADD `DateStart` DATE NULL AFTER `UserID`, ADD `DateEnd` DATE NULL AFTER `DateStart`;
 
 -- -----------------Years------------------------------
 -- ======================================================
