@@ -27,36 +27,38 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
-        private string _Title;
-        private new string _Name;
-        private string _Description;
+        private string _Subject;
+        private int _CourseNumber;
+        private string _CourseTitle;
         #endregion
 
         #region Public Variables
-        public string Title
+
+        public string Subject
         {
-            get { return _Title; }
-            set { _Title = value; }
+            get { return _Subject; }
+           set { _Subject = value; }
+        }
+        public int CourseNumber
+        {
+            get { return _CourseNumber; }
+            set { _CourseNumber = value; }
+        }
+        public string CourseTitle
+        {
+            get { return _CourseTitle; }
+            set { _CourseTitle = value; }
         }
 
-        public new string Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
 
-        public string Description
-        {
-            get { return _Description; }
-            private set { _Description = value; }
-        }
+
         #endregion
 
         #region Database String
         internal const string db_ID = "CourseID";
-        internal const string db_Title = "CourseTitle";
-        internal const string db_Name = "CourseName";
-        internal const string db_Description = "CourseDescription";
+        internal const string db_Subject = "Subject";
+        internal const string db_CourseNumber = "CourseNumber";
+        internal const string db_CourseTitle = "CourseTitle";
         #endregion
 
         #region Public Functions
@@ -85,14 +87,14 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Title = dr.GetString(db_Title);
-            _Name = dr.GetString(db_Name);
-            _Description = dr.GetString(db_Description);
+            _Subject = dr.GetString(db_Subject);
+            _CourseNumber = dr.GetInt32(db_CourseNumber);
+            _CourseTitle = dr.GetString(db_CourseTitle);
         }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.GetType().ToString();
         }
         #endregion
     }

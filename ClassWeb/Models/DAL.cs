@@ -18,13 +18,14 @@ namespace ClassWeb.Model
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project. 
         /// </summary
-
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-       // private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters;Port=3307;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters; Port=3307;Uid=root;Pwd=;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        // private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
-        // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -897,9 +898,9 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
                 return AddObject(comm, "@" + Course.db_ID);
             }
             catch (Exception ex)
@@ -909,6 +910,34 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        /// Created By: Mohan 
+        /// Get Course 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+        internal static List<Course> GetCourse()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+            List<Course> retList = new List<Course>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Course(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
 
         ///<summary>
         /// Created BY: Mohan
@@ -941,34 +970,6 @@ namespace ClassWeb.Model
 
         ///<summary>
         /// Created By: Mohan 
-        /// Get Course 
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
-        internal static List<Course> GetCourse()
-        {
-
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
-            List<Course> retList = new List<Course>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new Course(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-        ///<summary>
-        /// Created By: Mohan 
         /// Edit Course 
         /// Reference: PeerVal project by Professor
         /// </summary>
@@ -976,13 +977,12 @@ namespace ClassWeb.Model
         internal static int UpdateCourse(Course obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
+            MySqlCommand comm = new MySqlCommand("sproc_UpdateCourse");
             try
             {
-                comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
