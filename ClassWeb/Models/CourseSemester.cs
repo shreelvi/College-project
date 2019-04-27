@@ -314,7 +314,6 @@ namespace ClassWeb.Models
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
-            _UserID = dr.GetInt32(db_UserID);
         }
         #endregion
 
