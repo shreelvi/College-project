@@ -136,8 +136,9 @@ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescriptio
     FOREIGN KEY (`UserID`)
     REFERENCES `Users` (`UserID`)
 );
-
+ALTER TABLE `coursesemesters` DROP `UserID`;
 ALTER TABLE `coursesemesters` ADD `CRN` INT(11) NULL AFTER `CourseSemesterID`;
+ALTER TABLE `coursesemesters` ADD `DateStart` DATE NULL AFTER `UserID`, ADD `DateEnd` DATE NULL AFTER `DateStart`;
 
 -- -----------------Years------------------------------
 -- ======================================================
@@ -192,8 +193,8 @@ CREATE TABLE `GroupsUsers` (
  );
 
  -- -----------------CourseSemesterUsers------------------------------
--- Description:	Association Table for CourseSemesters and Users table.
--- As these two have many to many relationship.
+-- Description:	Association Table between CourseSemesters and Users table.
+-- As they have many to many relationship.
 -- ======================================================
 
 -- Author: Elvis
