@@ -98,3 +98,7 @@ $(document).ready(function () {
     });
 
 });
+
+$("#UserTable Table input[type=checkbox]").click(function () {
+    alert("I am clicked");
+});

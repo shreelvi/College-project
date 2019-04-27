@@ -19,9 +19,12 @@ namespace ClassWeb.Controllers
             if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
+                Tuple<List<User>,List<User>>Users=null;
                 if (uid != null)
                 {
-                    List<User> users = null;
+                    List<User> AllUsers = null;
+                    List<User> ActiveUsers = null;
+                    List<User> DisabledUsers = null;
                     User U = DAL.UserGetByID(uid);
                     if (U == null)
                     {
@@ -29,18 +32,17 @@ namespace ClassWeb.Controllers
                     }
                     if (U.Role.IsAdmin)
                     {
-                        users = DAL.UserGetAll();
-                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
-                        return View(users);
+                        AllUsers = DAL.UserGetAll();
+                        ActiveUsers = AllUsers.FindAll(u => u.Enabled == true);
+                        DisabledUsers = AllUsers.FindAll(u => u.Enabled == false);
+                        Tuple.Create(ActiveUsers, DisabledUsers);
                     }
                     else
                     {
-                        users.Add(U);
-                        return View(users);
+                        Users.Item1.Add(U);
                     }
                 }
-
-                return View();
+                return View(Users);
             }
             else
             {

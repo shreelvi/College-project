@@ -1,4 +1,4 @@
-﻿@model List<User>
+﻿@model Tuple<List<User>, List<User>>
 @using Microsoft.AspNetCore.Http;
 
 @{
@@ -27,11 +27,38 @@
                 <th><input type="text" class="form-control" placeholder="User Name" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Email" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Action" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Disable" disabled></th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (User item in Model)
+        <tbody id="UserTable">
+            @if (@Model.Item1.Count > 0)
             {
+                <tr>
+                    <td>Active Users</td>
+                </tr>
+                @foreach (User item in Model.Item1)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.EmailAddress)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                        <td><input  type="checkbox"  id="@item.ID"/></td>
+                    </tr>
+                }
+            } @if (@Model.Item2.Count > 0)
+            {
+                <tr>
+                    <td>Disabled Users</td>
+                </tr>
+                @foreach (User item in Model.Item2)
+                {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.ID)</td>
                     <td>
@@ -43,8 +70,11 @@
                         <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
+                    <td><input type="checkbox" checked id="@item.ID" /></td>
                 </tr>
+                }
             }
+
         </tbody>
     </table>
 </div>

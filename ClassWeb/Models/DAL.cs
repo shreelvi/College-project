@@ -736,7 +736,6 @@ namespace ClassWeb.Model
             int retInt = 0;
             try
             {
-
                 comm.Parameters.AddWithValue("@" + Assignment.db_ID, ID);
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
