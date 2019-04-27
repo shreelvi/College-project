@@ -660,3 +660,21 @@ BEGIN
     WHERE groups.id = GroupID;
 END
 $$
+
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	27 April 2019
+-- Description:	Gets the list of classes(courseSemesters) associated with the given userID
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_GetClassForUsers(
+    IN UserID INT)
+BEGIN
+    SELECT coursesemesters.CourseSemesterID, coursesemesters.CRN, coursesemesters.CourseID, coursesemesters.SemesterID, coursesemesters.YearID, coursesemesters.SectionID from users
+    INNER JOIN coursesemesterusers
+    ON users.UserID = coursesemesterusers.UserID
+    INNER JOIN coursesemesters
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    WHERE users.UserID = UserID AND coursesemesters.DateEnd > NOW();
+END
