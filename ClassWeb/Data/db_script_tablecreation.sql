@@ -1,4 +1,6 @@
--- phpMyAdmin SQL Dump
+--All the queries are combined here from everyone's work. Feel free to change those of you need to or let ganesh know. 
+
+
 -- version 4.8.3
 -- https://www.phpmyadmin.net/
 --

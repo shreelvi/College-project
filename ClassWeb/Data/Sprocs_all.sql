@@ -1,4 +1,4 @@
--- -----------------User-----------------
+-- Description:	add users to the database
 -- =============================================
 DELIMITER $$
 
@@ -19,11 +19,14 @@ BEGIN
 SET UserID = LAST_INSERT_ID();
 END$$
 
+-- Description:	Get all the users from the database by username.
+-- =============================================
 CREATE PROCEDURE `sproc_UserGetByUsername` (IN `Username` VARCHAR(128))  BEGIN
 	 SELECT * FROM Users
 	 WHERE Users.UserName = Username;
 END$$
-
+-- Description:	add assignments to the databas
+-- =============================================
 CREATE PROCEDURE `sproc_AssignmentAdd` (OUT `AssignmentID` INT, IN `Name` VARCHAR(45), IN `Feedback` VARCHAR(128), IN `UserID` INT)  BEGIN
      INSERT INTO assignment(Name, Feedback, UserID)
      VALUES(Name, Feedback, UserID);
@@ -32,6 +35,8 @@ END$$
 
 DELIMITER $$
  
+ -- Description:	Get all the assignments from the database by userID.
+-- =============================================
 CREATE PROCEDURE `sproc_GetAssignmentsbyUserID` (IN `UserID` INT) 
 BEGIN 
 	SELECT * FROM assignment 
@@ -40,6 +45,8 @@ BEGIN
 	END $$
 DELIMITER ;
 
+-- Description:	Check user in the database.
+-- =============================================
 DELIMITER $$
 CREATE PROCEDURE `sproc_CheckUserName1`
 (IN `Username1` VARCHAR(128))
@@ -695,10 +702,16 @@ BEGIN
 END
 $$
 
+-- Description:	delete assignment by ID
+-- =============================================
+
 CREATE PROCEDURE `sproc_AssignmentDeleteByID` (IN `ID` INT)  BEGIN
 DELETE FROM assignment
 Where Assignment.ID=`ID`;
 END$$
+
+-- Description:	get all assignment from database by filename
+-- =============================================
 
 CREATE  PROCEDURE `sproc_AssignmentGetAllByFileName` (IN `VARCHAR` (, ``)  )
 BEGIN
@@ -706,31 +719,48 @@ Select * from assignment
 where  assignment.FileName=`FileName`;
 End$$
 
+-- Description:	get all assignment from database by UserName
+-- =============================================
+
 CREATE  PROCEDURE `sproc_AssignmentGetAllByUserName` (IN `UserName` VARCHAR(45))  BEGIN
 Select * from assignment
 where assignment.UserName=`UserName`;
 End$$
+
+-- Description:	get all assignment from database by UserNameAndLocation
+-- =============================================
 
 CREATE  PROCEDURE `sproc_AssignmentGetAllByUserNameAndLocation` (IN `UserName` VARCHAR(45), IN `FileLocation` VARCHAR(50))  BEGIN
 Select * from assignment
 where assignment.UserName=`UserName` AND assignment.FileLocation like CONCAT(`FileLocation` , '%');
 End$$
 
+-- Description:	get all assignment from database by ID
+-- =============================================
 CREATE PROCEDURE `sproc_AssignmentGetByID` (IN `ID` INT)  BEGIN
 Select * from assignment
 where assignment.ID=`ID`;
 End$$
+
+-- Description:	get all assignment from database by Location
+-- =============================================
 
 CREATE  PROCEDURE `sproc_AssignmentGetByLocation` (IN `FileLocation` VARCHAR(100))  BEGIN
 Select * from assignment
 where FileLocation LIKE assignment.FileLocation;
 End$$
 
+-- Description:	get all assignment from database by NameLocationUserName
+-- =============================================
+
 CREATE  PROCEDURE `sproc_AssignmentGetByNameLocationUserName` (IN `FileName` VARCHAR(50), IN `VARCHAR` (, ``)  ,IN `UserName` varchar(50))
 BEGIN
 Select * from assignment
 where assignment.FileLocation=`FileLocation`&&assignment.FileName=`FileName`&&assignment.UserName=`UserName`;
 End$$
+
+-- Description:	to resumbit the assignment
+-- =============================================
 
 CREATE PROCEDURE `sproc_AssignmentResubmit` (IN `ID` INT, IN `VARCHAR` (, ``)  )
 BEGIN
@@ -739,6 +769,9 @@ set Assignment.Feedback=Feedback
 where Assignment.ID=ID;
 End$$
 
+-- Description:	to resubmit the assignment
+-- =============================================
+
 CREATE PROCEDURE `sproc_ResubmitAssignment` (IN `ID` INT, IN `VARCHAR` (, ``)  )
 BEGIN
 update Assignment
@@ -746,38 +779,61 @@ set Assignment.Feedback=Feedback
 where Assignment.ID=ID;
 End$$
 
+-- Description:	get all classes from database 
+-- =============================================
+
 CREATE PROCEDURE `sproc_ClassesGetAll` ()  BEGIN
 select * From Classes;
 END$$
+
+-- Description:	get all assignment from database 
+-- =============================================
 
 CREATE PROCEDURE `sproc_GetAllAssignment` ()  BEGIN
 Select * From assignment;
 END$$
 
+-- Description:	add role to the database
+-- =============================================
 CREATE  PROCEDURE `sproc_RoleAdd` (OUT `ID` INT, IN `Name` NVARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
      INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment)
                VALUES(Name,IsAdmin,Users,Role, Assignment);               
      SET ID = last_insert_id();
 END$$
 
+-- Description:	delete role by ID
+-- =============================================
+
 CREATE PROCEDURE `sproc_RoleDeleteByID` (IN `ID` INT)  BEGIN
 delete from Users
 where Users.ID=`ID`;
 END$$
+
+-- Description:	get role  from database 
+-- =============================================
 
 CREATE PROCEDURE `sproc_RoleGet` (IN `RoleID` INT)  BEGIN
      SELECT * FROM Roles
      WHERE Roles.RoleID = RoleID;
 END$$
 
+-- Description:	get role from database by ID
+-- =============================================
+
 CREATE PROCEDURE `sproc_RoleGetByID` (IN `ID` INT)  BEGIN SELECT * FROM roles WHERE roles.ID = `ID`;
 END$$
+
+-- Description:	remove role from database 
+-- =============================================
 
 CREATE PROCEDURE `sproc_RoleRemove` (IN `RoleID` INT)  BEGIN
      DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
      DELETE FROM Roles
           WHERE Roles.RoleID = RoleID;
 END$$
+
+-- Description:	update all role to the database
+-- =============================================
 
 CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
      UPDATE Roles
@@ -796,6 +852,9 @@ SET Users.Salt = Salt
 WHERE Users.UserID = UserID;
 END$$
 
+-- Description:	add user
+-- =============================================
+
 CREATE PROCEDURE `sproc_UserAdd` (OUT `ID` INT, IN `FirstName` VARCHAR(50), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(50), IN `EmailAddress` VARCHAR(50), IN `UserName` VARCHAR(50), IN `Password` VARCHAR(100), IN `Salt` VARCHAR(50))  BEGIN
 INSERT INTO Users (`FirstName`,`MiddleName`, `LastName`,
  `EmailAddress`, `UserName`,`Password`, `Salt`)
@@ -804,41 +863,62 @@ INSERT INTO Users (`FirstName`,`MiddleName`, `LastName`,
      SET ID = last_insert_id();
 End$$
 
+
+-- Description:	add user by ID
+-- =============================================
+
 CREATE  PROCEDURE `sproc_UserByID` (IN `id` INT)  BEGIN
 Select * from users
 Where users.ID=id;
 END$$
+
+-- Description:	delete  user by ID
+-- =============================================
 
 CREATE PROCEDURE `sproc_UserDeleteByID` (IN `ID` INT)  BEGIN
 delete from Users
 where Users.ID=`ID`;
 END$$
 
+-- Description:	get all users from database
+-- =============================================
 CREATE  PROCEDURE `sproc_UserGetAll` ()  BEGIN
 Select * from users;
 END$$
 
+
+-- Description:	get user from database by EmailAddress
+-- =============================================
 CREATE  PROCEDURE `sproc_UserGetByEmailAddress` (IN `u_EmailAddress` VARCHAR(50))  BEGIN SELECT a.FirstName, a.MiddleName, a.LastName, a.EmailAddress, a.Address, a.UserName, a.PhoneNumber, b.RoleID, b.Title FROM user u
 Inner JOIN userrole c on u.id = c.UserID
 LEFT OUTER JOIN role b on c.UserID = b.ID
 WHERE a.EmailAddress = u_EmailAddress; 
 END$$
 
+-- Description:	get user by ID
+-- =============================================
+
 CREATE  PROCEDURE `sproc_UserGetByID` (IN `ID` INT)  BEGIN
 Select * From Users
 Where Users.ID=ID;
 END$$
+
 
 CREATE PROCEDURE `sproc_GetSaltForUser` (IN `Username` VARCHAR(256))  BEGIN
 SELECT Salt FROM Users
 WHERE Users.UserName = Username;
 END$$
 
+-- Description:	update password for user
+-- =============================================
 CREATE PROCEDURE `sproc_UserPasswordUpdate` (IN `ID` INT, IN `Password` VARCHAR(70))  BEGIN UPDATE users
 SET users.Password = `Password`
 where users.ID=`ID`;
 END$$
 
+
+-- Description:	update user to the database
+-- =============================================
 CREATE PROCEDURE `sproc_UserUpdate` (IN `ID` INT, IN `FirstName` VARCHAR(50), IN `LastName` VARCHAR(50), IN `UserName` VARCHAR(50), IN `ResetCode` VARCHAR(50))  BEGIN UPDATE users
 SET users.FirstName = `FirstName`,
 users.LastName = `LastName`,users.UserName = `UserName`,users.DateModified= NOW(),
