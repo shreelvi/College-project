@@ -21,29 +21,41 @@ END$$
 
 -- Description:	Get all the users from the database by username.
 -- =============================================
-CREATE PROCEDURE `sproc_UserGetByUsername` (IN `Username` VARCHAR(128))  BEGIN
+DELIMITER $$
+CREATE PROCEDURE `sproc_UserGetByUsername` (
+IN `Username` VARCHAR(128)
+)  
+BEGIN
 	 SELECT * FROM Users
 	 WHERE Users.UserName = Username;
 END$$
 -- Description:	add assignments to the databas
 -- =============================================
-CREATE PROCEDURE `sproc_AssignmentAdd` (OUT `AssignmentID` INT, IN `Name` VARCHAR(45), IN `Feedback` VARCHAR(128), IN `UserID` INT)  BEGIN
+DELIMITER $$
+CREATE PROCEDURE `sproc_AssignmentAdd` (
+OUT `AssignmentID` INT, 
+IN `Name` VARCHAR(45), 
+IN `Feedback` VARCHAR(128), 
+IN `UserID` INT)  
+BEGIN
      INSERT INTO assignment(Name, Feedback, UserID)
      VALUES(Name, Feedback, UserID);
 SET AssignmentID = LAST_INSERT_ID();
 END$$
 
-DELIMITER $$
+
  
  -- Description:	Get all the assignments from the database by userID.
 -- =============================================
-CREATE PROCEDURE `sproc_GetAssignmentsbyUserID` (IN `UserID` INT) 
-BEGIN 
+DELIMITER $$
+CREATE PROCEDURE `sproc_GetAssignmentsbyUserID` (
+IN `UserID` INT
+) 
+   BEGIN 
 	SELECT * FROM assignment 
 	WHERE assignment.UserID = UserID 
 	ORDER BY assignment.AssignmentID DESC; 
-	END $$
-DELIMITER ;
+END $$
 
 -- Description:	Check user in the database.
 -- =============================================
@@ -57,13 +69,13 @@ BEGIN
     WHERE Users.`UserName` = `Username1`;
     SELECT @User_exists;
 END $$
-DELIMITER ;
 
-DELIMITER $$
+
 
 -- Author: Elvis
 -- Description:	Get all the users from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE `sproc_GetAllUsers` ()  
 BEGIN
 	 SELECT * FROM Users;
@@ -80,6 +92,7 @@ END$$
 -- Create date:	01 April 2019
 -- Description:	Add a new  Role to the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_RoleAdd(
 OUT RoleID int,
 IN Name nvarchar(45),
@@ -105,6 +118,7 @@ $$
 -- Create date:	01 April 2019
 -- Description:	Update Role in the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_UserRoleUpdate(
 IN RoleID int,
 IN Name nvarchar(45),
@@ -135,6 +149,7 @@ $$
 -- Create date:	01 April 2019
 -- Description:	Get specific Role from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_RoleGet(
 IN RoleID int
 )
@@ -150,6 +165,7 @@ $$
 -- Create date:	01 April 2019
 -- Description:	Get all Roles from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_RolesGetAll()
 BEGIN
      SELECT * FROM Roles;
@@ -161,6 +177,7 @@ $$
 -- Create date:	01 April 2019
 -- Description:	Remove specific Role from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_RoleRemove(
 IN RoleID int
 )
@@ -179,6 +196,7 @@ $$
 -- Create date:	06 April 2019
 -- Description:	Returns users with their roles information.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_GetUsersWithRoles( 
 IN UserID INT(11)
 ) 
@@ -220,7 +238,7 @@ $$
 -- Create date:	31 March 2019
 -- Description:	Update the  section in the database.
 -- ================================================
-
+DELIMITER $$
 CREATE PROCEDURE sproc_SectionUpdate(
 IN SectionID int(11),
 IN CRN int(11),
@@ -244,6 +262,7 @@ $$
 -- Create date:	31 March 2019
 -- Description:	Get specific Section from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_SectionGet(
 IN SectionID int
 )
@@ -259,6 +278,7 @@ $$
 -- Create date:	31 March 2019
 -- Description:	Get all sections from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_SectionsGetAll()
 BEGIN
      SELECT * FROM Sections;
@@ -270,6 +290,7 @@ $$
 -- Create date:	31 March 2019
 -- Description:	Remove specific section from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_SectionRemove(
 IN RoleID int
 )
@@ -288,6 +309,7 @@ $$
 -- Create date:	07 April 2019
 -- Description:	Get the specified course from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_GetCourse(
 IN CourseID int
 )
@@ -322,7 +344,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Update the  Semester object in the database.
 -- ================================================
-
+DELIMITER $$
 CREATE PROCEDURE sproc_SemesterEdit(
 IN SemesterID int,
 IN SemesterName varchar(128)
@@ -357,6 +379,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Get all Semester from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_SemesterGetAll()
 BEGIN
      SELECT * FROM Semesters;
@@ -388,7 +411,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Update the  CourseSemester object in the database.
 -- ================================================
-
+DELIMITER $$
 CREATE PROCEDURE sproc_CourseSemesterEdit(
 IN SectionID int(11),
 IN CourseID int(11),
@@ -431,6 +454,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Get all CourseSemester from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_CourseSemestersGetAll()
 BEGIN
      SELECT * FROM CourseSemesters;
@@ -481,7 +505,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Update the  Year object in the database.
 -- ================================================
-
+DELIMITER $$
 CREATE PROCEDURE sproc_YearEdit(
 IN YearID int,
 IN Year int(11)
@@ -516,6 +540,7 @@ $$
 -- Create date:	09 April 2019
 -- Description:	Get all the Year object from the database.
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_YearGetAll()
 BEGIN
      SELECT * FROM Years;
@@ -576,7 +601,7 @@ END $$
 -- Create date:	20 April 2019
 -- Copied code from Sakshi branch to work on adding users to group
 -------------------------------------------------------------
-
+DELIMITER $$
 CREATE PROCEDURE `AddGroup` 
 (IN `g_Name` VARCHAR(50), 
 IN `g_EmailAddress` VARCHAR(50), 
@@ -618,6 +643,7 @@ $$
 -- Create date:	21 April 2019
 -- Description:	Gets the list of users in group corresponding to the groupID
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE sproc_GetUsersFromGroup(
 IN GroupID int
 )
@@ -644,7 +670,12 @@ $$
 -- =============================================
 
 DELIMITER $$
-CREATE PROCEDURE `sproc_CreateCourse`(OUT CourseID int, IN `Subject` VARCHAR(50), IN `CourseNumber` int, IN `CourseTitle` VARCHAR(50))
+CREATE PROCEDURE `sproc_CreateCourse`(
+OUT CourseID int, 
+IN `Subject` VARCHAR(50), 
+IN `CourseNumber` int, 
+IN `CourseTitle` VARCHAR(50)
+)
 BEGIN
      INSERT INTO course(Subject, CourseNumber, CourseTitle)
 		VALUES(Subject, CourseNumber, CourseTitle);
@@ -656,6 +687,7 @@ $$
 -- sproc_GetCourse
 -- Description:	get Course from the Database.
 -- =============================================
+DELIMITER $$
 CREATE  PROCEDURE `sproc_GetCourse`(IN CourseID int)
 BEGIN
      SELECT * FROM course
@@ -668,6 +700,7 @@ $$
 -- sproc_GetAllCourses
 -- Description:	Gets all courses from the database. 
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE `sproc_GetAllCourses`()
 BEGIN
      SELECT * FROM course;
@@ -679,7 +712,13 @@ $$
 -- sproc_UpdateCourse
 -- Description:	Edit course. 
 -- =============================================
-CREATE  PROCEDURE `sproc_UpdateCourse`(IN CourseID int, IN Subject int, IN CourseName VARCHAR(50), IN CourseTitle VARCHAR(50))
+DELIMITER $$
+CREATE  PROCEDURE `sproc_UpdateCourse`(
+IN CourseID int, 
+IN Subject int, 
+IN CourseName VARCHAR(50),
+IN CourseTitle VARCHAR(50)
+)
 BEGIN
      UPDATE course
           SET
@@ -695,6 +734,7 @@ $$
 -- sproc_DeleteCourseByID
 -- Description:	Delete a course. 
 -- =============================================
+DELIMITER $$
 CREATE PROCEDURE `sproc_DeleteCourseByID`(IN `ID` int)
 BEGIN 
 	DELETE FROM course 
@@ -704,6 +744,7 @@ $$
 
 -- Description:	delete assignment by ID
 -- =============================================
+DELIMITER $$
 
 CREATE PROCEDURE `sproc_AssignmentDeleteByID` (IN `ID` INT)  BEGIN
 DELETE FROM assignment
@@ -712,6 +753,7 @@ END$$
 
 -- Description:	get all assignment from database by filename
 -- =============================================
+DELIMITER $$
 
 CREATE  PROCEDURE `sproc_AssignmentGetAllByFileName` (IN `VARCHAR` (, ``)  )
 BEGIN
@@ -729,31 +771,46 @@ End$$
 
 -- Description:	get all assignment from database by UserNameAndLocation
 -- =============================================
+DELIMITER $$
 
-CREATE  PROCEDURE `sproc_AssignmentGetAllByUserNameAndLocation` (IN `UserName` VARCHAR(45), IN `FileLocation` VARCHAR(50))  BEGIN
+CREATE  PROCEDURE `sproc_AssignmentGetAllByUserNameAndLocation` (
+IN `UserName` VARCHAR(45), 
+IN `FileLocation` VARCHAR(50)
+)  
+BEGIN
 Select * from assignment
 where assignment.UserName=`UserName` AND assignment.FileLocation like CONCAT(`FileLocation` , '%');
 End$$
 
 -- Description:	get all assignment from database by ID
 -- =============================================
-CREATE PROCEDURE `sproc_AssignmentGetByID` (IN `ID` INT)  BEGIN
+DELIMITER $$
+CREATE PROCEDURE `sproc_AssignmentGetByID` (IN `ID` INT)  
+BEGIN
 Select * from assignment
 where assignment.ID=`ID`;
 End$$
 
 -- Description:	get all assignment from database by Location
 -- =============================================
+DELIMITER $$
 
-CREATE  PROCEDURE `sproc_AssignmentGetByLocation` (IN `FileLocation` VARCHAR(100))  BEGIN
+CREATE  PROCEDURE `sproc_AssignmentGetByLocation` (IN `FileLocation` VARCHAR(100))  
+BEGIN
 Select * from assignment
 where FileLocation LIKE assignment.FileLocation;
 End$$
 
 -- Description:	get all assignment from database by NameLocationUserName
 -- =============================================
+DELIMITER $$
 
-CREATE  PROCEDURE `sproc_AssignmentGetByNameLocationUserName` (IN `FileName` VARCHAR(50), IN `VARCHAR` (, ``)  ,IN `UserName` varchar(50))
+CREATE  PROCEDURE `sproc_AssignmentGetByNameLocationUserName`
+(
+IN `FileName` VARCHAR(50), 
+IN `VARCHAR` (, ``)  ,
+IN `UserName` varchar(50)
+)
 BEGIN
 Select * from assignment
 where assignment.FileLocation=`FileLocation`&&assignment.FileName=`FileName`&&assignment.UserName=`UserName`;
@@ -761,6 +818,7 @@ End$$
 
 -- Description:	to resumbit the assignment
 -- =============================================
+DELIMITER $$
 
 CREATE PROCEDURE `sproc_AssignmentResubmit` (IN `ID` INT, IN `VARCHAR` (, ``)  )
 BEGIN
@@ -771,6 +829,7 @@ End$$
 
 -- Description:	to resubmit the assignment
 -- =============================================
+DELIMITER $$
 
 CREATE PROCEDURE `sproc_ResubmitAssignment` (IN `ID` INT, IN `VARCHAR` (, ``)  )
 BEGIN
@@ -781,21 +840,34 @@ End$$
 
 -- Description:	get all classes from database 
 -- =============================================
+DELIMITER $$
 
-CREATE PROCEDURE `sproc_ClassesGetAll` ()  BEGIN
+CREATE PROCEDURE `sproc_ClassesGetAll` ()  
+BEGIN
 select * From Classes;
 END$$
 
 -- Description:	get all assignment from database 
 -- =============================================
+DELIMITER $$
 
-CREATE PROCEDURE `sproc_GetAllAssignment` ()  BEGIN
+CREATE PROCEDURE `sproc_GetAllAssignment` ()  
+BEGIN
 Select * From assignment;
 END$$
 
 -- Description:	add role to the database
 -- =============================================
-CREATE  PROCEDURE `sproc_RoleAdd` (OUT `ID` INT, IN `Name` NVARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
+DELIMITER $$
+CREATE  PROCEDURE `sproc_RoleAdd` (
+OUT `ID` INT, 
+IN `Name` NVARCHAR(45), 
+IN `IsAdmin` BIT(1), 
+IN `Users` BIT(4), 
+IN `Role` BIT(4), 
+IN `Assignment` BIT(4)
+)  
+BEGIN
      INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment)
                VALUES(Name,IsAdmin,Users,Role, Assignment);               
      SET ID = last_insert_id();
@@ -803,30 +875,41 @@ END$$
 
 -- Description:	delete role by ID
 -- =============================================
+DELIMITER $$
 
-CREATE PROCEDURE `sproc_RoleDeleteByID` (IN `ID` INT)  BEGIN
+CREATE PROCEDURE `sproc_RoleDeleteByID` (IN `ID` INT) 
+BEGIN
 delete from Users
 where Users.ID=`ID`;
 END$$
 
 -- Description:	get role  from database 
 -- =============================================
+DELIMITER $$
 
 CREATE PROCEDURE `sproc_RoleGet` (IN `RoleID` INT)  BEGIN
      SELECT * FROM Roles
      WHERE Roles.RoleID = RoleID;
 END$$
 
+
 -- Description:	get role from database by ID
 -- =============================================
-
-CREATE PROCEDURE `sproc_RoleGetByID` (IN `ID` INT)  BEGIN SELECT * FROM roles WHERE roles.ID = `ID`;
+DELIMITER $$
+CREATE PROCEDURE `sproc_RoleGetByID` (
+IN `ID` INT
+)  
+BEGIN 
+SELECT * FROM roles WHERE roles.ID = `ID`;
 END$$
 
 -- Description:	remove role from database 
 -- =============================================
 
-CREATE PROCEDURE `sproc_RoleRemove` (IN `RoleID` INT)  BEGIN
+CREATE PROCEDURE `sproc_RoleRemove` (
+IN `RoleID` INT
+)  
+BEGIN
      DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
      DELETE FROM Roles
           WHERE Roles.RoleID = RoleID;
@@ -835,7 +918,15 @@ END$$
 -- Description:	update all role to the database
 -- =============================================
 
-CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
+CREATE PROCEDURE `sproc_RoleUpdate` (
+IN `ID` INT, 
+IN `Name` VARCHAR(45), 
+IN `IsAdmin` BIT(1), 
+IN `Users` BIT(4), 
+IN `Role` BIT(4), 
+IN `Assignment` BIT(4)
+)  
+BEGIN
      UPDATE Roles
           SET
                Roles.`Name` = `Name`,
@@ -846,6 +937,9 @@ CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsA
           WHERE Roles.`ID` = `ID`;
 END$$
 
+--
+---- =============================
+DELIMITER $$
 CREATE PROCEDURE `sproc_SetSaltForUser` (IN `UserID` INT, IN `Salt` CHAR)  BEGIN
 UPDATE Users
 SET Users.Salt = Salt
@@ -854,8 +948,19 @@ END$$
 
 -- Description:	add user
 -- =============================================
+DELIMITER $$
 
-CREATE PROCEDURE `sproc_UserAdd` (OUT `ID` INT, IN `FirstName` VARCHAR(50), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(50), IN `EmailAddress` VARCHAR(50), IN `UserName` VARCHAR(50), IN `Password` VARCHAR(100), IN `Salt` VARCHAR(50))  BEGIN
+CREATE PROCEDURE `sproc_UserAdd` (
+OUT `ID` INT, 
+IN `FirstName` VARCHAR(50), 
+IN `MiddleName` VARCHAR(45), 
+IN `LastName` VARCHAR(50), 
+IN `EmailAddress` VARCHAR(50), 
+IN `UserName` VARCHAR(50), 
+IN `Password` VARCHAR(100), 
+IN `Salt` VARCHAR(50)
+)  
+BEGIN
 INSERT INTO Users (`FirstName`,`MiddleName`, `LastName`,
  `EmailAddress`, `UserName`,`Password`, `Salt`)
  VALUES (`FirstName`,`MiddleName`, `LastName`,
@@ -866,7 +971,7 @@ End$$
 
 -- Description:	add user by ID
 -- =============================================
-
+DELIMITER $$
 CREATE  PROCEDURE `sproc_UserByID` (IN `id` INT)  BEGIN
 Select * from users
 Where users.ID=id;
@@ -874,14 +979,16 @@ END$$
 
 -- Description:	delete  user by ID
 -- =============================================
-
+DELIMITER $$
 CREATE PROCEDURE `sproc_UserDeleteByID` (IN `ID` INT)  BEGIN
 delete from Users
 where Users.ID=`ID`;
 END$$
 
+
 -- Description:	get all users from database
 -- =============================================
+DELIMITER $$
 CREATE  PROCEDURE `sproc_UserGetAll` ()  BEGIN
 Select * from users;
 END$$
@@ -889,41 +996,65 @@ END$$
 
 -- Description:	get user from database by EmailAddress
 -- =============================================
-CREATE  PROCEDURE `sproc_UserGetByEmailAddress` (IN `u_EmailAddress` VARCHAR(50))  BEGIN SELECT a.FirstName, a.MiddleName, a.LastName, a.EmailAddress, a.Address, a.UserName, a.PhoneNumber, b.RoleID, b.Title FROM user u
-Inner JOIN userrole c on u.id = c.UserID
-LEFT OUTER JOIN role b on c.UserID = b.ID
-WHERE a.EmailAddress = u_EmailAddress; 
+DELIMITER $$
+CREATE  PROCEDURE `sproc_UserGetByEmailAddress` (IN `u_EmailAddress` VARCHAR(50))  
+BEGIN 
+	SELECT a.FirstName, a.MiddleName, a.LastName, a.EmailAddress, a.Address, a.UserName, a.PhoneNumber, b.RoleID, b.Title FROM user u
+	Inner JOIN userrole c on u.id = c.UserID
+	LEFT OUTER JOIN role b on c.UserID = b.ID
+	WHERE a.EmailAddress = u_EmailAddress; 
 END$$
 
 -- Description:	get user by ID
 -- =============================================
+DELIMITER $$
 
-CREATE  PROCEDURE `sproc_UserGetByID` (IN `ID` INT)  BEGIN
+CREATE  PROCEDURE `sproc_UserGetByID` (IN `ID` INT) 
+BEGIN
 Select * From Users
 Where Users.ID=ID;
 END$$
 
+--
+-- ==================================
+DELIMITER $$
 
-CREATE PROCEDURE `sproc_GetSaltForUser` (IN `Username` VARCHAR(256))  BEGIN
+CREATE PROCEDURE `sproc_GetSaltForUser` (IN `Username` VARCHAR(256))  
+BEGIN
 SELECT Salt FROM Users
 WHERE Users.UserName = Username;
 END$$
 
 -- Description:	update password for user
 -- =============================================
-CREATE PROCEDURE `sproc_UserPasswordUpdate` (IN `ID` INT, IN `Password` VARCHAR(70))  BEGIN UPDATE users
+DELIMITER $$
+
+CREATE PROCEDURE `sproc_UserPasswordUpdate` (IN `ID` INT, 
+IN `Password` VARCHAR(70)
+)  
+BEGIN UPDATE users
 SET users.Password = `Password`
-where users.ID=`ID`;
+WHERE users.ID=`ID`;
 END$$
 
 
 -- Description:	update user to the database
 -- =============================================
-CREATE PROCEDURE `sproc_UserUpdate` (IN `ID` INT, IN `FirstName` VARCHAR(50), IN `LastName` VARCHAR(50), IN `UserName` VARCHAR(50), IN `ResetCode` VARCHAR(50))  BEGIN UPDATE users
+DELIMITER $$
+
+CREATE PROCEDURE `sproc_UserUpdate` (
+IN `ID` INT, 
+IN `FirstName` VARCHAR(50), 
+IN `LastName` VARCHAR(50), 
+IN `UserName` VARCHAR(50), 
+IN `ResetCode` VARCHAR(50)
+)  
+BEGIN 
+UPDATE users
 SET users.FirstName = `FirstName`,
 users.LastName = `LastName`,users.UserName = `UserName`,users.DateModified= NOW(),
 users.ResetCode=`ResetCode`
-where users.ID=`ID`;
+WHERE users.ID=`ID`;
 END$$
 
 
