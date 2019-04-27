@@ -1097,8 +1097,8 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_SemesterAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + Semester.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Semester.db_Name, obj.Name);
+                return AddObject(comm, "@" + Semester.db_ID);
             }
             catch (Exception ex)
             {
@@ -1120,6 +1120,7 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Semester.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Semester.db_Name, obj.Name);
+                return UpdateObject(comm);
 
             }
             catch (Exception ex)
@@ -1158,7 +1159,7 @@ namespace ClassWeb.Model
         /// </summary>
         /// <remarks></remarks>
 
-        public static Year GetYear(int id)
+        public static Year GetYear(int? id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_YearGet");
             Year retObj = null;
@@ -1217,8 +1218,9 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_YearAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + Year.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Year.db_Year, obj.Year1);
+                return AddObject(comm, "@" + Year.db_ID);
+
             }
             catch (Exception ex)
             {
@@ -1240,7 +1242,7 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Year.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Year.db_Year, obj.Year1);
-
+                return UpdateObject(comm);
             }
             catch (Exception ex)
             {

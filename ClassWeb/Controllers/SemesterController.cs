@@ -25,13 +25,13 @@ namespace ClassWeb.Controllers
         {
             User LoggedIn = CurrentUser;
 
-            var a = TempData["YearAdd"];
+            var a = TempData["SemesterAdd"];
             if (a != null)
-                ViewData["YearAdd"] = a;
+                ViewData["SemesterAdd"] = a;
 
-            var d = TempData["YearDelete"];
+            var d = TempData["SemesterDelete"];
             if (d != null)
-                ViewData["YearDelete"] = d;
+                ViewData["SemesterDelete"] = d;
 
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
