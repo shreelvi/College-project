@@ -193,8 +193,8 @@ CREATE TABLE `GroupsUsers` (
  );
 
  -- -----------------CourseSemesterUsers------------------------------
--- Description:	Association Table for CourseSemesters and Users table.
--- As these two have many to many relationship.
+-- Description:	Association Table between CourseSemesters and Users table.
+-- As they have many to many relationship.
 -- ======================================================
 
 -- Author: Elvis
