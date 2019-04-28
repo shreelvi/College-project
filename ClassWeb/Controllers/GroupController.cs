@@ -416,6 +416,24 @@ namespace ClassWeb.Controllers
 
             }
         }
+
+        public ActionResult ViewGroupUsers()
+        {
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+            if (gid != null)
+            {
+                List<User> u = new List<User>();
+                    u = DAL.GetAllGroupUsersByID(gid);
+                return View(u);
+
+            }
+            else
+            {
+                return RedirectToAction("Dashboard", "Group");
+
+            }
+
+        }
         
 
         //#region resetpassword
@@ -538,17 +556,17 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> DeleteUsersFromGroup(int? id)
+        public async Task<IActionResult> DeleteUsersFromGroup(int? groupId, int? userId)
         {
 
 
-            if (id == null)
+            if (userId == null)
             {
                 return NotFound();
             }
 
             
-            User u = DAL.GetAllGroupUsersByID(id);
+            List<User> u = DAL.GetAllGroupUsersByID(groupId);
             if (u == null)
             {
                 return NotFound();

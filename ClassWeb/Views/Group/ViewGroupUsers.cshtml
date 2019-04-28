@@ -1,17 +1,38 @@
-﻿@model List<string>
+﻿@model ClassWeb.Models.GroupUser
 
 @{
     ViewData["Title"] = "ViewGroupUsers";
 }
 
-<h2>Group: @ViewBag.GroupName</h2>
+<h2>Group: @ViewBag.UserName </h2>
 <b>Users List:</b>
-@foreach (var item in Model)
-{
-    <p>@item</p>
-}
+@*@foreach (var item in Model)
+    {
+        <p>@item</p>
+    }*@
 
-
-
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.User.FirstName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.User.FirstName)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.User.LastName)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.User.LastName)
+    </dd>
+    <dt>
+        @Html.DisplayNameFor(model => model.User.EmailAddress)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.User.EmailAddress)
+    </dd>
+</dl>
+<div>
+    <a asp-action="Dashboard">Back to Home Page</a>
+</div>
 
 

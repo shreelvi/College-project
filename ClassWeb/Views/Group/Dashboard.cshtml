@@ -25,7 +25,8 @@
     <p class="text-danger">@TempData["Error"]</p>
     <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("UserName")</h4><br />
 
-    <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
+    <a style="color:blue" href="/Group/ViewGroupUsers">View Users</a><br /><br />
+    <a style="color:blue" href="/Assignment/Index" target="_blank">Browse Your Files Directory</a><br /><br />
     <a style="color:blue" href="/CourseSemester/ClassViewForStudents">Classes Details</a><br /><br />
     <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br />
     <a style="color:blue" asp-controller="Group" asp-action="AddUserToGroup"><strong>Add Users</strong></a> <br /><br />

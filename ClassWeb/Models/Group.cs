@@ -105,7 +105,7 @@ namespace ClassWeb.Models
             {
                 if (_Users == null)
                 {
-                    _Users = DAL.GetGroupUsers(_ID);
+                    _Users = DAL.GetAllGroupUsersByID(_ID);
                 }
                 return _Users;
             }
