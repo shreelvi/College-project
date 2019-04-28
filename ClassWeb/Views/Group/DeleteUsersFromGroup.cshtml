@@ -11,16 +11,22 @@
             @Html.DisplayFor(model => model.GroupID)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.Group.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Group.Name)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.UserID)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.UserID)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.User)
+            @Html.DisplayNameFor(model => model.User.EmailAddress)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.User)
+            @Html.DisplayFor(model => model.User.EmailAddress)
         </dd>
     </dl>
 

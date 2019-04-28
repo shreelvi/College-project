@@ -1641,6 +1641,29 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
+
+        internal static Group GroupGetByUsername(string userName)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupByUserName");
+            Group retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Group(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         /// <summary>
         /// Attempts to add group in the database
         /// Reference: PeerVal Project + Login for User
@@ -1734,13 +1757,14 @@ namespace ClassWeb.Model
             return retInt;
         }
 
-        internal static int DeleteGroupUserByID(int ID)
+        internal static int DeleteGroupUserByID(int groupID, int userID)
         {
             MySqlCommand comm = new MySqlCommand("delete_GroupUserByID");
             int retInt = 0;
             try
             {
-                comm.Parameters.AddWithValue("@" + User.db_ID, ID);
+                comm.Parameters.AddWithValue("@" + "GroupID", groupID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
