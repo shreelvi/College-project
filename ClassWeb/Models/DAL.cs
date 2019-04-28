@@ -949,6 +949,8 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_DateStart, obj.DateStart);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_DateEnd, obj.DateEnd);
                 return AddObject(comm, "@" + CourseSemester.db_ID);
             }
             catch (Exception ex)

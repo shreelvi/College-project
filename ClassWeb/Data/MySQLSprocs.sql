@@ -384,11 +384,13 @@ IN CourseID int(11),
 IN SemesterID INT(11),
 IN YearID INT(11),
 IN SectionID INT(11)
+IN DateStart DateTime,
+IN DateEnd DateTime
 
 )
 BEGIN
-     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID)
-               VALUES(CRN, CourseID, SemesterID, YearID, SectionID);               
+     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID, DateStart, DateEnd)
+               VALUES(CRN, CourseID, SemesterID, YearID, SectionID, DateStart, DateEnd);               
      SET CourseSemesterID = LAST_INSERT_ID();
 END
 $$

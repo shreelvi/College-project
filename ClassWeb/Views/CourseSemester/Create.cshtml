@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Create";
-    string check = ViewBag.Professor;
 }
 
 
@@ -51,14 +50,6 @@
                 <input asp-for="DateEnd" class="form-control" />
                 <span asp-validation-for="DateEnd" class="text-danger"></span>
             </div>
-
-            @*@if(check != "True"){
-        <div class="form-group">
-        <label>Professor ID</label>
-        <input asp-for="UserID" class="form-control" />
-        <span asp-validation-for="UserID" class="text-danger"></span>
-        </div>
-        }*@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

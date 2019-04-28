@@ -157,12 +157,16 @@ namespace ClassWeb.Controllers
 
             //If sucessful, assigns the class to the user that is creating
             else {
-                int assignProfessor = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
-                if(assignProfessor < 0)
+                int assignUser = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
+                if(assignUser < 0)
                 {
                     TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
                 }
                 TempData["CourseSemesterAdd"] = "Class added successfully.";
+            }
+            if(LoggedIn.Role.Name == "Professor")
+            {
+                return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
             }
             return RedirectToAction(nameof(Index));
         }
