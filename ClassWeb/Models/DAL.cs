@@ -1025,27 +1025,7 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        ///<summary>
-        /// Created By: Mohan
-        /// Delete Course from the database
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        internal static int DeleteCourse(Course obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                comm.CommandText = "sproc_DeleteCourse";
-                comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
+
         /// <summary>
         /// Attempts to delete the database entry corresponding to the Section
         /// </summary>
