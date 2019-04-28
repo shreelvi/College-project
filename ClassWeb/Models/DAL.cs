@@ -368,6 +368,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_Password, newPass);
                 comm.Parameters.AddWithValue("@" + User.db_ResetCode, obj.ResetCode);
                 comm.Parameters.AddWithValue("@" + User.db_Enabled, obj.Enabled);
+                comm.Parameters.AddWithValue("@" + User.db_Archived, obj.Archived);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

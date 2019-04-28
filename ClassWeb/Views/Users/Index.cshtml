@@ -28,6 +28,7 @@
                 <th><input type="text" class="form-control" placeholder="Email" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Action" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Disable" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Archive" disabled></th>
             </tr>
         </thead>
         <tbody id="UserTable">
@@ -38,19 +39,27 @@
                 </tr>
                 @foreach (User item in Model.Item1)
                 {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.ID)</td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.EmailAddress)</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                        </td>
-                        <td><input  type="checkbox" value="@item.ID"  data-type="DisableUser"/></td>
-                    </tr>
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ID)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.EmailAddress)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                    <td><input type="checkbox" value="@item.ID" data-type="DisableUser" /></td>
+                    @if (item.Archived == 1)
+                    {
+                        <td><input type="checkbox" value="@item.ID" checked  data-type="ArchiveUser" /></td>
+                    }
+                    else
+                    {  
+                    <td><input type="checkbox" value="@item.ID"  data-type="ArchiveUser" /></td>  
+                    }
+                </tr>
                 }
             } @if (@Model.Item2.Count > 0)
             {
@@ -71,6 +80,14 @@
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
                     <td><input type="checkbox" value="@item.ID" checked data-type="DisableUser" /></td>
+                    @if (item.Archived == 1)
+                    {
+                        <td><input type="checkbox" value="@item.ID" checked data-type="ArchiveUser" /></td>
+                    }
+                    else
+                    {
+                        <td><input type="checkbox" value="@item.ID"  data-type="ArchiveUser" /></td>
+                    }
                 </tr>
                 }
             }

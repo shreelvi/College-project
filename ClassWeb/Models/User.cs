@@ -51,6 +51,7 @@ namespace ClassWeb.Models
         private DateTime _DateModified;
         private DateTime _DateDeleted;
         private int _Enabled;
+        private int _Archived;
         #endregion
 
         #region Database String
@@ -67,6 +68,7 @@ namespace ClassWeb.Models
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
+        internal const string db_Archived = "Archived";
         internal const string db_Enabled = "Enabled";
         #endregion
 
@@ -215,11 +217,11 @@ namespace ClassWeb.Models
         //    set { _AccountExpired = value; }
         //}
 
-        //public bool AccountLocked
-        //{
-        //    get { return _AccountLocked; }
-        //    set { _AccountLocked = value; }
-        //}
+        public int Archived
+        {
+            get { return _Archived; }
+            set { _Archived = value; }
+        }
 
         //public bool PasswordExpired
         //{
@@ -273,6 +275,7 @@ namespace ClassWeb.Models
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
             _Enabled = dr.GetInt32(db_Enabled);
+            _Archived = dr.GetInt32(db_Archived);
         }
         #endregion
 

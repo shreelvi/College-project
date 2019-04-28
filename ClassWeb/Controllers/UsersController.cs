@@ -40,7 +40,7 @@ namespace ClassWeb.Controllers
                         AllUsers = DAL.UserGetAll();
                         ActiveUsers = AllUsers.FindAll(u => u.Enabled == 1);
                         DisabledUsers = AllUsers.FindAll(u => u.Enabled == 0);
-                        Users=Tuple.Create(ActiveUsers, DisabledUsers);
+                        Users =Tuple.Create(ActiveUsers, DisabledUsers);
                     }
                     else
                     {
@@ -107,12 +107,25 @@ namespace ClassWeb.Controllers
                 }
                 if (type == "ArchiveUser")
                 {
-                    return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-                }
-                else
-                {
+                    User U = DAL.UserGetByID(id);
+                    if (U != null)
+                    {
+                        U.Archived = status == true ? 0 : 1;
+                        int i = DAL.UpdateUser(U);
+                        if (i > 0)
+                        {
+                            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                        }
+                        else
+                        {
+                            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                        }
 
+                    }
+
+                    return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
                 }
+                
                 return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
             }
             catch (Exception ex)
