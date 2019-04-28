@@ -138,7 +138,7 @@ namespace ClassWeb.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID")] CourseSemester courseSemester)
+        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID, DateStart, DateEnd")] CourseSemester courseSemester)
         {
             int id = (int)HttpContext.Session.GetInt32("UserID");
             User LoggedIn = CurrentUser;
