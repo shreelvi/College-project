@@ -69,7 +69,7 @@
     <div class="sidenav">
         <a href="ProfessorDashboard">Dashboard</a>
         <a href="/CourseSemester/Index">View all active classes</a>
-        <a href="/CourseSemester/Create">Create a new Class</a>
+        <a href="/CourseSemester/Create">Add a new Class</a>
         <a href="#contact">View All Students</a>
         <a href="">View All Registered Users</a>
     </div>
@@ -78,21 +78,25 @@
         <h3 style="color:orange; display:inline-block">User Dashboard</h3><br />
         <p style="color:darkorange;">Welcome, @Context.Session.GetString("username") </p>
         <p>Active Classes:</p>
+        @if (Model.Count == 0)
+        {
+            <div style="height:40px; width:300px; background-color:lightcyan"><h4>&nbsp; You don't have any active class.</h4></div>
+        }
         @foreach (var item in Model)
         {
-        <div class="classes">
-            <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
-                <div class="container">
-                    <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>
-                    <p>@item.Semester.Name @item.Year.Year1</p>
-                    <p>CRN: @item.CRN</p>
-                    <h4>Number of Students: 21</h4>
-                    <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                    <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            <div class="classes">
+                <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
+                    <div class="container">
+                        <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>
+                        <p>@item.Semester.Name @item.Year.Year1</p>
+                        <p>CRN: @item.CRN</p>
+                        <h4>Number of Students: 21</h4>
+                        <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </div>
                 </div>
             </div>
-        </div>
-            
+
         }
 
 
