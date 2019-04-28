@@ -25,39 +25,41 @@
                 <th>
                     <p>Section</p>
                 </th>
-                <th>
+               
+                @*<th>
                     <p>Professor Name</p>
-                </th>
+                </th>*@
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Course.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Course.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Semester.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Year.Year1)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Section.SectionNumber)
-                    </td>
-                    <td>
-                        <p>@item.User.FirstName @item.User.LastName</p>
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Register" asp-route-id="@item.ID">Register</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year.Year1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Section.SectionNumber)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Section.CRN)
+                </td>*@
+                
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Register" asp-route-id="@item.ID">Register</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

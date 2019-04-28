@@ -1,7 +1,9 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿@model List<ClassWeb.Models.CourseSemester>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard";
 }
+
 <style>
     .card {
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -9,9 +11,12 @@
         width: 30%;
         border-radius: 5px;
     }
+
     .container {
         padding: 2px 16px;
+        color: black;
     }
+
     .card:hover {
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     }
@@ -19,7 +24,7 @@
     img {
         border-radius: 5px 5px 0 0;
     }
-    
+
 
     .sidenav {
         width: 130px;
@@ -49,51 +54,51 @@
         font-size: 28px; /* Increased text to enable scrolling */
         padding: 0px 10px;
     }
-
-    @@media screen and (max-height: 450px) {
-        .sidenav {
-            padding-top: 15px;
-        }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-    }
 </style>
-
 
 <body>
     <div style="float:right">
-    <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
-    <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
+        <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
+        <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
 
-    <br /><br />
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
+        <br /><br />
+        <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
+        <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
     </div>
 
     <div class="sidenav">
         <a href="ProfessorDashboard">Dashboard</a>
-        <a href="/CourseSemester/Index">View Classes</a>
-        <a href="#clients">Manage Classes</a>
+        <a href="/CourseSemester/Index">View all active classes</a>
+        <a href="/CourseSemester/Create">Add a new Class</a>
         <a href="#contact">View All Students</a>
         <a href="">View All Registered Users</a>
     </div>
 
     <div class="main">
-        <h3 style="color:darkorange;display:inline-block">User Dashboard</h3><br />
-        <p>Welcome, @Context.Session.GetString("username") </p>
-        <p style="color:darkorange">Active Classes:</p>
-
-        <a asp-controller="CourseSemester" asp-action="Index">
-            <div style="background-color: lightseagreen; height: 150%;" class="card">
-                <div class="container">
-                    <h4><b>INFO 4407 -02 </b></h4>
-                    <p>Fall 2019</p>
-                    <h4>Number of Students: 21</h4>
+        <h3 style="color:orange; display:inline-block">User Dashboard</h3><br />
+        <p style="color:darkorange;">Welcome, @Context.Session.GetString("username") </p>
+        <p>Active Classes:</p>
+        @if (Model.Count == 0)
+        {
+            <div style="height:40px; width:300px; background-color:lightcyan"><h4>&nbsp; You don't have any active class.</h4></div>
+        }
+        @foreach (var item in Model)
+        {
+            <div class="classes">
+                <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
+                    <div class="container">
+                        <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>
+                        <p>@item.Semester.Name @item.Year.Year1</p>
+                        <p>CRN: @item.CRN</p>
+                        <h4>Number of Students: 21</h4>
+                        <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </div>
                 </div>
             </div>
-        </a>
+
+        }
+
 
     </div>
 

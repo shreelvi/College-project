@@ -1263,6 +1263,7 @@ namespace ClassWeb.Model
             List<CourseSemester> retList = new List<CourseSemester>();
             try
             {
+                comm.Parameters.AddWithValue("@" + User.db_ID, id);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
@@ -1279,54 +1280,20 @@ namespace ClassWeb.Model
             return retList;
         }
 
-        //<summary>
-        //Created on: 04/09/2019
-        //Created by: Elvis
-        //CRUD methods for CourseSemester object in ClassWeb Database
-        //Reference: Prof. Holmes PeerVal Project
-        //Copied code for Roles CRUD and modified to use for the section
-        //</summary>
-
-
-        public static CourseSemester GetCourseSemester(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
-            CourseSemester retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retObj = new CourseSemester(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-
         /// <summary>
-        /// Attempts to add a database entry corresponding to the given CourseSemester
+        /// Attempts to add user to the coursesemester object 
         /// </summary>
         /// <remarks></remarks>
-
-        internal static int AddCourseSemester(CourseSemester obj)
+        internal static int AddUserToClass(int ClassID, int UserID)
         {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
+            if (ClassID == 0 || UserID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToClass");
             try
             {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_UserID, obj.UserID);
-                return AddObject(comm, "@" + CourseSemester.db_ID);
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, ClassID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+
+                return AddObject(comm, "@" + CourseSemesterUser.db_ID);
             }
             catch (Exception ex)
             {
@@ -1334,53 +1301,6 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
-        /// <summary>
-        /// Attempts to edit the database entry corresponding to the given CourseSemester
-        /// </summary>
-        /// <remarks></remarks>
-
-        internal static int UpdateCourseSemester(CourseSemester obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterEdit");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_UserID, obj.UserID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// Attempts to delete the database entry corresponding to the CourseSemester
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int RemoveCourseSemester(int CourseSemesterID)
-        {
-            if (CourseSemesterID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                comm.CommandText = "sproc_CourseSemesterRemove";
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, CourseSemesterID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
         #endregion
 
         #region Semester
@@ -1746,6 +1666,10 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Attempts to add user to the group 
+        /// </summary>
+        /// <remarks></remarks>
         internal static int AddUserToGroup(int GroupID, int UserID)
         {
             if (GroupID == 0 || UserID == 0) return -1;
@@ -1950,3 +1874,7 @@ namespace ClassWeb.Model
         #endregion
     }
 }
+
+
+
+        
