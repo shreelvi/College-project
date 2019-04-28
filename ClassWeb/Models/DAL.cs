@@ -1755,6 +1755,29 @@ namespace ClassWeb.Model
         }
 
         ///<summary>
+        /// Checks if the same user exists in the group
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int CheckUserExistsInGroup(int UserID)
+        {
+
+            MySqlCommand comm = new MySqlCommand("CheckUserExistsInGroup");
+            if (UserID != 0)
+                try
+                {
+                   
+                    comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                    int dr = GetIntReader(comm);
+
+                    return dr;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            return -1;
+        }
+        ///<summary>
         /// Checks if user exists in the database
         /// Before adding user to the group
         /// </summary>

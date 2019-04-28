@@ -31,7 +31,7 @@
             <ul class="nav nav-tabs">
                 <li><a data-toggle="tab" href="#home">Project</a></li>
                 <li><a data-toggle="tab" href="#messages">Project</a></li>
-                <li><a data-toggle="tab" href="#settings">Github</a></li>
+                @*<li><a data-toggle="tab" href="#settings">Github</a></li>*@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="home">
@@ -41,14 +41,20 @@
                         
                         <div class="form-group">
                             <div class="col-xs-6">
-                                <label for="email"><h4>Email</h4></label>
-                                <input type="email" class="form-control" name="email" value="@Model.EmailAddress" id="email" placeholder="you@email.com" title="enter your email.">
+                                <label for="UserName"><h4>Username</h4></label>
+                                <input type="text" class="form-control" name="UserName" value="@Model.UserName" id="UserName" placeholder="username" title="Enter your username.">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-xs-6">
                                 <label for="password"><h4>Password</h4></label>
-                                <input type="password" class="form-control" name="password" value="TestData" id="password" placeholder="password" title="enter your password.">
+                                <input type="password" class="form-control" name="password" value="TestData" id="password" placeholder="password" title="Enter your password.">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="users"><h4>List of group users</label>
+                                <input type="text" class="form-control" name="users" value="@Model.Users" id="users" placeholder="user" title="List of Users.">
                             </div>
                         </div>
                         <div class="form-group">
@@ -60,12 +66,8 @@
                     </form>
                     <hr>
                 </div><!--/tab-pane-->
-                <div class="tab-pane" id="messages">
-                    <h2>Portfolio</h2>
-                    <hr>
-
-                </div>
-                <div class="tab-pane" id="settings">
+                
+                <div class="tab-pane" id="github">
                     <h2>Github project</h2>
                     <hr>
 

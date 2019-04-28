@@ -274,7 +274,8 @@ namespace ClassWeb.Controllers
             {
                 String email = Request.Form["EmailAddress" + (i + 1)];
                 int UserID = DAL.CheckUserExistsByEmail(email); //This method can also be used to get userID
-                if (UserID > 0)
+                int userExistsInGroup = DAL.CheckUserExistsInGroup(UserID);
+                if (userExistsInGroup > 0)
                 {
                     int addUserToGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
                 }
@@ -291,15 +292,16 @@ namespace ClassWeb.Controllers
         /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
         /// Used the references to understand and develop the feature in our website
         /// </summary>
-        private void SetGroupFolder(Group group)
+        private string SetGroupFolder(Group group)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath;// + "\\GroupDirectory\\";
-            //group.DirectoryPath = dir_Path + group.UserName;
-            group.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", group.UserName);
+            string dir_Path = _hostingEnvironment.WebRootPath;// + "\\AssignmentDirectory\\";
+            group.DirectoryPath = dir_Path + group.UserName;
+            //group.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", group.UserName);
             string path = group.DirectoryPath;
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+            return path;
         }
         private void CreateGroupDirectory(string UserName)
         {
@@ -364,7 +366,7 @@ namespace ClassWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditGroup(int? id, [Bind("EmailAddress,Name,UserName,ID")] Group group)
+        public async Task<IActionResult> EditGroup(int? id, [Bind(",Name,UserName,ID")] Group group)
         {
            
                 if (id != group.ID)
@@ -385,8 +387,8 @@ namespace ClassWeb.Controllers
                         int a = DAL.UpdateGroup(group);
                         if (a > 0)
                         {
-                            HttpContext.Session.SetString("username", group.UserName);
-                            TempData["Message"] = "User Succesfully Updated!!";
+                            HttpContext.Session.SetString("UserName", group.UserName);
+                            TempData["Message"] = "Group Succesfully Updated!!";
                         }
                     }
                     else
@@ -403,6 +405,22 @@ namespace ClassWeb.Controllers
                     return RedirectToAction("Dashboard", "Group");
             }
            
+        public ActionResult Profile()
+        {
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+             
+            if(gid !=null)
+            {
+                Group g = DAL.GroupGetByID(gid);
+                return View(g); 
+
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home"); 
+
+            }
+        }
         
 
         //#region resetpassword
@@ -489,7 +507,7 @@ namespace ClassWeb.Controllers
         //}
         //#endregion reset password
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteGroup(int? id)
         {
            
             
@@ -508,7 +526,7 @@ namespace ClassWeb.Controllers
           
         }
 
-        // POST: Users/Delete/5
+        // POST: Group/DeleteGroup/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
