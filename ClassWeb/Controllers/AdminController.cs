@@ -30,13 +30,6 @@ namespace ClassWeb.Controllers
        public IActionResult ProfessorDashboard()
        {
             int userID = 0;
-            //User LoggedIn = CurrentUser;
-            //if (LoggedIn.FirstName == "Anonymous")
-            //{
-            //    TempData["LoginError"] = "Please login to view the page.";
-            //    return RedirectToAction("Index", "Home");
-            //}
-
             userID = (int)HttpContext.Session.GetInt32("UserID");
             List<CourseSemester> activeClasses = new List<CourseSemester>();
             activeClasses = DAL.GetCourseSemestersForUser(userID);

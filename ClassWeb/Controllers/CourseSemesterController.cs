@@ -40,9 +40,6 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-
-
-
             List<CourseSemester> CourseSemesters = new List<CourseSemester>();
             CourseSemesters = DAL.GetCourseSemesters();
             return View(CourseSemesters);
@@ -57,9 +54,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var courseSemester = id; 
             if (courseSemester == null)
             {
                 return NotFound();
