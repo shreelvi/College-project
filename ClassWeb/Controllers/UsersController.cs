@@ -9,6 +9,11 @@ using ClassWeb.Models;
 using ClassWeb.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
+
 namespace ClassWeb.Controllers
 {
     public class UsersController : BaseController
@@ -19,9 +24,12 @@ namespace ClassWeb.Controllers
             if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
+                Tuple<List<User>,List<User>>Users=null;
                 if (uid != null)
                 {
-                    List<User> users = null;
+                    List<User> AllUsers = null;
+                    List<User> ActiveUsers = null;
+                    List<User> DisabledUsers = null;
                     User U = DAL.UserGetByID(uid);
                     if (U == null)
                     {
@@ -29,18 +37,17 @@ namespace ClassWeb.Controllers
                     }
                     if (U.Role.IsAdmin)
                     {
-                        users = DAL.UserGetAll();
-                        users = users.FindAll(u => u.DateDeleted < DateTime.MaxValue);
-                        return View(users);
+                        AllUsers = DAL.UserGetAll();
+                        ActiveUsers = AllUsers.FindAll(u => u.Enabled == 1);
+                        DisabledUsers = AllUsers.FindAll(u => u.Enabled == 0);
+                        Users =Tuple.Create(ActiveUsers, DisabledUsers);
                     }
                     else
                     {
-                        users.Add(U);
-                        return View(users);
+                        Users.Item1.Add(U);
                     }
                 }
-
-                return View();
+                return View(Users);
             }
             else
             {
@@ -64,6 +71,86 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Dashboard", "Account");
             }
 
+        }
+        //https://github.com/aspnet/Mvc/issues/7257
+        [HttpPost]
+        public async Task<HttpResponseMessage> ChangeStatus([FromBody]JObject obj)
+        {
+            if (UserCan<User>(PermissionSet.Permissions.View))
+            {
+                try
+                {
+                    string type = (string)obj["Type"];
+                    int id = (int)obj["ID"];
+                    bool status = (bool)obj["Status"];
+                    if (type == "DisableUser")
+                    {
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
+                        {
+                            U.Enabled = status == true ? 0 : 1;
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
+                        }
+
+                        return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                    }
+                    if (type == "ArchiveUser")
+                    {
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
+                        {
+                            U.Archived = status == true ? 1 : 0;
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
+                        }
+
+                        return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                    }
+                    if (type == "VerifyUser")
+                    {
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
+                        {
+                            U.VerificationCode = " ";
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
+                        }
+
+                        return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                    }
+
+                    return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+           return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
         }
         [HttpPost]
         public IActionResult ChangeRole(int? UserID, int? Role)

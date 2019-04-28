@@ -50,7 +50,9 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
-        private bool _Enabled;
+        private int _Enabled;
+        private int _Archived;
+        private string _VerificationCode;
         #endregion
 
         #region Database String
@@ -67,15 +69,22 @@ namespace ClassWeb.Models
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
+        internal const string db_Archived = "Archived";
         internal const string db_Enabled = "Enabled";
+        internal const string db_VerificationCode = "VerificationCode";
         #endregion
 
         #region public Properites
 
-        public bool Enabled
+        public int Enabled
         {
             get { return _Enabled; }
             set { _Enabled = value; }
+        }
+        public string VerificationCode
+        {
+            get { return _VerificationCode; }
+            set { _VerificationCode = value; }
         }
         public string FirstName
         {
@@ -215,11 +224,11 @@ namespace ClassWeb.Models
         //    set { _AccountExpired = value; }
         //}
 
-        //public bool AccountLocked
-        //{
-        //    get { return _AccountLocked; }
-        //    set { _AccountLocked = value; }
-        //}
+        public int Archived
+        {
+            get { return _Archived; }
+            set { _Archived = value; }
+        }
 
         //public bool PasswordExpired
         //{
@@ -272,7 +281,9 @@ namespace ClassWeb.Models
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
-            _Enabled = dr.GetBoolean(db_Enabled);
+            _Enabled = dr.GetInt32(db_Enabled);
+            _Archived = dr.GetInt32(db_Archived);
+            _VerificationCode = dr.GetString(db_VerificationCode);
         }
         #endregion
 
