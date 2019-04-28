@@ -309,6 +309,8 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+
+
             return retList;
         }
 
@@ -1675,13 +1677,13 @@ namespace ClassWeb.Model
         internal static int AddUserToGroup(int GroupID, int UserID)
         {
             if (GroupID == 0 || UserID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
+            MySqlCommand comm = new MySqlCommand("sproc_AddUserToGroup");
             try
             {
                 comm.Parameters.AddWithValue("@" + "GroupID", GroupID);
-                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                comm.Parameters.AddWithValue("@" + "UserID", UserID);
 
-                return AddObject(comm, "@" + "GroupUserID");
+                return AddObject(comm, "@" + GroupUser.db_ID);
             }
             catch (Exception ex)
             {
@@ -1718,6 +1720,27 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+
+        internal static int DeleteGroupUserByID(int ID)
+        {
+            MySqlCommand comm = new MySqlCommand("delete_GroupUserByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_ID, ID);
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
@@ -1845,6 +1868,36 @@ namespace ClassWeb.Model
             return groupList;
         }
 
+        /// <summary>
+        /// Gets List of group users from the database to check for group users
+        /// </summary>
+        /// <returns>List of Group Users string</returns>
+
+
+        internal static List<User> GetAllGroupUsersByID(int groupID)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupUsers");
+            List<User> groupUserList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue(Group.db_ID, groupID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    User user = new User(dr);
+
+                    groupUserList.Add(user);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return groupUserList;
+        }
 
 
         ///<summary>

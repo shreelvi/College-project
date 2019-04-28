@@ -264,6 +264,7 @@ namespace ClassWeb.Controllers
                     if (email != null)
                     { //If input field is blank, doesn't display error msg
                         ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
+                        if (LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
                         return View();
                     }
                 }
@@ -275,12 +276,13 @@ namespace ClassWeb.Controllers
                 String email = Request.Form["EmailAddress" + (i + 1)];
                 int UserID = DAL.CheckUserExistsByEmail(email); //This method can also be used to get userID
                 int userExistsInGroup = DAL.CheckUserExistsInGroup(UserID);
-                if (userExistsInGroup > 0)
+                if (userExistsInGroup == 0)
                 {
                     int addUserToGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
                 }
             }
             TempData["UserGroupAddSuccess"] = "Succesfully added users.";
+            if (LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
             return RedirectToAction("Dashboard");
         }
 
@@ -323,14 +325,7 @@ namespace ClassWeb.Controllers
         }
 
 
-        public async Task<IActionResult> DetailGroup(int? id)
-        {
-            Group group = DAL.GroupGetByID(id);
-            return View(group);
-
-        }
-
-
+    
         public IActionResult Create()
         {
             return RedirectToAction("AddGroup", "Group");
@@ -541,6 +536,44 @@ namespace ClassWeb.Controllers
             
             
         }
+
+        // GET: Users/Delete/5
+        public async Task<IActionResult> DeleteUsersFromGroup(int? id)
+        {
+
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            
+            User u = DAL.GetAllGroupUsersByID(id);
+            if (u == null)
+            {
+                return NotFound();
+            }
+
+            return View(u);
+
+        }
+
+        // POST: Group/DeleteGroup/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedForGroupUsers(int id)
+        {
+
+            int test = DAL.DeleteGroupByID(id);
+            if (test > 0)
+            {
+                ViewBag.Message = "Group Succesfully Deleted!!";
+            }
+            return RedirectToAction(nameof(Index));
+
+
+        }
+
 
         public IActionResult Logout()
         {
