@@ -143,14 +143,23 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            //Add the class to the coursesemester table
             int retInt = DAL.AddCourseSemester(courseSemester);
-            if (retInt < 0)
-                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
-            else { TempData["CourseSemesterAdd"] = "Courses for semester added successfully"; }
 
-            
+            if (retInt < 0) {
+                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
+            }
+
+            //If sucessful, assigns the class to the user that is creating
+            else {
+                int assignProfessor = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
+                if(assignProfessor < 0)
+                {
+                    TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
+                }
+                TempData["CourseSemesterAdd"] = "Class added successfully.";
+            }
             return RedirectToAction(nameof(Index));
-            
         }
 
         // GET: CourseSemesters/Edit/5
