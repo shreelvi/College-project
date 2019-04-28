@@ -134,6 +134,7 @@ namespace ClassWeb.Models
                 _Assignment = value;
             }
         }
+
         #endregion
 
 
@@ -179,8 +180,8 @@ namespace ClassWeb.Models
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
             _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
+
         }
         #endregion
     }
 }
-
