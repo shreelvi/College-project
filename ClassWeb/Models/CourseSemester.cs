@@ -30,6 +30,8 @@ namespace ClassWeb.Models
         private int _YearID;
         private int _SectionID;
         private int _UserID;
+        private DateTime _DateStart;
+        private DateTime _DateEnd;
         private Course _Course;
         private Semester _Semester;
         private Year _Year;
@@ -116,6 +118,34 @@ namespace ClassWeb.Models
                 _UserID = value;
             }
         }
+
+        public DateTime DateStart
+        {
+            get
+            {
+                return _DateStart;
+            }
+
+            set
+            {
+                _DateStart = value;
+            }
+        }
+
+        public DateTime DateEnd
+        {
+            get
+            {
+                return _DateEnd;
+            }
+
+            set
+            {
+                _DateEnd = value;
+            }
+        }
+
+
 
 
         /// <summary>
@@ -280,6 +310,8 @@ namespace ClassWeb.Models
         internal const string db_YearID = "YearID";
         internal const string db_SectionID = "SectionID";
         internal const string db_UserID = "UserID";
+        internal const string db_DateStart = "DateStart";
+        internal const string db_DateEnd = "DateEnd";
 
         #endregion
 
@@ -314,6 +346,8 @@ namespace ClassWeb.Models
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
+            _DateStart = dr.GetDateTime(db_DateStart);
+            _DateEnd = dr.GetDateTime(db_DateEnd);
         }
         #endregion
 

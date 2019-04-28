@@ -41,6 +41,16 @@
                 <input asp-for="SectionID" class="form-control" />
                 <span asp-validation-for="SectionID" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="DateStart" class="control-label"></label>
+                <input asp-for="DateStart" class="form-control" />
+                <span asp-validation-for="DateStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateEnd" class="control-label"></label>
+                <input asp-for="DateEnd" class="form-control" />
+                <span asp-validation-for="DateEnd" class="text-danger"></span>
+            </div>
 
             @*@if(check != "True"){
         <div class="form-group">
