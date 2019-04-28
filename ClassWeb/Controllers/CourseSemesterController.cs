@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace ClassWeb.Controllers
 {
@@ -18,18 +18,11 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class CourseSemesterController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseSemesterController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
             //string ss = LoggedIn.FirstName;
 
             //Gets error message to display from Create method 
@@ -42,31 +35,13 @@ namespace ClassWeb.Controllers
                 ViewData["CourseSemDelete"] = d;
 
             //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
-                {
-                    TempData["LoginError"] = "Please login to view the page.";
-                    return RedirectToAction("Index", "Home");
-                }
-
-            
-
-            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
-            CourseSemesters = DAL.GetCourseSemesters();
-            return View(CourseSemesters);
-
-        }
-
-        public async Task<IActionResult> ClassViewForStudents()
-        {
-            User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
-            
-            //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
+            if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+
 
             List<CourseSemester> CourseSemesters = new List<CourseSemester>();
             CourseSemesters = DAL.GetCourseSemesters();
@@ -84,7 +59,6 @@ namespace ClassWeb.Controllers
 
             var courseSemester = await _context.CourseSemester
                 .Include(c => c.Course)
-                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
@@ -94,14 +68,7 @@ namespace ClassWeb.Controllers
             return View(courseSemester);
         }
 
-        /// <summary>
-        /// Modified by: Meshari
-        /// Date Modified: 04/27/2019
-        /// Added dropdownlist for course, semester, section and 
-        /// academic year information while creating coursesemester
-        /// </summary>
-        /// <returns></returns>
-
+        // GET: CourseSemesters/Create
         public IActionResult Create()
         {
             User LoggedIn = CurrentUser;
@@ -112,58 +79,70 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+            List<Course> CoursesPartial = new List<Course>();
+            CoursesPartial = DAL.GetCourse();
+            ViewBag.Courses = CoursesPartial;
 
-            // Gets Data from Database for the dropdown in create view
-            // And insert select item in List
-            // Reference: https://www.c-sharpcorner.com/article/binding-dropdown-list-with-database-in-asp-net-core-mvc/
+            List<Semester> SemesterPartial = new List<Semester>();
+            SemesterPartial = DAL.GetSemesters();
+            ViewBag.Semesters = SemesterPartial;
 
-            List<Course> CourseList = new List<Course>();
-            CourseList = DAL.GetCourses();
-            //Inserting Select Item for course in List
-            CourseList.Insert(0, new Course { ID = 0, Name = "Select" });
-            ViewBag.Courses = CourseList;
+            List<Year> YearPartial = new List<Year>();
+            YearPartial = DAL.GetYears();
+            ViewBag.Years = YearPartial;
 
-            List<Semester> SemesterList = new List<Semester>();
-            SemesterList = DAL.GetSemesters();
-            SemesterList.Insert(0, new Semester { ID = 0, Name = "Select" });
-            ViewBag.Semesters = SemesterList;
-
-            List<Year> YearList = new List<Year>();
-            YearList = DAL.GetYears();
-            YearList.Insert(0, new Year { ID = 0, Name = "Select" });
-            ViewBag.Years = YearList;
-
-            List<Section> SectionList = new List<Section>();
-            SectionList = DAL.GetSections();
-            int SectionNumber = 0;
-            SectionList.Insert(0, new Section { ID = 0, SectionNumber = SectionNumber });
-            ViewBag.Sections = SectionList;
+            List<Section> SectionPartial = new List<Section>();
+            SectionPartial = DAL.GetSections();
+            ViewBag.Sections = SectionPartial;
+            
+            if(LoggedIn.Role.Name == "Professor") { ViewBag.Professor = "True"; } //If creating class by professor, will not display userid field
 
             return View();
 
         }
 
-        // POST: CourseSemesters/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Created by Elvis
+        /// Method to add a class (coursesemester object) in the database
+        /// Modified on: 27 April 2019
+        /// Add users to the class 
+        /// </summary>
+        /// <param name="courseSemester"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
+        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID, DateStart, DateEnd")] CourseSemester courseSemester)
         {
+            int id = (int)HttpContext.Session.GetInt32("UserID");
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-            int retInt = DAL.AddCourseSemester(courseSemester);
-            if (retInt < 0)
-                TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
-            else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
 
-            
+            //Add the class to the coursesemester table
+            int retInt = DAL.AddCourseSemester(courseSemester);
+
+            if (retInt < 0) {
+                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
+            }
+
+            //If sucessful, assigns the class to the user that is creating
+            else {
+                int assignUser = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
+                if(assignUser < 0)
+                {
+                    TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
+                }
+                TempData["CourseSemesterAdd"] = "Class added successfully.";
+            }
+            if(LoggedIn.Role.Name == "Professor")
+            {
+                return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
+            }
             return RedirectToAction(nameof(Index));
-            
+
         }
 
         // GET: CourseSemesters/Edit/5
@@ -174,13 +153,13 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester.FindAsync(id);
+            var courseSemester = id; //await _context.CourseSemester.FindAsync(id);
             if (courseSemester == null)
             {
                 return NotFound();
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            //ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            //ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -200,8 +179,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(courseSemester);
-                    await _context.SaveChangesAsync();
+                    // _context.Update(courseSemester);
+                    // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -216,8 +195,8 @@ namespace ClassWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -255,7 +234,7 @@ namespace ClassWeb.Controllers
 
         private bool CourseSemesterExists(int id)
         {
-            return _context.CourseSemester.Any(e => e.ID == id);
+            return false;// _context.CourseSemester.Any(e => e.ID == id);
         }
     }
 }

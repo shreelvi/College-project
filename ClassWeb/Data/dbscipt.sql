@@ -81,20 +81,17 @@ ADD DateDeleted datetime DEFAULT CURRENT_TIMESTAMP;
 
 -- Author: Meshari
 -- Create date:	31 March 2019
+-- Modified date: 26 April
+-- Deleted CRN column from the table
 -- Description:	Create section table in the database
 -- ======================================================
   CREATE TABLE `Sections` (
   `SectionID` int(11) NOT NULL AUTO_INCREMENT,
-  `CRN` int(11) NOT NULL,
   `SectionNumber` int(45) DEFAULT NULL,
-  `UserID` int(11) NOT NULL,
-  `CourseID` int(11) NOT NULL,
    PRIMARY KEY (`SectionID`)
 );
 
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (1, 25545, 02);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (2, 36758, 01);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (4, 36758, 01);
+
 
 
 
@@ -112,6 +109,7 @@ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescriptio
 
 -- Author: Elvis
 -- Create date:	09 April 2019
+-- Modified date: 26 April 2019
 -- Description:	Create CourseSemesters table in the database
 -- ======================================================
   CREATE TABLE `CourseSemesters` (
@@ -138,6 +136,9 @@ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescriptio
     FOREIGN KEY (`UserID`)
     REFERENCES `Users` (`UserID`)
 );
+ALTER TABLE `coursesemesters` DROP `UserID`;
+ALTER TABLE `coursesemesters` ADD `CRN` INT(11) NULL AFTER `CourseSemesterID`;
+ALTER TABLE `coursesemesters` ADD `DateStart` DATE NULL AFTER `UserID`, ADD `DateEnd` DATE NULL AFTER `DateStart`;
 
 -- -----------------Years------------------------------
 -- ======================================================

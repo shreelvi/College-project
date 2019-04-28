@@ -1,58 +1,59 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿@model List<ClassWeb.Models.CourseSemester>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Dashboard";
 }
 
 <style>
-.card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 30%;
-    border-radius: 5px;
-}
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 30%;
+        border-radius: 5px;
+    }
 
-.container {
-    padding: 2px 16px;
-}
+    .container {
+        padding: 2px 16px;
+        color: black;
+    }
 
-.card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
 
-img {
-    border-radius: 5px 5px 0 0;
-}
+    img {
+        border-radius: 5px 5px 0 0;
+    }
 
 
-.sidenav {
-    width: 130px;
-    position: fixed;
-    z-index: 1;
-    top: 150px;
-    left: 10px;
-    background: #eee;
-    overflow-x: hidden;
-    padding: 8px 0;
-}
+    .sidenav {
+        width: 130px;
+        position: fixed;
+        z-index: 1;
+        top: 150px;
+        left: 10px;
+        background: #eee;
+        overflow-x: hidden;
+        padding: 8px 0;
+    }
 
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 15px;
-    color: #2196F3;
-    display: block;
-}
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #2196F3;
+            display: block;
+        }
 
-.sidenav a:hover {
-     color: #064579;
-}
+            .sidenav a:hover {
+                color: #064579;
+            }
 
-.main {
-    margin-left: 140px; /* Same width as the sidebar + left position in px */
-    font-size: 28px; /* Increased text to enable scrolling */
-    padding: 0px 10px;
-}
-
+    .main {
+        margin-left: 140px; /* Same width as the sidebar + left position in px */
+        font-size: 28px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+    }
 </style>
 
 <body>
@@ -67,26 +68,37 @@ img {
 
     <div class="sidenav">
         <a href="ProfessorDashboard">Dashboard</a>
-        <a href="/CourseSemester/Index">View Classes</a>
-        <a href="#clients">Manage Classes</a>
+        <a href="/CourseSemester/Index">View all active classes</a>
+        <a href="/CourseSemester/Create">Add a new Class</a>
         <a href="#contact">View All Students</a>
         <a href="">View All Registered Users</a>
     </div>
 
     <div class="main">
-        <h3 style="color:darkorange;display:inline-block">User Dashboard</h3><br />
-        <p>Welcome, @Context.Session.GetString("username") </p>
-        <p style="color:darkorange">Active Classes:</p>
-
-        <a asp-controller="CourseSemester" asp-action="Index">
-            <div style="background-color: lightseagreen; height: 150%;" class="card">
-                <div class="container">
-                    <h4><b>INFO 4407 -02 </b></h4>
-                    <p>Fall 2019</p>
-                    <h4>Number of Students: 21</h4>
+        <h3 style="color:orange; display:inline-block">User Dashboard</h3><br />
+        <p style="color:darkorange;">Welcome, @Context.Session.GetString("username") </p>
+        <p>Active Classes:</p>
+        @if (Model.Count == 0)
+        {
+            <div style="height:40px; width:300px; background-color:lightcyan"><h4>&nbsp; You don't have any active class.</h4></div>
+        }
+        @foreach (var item in Model)
+        {
+            <div class="classes">
+                <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
+                    <div class="container">
+                        <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>
+                        <p>@item.Semester.Name @item.Year.Year1</p>
+                        <p>CRN: @item.CRN</p>
+                        <h4>Number of Students: 21</h4>
+                        <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </div>
                 </div>
             </div>
-        </a>
+
+        }
+
 
     </div>
 

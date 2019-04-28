@@ -59,16 +59,21 @@ CREATE TABLE `classes` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `courses`
---
 
-CREATE TABLE `courses` (
-  `CourseID` int(11) NOT NULL,
-  `CourseTitle` varchar(45) NOT NULL,
-  `CourseName` varchar(45) DEFAULT NULL,
-  `CourseDescription` varchar(128) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table structure for table `course`
+-- Author: Mohan
+-- Description:	Create course table in the database
+-- ======================================================
+
+CREATE TABLE `course` (
+  `CourseID` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `Subject` VARCHAR(50) NOT NULL,
+  `CourseNumber` INT(11)  NOT NULL,
+  `CourseTitle` VARCHAR(50) NOT NULL);
+  
+INSERT INTO course(Subject,  CourseNumber,CourseTitle) 
+	VALUES ( 'INFO', '4482', 'System Development Implementation Method');
+
 
 --
 -- Dumping data for table `courses`
