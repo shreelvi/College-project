@@ -304,20 +304,7 @@ END
 $$
 -- ===============================================
 
--- =============================================
--- Author:		Meshari
--- Create date:	07 April 2019
--- Description:	Get the specified course from the database.
--- =============================================
-DELIMITER $$
-CREATE PROCEDURE sproc_GetCourse(
-IN CourseID int
-)
-BEGIN
-     SELECT * FROM courses
-     WHERE courses.CourseID = CourseID;
-END
-$$
+
 
  -----------------Semesters---------------------------------
 
@@ -566,21 +553,6 @@ END
 $$
 
 
-DELIMITER $$
-CREATE PROCEDURE sproc_CourseAdd(
-OUT CourseID int,
-IN CourseTitle varchar(45)
-IN CourseName varchar(45)
-IN CourseDescription varchar(128)
-
-)
-BEGIN
-     INSERT INTO courses(CourseTitle, CourseName, CourseDescription)
-               VALUES(CourseTitle, CourseName, CourseDescription);               
-     SET CourseID = LAST_INSERT_ID();
-END
-$$
-
 -- =============================================
 -- Author:		Elvis
 -- Create date:	20 April 2019
@@ -658,7 +630,6 @@ BEGIN
 END
 $$
 
-
 -- -----------------Course---------------------------------
 -- Description: sproc CRUD for Courses-------------------
 -- Reference: PeerVal Project, Github------------------
@@ -670,86 +641,70 @@ $$
 -- =============================================
 
 DELIMITER $$
-CREATE PROCEDURE `sproc_CreateCourse`(
-OUT CourseID int, 
-IN `Subject` VARCHAR(50), 
-IN `CourseNumber` int, 
-IN `CourseTitle` VARCHAR(50)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_CreateCourse`(OUT `ID` int, IN `Subject` VARCHAR(50), IN `CourseNumber` int, IN `CourseTitle` VARCHAR(50))
 BEGIN
-     INSERT INTO course(Subject, CourseNumber, CourseTitle)
-		VALUES(Subject, CourseNumber, CourseTitle);
-	SET CourseID = last_insert_id();
+     INSERT INTO course(`Subject`, `CourseNumber`, `CourseTitle`)
+		VALUES(`Subject`, `CourseNumber`, `CourseTitle`);
+	SET ID = last_insert_id();
 END
-$$
 
 -- Author: Mohan
 -- sproc_GetCourse
 -- Description:	get Course from the Database.
 -- =============================================
-DELIMITER $$
-CREATE  PROCEDURE `sproc_GetCourse`(IN CourseID int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetCourse`(IN CourseID int)
 BEGIN
      SELECT * FROM course
      WHERE course.CourseID = CourseID;
-END
-$$
+END$$
 
 
 -- Author: Mohan
 -- sproc_GetAllCourses
 -- Description:	Gets all courses from the database. 
 -- =============================================
-DELIMITER $$
-CREATE PROCEDURE `sproc_GetAllCourses`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetAllCourses`()
 BEGIN
      SELECT * FROM course;
+END$$
+
+-- Author: Mohan
+-- sproc_DeleteCourseByID
+-- Description:	Delete a course. 
+-- =============================================
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetCourseByID`(IN `ID` INT)
+BEGIN
+Select * From course
+Where course.ID=ID;
 END
-$$
 
 
 -- Author: Mohan
 -- sproc_UpdateCourse
 -- Description:	Edit course. 
 -- =============================================
-DELIMITER $$
-CREATE  PROCEDURE `sproc_UpdateCourse`(
-IN CourseID int, 
-IN Subject int, 
-IN CourseName VARCHAR(50),
-IN CourseTitle VARCHAR(50)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_UpdateCourse`(IN `ID` int, IN `Subject` int, IN `CourseNumber` VARCHAR(50), IN `CourseTitle` VARCHAR(50))
 BEGIN
      UPDATE course
           SET
-               course.Subject = Subject,
-               course.CourseTitle = CourseTitle,
-               course.CourseName = CourseName
-          WHERE course.CourseID = CourseID;
+               course.`Subject` = `Subject`,
+               course.`CourseNumber` = `CourseNumber`,
+               course.`CourseTitle` = `CourseTitle`
+          WHERE course.`ID` = `ID`;
 END
-$$
 
 
 -- Author: Mohan
 -- sproc_DeleteCourseByID
 -- Description:	Delete a course. 
 -- =============================================
-DELIMITER $$
-CREATE PROCEDURE `sproc_DeleteCourseByID`(IN `ID` int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_DeleteCourseByID`(IN `ID` int)
 BEGIN 
 	DELETE FROM course 
 		WHERE Course.ID = `ID`; 
-END
-$$
-
--- Description:	delete assignment by ID
--- =============================================
-DELIMITER $$
-
-CREATE PROCEDURE `sproc_AssignmentDeleteByID` (IN `ID` INT)  BEGIN
-DELETE FROM assignment
-Where Assignment.ID=`ID`;
 END$$
+
+
 
 -- Description:	get all assignment from database by filename
 -- =============================================
