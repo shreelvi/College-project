@@ -37,8 +37,8 @@
                 <div class="tab-pane active" id="home">
                     <hr>
                     <form class="form" asp-controller="Group" asp-action="SaveGroupInfo" method="post" id="registrationForm">
-                    
-                        
+
+
                         <div class="form-group">
                             <div class="col-xs-6">
                                 <label for="UserName"><h4>Username</h4></label>
@@ -47,15 +47,20 @@
                         </div>
                         <div class="form-group">
                             <div class="col-xs-6">
-                                <label for="password"><h4>Password</h4></label>
-                                <input type="password" class="form-control" name="password" value="TestData" id="password" placeholder="password" title="Enter your password.">
+                                <label for="Name"><h4>Group Name</h4></label>
+                                <input type="text" class="form-control" name="UserName" value="@Model.Name" id="Name" placeholder="name" title="Enter new group name.">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-xs-6">
-                                <label for="users"><h4>List of group users</label>
-                                <input type="text" class="form-control" name="users" value="@Model.Users" id="users" placeholder="user" title="List of Users.">
-                            </div>
+                        @*<div class="form-group">
+            <div class="col-xs-6">
+                <label for="password"><h4>Password</h4></label>
+                <input type="password" class="form-control" name="password" value="TestData" id="password" placeholder="password" title="Enter your password.">
+            </div>
+        </div>*@
+                       
+
+
+
                         </div>
                         <div class="form-group">
                             <div class="col-xs-12">

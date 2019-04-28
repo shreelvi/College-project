@@ -258,9 +258,17 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            _ResetCode = dr.GetString(db_ResetCode);
+            if(db_ResetCode != null)
+            {
+                _ResetCode = dr.GetString(db_ResetCode);
+            }
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
+
+            if (db_ResetCode != null)
+            {
+                _ResetCode = dr.GetString(db_ResetCode);
+            }
             _Password = dr.GetString(db_Password);
             DateTime DateCreated = dr.GetDateTime(db_DateCreated);
             _DateModified = dr.GetDateTime(db_DateModified);

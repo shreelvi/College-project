@@ -276,13 +276,20 @@ namespace ClassWeb.Controllers
                 String email = Request.Form["EmailAddress" + (i + 1)];
                 int UserID = DAL.CheckUserExistsByEmail(email); //This method can also be used to get userID
                 int userExistsInGroup = DAL.CheckUserExistsInGroup(UserID);
-                if (userExistsInGroup == 0)
+                if (userExistsInGroup != 0)
+                {
+                    TempData["UserGroupAddError"] = "User Already Exists in this Group.";
+                    return View();
+                }
+                else
                 {
                     int addUserToGroup = DAL.AddUserToGroup(groupid, UserID); //Add the user to group.
+                    TempData["UserGroupAddSuccess"] = "Succesfully added users.";
                 }
             }
-            TempData["UserGroupAddSuccess"] = "Succesfully added users.";
-            if (LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
+            
+            if (LoggedInGroup.Name == "Anonymous")
+            { return RedirectToAction("AddGroup"); } //If added users when registration.
             return RedirectToAction("Dashboard");
         }
 
@@ -415,6 +422,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home"); 
 
             }
+
         }
 
         public ActionResult ViewGroupUsers()
@@ -422,7 +430,7 @@ namespace ClassWeb.Controllers
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (gid != null)
             {
-                List<User> u = new List<User>();
+                List<ViewGroupUser> u = new List<ViewGroupUser>();
                     u = DAL.GetAllGroupUsersByID(gid);
                 return View(u);
 
@@ -566,7 +574,7 @@ namespace ClassWeb.Controllers
             }
 
             
-            List<User> u = DAL.GetAllGroupUsersByID(groupId);
+            List<ViewGroupUser> u = DAL.GetAllGroupUsersByID(groupId);
             if (u == null)
             {
                 return NotFound();

@@ -34,7 +34,7 @@ namespace ClassWeb.Models
         private string _DirectoryPath;
         private List<Assignment> _Assignments;
         private int _AssignmentID;
-        private List<User> _Users;
+        private List<ViewGroupUser> _Users;
         #endregion
 
         #region Database String
@@ -99,7 +99,7 @@ namespace ClassWeb.Models
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
-        public List<User> Users
+        public List<ViewGroupUser> Users
         {
             get
             {
@@ -154,6 +154,7 @@ namespace ClassWeb.Models
         /// <remarks></remarks>
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
+
             _ID = dr.GetInt32(db_ID);
             _Name = dr.GetString(db_Name);
            // _EmailAddress = dr.GetString(db_EmailAddress);

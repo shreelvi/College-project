@@ -1562,7 +1562,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.AddWithValue("@" + User.db_ID, id);
+                comm.Parameters.AddWithValue("@" + "GroupID", id);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
@@ -1809,7 +1809,7 @@ namespace ClassWeb.Model
         {
 
             MySqlCommand comm = new MySqlCommand("CheckUserExistsInGroup");
-            if (UserID != 0)
+            if (UserID == 0)
                 try
                 {
                    
@@ -1898,20 +1898,21 @@ namespace ClassWeb.Model
         /// <returns>List of Group Users string</returns>
 
 
-        internal static List<User> GetAllGroupUsersByID(int? groupID)
+        internal static List<ViewGroupUser> GetAllGroupUsersByID(int? groupID)
         {
             MySqlCommand comm = new MySqlCommand("get_GroupUsersByID");
-            List<User> groupUserList = new List<User>();
+            List<ViewGroupUser> groupUserList = new List<ViewGroupUser>();
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.AddWithValue(Group.db_ID, groupID);
+                comm.Parameters.AddWithValue("@" + "GroupID", groupID);
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    User user = new User(dr);
+                    groupUserList.Add(new ViewGroupUser(dr));
+                   
 
-                    groupUserList.Add(user);
+                    
                 }
                 comm.Connection.Close();
             }
