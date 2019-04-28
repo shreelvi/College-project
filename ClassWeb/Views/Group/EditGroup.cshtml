@@ -4,20 +4,21 @@
     ViewData["Title"] = "EditGroup";
    
 }
+@* Summary - This is a edit view for group.   *@
 
-<h2>EditGroup</h2>
+<h2>Edit Group</h2>
 
-<h4>Group</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-controller="Group" asp-action="EditGroup" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="EmailAddress" class="control-label"></label>
                 <input asp-for="EmailAddress" class="form-control" />
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -28,11 +29,7 @@
                 <input asp-for="UserName" class="form-control" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+            
            
 
             <input type="hidden" asp-for="ID" />

@@ -14,7 +14,7 @@ namespace ClassWeb.Model
 {
     public class DAL
     {
-        /// <summary>
+        /// <summary>   
         /// created by: Ganesh Sapkota
         /// DAL for Classweb project which provides simplified access to stored data
         /// by creating a class of data access methods that directly reference a corresponding set of database store procedures. 
@@ -36,6 +36,7 @@ namespace ClassWeb.Model
         internal enum dbAction
         {
             Read,
+
             Edit
         }
         #region Database Connections
@@ -236,7 +237,7 @@ namespace ClassWeb.Model
         internal static int AddUser(User obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_UserAdd");
+            MySqlCommand comm = new MySqlCommand("sproc_AddUser");
             try
             {
                 // generate new password first.
@@ -311,6 +312,8 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+
+
             return retList;
         }
 
@@ -1594,7 +1597,7 @@ namespace ClassWeb.Model
         #endregion
 
         #region Group
-        internal static List<User> GetGroupUsers(int id)
+        internal static List<User> GetGroupUsers(int? id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_GetUsersFromGroup");
             List<User> retList = new List<User>();
@@ -1680,6 +1683,29 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
+
+        internal static Group GroupGetByUsername(string userName)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupByUserName");
+            Group retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Group.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Group(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         /// <summary>
         /// Attempts to add group in the database
         /// Reference: PeerVal Project + Login for User
@@ -1689,7 +1715,7 @@ namespace ClassWeb.Model
         internal static int AddGroup(Group obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("Sproc_AddGroup");
+            MySqlCommand comm = new MySqlCommand("sproc_AddGroup");
             try
             {
                 // generate new password first.
@@ -1716,11 +1742,11 @@ namespace ClassWeb.Model
         internal static int AddUserToGroup(int GroupID, int UserID)
         {
             if (GroupID == 0 || UserID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
+            MySqlCommand comm = new MySqlCommand("sproc_AddUserToGroup");
             try
             {
                 comm.Parameters.AddWithValue("@" + "GroupID", GroupID);
-                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                comm.Parameters.AddWithValue("@" + "UserID", UserID);
 
                 return AddObject(comm, "@" + GroupUser.db_ID);
             }
@@ -1739,7 +1765,7 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+              //  comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
@@ -1759,6 +1785,28 @@ namespace ClassWeb.Model
             try
             {
                 comm.Parameters.AddWithValue("@" + Group.db_ID, ID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                retInt = comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retInt;
+        }
+
+        internal static int DeleteGroupUserByID(int groupID, int userID)
+        {
+            MySqlCommand comm = new MySqlCommand("delete_GroupUserByID");
+            int retInt = 0;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + "GroupID", groupID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, userID);
                 comm.Connection = new MySqlConnection(EditOnlyConnectionString);
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 comm.Connection.Open();
@@ -1795,6 +1843,29 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        /// Checks if the same user exists in the group
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int CheckUserExistsInGroup(int UserID)
+        {
+
+            MySqlCommand comm = new MySqlCommand("CheckUserExistsInGroup");
+            if (UserID == 0)
+                try
+                {
+                   
+                    comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                    int dr = GetIntReader(comm);
+
+                    return dr;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            return -1;
+        }
         ///<summary>
         /// Checks if user exists in the database
         /// Before adding user to the group
@@ -1863,6 +1934,37 @@ namespace ClassWeb.Model
             return groupList;
         }
 
+        /// <summary>
+        /// Gets List of group users from the database to check for group users
+        /// </summary>
+        /// <returns>List of Group Users string</returns>
+
+
+        internal static List<ViewGroupUser> GetAllGroupUsersByID(int? groupID)
+        {
+            MySqlCommand comm = new MySqlCommand("get_GroupUsersByID");
+            List<ViewGroupUser> groupUserList = new List<ViewGroupUser>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue("@" + "GroupID", groupID);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    groupUserList.Add(new ViewGroupUser(dr));
+                   
+
+                    
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return groupUserList;
+        }
 
 
         ///<summary>

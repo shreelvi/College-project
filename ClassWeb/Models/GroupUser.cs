@@ -9,6 +9,13 @@ using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
+
+    /// <summary>
+    /// Created By: Elvis
+        /// Seperate Model for Login View.
+    /// This model is used to get information only required for login view.
+    /// It also model for add user to the group now as I am testing to verify password using hashing. 
+    /// </summary>
     public class GroupUser: DatabaseRecord
     {
         #region Constructors
