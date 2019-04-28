@@ -36,7 +36,6 @@ namespace ClassWeb.Models
         private Semester _Semester;
         private Year _Year;
         private Section _Section;
-        private User _User;
 
         #endregion
 
@@ -268,36 +267,7 @@ namespace ClassWeb.Models
             }
         }
 
-        /// <summary>
-        /// Gets or sets the User for this object.
-        /// Reference: Taken code from prof. Holmes Peerval Project
-        /// </summary>
-        /// <remarks></remarks>
-        [XmlIgnore]
-        public User User
-        {
-            get
-            {
-                if (_User == null)
-                {
-                    _User = DAL.GetUser(_UserID);
-                }
-                return _User;
-            }
-            set
-            {
-                _User = value;
-                if (value == null)
-                {
-                    _UserID = -1;
-                }
-                else
-                {
-                    _UserID = value.ID;
-                }
-            }
-        }
-
+      
 
 
         #endregion

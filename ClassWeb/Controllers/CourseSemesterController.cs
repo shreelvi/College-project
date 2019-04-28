@@ -85,7 +85,6 @@ namespace ClassWeb.Controllers
 
             var courseSemester = await _context.CourseSemester
                 .Include(c => c.Course)
-                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
