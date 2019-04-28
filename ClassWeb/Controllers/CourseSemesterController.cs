@@ -128,12 +128,17 @@ namespace ClassWeb.Controllers
 
         }
 
-        // POST: CourseSemesters/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Created by Elvis
+        /// Method to add a class (coursesemester object) in the database
+        /// Modified on: 27 April 2019
+        /// Add users to the class 
+        /// </summary>
+        /// <param name="courseSemester"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
+        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID")] CourseSemester courseSemester)
         {
             int id = (int)HttpContext.Session.GetInt32("UserID");
             User LoggedIn = CurrentUser;

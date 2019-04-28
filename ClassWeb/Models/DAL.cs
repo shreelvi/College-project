@@ -944,11 +944,11 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
             try
             {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_UserID, obj.UserID);
                 return AddObject(comm, "@" + CourseSemester.db_ID);
             }
             catch (Exception ex)
@@ -1038,7 +1038,7 @@ namespace ClassWeb.Model
         internal static int AddUserToClass(int ClassID, int UserID)
         {
             if (ClassID == 0 || UserID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
+            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToClass");
             try
             {
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, ClassID);

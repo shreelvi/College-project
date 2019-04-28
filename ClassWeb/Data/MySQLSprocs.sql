@@ -675,4 +675,23 @@ BEGIN
     INNER JOIN coursesemesters
     ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
     WHERE users.UserID = UserID AND coursesemesters.DateEnd > NOW();
+END$$
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	27 April 2019
+-- Description:	Add users to class by adding data to coursesemesteruser association
+-- Used when professor is adding class from the dashboard
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_AddUserToClass(
+OUT CourseSemesterUserID int,
+IN CourseSemester int(11),
+IN UserID INT(11)
+)
+BEGIN
+	INSERT INTO CourseSemesterUsers(CourseSemesterID, UserID)
+    			VALUES (CourseSemesterID, UserID);
+    SET CourseSemesterUserID = LAST_INSERT_ID();
 END
+$$
