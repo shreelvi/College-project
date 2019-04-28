@@ -94,7 +94,14 @@ namespace ClassWeb.Controllers
             return View(courseSemester);
         }
 
-        // GET: CourseSemesters/Create
+        /// <summary>
+        /// Modified by: Meshari
+        /// Date Modified: 04/27/2019
+        /// Added dropdownlist for course, semester, section and 
+        /// academic year information while creating coursesemester
+        /// </summary>
+        /// <returns></returns>
+
         public IActionResult Create()
         {
             User LoggedIn = CurrentUser;
@@ -105,21 +112,32 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-            List<Course> CoursesPartial = new List<Course>();
-            CoursesPartial = DAL.GetCourses();
-            ViewBag.Courses = CoursesPartial;
 
-            List<Semester> SemesterPartial = new List<Semester>();
-            SemesterPartial = DAL.GetSemesters();
-            ViewBag.Semesters = SemesterPartial;
+            // Gets Data from Database for the dropdown in create view
+            // And insert select item in List
+            // Reference: https://www.c-sharpcorner.com/article/binding-dropdown-list-with-database-in-asp-net-core-mvc/
 
-            List<Year> YearPartial = new List<Year>();
-            YearPartial = DAL.GetYears();
-            ViewBag.Years = YearPartial;
+            List<Course> CourseList = new List<Course>();
+            CourseList = DAL.GetCourses();
+            //Inserting Select Item for course in List
+            CourseList.Insert(0, new Course { ID = 0, Name = "Select" });
+            ViewBag.Courses = CourseList;
 
-            List<Section> SectionPartial = new List<Section>();
-            SectionPartial = DAL.GetSections();
-            ViewBag.Sections = SectionPartial;
+            List<Semester> SemesterList = new List<Semester>();
+            SemesterList = DAL.GetSemesters();
+            SemesterList.Insert(0, new Semester { ID = 0, Name = "Select" });
+            ViewBag.Semesters = SemesterList;
+
+            List<Year> YearList = new List<Year>();
+            YearList = DAL.GetYears();
+            YearList.Insert(0, new Year { ID = 0, Name = "Select" });
+            ViewBag.Years = YearList;
+
+            List<Section> SectionList = new List<Section>();
+            SectionList = DAL.GetSections();
+            int SectionNumber = 0;
+            SectionList.Insert(0, new Section { ID = 0, SectionNumber = SectionNumber });
+            ViewBag.Sections = SectionList;
 
             return View();
 
