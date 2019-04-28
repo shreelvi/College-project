@@ -33,6 +33,7 @@ namespace ClassWeb.Models
         private string _Subject;
         private int _CourseNumber;
         private string _CourseTitle;
+        private string _Role;
         #endregion
 
         #region Public Variables
@@ -53,6 +54,13 @@ namespace ClassWeb.Models
             set { _CourseTitle = value; }
         }
 
+        public string Role
+        {
+            get { return _Role; }
+            set { _Role = value; }
+        }
+
+
 
 
         #endregion
@@ -62,6 +70,7 @@ namespace ClassWeb.Models
         internal const string db_Subject = "Subject";
         internal const string db_CourseNumber = "CourseNumber";
         internal const string db_CourseTitle = "CourseTitle";
+        internal const string db_Role = "Role";
         #endregion
 
         #region Public Functions
@@ -93,6 +102,7 @@ namespace ClassWeb.Models
             _Subject = dr.GetString(db_Subject);
             _CourseNumber = dr.GetInt32(db_CourseNumber);
             _CourseTitle = dr.GetString(db_CourseTitle);
+            _Role = dr.GetString(db_Role);
         }
 
         public override string ToString()

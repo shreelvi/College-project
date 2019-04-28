@@ -153,7 +153,7 @@ namespace ClassWeb.Controllers
                             throw;
                         }
                     }
-                    TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
+                  
                     return RedirectToAction(nameof(Index));
                 }
                 return View(course);

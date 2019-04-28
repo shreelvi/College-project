@@ -46,7 +46,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
@@ -103,7 +103,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -157,7 +157,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -198,7 +198,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -212,7 +212,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
@@ -250,7 +250,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -284,7 +284,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
@@ -392,7 +392,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 RedirectToAction("Login", "Account");
             }
 
@@ -435,7 +435,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to add Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -489,7 +489,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -541,7 +541,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -588,7 +588,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -605,7 +605,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                TempData["Error"] = "You don't have enough privilege to view Assignment";
                 return RedirectToAction("Login", "Account");
             }
         }
