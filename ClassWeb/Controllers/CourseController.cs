@@ -141,7 +141,8 @@ namespace ClassWeb.Controllers
                     int c = DAL.UpdateCourse(course);
                     if (c > 0)
                     {
-                        TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
+                        TempData["CourseUpdate"] = "Course Updated successfully!!!";
+                        
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -155,7 +156,6 @@ namespace ClassWeb.Controllers
                         throw;
                     }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -196,7 +196,7 @@ namespace ClassWeb.Controllers
             int test = DAL.DeleteCourseByID(id);
             if (test > 0)
             {
-                TempData["CourseDelete"] = "Course Succesfully Deleted!!!";
+                TempData["CourseDelete"] = "Course Deleted Succesfully!!!";
 
             }
             return RedirectToAction(nameof(Index));
