@@ -76,82 +76,81 @@ namespace ClassWeb.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> ChangeStatus([FromBody]JObject obj)
         {
-
-            if (obj == null)
-                return new HttpResponseMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "POST body is null" };
-
-            try
+            if (UserCan<User>(PermissionSet.Permissions.View))
             {
-                string type =(string)obj["Type"];
-                int id = (int)obj["ID"];
-                bool status = (bool)obj["Status"];
-                if(type== "DisableUser")
+                try
                 {
-                    User U = DAL.UserGetByID(id);
-                    if (U != null)
+                    string type = (string)obj["Type"];
+                    int id = (int)obj["ID"];
+                    bool status = (bool)obj["Status"];
+                    if (type == "DisableUser")
                     {
-                        U.Enabled =status==true?0:1;
-                        int i=DAL.UpdateUser(U);
-                        if (i > 0)
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
                         {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-                        }
-                        else
-                        {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            U.Enabled = status == true ? 0 : 1;
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
                         }
 
-                    }
-                  
                         return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
-                }
-                if (type == "ArchiveUser")
-                {
-                    User U = DAL.UserGetByID(id);
-                    if (U != null)
+                    }
+                    if (type == "ArchiveUser")
                     {
-                        U.Archived = status == true ? 1 : 0;
-                        int i = DAL.UpdateUser(U);
-                        if (i > 0)
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
                         {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-                        }
-                        else
-                        {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            U.Archived = status == true ? 1 : 0;
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
                         }
 
+                        return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                    }
+                    if (type == "VerifyUser")
+                    {
+                        User U = DAL.UserGetByID(id);
+                        if (U != null)
+                        {
+                            U.VerificationCode = " ";
+                            int i = DAL.UpdateUser(U);
+                            if (i > 0)
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                            }
+                            else
+                            {
+                                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                            }
+
+                        }
+
+                        return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
                     }
 
-                    return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                    return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
                 }
-                if (type == "VerifyUser")
+                catch (Exception ex)
                 {
-                    User U = DAL.UserGetByID(id);
-                    if (U != null)
-                    {
-                        U.VerificationCode = " ";
-                        int i = DAL.UpdateUser(U);
-                        if (i > 0)
-                        {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-                        }
-                        else
-                        {
-                            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
-                        }
-
-                    }
-
-                    return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
                 }
-
-                return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
             }
-            catch (Exception ex)
-            {
-                return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created: {ex.InnerException}" };
-            }
+           return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
         }
         [HttpPost]
         public IActionResult ChangeRole(int? UserID, int? Role)

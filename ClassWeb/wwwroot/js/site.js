@@ -119,10 +119,18 @@ $(document).ready(function () {
             , success: function (response) {
                 window.location.href = '/Users';
             }
-            , error: function (xhr, resp, text) {
-                alert(xhr, resp, text);
-                alert("User Status Cannot be changed");
+            , error: function () {
+                window.location.href = '/Home/Index';
             }
         });
     });
 });
+$(document).ready(function () {
+    $('#example').DataTable();
+});
+// This file is required by the index.html file and will
+// be executed in the renderer process for that window.
+// All of the Node.js APIs are available in this process.
+window.$ = window.jquery = require('./node_modules/jquery');
+window.dt = require('./node_modules/datatables.net')();
+window.$('#table_id').DataTable();

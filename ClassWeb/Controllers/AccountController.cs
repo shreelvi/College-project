@@ -72,7 +72,7 @@ namespace ClassWeb.Controllers
         public ActionResult Login(String userName, String passWord)
         {
             User loggedIn = DAL.GetUser(userName, passWord);
-            if (loggedIn.VerificationCode.Trim()==null)
+            if (loggedIn.VerificationCode.Trim().Length>1)
             {
                 TempData["Message"] = "Still Waiting for Verification";
                 return RedirectToAction("Index", "Home");
@@ -125,7 +125,6 @@ namespace ClassWeb.Controllers
                 var s = TempData["PermissionError"];
                 if (s != null)
                     ViewData["PermissionErr"] = s;
-
                 int id = 0;
                 if (LoggedInGroup.Name == "Anonymous")
                 {
@@ -141,7 +140,6 @@ namespace ClassWeb.Controllers
                 {
                     id = (int)HttpContext.Session.GetInt32("GroupID");
                     string username = HttpContext.Session.GetString("username");
-                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
                     List<User> users = DAL.GetGroupUsers(6);
                     return RedirectToAction("Dashboard", "Group");
                 }
