@@ -5,10 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-//Meshari, 02/14
-//Courses => A course is like 4430, 3307, etc.
-//Each course can be accessible to one to many users.
-//Each course can be taught by multiple professors, hence multiple classes.
+/// <summary>
+/// Edited By: Mohan
+/// Courses => A course is like 4430, 3307, etc.
+/// Each course can be accessible to one to many users.
+/// Each course can be taught by multiple professors, hence multiple classes.
+/// A course has a course name and a number.
+/// </summary>
 
 
 namespace ClassWeb.Models
@@ -55,7 +58,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "CourseID";
+        internal const string db_ID = "ID";
         internal const string db_Subject = "Subject";
         internal const string db_CourseNumber = "CourseNumber";
         internal const string db_CourseTitle = "CourseTitle";

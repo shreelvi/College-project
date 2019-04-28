@@ -136,6 +136,10 @@ namespace ClassWeb.Controllers
             {
                 return user.Role.Users >= perm;
             }
+            else if (typeof(T) == typeof(Course))
+            {
+                throw new NotImplementedException();
+            }
             else
                 return false;
         }

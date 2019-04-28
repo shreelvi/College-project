@@ -24,51 +24,13 @@ namespace ClassWeb.Controllers
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
         #endregion
-
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
         }
         #endregion
-
-        #region sendEmail
-        /// <summary>
-        /// Code By: Elvis
-        /// Date Created: 03/15/2019
-        /// Reference: https://steemit.com/utopian-io/@babelek/how-to-send-email-using-asp-net-core-2-0
-        /// https://stackoverflow.com/questions/35881641/how-can-i-send-a-confirmation-email-in-asp-net-mvc
-        /// Used the code in these References to add feature to send confirmation email to user when registering
-        /// Not complete yet. Some issue to fix when sending an email.
-        /// </summary>
-
-        [AllowAnonymous]
-        public ActionResult SendEmail()
-        {
-            return View();
-        }
-       
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("account/SendEmail")]
-        public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
-        {
-            await _emailService.SendEmail(email, subject, message);
-            return Ok();
-        }
-        [AllowAnonymous]
-        //public ActionResult ConfirmEmail(string username, string token )
-        //{
-        //    //string UserToken = DAL.GetUserToken(username);
-        //    if (UserToken == token)
-        //    {
-        //        ViewBag.Success = "Successfully verified email.";
-        //    }
-        //    return View("login");
-        //}
-        #endregion
-
         #region Login
         /// <summary>
         /// Code By: Elvis
@@ -87,10 +49,10 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if(e != null)
+            else if (e != null)
                 ViewData["UserAddError"] = e;
 
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -112,18 +74,14 @@ namespace ClassWeb.Controllers
 
             if (loggedIn != null)
             {
-                //Tools.SessionHelper.Set(HttpContext, "CurrentUser", loggedIn); //Sets the Session for the CurrentUser object
                 HttpContext.Session.SetString("username", userName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//admin";
-                ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + userName; //Return User root directory 
-
                 //Check if the user is admin
+                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
                 if (loggedIn.Role.IsAdmin)
                 {
                     return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
                 }
-
                 return RedirectToAction("Dashboard");
                 //return View("Dashboard");
             }
@@ -131,7 +89,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = "Invalid Username and/or Password";
                 ViewBag.User = userName;
-                return View();
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -153,7 +111,8 @@ namespace ClassWeb.Controllers
                     ViewData["PermissionErr"] = s;
 
                 int id = 0;
-                if (LoggedInGroup.Name == "Anonymous") {
+                if (LoggedInGroup.Name == "Anonymous")
+                {
                     id = (int)HttpContext.Session.GetInt32("UserID");
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
@@ -162,17 +121,18 @@ namespace ClassWeb.Controllers
                     UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
                     return View(UserAssignments);
                 }
-                else {
-                    id = (int)HttpContext.Session.GetInt32("GroupID");
+                else
+                {
+                    //id = (int)HttpContext.Session.GetInt32("GroupID");
                     string username = HttpContext.Session.GetString("username");
-                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
+                    //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory
                     List<User> users = DAL.GetGroupUsers(6);
                     return RedirectToAction("Dashboard", "Group");
                 }
 
-                
+
             }
-            
+
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -183,10 +143,9 @@ namespace ClassWeb.Controllers
         {
             //await _signManager.SignOutAsync();
             HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("index", "Home");
         }
         #endregion
-
         #region Registration
         /// <summary>        
         /// Created on: 03/09/2019
@@ -216,7 +175,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-               
+
             }
             else
             {
@@ -237,7 +196,7 @@ namespace ClassWeb.Controllers
                     TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("Login", "Account"); //Directs to Login page after success
+            return RedirectToAction("index", "Home"); //Directs to Login page after success
         }
 
         /// <summary>
@@ -250,7 +209,7 @@ namespace ClassWeb.Controllers
         /// </summary>
         private string SetUserFolder(User user)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath + "\\UserDirectory\\";
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\AssignmentDirectory\\";
             user.DirectoryPath = dir_Path + user.UserName;
             string path = user.DirectoryPath;
 
@@ -259,7 +218,110 @@ namespace ClassWeb.Controllers
             return path;
         }
         #endregion
+        #region Send Email
+        [AllowAnonymous]
+        public ActionResult SendEmail()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("account/SendEmail")]
+        public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
+        {
+            Task t = _emailService.SendEmail(email, subject, message);
+            if (t.IsCompleted)
+            {
+                TempData["Message"] = "Email Succesfully Send!!";
+            }
+            else
+            {
+                TempData["Message"] = "Email cannot be Succesfully Send!!";
+            }
+            return RedirectToAction("Dashboard", "Account");
+        }
+        [AllowAnonymous]
+        #endregion
+        #region Edit Account
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (uid != null)
+            {
+                id = uid;
+            }
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = DAL.UserGetByID(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
+        {
+
+            if (id != user.ID)
+            {
+                return NotFound();
+            }
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (id == null && uid != null)
+            {
+                id = uid;
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (id == uid)
+                    {
+                        int a = DAL.UpdateUser(user);
+                        if (a > 0)
+                        {
+                            HttpContext.Session.SetString("username", user.UserName);
+                            TempData["Message"] = "User Succesfully Updated!!";
+                        }
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Trick!!";
+                    }
+                    return RedirectToAction("Dashboard", "Account");
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return RedirectToAction("Dashboard", "Account");
+        }
+        #endregion
+        #region Profile
+        public ActionResult Profile()
+        {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            int id = 0;
+            if (uid != null)
+            {
+
+                User U = DAL.UserGetByID(uid);
+                return View(U);
+            }
+            else
+            {
+                return RedirectToAction("index", "Home");
+            }
+
+        }
+        #endregion
 
     }
 }

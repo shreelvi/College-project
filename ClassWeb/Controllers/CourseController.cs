@@ -9,6 +9,14 @@ using ClassWeb.Models;
 using System;
 using Microsoft.AspNetCore.Http;
 
+    /// <summary>
+    /// Created By: Mohan
+    /// Courses => A course is like 4430, 3307, etc.
+    /// Each course can be accessible to one to many users.
+    /// Each course can be taught by multiple professors, hence multiple classes.
+    /// A course has a course name and a number.
+    /// </summary>
+   
 namespace ClassWeb.Controllers
 {
     public class CourseController : BaseController
@@ -24,6 +32,12 @@ namespace ClassWeb.Controllers
             var a = TempData["CourseAdd"];
             if (a != null)
                 ViewData["CourseAdd"] = a;
+
+            //Gets error message to display from Edit method 
+            var b = TempData["CourseUpdate"];
+            if (b != null)
+                ViewData["CourseUpdate"] = b;
+
             //Gets error message to display from Delete method 
             var d = TempData["CourseDelete"];
             if (d != null)
@@ -49,8 +63,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var course = id; //await _context.Course
-                             // .FirstOrDefaultAsync(m => m.ID == id);
+            var course = DAL.GetCourseByID(id);
+            List<Course> Course = DAL.GetCourse();
             if (course == null)
             {
                 return NotFound();
@@ -58,6 +72,7 @@ namespace ClassWeb.Controllers
 
             return View(course);
         }
+
 
         //// GET: Course/Create
         public IActionResult Create()
@@ -93,75 +108,15 @@ namespace ClassWeb.Controllers
         }
 
 
-
-        //// GET: Course/Edit/5
-        //public IActionResult Edit(int? id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: Course/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit(int id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
-        //{
-        //    if (id != course.ID)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //          //  _context.Update(course);
-        //           // await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!CourseExists(course.ID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(course);
-        //}
-
-
         // GET: Courses/Edit/5
         public IActionResult Edit(int? id)
         {
-            if (UserCan<Course>(PermissionSet.Permissions.Edit))
-            {
-                int? uid = HttpContext.Session.GetInt32("UserID");
-                if (id == null && uid != null)
-                {
-                    id = uid;
-                }
-                if (id == null)
+                var Course= DAL.GetCourseByID(id);
+                if (Course == null)
                 {
                     return NotFound();
                 }
-                var user = DAL.UserGetByID(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                return View(user);
-            }
-            else
-            {
-                TempData["error"] = "You Dont Have Enough Previlage to edit User";
-                return RedirectToAction("Dashboard", "Account");
-            }
+                return View(Course);
         }
 
 
@@ -170,28 +125,21 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, [Bind("CourseTitle,CourseName,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
         {
-            if (UserCan<Course>(PermissionSet.Permissions.Edit))
+            if (id != course.ID)
             {
-                if (id != course.ID)
-                {
+                return NotFound();
+            }
 
-                    return NotFound();
-                }
-                int? uid = HttpContext.Session.GetInt32("UserID");
-                if (id == null && uid != null)
-                {
-                    id = uid;
-                }
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
                 {
                     try
                     {
-                        int a = DAL.UpdateCourse(course);
-                        if (a > 0)
+                        int c= DAL.UpdateCourse(course);
+                        if (c > 0)
                         {
-                            ViewBag.Message = "Course Succesfully Updated!!";
+                            TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
                         }
                     }
                     catch (DbUpdateConcurrencyException)
@@ -205,21 +153,16 @@ namespace ClassWeb.Controllers
                             throw;
                         }
                     }
+                    TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
                     return RedirectToAction(nameof(Index));
                 }
                 return View(course);
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to edit User";
-                return RedirectToAction("Dashboard", "Account");
-            }
         }
 
         private bool CourseExists(int id)
         {
-            User u = DAL.UserGetByID(id);
-            if (u == null)
+            Course c = DAL.GetCourseByID(id);
+            if (c == null)
             {
                 return false;
             }
@@ -229,89 +172,34 @@ namespace ClassWeb.Controllers
             }
         }
 
+
         // GET: Courses/Delete/5
         public IActionResult Delete(int? id)
         {
-            if (UserCan<Course>(PermissionSet.Permissions.Delete))
-            {
-                if (id == null)
+                Course c = DAL.GetCourseByID(id);
+                if (c == null)
                 {
                     return NotFound();
                 }
 
-                User U = DAL.UserGetByID(id);
-                if (U == null)
-                {
-                    return NotFound();
-                }
-
-                return View(U);
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
-                return RedirectToAction("Dashboard", "Account");
-            }
-
+                return View(c);
         }
+
 
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            if (UserCan<Course>(PermissionSet.Permissions.Delete))
+           int test = DAL.DeleteCourseByID(id);
+           if (test > 0)
             {
-                int test = DAL.DeleteCourseByID(id);
-                if (test > 0)
-                {
-                    ViewBag.Message = "Course Succesfully Deleted!!";
-                }
-                return RedirectToAction(nameof(Index));
+              TempData["CourseDelete"] = "Course Succesfully Deleted!!!";
+              
             }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to Delete Course";
-                return RedirectToAction("Dashboard", "Account");
-            }
+            return RedirectToAction(nameof(Index));
+         }
+           
+     }
+ }
 
-
-            //GET: Course/Delete/5
-            //public IActionResult Delete(int id)
-            //{
-            //    User LoggedIn = CurrentUser;
-            //    if (LoggedIn.FirstName == "Anonymous")
-            //    {
-            //        TempData["LoginError"] = "Please login to view the page.";
-            //        return RedirectToAction("Index", "Home");
-            //    }
-            //    Course retCourse = DAL.GetCourse(id);
-            //    if (retCourse == null)
-            //    {
-            //        return NotFound();
-            //    }
-            //    return View(retCourse);
-            //}
-
-            //POST: Course/Delete/5
-            //[HttpPost, ActionName("Delete")]
-            //[ValidateAntiForgeryToken]
-            //public IActionResult DeleteConfirmed(int id)
-            //{
-            //    User LoggedIn = CurrentUser;
-            //    if (LoggedIn.FirstName == "Anonymous")
-            //    {
-            //        TempData["LoginError"] = "Please login to view the page.";
-            //        return RedirectToAction("Index", "Home");
-            //    }
-            //    int retInt = DAL.DeleteCourseByID(id);
-
-            //    if (retInt < 0)
-            //        TempData["CourseDelete"] = "Error occured when deleting the course";
-
-            //    TempData["CourseDelete"] = "Successfully deleted the course";
-            //    return RedirectToAction(nameof(Index));
-            //}
-        }
-    }
-}
