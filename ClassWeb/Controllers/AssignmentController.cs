@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using ClassWeb.Model;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace ClassWeb.Controllers
@@ -38,16 +39,16 @@ namespace ClassWeb.Controllers
                             ViewBag.Dir = "Home" + RootDir();
                         }
                         CurrentDir();
-                        Tuple<List<Assignment>, List<string>,List<Assignment>> assignments = GetFiles();
+                        Tuple<List<Assignment>, List<string>, List<Assignment>> assignments = GetFiles();
                         return View(assignments);
                     }
                 }
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("index","Home");
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
         }
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
@@ -103,8 +104,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -157,8 +158,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -198,8 +199,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -212,8 +213,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
         }
         [HttpPost]
@@ -250,8 +251,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -284,8 +285,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
         }
 
@@ -392,8 +393,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                RedirectToAction("index","Home");
             }
 
         }
@@ -435,8 +436,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to add Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -489,8 +490,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -541,7 +542,7 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
+                TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -588,8 +589,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
+                return RedirectToAction("index","Home");
             }
 
         }
@@ -605,8 +606,8 @@ namespace ClassWeb.Controllers
             }
             else
             {
-                TempData["Error"] = "You don't have enough privilege to view Assignment";
-                return RedirectToAction("Login", "Account");
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index","Home");
             }
         }
         #endregion
@@ -680,11 +681,11 @@ namespace ClassWeb.Controllers
             };
         }
 
-        private Tuple<List<Assignment>, List<string>,List<Assignment>> GetFiles()
+        private Tuple<List<Assignment>, List<string>, List<Assignment>> GetFiles()
         {
             List<Assignment> items = new List<Assignment>();
             List<string> root;
-            List<Assignment> physical= new List<Assignment>();
+            List<Assignment> physical = new List<Assignment>();
             int? id = HttpContext.Session.GetInt32("UserID");
             if (id != null)
             {
@@ -727,7 +728,7 @@ namespace ClassWeb.Controllers
                 items = null;
                 root = null;
             }
-            return Tuple.Create(items, root,physical);
+            return Tuple.Create(items, root, physical);
         }
 
         private List<string> GetDirectory(string[] full, string root)

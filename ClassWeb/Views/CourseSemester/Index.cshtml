@@ -20,16 +20,14 @@
         <thead>
             <tr>
                 <th>
-                    <p>Subject</p>
-                </th>
-
-                <th>
-                    <p>Course Number</p>
+                    <p>CRN</p>
                 </th>
                 <th>
                     <p>Course Title</p>
                 </th>
-
+                <th>
+                    <p>Course Name</p>
+                </th>
                 <th>
                     <p>Semester</p>
                 </th>
@@ -50,13 +48,13 @@
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Course.Subject)
+                    @Html.DisplayFor(modelItem => item.CRN)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Course.CourseNumber)
+                    @Html.DisplayFor(modelItem => item.Course.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Course.CourseTitle)
+                    @Html.DisplayFor(modelItem => item.Course.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Semester.Name)
@@ -67,9 +65,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Section.SectionNumber)
                 </td>
-                <td>
-                    <p>@item.User.FirstName @item.User.LastName</p>
-                </td>
+       
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |

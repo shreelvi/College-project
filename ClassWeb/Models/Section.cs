@@ -23,7 +23,7 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private int _SectionNumber;
-        private int _CRN;
+        //private int _CRN;
         //private int _ClassID;
 
 
@@ -45,25 +45,13 @@ namespace ClassWeb.Models
             }
         }
 
-        public int CRN
-        {
-            get
-            {
-                return _CRN;
-            }
-
-            set
-            {
-                _CRN = value;
-            }
-        }
+        
 
 
         #endregion
 
         #region Database String
         internal const string db_ID = "SectionID";
-        internal const string db_CRN = "CRN";
         internal const string db_Number = "SectionNumber";
         #endregion
 
@@ -93,7 +81,6 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _CRN = dr.GetInt32(db_CRN);
             _SectionNumber = dr.GetInt32(db_Number);
         }
         #endregion
