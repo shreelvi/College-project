@@ -50,7 +50,7 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
-        private bool _Enabled;
+        private int _Enabled;
         #endregion
 
         #region Database String
@@ -72,7 +72,7 @@ namespace ClassWeb.Models
 
         #region public Properites
 
-        public bool Enabled
+        public int Enabled
         {
             get { return _Enabled; }
             set { _Enabled = value; }
@@ -272,7 +272,7 @@ namespace ClassWeb.Models
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
-            _Enabled = dr.GetBoolean(db_Enabled);
+            _Enabled = dr.GetInt32(db_Enabled);
         }
         #endregion
 

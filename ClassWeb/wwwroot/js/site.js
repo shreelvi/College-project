@@ -98,7 +98,31 @@ $(document).ready(function () {
     });
 
 });
-
-$("#UserTable Table input[type=checkbox]").click(function () {
-    alert("I am clicked");
+$(document).ready(function () {
+    $("#UserTable  input[type=checkbox]").on('click', function () {
+        var type = $(this).data("type");
+        var id = $(this).attr("value");
+        var status = $(this).prop("checked");
+        var data = new Action(type, id, status);
+        function Action(Type, ID, Status) {
+            this.Type = Type;
+            this.ID = ID;
+            this.Status = Status;
+        }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST"
+            , url: "/Users/ChangeStatus"
+            , data: data
+            , contentType: "application/json"
+            , dataType: "json"
+            , success: function (response) {
+                window.location.href = '/Users';
+            }
+            , error: function (xhr, resp, text) {
+                alert(xhr, resp, text);
+                alert("User Status Cannot be changed");
+            }
+        });
+    });
 });

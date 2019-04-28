@@ -11,13 +11,15 @@ a {
     text-decoration: none;
     color: inherit;
 }
-
+#UserTable:active{
+    background-color:yellow;
+}
 /* Layout */
 .s-layout {
-    top:50px;
-    padding:15px;
+    top: 50px;
+    padding: 15px;
     display: flex;
-    position:relative;
+    position: relative;
 }
 
 /* Sidebar */

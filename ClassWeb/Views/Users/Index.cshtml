@@ -49,7 +49,7 @@
                             <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                             <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                         </td>
-                        <td><input  type="checkbox"  id="@item.ID"/></td>
+                        <td><input  type="checkbox" value="@item.ID"  data-type="DisableUser"/></td>
                     </tr>
                 }
             } @if (@Model.Item2.Count > 0)
@@ -70,11 +70,10 @@
                         <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </td>
-                    <td><input type="checkbox" checked id="@item.ID" /></td>
+                    <td><input type="checkbox" value="@item.ID" checked data-type="DisableUser" /></td>
                 </tr>
                 }
             }
-
         </tbody>
     </table>
 </div>
