@@ -122,7 +122,7 @@ namespace ClassWeb.Controllers
             if (typeof(T) == typeof(Assignment))
             {
                 //List<Role> rr = DAL.GetRoles();
-                //Role r = user.Role;
+               // Role r = user.Role;
                 //PermissionSet n = r.Assignment;
                 return user.Role.Assignment >= perm;
             }
