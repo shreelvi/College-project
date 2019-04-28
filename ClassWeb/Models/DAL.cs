@@ -1030,6 +1030,28 @@ namespace ClassWeb.Model
             }
             return retList;
         }
+
+        /// <summary>
+        /// Attempts to add user to the coursesemester object 
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int AddUserToClass(int ClassID, int UserID)
+        {
+            if (ClassID == 0 || UserID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand("Sproc_AddUserToGroup");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, ClassID);
+                comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+
+                return AddObject(comm, "@" + CourseSemesterUser.db_ID);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
         #endregion
 
         #region Semester
@@ -1490,6 +1512,10 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Attempts to add user to the group 
+        /// </summary>
+        /// <remarks></remarks>
         internal static int AddUserToGroup(int GroupID, int UserID)
         {
             if (GroupID == 0 || UserID == 0) return -1;
