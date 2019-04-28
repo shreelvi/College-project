@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -12,18 +13,25 @@ namespace ClassWeb.Controllers
 {
     public class SemesterController : BaseController
     {
+        private readonly ClassWebContext _context;
+
+        public SemesterController(ClassWebContext context)
+        {
+            _context = context;
+        }
+
         // GET: Semester
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
 
-            var a = TempData["YearAdd"];
+            var a = TempData["SemesterAdd"];
             if (a != null)
-                ViewData["YearAdd"] = a;
+                ViewData["SemesterAdd"] = a;
 
-            var d = TempData["YearDelete"];
+            var d = TempData["SemesterDelete"];
             if (d != null)
-                ViewData["YearDelete"] = d;
+                ViewData["SemesterDelete"] = d;
 
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
@@ -45,8 +53,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var semester = id;//await _context.Semester
-                              //  .FirstOrDefaultAsync(m => m.ID == id);
+            var semester = await _context.Semester
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (semester == null)
             {
                 return NotFound();
@@ -91,7 +99,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var semester = id;//await _context.Semester.FindAsync(id);
+            var semester = await _context.Semester.FindAsync(id);
             if (semester == null)
             {
                 return NotFound();
@@ -115,8 +123,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    //_context.Update(semester);
-                    //await _context.SaveChangesAsync();
+                    _context.Update(semester);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -168,7 +176,7 @@ namespace ClassWeb.Controllers
 
         private bool SemesterExists(int id)
         {
-            return true; //_context.Semester.Any(e => e.ID == id);
+            return _context.Semester.Any(e => e.ID == id);
         }
     }
 }

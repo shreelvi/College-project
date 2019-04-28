@@ -12,6 +12,7 @@ namespace ClassWeb.Controllers
     {
         public IActionResult Index()
         {
+            //testing 
             var s = TempData["LoginError"];
             if (s != null)
                 ViewData["LoginError"] = s;

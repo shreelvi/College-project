@@ -3,11 +3,19 @@
 @{
     ViewData["Title"] = "AddGroup";
 }
-@* Summary- This is a add group view used to add a group with different users. Created by Sakshi, edited by Elvis *@
+<style>
+    .left {
+        float: left;
+        width: 50%;
+    }
+    
+</style>
+<p style="color:red">@ViewData["GroupAddSuccess"]</p>
+<p style="color:red">@ViewData["UserGroupAddSuccess"]</p>
 <p style="color:red">@ViewBag.UserAddError</p>
 <p style="color:red">@ViewBag.Error</p>
 <p style="color:red">@ViewData["UserAddGroupError"]</p>
-<div class="row">
+<div class="left">
     <div class="col-md-4">
         <form method="post">
             <h2 style="color: darkorange">Add a new group.</h2>

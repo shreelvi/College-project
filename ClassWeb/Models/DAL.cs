@@ -16,15 +16,18 @@ namespace ClassWeb.Model
     {
         /// <summary>   
         /// created by: Ganesh Sapkota
-        /// DAL for Classweb project. 
+        /// DAL for Classweb project which provides simplified access to stored data
+        /// by creating a class of data access methods that directly reference a corresponding set of database store procedures. 
         /// </summary
 
-        //private static string ReadOnlyConnectionString = "Server = localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
-        //private static string EditOnlyConnectionString = "Server=localhost; Database=classweb; Port=3306;Uid=root;Pwd=kish1029";
-        //private static string ReadOnlyConnectionString = "Server=localhost;Database=web_masters; Port = 3306; Uid=root;Pwd=class";
-        //private static string EditOnlyConnectionString = "Server=localhost;Database=web_masters; Port= 3306; Uid=root;Pwd=class";
-        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
-        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
+        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
+        // private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf"; //HACK: set here for now, will move elsewhere later.
         public static int _Stretches = 10000;
         private DAL()
@@ -222,6 +225,7 @@ namespace ClassWeb.Model
         }
 
         #endregion
+
         #region user
 
         /// <summary>
@@ -247,9 +251,8 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
+                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
-                comm.Parameters.AddWithValue("@" + User.db_DirectoryPath, obj.DirectoryPath);
                 return AddObject(comm, "@" + User.db_ID);
             }
             catch (Exception ex)
@@ -479,7 +482,20 @@ namespace ClassWeb.Model
 
         internal static int CheckUserExists(string userName)
         {
-            throw new NotImplementedException();
+            if (userName == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_CheckUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+                int dr = GetIntReader(comm);
+
+                return dr;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
 
@@ -887,7 +903,7 @@ namespace ClassWeb.Model
 
         #endregion
 
-        #region Courses
+        #region Course
         ///<summary>
         ///Created by: Mohan
         ///Create/Add Course in database
@@ -901,9 +917,9 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CreateCourse");
             try
             {
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
                 return AddObject(comm, "@" + Course.db_ID);
             }
             catch (Exception ex)
@@ -913,6 +929,34 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        ///<summary>
+        /// Created By: Mohan 
+        /// Get Course 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+        internal static List<Course> GetCourse()
+        {
+
+            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
+            List<Course> retList = new List<Course>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new Course(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
 
         ///<summary>
         /// Created BY: Mohan
@@ -945,22 +989,22 @@ namespace ClassWeb.Model
 
         ///<summary>
         /// Created By: Mohan 
-        /// Get Course 
+        /// Get Course by its ID from database 
         /// Reference: PeerVal project by Professor
         /// </summary>
         /// <remarks></remarks>
-        internal static List<Course> GetCourse()
+        internal static Course GetCourseByID(int? id)
         {
-
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllCourses");
-            List<Course> retList = new List<Course>();
+            MySqlCommand comm = new MySqlCommand("sproc_GetCourseByID");
+            Course retObj = null;
             try
             {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Parameters.AddWithValue("@" + Course.db_ID, id);
                 MySqlDataReader dr = GetDataReader(comm);
+
                 while (dr.Read())
                 {
-                    retList.Add(new Course(dr));
+                    retObj = new Course(dr);
                 }
                 comm.Connection.Close();
             }
@@ -969,8 +1013,10 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            return retList;
+            return retObj;
         }
+
+
         ///<summary>
         /// Created By: Mohan 
         /// Edit Course 
@@ -979,14 +1025,37 @@ namespace ClassWeb.Model
         /// <remarks></remarks>
         internal static int UpdateCourse(Course obj)
         {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
+            //if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UpdateCourse");
             try
             {
                 comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
-                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Course.db_Title, obj.Title);
-                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+                comm.Parameters.AddWithValue("@" + Course.db_Subject, obj.Subject);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseNumber, obj.CourseNumber);
+                comm.Parameters.AddWithValue("@" + Course.db_CourseTitle, obj.CourseTitle);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Section
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int DeleteCourseByID(int ID)
+        {
+            if (ID == 0) return -1;
+            MySqlCommand comm = new MySqlCommand();
+            try
+            {
+                comm.CommandText = "sproc_DeleteCourseByID";
+                comm.Parameters.AddWithValue("@" + Course.db_ID, ID);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -994,38 +1063,6 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return -1;
-        }
-
-        ///<summary>
-        /// Created By: Mohan
-        /// Delete Course by Id from the database
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
-
-        internal static int DeleteCourseByID(int ID)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_DeleteCourseByID");
-            int retInt = 0;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Course.db_ID, ID);
-                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Connection.Open();
-                MySqlParameter retParameter;
-                retParameter = comm.Parameters.Add("@" + Course.db_ID, MySqlDbType.Int32);
-                retParameter.Direction = System.Data.ParameterDirection.Output;
-                comm.ExecuteNonQuery();
-                retInt = (int)retParameter.Value;
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retInt;
         }
         #endregion
 
@@ -1184,6 +1221,8 @@ namespace ClassWeb.Model
         #region CourseSemester
 
         /// <summary>
+        /// Created by Elvis
+        /// Modified By Ganesh
         /// Get list of all CourseSemesters CLassweb.objects from the database
         /// Reference: Taken code from the peerval project
         /// </summary>
@@ -1316,6 +1355,8 @@ namespace ClassWeb.Model
 
         #region Semester
         /// <summary>
+        /// Created By Elvis
+        /// Modified By Ganesh
         /// Gets the Classweb.Semester corresponding with the given ID
         /// </summary>
         /// <remarks></remarks>
@@ -1436,6 +1477,7 @@ namespace ClassWeb.Model
 
         #region Year
         /// <summary>
+        /// Elvis
         /// Gets the Classweb.Semester corresponding with the given ID
         /// </summary>
         /// <remarks></remarks>
@@ -1683,7 +1725,7 @@ namespace ClassWeb.Model
                 // now set object to Database.
 
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-               // comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);

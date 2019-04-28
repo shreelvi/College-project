@@ -98,3 +98,39 @@ $(document).ready(function () {
     });
 
 });
+$(document).ready(function () {
+    $("#UserTable  input[type=checkbox]").on('click', function () {
+        var type = $(this).data("type");
+        var id = $(this).attr("value");
+        var status = $(this).prop("checked");
+        var data = new Action(type, id, status);
+        function Action(Type, ID, Status) {
+            this.Type = Type;
+            this.ID = ID;
+            this.Status = Status;
+        }
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "POST"
+            , url: "/Users/ChangeStatus"
+            , data: data
+            , contentType: "application/json"
+            , dataType: "json"
+            , success: function (response) {
+                window.location.href = '/Users';
+            }
+            , error: function () {
+                window.location.href = '/Home/Index';
+            }
+        });
+    });
+});
+$(document).ready(function () {
+    $('#example').DataTable();
+});
+// This file is required by the index.html file and will
+// be executed in the renderer process for that window.
+// All of the Node.js APIs are available in this process.
+window.$ = window.jquery = require('./node_modules/jquery');
+window.dt = require('./node_modules/datatables.net')();
+window.$('#table_id').DataTable();

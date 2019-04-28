@@ -1,5 +1,4 @@
-﻿using ClassWeb.Controllers;
-using ClassWeb.Model;
+﻿using ClassWeb.Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -9,20 +8,20 @@ using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
-
     /// <summary>
-    /// Created By: Elvis
-        /// Seperate Model for Login View.
-    /// This model is used to get information only required for login view.
-    /// It also model for add user to the group now as I am testing to verify password using hashing. 
+    /// Created on: 26 April 2019
+    /// Created by: shreelvi
+    /// Description: Association table for CourseSemester and User models
     /// </summary>
-    public class GroupUser: DatabaseRecord
+    public class CourseSemesterUser: DatabaseRecord
     {
+
         #region Constructors
-        public GroupUser()
+        public CourseSemesterUser()
         {
         }
-        internal GroupUser(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal CourseSemesterUser
+(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -30,25 +29,25 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
-        private int _GroupID;
+        private int _CourseSemesterID;
         private int _UserID;
-        private Group _Group;
+        private CourseSemester _CourseSemester;
         private User _User;
-
 
         #endregion
 
         #region Public Properties
-        public int GroupID
+
+        public int CourseSemesterID
         {
             get
             {
-                return _GroupID;
+                return _CourseSemesterID;
             }
 
             set
             {
-                _GroupID = value;
+                _CourseSemesterID = value;
             }
         }
 
@@ -64,37 +63,40 @@ namespace ClassWeb.Models
                 _UserID = value;
             }
         }
+
+
         
         /// <summary>
-        /// Gets or sets the Group for this object.
+        /// Gets or sets the Semester for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
         [XmlIgnore]
-        public Group Group
+        public CourseSemester CourseSemesters
         {
             get
             {
-                if (_Group == null)
+                if (_CourseSemester == null)
                 {
-                    //_Group = DAL.GetGroup(_GroupID);
+                    _CourseSemester = DAL.GetCourseSemester(_CourseSemesterID);
                 }
-                return _Group;
+                return _CourseSemester;
             }
             set
             {
-                _Group = value;
+                _CourseSemester = value;
                 if (value == null)
                 {
-                    _GroupID = -1;
+                    _CourseSemesterID = -1;
                 }
                 else
                 {
-                    _GroupID = value.ID;
+                    _CourseSemesterID = value.ID;
                 }
             }
         }
 
+       
         /// <summary>
         /// Gets or sets the User for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
@@ -107,7 +109,7 @@ namespace ClassWeb.Models
             {
                 if (_User == null)
                 {
-                    _User = DAL.UserGetByID(_UserID);
+                    _User = DAL.GetUser(_UserID);
                 }
                 return _User;
             }
@@ -130,11 +132,9 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "GroupUserID";
-        internal const string db_GroupID = "GroupID";
+        internal const string db_ID = "CourseSemesterUserID";
+        internal const string db_CourseSemesterID = "CourseSemesterID";
         internal const string db_UserID = "UserID";
-
-
         #endregion
 
         #region Public Functions
@@ -163,9 +163,8 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _GroupID = dr.GetInt32(db_GroupID);
+            _CourseSemesterID = dr.GetInt32(db_CourseSemesterID);
             _UserID = dr.GetInt32(db_UserID);
-            
         }
         #endregion
 

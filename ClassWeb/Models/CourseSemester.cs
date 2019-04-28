@@ -24,20 +24,35 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
+        private int _CRN;
         private int _CourseID;
         private int _SemesterID;
         private int _YearID;
         private int _SectionID;
         private int _UserID;
+        private DateTime _DateStart;
+        private DateTime _DateEnd;
         private Course _Course;
         private Semester _Semester;
         private Year _Year;
         private Section _Section;
-        private User _User;
 
         #endregion
 
         #region Public Properties
+        public int CRN
+        {
+            get
+            {
+                return _CRN;
+            }
+
+            set
+            {
+                _CRN = value;
+            }
+        }
+
         public int CourseID
         {
             get
@@ -102,6 +117,34 @@ namespace ClassWeb.Models
                 _UserID = value;
             }
         }
+
+        public DateTime DateStart
+        {
+            get
+            {
+                return _DateStart;
+            }
+
+            set
+            {
+                _DateStart = value;
+            }
+        }
+
+        public DateTime DateEnd
+        {
+            get
+            {
+                return _DateEnd;
+            }
+
+            set
+            {
+                _DateEnd = value;
+            }
+        }
+
+
 
 
         /// <summary>
@@ -224,47 +267,21 @@ namespace ClassWeb.Models
             }
         }
 
-        /// <summary>
-        /// Gets or sets the User for this object.
-        /// Reference: Taken code from prof. Holmes Peerval Project
-        /// </summary>
-        /// <remarks></remarks>
-        [XmlIgnore]
-        public User User
-        {
-            get
-            {
-                if (_User == null)
-                {
-                    _User = DAL.UserGetByID(_UserID);
-                }
-                return _User;
-            }
-            set
-            {
-                _User = value;
-                if (value == null)
-                {
-                    _UserID = -1;
-                }
-                else
-                {
-                    _UserID = value.ID;
-                }
-            }
-        }
-
+      
 
 
         #endregion
 
         #region Database String
         internal const string db_ID = "CourseSemesterID";
+        internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";
         internal const string db_YearID = "YearID";
         internal const string db_SectionID = "SectionID";
         internal const string db_UserID = "UserID";
+        internal const string db_DateStart = "DateStart";
+        internal const string db_DateEnd = "DateEnd";
 
         #endregion
 
@@ -294,11 +311,13 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _CRN = dr.GetInt32(db_CRN);
             _CourseID = dr.GetInt32(db_CourseID);
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
-            _UserID = dr.GetInt32(db_UserID);
+            //_DateStart = dr.GetDateTime(db_DateStart);
+            //_DateEnd = dr.GetDateTime(db_DateEnd);
         }
         #endregion
 

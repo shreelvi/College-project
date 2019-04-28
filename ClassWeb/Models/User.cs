@@ -50,10 +50,13 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
+        private int _Enabled;
+        private int _Archived;
+        private string _VerificationCode;
         #endregion
 
         #region Database String
-        internal const string db_ID = "ID";
+        internal const string db_ID = "UserID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -66,14 +69,23 @@ namespace ClassWeb.Models
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
-        internal const string db_DirectoryPath = "DirectoryPath";
-
-
-
+        internal const string db_Archived = "Archived";
+        internal const string db_Enabled = "Enabled";
+        internal const string db_VerificationCode = "VerificationCode";
         #endregion
 
         #region public Properites
 
+        public int Enabled
+        {
+            get { return _Enabled; }
+            set { _Enabled = value; }
+        }
+        public string VerificationCode
+        {
+            get { return _VerificationCode; }
+            set { _VerificationCode = value; }
+        }
         public string FirstName
         {
             get { return _FirstName; }
@@ -212,11 +224,11 @@ namespace ClassWeb.Models
         //    set { _AccountExpired = value; }
         //}
 
-        //public bool AccountLocked
-        //{
-        //    get { return _AccountLocked; }
-        //    set { _AccountLocked = value; }
-        //}
+        public int Archived
+        {
+            get { return _Archived; }
+            set { _Archived = value; }
+        }
 
         //public bool PasswordExpired
         //{
@@ -258,27 +270,20 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            if(db_ResetCode != null)
-            {
-                _ResetCode = dr.GetString(db_ResetCode);
-            }
+            _ResetCode = dr.GetString(db_ResetCode);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-
-            if (db_ResetCode != null)
-            {
-                _ResetCode = dr.GetString(db_ResetCode);
-            }
             _Password = dr.GetString(db_Password);
-            DateTime DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
-            // _DateModified = DateTime.Parse(DateModified.ToString());
-
-            _DateDeleted = dr.GetDateTime(db_DateDeleted);
+            //DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+            DateModified = dr.GetDateTime(db_DateModified);
+           _DateModified = DateTime.Parse(DateModified.ToString());
+            //_DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
             _UserName = dr.GetString(db_UserName);
-            _DirectoryPath = dr.GetString(db_DirectoryPath);
+            _Enabled = dr.GetInt32(db_Enabled);
+            _Archived = dr.GetInt32(db_Archived);
+            _VerificationCode = dr.GetString(db_VerificationCode);
         }
         #endregion
 
