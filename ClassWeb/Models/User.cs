@@ -52,6 +52,7 @@ namespace ClassWeb.Models
         private DateTime _DateDeleted;
         private int _Enabled;
         private int _Archived;
+        private string _VerificationCode;
         #endregion
 
         #region Database String
@@ -70,6 +71,7 @@ namespace ClassWeb.Models
         internal const string db_DateDeleted = "DateDeleted";
         internal const string db_Archived = "Archived";
         internal const string db_Enabled = "Enabled";
+        internal const string db_VerificationCode = "VerificationCode";
         #endregion
 
         #region public Properites
@@ -78,6 +80,11 @@ namespace ClassWeb.Models
         {
             get { return _Enabled; }
             set { _Enabled = value; }
+        }
+        public string VerificationCode
+        {
+            get { return _VerificationCode; }
+            set { _VerificationCode = value; }
         }
         public string FirstName
         {
@@ -276,6 +283,7 @@ namespace ClassWeb.Models
             _UserName = dr.GetString(db_UserName);
             _Enabled = dr.GetInt32(db_Enabled);
             _Archived = dr.GetInt32(db_Archived);
+            _VerificationCode = dr.GetString(db_VerificationCode);
         }
         #endregion
 

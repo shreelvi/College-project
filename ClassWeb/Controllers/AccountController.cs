@@ -24,6 +24,7 @@ namespace ClassWeb.Controllers
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
         #endregion
+
         #region constructor
         public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
@@ -31,6 +32,7 @@ namespace ClassWeb.Controllers
             _emailService = emailService;
         }
         #endregion
+        
         #region Login
         /// <summary>
         /// Code By: Elvis
@@ -70,6 +72,12 @@ namespace ClassWeb.Controllers
         public ActionResult Login(String userName, String passWord)
         {
             User loggedIn = DAL.GetUser(userName, passWord);
+            if (loggedIn.VerificationCode.Trim()==null)
+            {
+                TempData["Message"] = "Still Waiting for Verification";
+                return RedirectToAction("Index", "Home");
+            }
+
             if (loggedIn.Enabled != 1 || loggedIn.Archived == 1)
             {
                 TempData["Message"] = "User Account has been terminated or Archived Please Contact System Admin";
@@ -99,9 +107,8 @@ namespace ClassWeb.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-            
-        }
 
+        }
         public ActionResult Dashboard()
         {
             User LoggedIn = CurrentUser;
@@ -152,9 +159,10 @@ namespace ClassWeb.Controllers
         {
             //await _signManager.SignOutAsync();
             HttpContext.Session.Clear();
-            return RedirectToAction("index","Home");
+            return RedirectToAction("index", "Home");
         }
         #endregion
+
         #region Registration
         /// <summary>        
         /// Created on: 03/09/2019
@@ -205,7 +213,7 @@ namespace ClassWeb.Controllers
                     TempData["UserAddError"] = "Sorry, unexpected Database Error. Please try again later.";
                 }
             }
-            return RedirectToAction("index","Home"); //Directs to Login page after success
+            return RedirectToAction("index", "Home"); //Directs to Login page after success
         }
 
         /// <summary>
@@ -227,13 +235,13 @@ namespace ClassWeb.Controllers
             return path;
         }
         #endregion
+
         #region Send Email
         [AllowAnonymous]
         public ActionResult SendEmail()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
@@ -250,8 +258,71 @@ namespace ClassWeb.Controllers
             }
             return RedirectToAction("Dashboard", "Account");
         }
+        #endregion
+
+        #region Password Reset
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(int? id, [Bind("FirstName,LastName,UserName,Password,ID")] User user)
+        {
+            if (user.ID == id)
+            {
+                User u = DAL.UserGetByID(id);
+                u.FirstName = user.FirstName;
+                u.LastName = u.LastName;
+                u.Password = user.Password;
+                u.ResetCode = null;
+                int i = DAL.UpdateUserPassword(u);
+                if (i > 0)
+                {
+                    TempData["Message"] = "User Info Succesfully Modified";
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Message"] = "Input ID from system and Form doesnot match!";
+                return NotFound();
+            }
+        }
+
+        public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
+        {
+            User u = DAL.UserGetByUserName(UserName, EmailAddress);
+            if (u == null)
+            {
+                TempData["Message"] = "Not a valid credentials";
+                return View();
+            }
+            else
+            {
+                string resetCode = Guid.NewGuid().ToString();
+                string Subject = "Reset Password Classweb";
+                string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
+                     "<a href=simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+                     + "<h3>ClasWeb Team</h3>";
+                Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
+                if (t.IsCompleted)
+                {
+                    u.ResetCode = resetCode;
+                    int ret = DAL.UpdateUser(u);
+                }
+
+            }
+            return View();
+        }
+        public ActionResult ResetPasswordEmail()
+        {
+            return View();
+        }
+        
         [AllowAnonymous]
 #endregion
+
         #region Edit Account
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -313,6 +384,7 @@ namespace ClassWeb.Controllers
             return RedirectToAction("Dashboard", "Account");
         }
         #endregion
+
         #region Profile
         public ActionResult Profile()
         {
@@ -331,6 +403,5 @@ namespace ClassWeb.Controllers
 
         }
         #endregion
-
     }
 }

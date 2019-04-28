@@ -248,8 +248,9 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + User.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + User.db_Password, obj.Password);
-                //comm.Parameters.AddWithValue("@" + User.db_Role, obj.RoleID);
                 comm.Parameters.AddWithValue("@" + User.db_Salt, obj.Salt);
+                string code = Guid.NewGuid().ToString();
+                comm.Parameters.AddWithValue("@" + User.db_VerificationCode,code);
                 return AddObject(comm, "@" + User.db_ID);
             }
             catch (Exception ex)
@@ -258,7 +259,38 @@ namespace ClassWeb.Model
             }
             return -1;
         }
+        internal static User UserGetByUserName(string userName, string emailAddress)
+        {
 
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetByUserName");
+            User retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new User(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            //Verify Email and Username matches.
+            if (retObj != null)
+            {
+                if (retObj.EmailAddress != emailAddress)
+                {
+                    retObj = null;
+                }
+            }
+
+            return retObj;
+        }
         /// <summary>
         /// Created by: Mohan 
         /// get all users from the database
@@ -369,6 +401,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + User.db_ResetCode, obj.ResetCode);
                 comm.Parameters.AddWithValue("@" + User.db_Enabled, obj.Enabled);
                 comm.Parameters.AddWithValue("@" + User.db_Archived, obj.Archived);
+                comm.Parameters.AddWithValue("@" + User.db_VerificationCode, obj.VerificationCode);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

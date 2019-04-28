@@ -125,7 +125,27 @@ namespace ClassWeb.Controllers
 
                     return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
                 }
-                
+                if (type == "VerifyUser")
+                {
+                    User U = DAL.UserGetByID(id);
+                    if (U != null)
+                    {
+                        U.VerificationCode = " ";
+                        int i = DAL.UpdateUser(U);
+                        if (i > 0)
+                        {
+                            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+                        }
+                        else
+                        {
+                            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+                        }
+
+                    }
+
+                    return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+                }
+
                 return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
             }
             catch (Exception ex)

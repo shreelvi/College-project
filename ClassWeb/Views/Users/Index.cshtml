@@ -29,6 +29,7 @@
                 <th><input type="text" class="form-control" placeholder="Action" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Disable" disabled></th>
                 <th><input type="text" class="form-control" placeholder="Archive" disabled></th>
+                <th><input type="text" class="form-control" placeholder="Verify" disabled></th>
             </tr>
         </thead>
         <tbody id="UserTable">
@@ -53,11 +54,15 @@
                     <td><input type="checkbox" value="@item.ID" data-type="DisableUser" /></td>
                     @if (item.Archived == 1)
                     {
-                        <td><input type="checkbox" value="@item.ID" checked  data-type="ArchiveUser" /></td>
+                        <td><input type="checkbox" value="@item.ID" checked data-type="ArchiveUser" /></td>
                     }
                     else
-                    {  
-                    <td><input type="checkbox" value="@item.ID"  data-type="ArchiveUser" /></td>  
+                    {
+                        <td><input type="checkbox" value="@item.ID" data-type="ArchiveUser" /></td>
+                    }
+                    @if (item.VerificationCode.Trim().Length > 0)
+                    {
+                        <td><input type="checkbox" value="@item.ID" data-type="VerifyUser" /></td>
                     }
                 </tr>
                 }
@@ -86,7 +91,11 @@
                     }
                     else
                     {
-                        <td><input type="checkbox" value="@item.ID"  data-type="ArchiveUser" /></td>
+                        <td><input type="checkbox" value="@item.ID" data-type="ArchiveUser" /></td>
+                    }
+                    @if (item.VerificationCode.Trim().Length>0)
+                    {
+                        <td><input type="checkbox" value="@item.ID" data-type="VerifyUser" /></td>
                     }
                 </tr>
                 }
@@ -94,19 +103,3 @@
         </tbody>
     </table>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
