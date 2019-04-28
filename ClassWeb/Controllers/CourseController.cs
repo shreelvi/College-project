@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +11,14 @@ using ClassWeb.Models;
 using System;
 using Microsoft.AspNetCore.Http;
 
-    /// <summary>
-    /// Created By: Mohan
-    /// Courses => A course is like 4430, 3307, etc.
-    /// Each course can be accessible to one to many users.
-    /// Each course can be taught by multiple professors, hence multiple classes.
-    /// A course has a course name and a number.
-    /// </summary>
-   
+/// <summary>
+/// Created By: Mohan
+/// Courses => A course is like 4430, 3307, etc.
+/// Each course can be accessible to one to many users.
+/// Each course can be taught by multiple professors, hence multiple classes.
+/// A course has a course name and a number.
+/// </summary>
+
 namespace ClassWeb.Controllers
 {
     public class CourseController : BaseController
@@ -111,12 +113,12 @@ namespace ClassWeb.Controllers
         // GET: Courses/Edit/5
         public IActionResult Edit(int? id)
         {
-                var Course= DAL.GetCourseByID(id);
-                if (Course == null)
-                {
-                    return NotFound();
-                }
-                return View(Course);
+            var Course = DAL.GetCourseByID(id);
+            if (Course == null)
+            {
+                return NotFound();
+            }
+            return View(Course);
         }
 
 
@@ -133,30 +135,30 @@ namespace ClassWeb.Controllers
             }
 
             if (ModelState.IsValid)
+            {
+                try
                 {
-                    try
+                    int c = DAL.UpdateCourse(course);
+                    if (c > 0)
                     {
-                        int c= DAL.UpdateCourse(course);
-                        if (c > 0)
-                        {
-                            TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
-                        }
+                        TempData["CourseUpdate"] = "Course Succesfully Updated!!!";
                     }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!CourseExists(course.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                  
-                    return RedirectToAction(nameof(Index));
                 }
-                return View(course);
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CourseExists(course.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(course);
         }
 
         private bool CourseExists(int id)
@@ -176,13 +178,13 @@ namespace ClassWeb.Controllers
         // GET: Courses/Delete/5
         public IActionResult Delete(int? id)
         {
-                Course c = DAL.GetCourseByID(id);
-                if (c == null)
-                {
-                    return NotFound();
-                }
+            Course c = DAL.GetCourseByID(id);
+            if (c == null)
+            {
+                return NotFound();
+            }
 
-                return View(c);
+            return View(c);
         }
 
 
@@ -191,15 +193,15 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-           int test = DAL.DeleteCourseByID(id);
-           if (test > 0)
+            int test = DAL.DeleteCourseByID(id);
+            if (test > 0)
             {
-              TempData["CourseDelete"] = "Course Succesfully Deleted!!!";
-              
+                TempData["CourseDelete"] = "Course Succesfully Deleted!!!";
+
             }
             return RedirectToAction(nameof(Index));
-         }
-           
-     }
- }
+        }
+
+    }
+}
 

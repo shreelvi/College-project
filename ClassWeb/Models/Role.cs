@@ -34,7 +34,6 @@ namespace ClassWeb.Models
         internal const string db_Users = "Users";
         internal const string db_Role = "Role";
         internal const string db_Assignment = "Assignment";
-        internal const string db_Course = "Course";
         #endregion
 
         #region Private Variables
@@ -43,7 +42,6 @@ namespace ClassWeb.Models
         private PermissionSet _Users;
         private PermissionSet _Role;
         private PermissionSet _Assignment;
-        private PermissionSet _Course;
         #endregion
 
         #region public Properites
@@ -137,22 +135,6 @@ namespace ClassWeb.Models
             }
         }
 
-        /// <summary>
-        /// Gets or sets the Courset for this Classweb.Role object.
-        /// </summary>
-        [Required]
-        [Display(Name = "Course Permissionset")]
-        public PermissionSet Course
-        {
-            get
-            {
-                return _Course;
-            }
-            set
-            {
-                _Course = value;
-            }
-        }
         #endregion
 
 
@@ -198,9 +180,8 @@ namespace ClassWeb.Models
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
             _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
-            _Course = new PermissionSet((byte)dr.GetUInt64(db_Course));
+
         }
         #endregion
     }
 }
-
