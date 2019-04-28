@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
 using ClassWeb.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace ClassWeb.Controllers
 {
@@ -56,10 +57,9 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = id;//await _context.CourseSemester
-                                    // .Include(c => c.Course)
-                                    // .Include(c => c.User)
-                                    // .FirstOrDefaultAsync(m => m.ID == id);
+            var courseSemester = await _context.CourseSemester
+                .Include(c => c.Course)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
                 return NotFound();
@@ -94,30 +94,53 @@ namespace ClassWeb.Controllers
             List<Section> SectionPartial = new List<Section>();
             SectionPartial = DAL.GetSections();
             ViewBag.Sections = SectionPartial;
+            
+            if(LoggedIn.Role.Name == "Professor") { ViewBag.Professor = "True"; } //If creating class by professor, will not display userid field
 
             return View();
 
         }
 
-        // POST: CourseSemesters/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Created by Elvis
+        /// Method to add a class (coursesemester object) in the database
+        /// Modified on: 27 April 2019
+        /// Add users to the class 
+        /// </summary>
+        /// <param name="courseSemester"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,SemesterID,YearID,SectionID,UserID,ID")] CourseSemester courseSemester)
+        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID, DateStart, DateEnd")] CourseSemester courseSemester)
         {
+            int id = (int)HttpContext.Session.GetInt32("UserID");
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+            //Add the class to the coursesemester table
             int retInt = DAL.AddCourseSemester(courseSemester);
-            if (retInt < 0)
-                TempData["SectionAdd"] = "Database problem occured when adding the Courses for Semester";
-            else { TempData["SectionAdd"] = "Courses for semester added successfully"; }
 
+            if (retInt < 0) {
+                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
+            }
 
+            //If sucessful, assigns the class to the user that is creating
+            else {
+                int assignUser = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
+                if(assignUser < 0)
+                {
+                    TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
+                }
+                TempData["CourseSemesterAdd"] = "Class added successfully.";
+            }
+            if(LoggedIn.Role.Name == "Professor")
+            {
+                return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
+            }
             return RedirectToAction(nameof(Index));
 
         }

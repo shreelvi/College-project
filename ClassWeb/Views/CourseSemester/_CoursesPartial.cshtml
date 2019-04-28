@@ -15,7 +15,14 @@
                 <p>ID</p>
             </th>
             <th>
-                <p>Title</p>
+                <p>Subject</p>
+            </th>
+
+            <th>
+                <p>CourseNumber</p>
+            </th>
+            <th>
+                <p>CourseTitle</p>
             </th>
 
             <th></th>
@@ -24,14 +31,21 @@
     <tbody>
         @foreach (var c in courses) // Print the list
         {
-            <tr>
-                <td>
-                    @c.ID
-                </td>
-                <td>
-                    @c.Title
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @c.ID
+            </td>
+            <td>
+                @c.Subject
+            </td>
+            <td>
+                @c.CourseTitle
+            </td>
+
+            <td>
+                @c.CourseNumber
+            </td>
+        </tr>
         }
     </tbody>
 </table>

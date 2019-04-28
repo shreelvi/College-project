@@ -1,12 +1,23 @@
-﻿using System;
+﻿
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Models;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using ClassWeb.Model;
+using ClassWeb.Models;
+using System;
+using Microsoft.AspNetCore.Http;
+
+/// <summary>
+/// Created By: Mohan
+/// Courses => A course is like 4430, 3307, etc.
+/// Each course can be accessible to one to many users.
+/// Each course can be taught by multiple professors, hence multiple classes.
+/// A course has a course name and a number.
+/// </summary>
 
 namespace ClassWeb.Controllers
 {
@@ -14,7 +25,7 @@ namespace ClassWeb.Controllers
     {
 
         // GET: Course
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             User LoggedIn = CurrentUser;
             //string ss = LoggedIn.FirstName;
@@ -23,6 +34,12 @@ namespace ClassWeb.Controllers
             var a = TempData["CourseAdd"];
             if (a != null)
                 ViewData["CourseAdd"] = a;
+
+            //Gets error message to display from Edit method 
+            var b = TempData["CourseUpdate"];
+            if (b != null)
+                ViewData["CourseUpdate"] = b;
+
             //Gets error message to display from Delete method 
             var d = TempData["CourseDelete"];
             if (d != null)
@@ -36,20 +53,20 @@ namespace ClassWeb.Controllers
             }
 
             List<Course> Courses = new List<Course>();
-            Courses =null;//DAL.GetCourses();
+            Courses = DAL.GetCourse();
             return View(Courses);
         }
 
         // GET: Course/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = id; //await _context.Course
-               // .FirstOrDefaultAsync(m => m.ID == id);
+            var course = DAL.GetCourseByID(id);
+            List<Course> Course = DAL.GetCourse();
             if (course == null)
             {
                 return NotFound();
@@ -58,7 +75,8 @@ namespace ClassWeb.Controllers
             return View(course);
         }
 
-        // GET: Course/Create
+
+        //// GET: Course/Create
         public IActionResult Create()
         {
             User LoggedIn = CurrentUser;
@@ -75,7 +93,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Name,Description,ID")] Course course)
+        public IActionResult Create([Bind("Subject, CourseNumber,CourseTitle,ID")] Course course)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -83,7 +101,7 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
-            int retInt = 0; //DAL.AddCourse(course);
+            int retInt = DAL.CreateCourse(course);
             if (retInt < 0)
                 TempData["CourseAdd"] = "Database problem occured when adding the course";
             else { TempData["CourseAdd"] = "Course added successfully"; }
@@ -91,18 +109,25 @@ namespace ClassWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Course/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+
+        // GET: Courses/Edit/5
+        public IActionResult Edit(int? id)
         {
-            return View();
+            var Course = DAL.GetCourseByID(id);
+            if (Course == null)
+            {
+                return NotFound();
+            }
+            return View(Course);
         }
 
-        // POST: Course/Edit/5
+
+        // POST: Courses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,Name,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
         {
             if (id != course.ID)
             {
@@ -113,8 +138,12 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                   // _context.Update(course);
-                    //await _context.SaveChangesAsync();
+                    int c = DAL.UpdateCourse(course);
+                    if (c > 0)
+                    {
+                        TempData["CourseUpdate"] = "Course Updated successfully!!!";
+                        
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -132,46 +161,47 @@ namespace ClassWeb.Controllers
             return View(course);
         }
 
-        // GET: Course/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        private bool CourseExists(int id)
         {
-            User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
+            Course c = DAL.GetCourseByID(id);
+            if (c == null)
             {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
+                return false;
             }
-            Course retCourse = DAL.GetCourse(id);
-            if (retCourse == null)
+            else
+            {
+                return true;
+            }
+        }
+
+
+        // GET: Courses/Delete/5
+        public IActionResult Delete(int? id)
+        {
+            Course c = DAL.GetCourseByID(id);
+            if (c == null)
             {
                 return NotFound();
             }
-            return View(retCourse);
+
+            return View(c);
         }
 
-        // POST: Course/Delete/5
+
+        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
+            int test = DAL.DeleteCourseByID(id);
+            if (test > 0)
             {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
+                TempData["CourseDelete"] = "Course Deleted Succesfully!!!";
+
             }
-            int retInt = 0;// DAL.RemoveCourse(id);
-
-            if (retInt < 0)
-                TempData["CourseDelete"] = "Error occured when deleting the course";
-
-            TempData["CourseDelete"] = "Successfully deleted the course";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CourseExists(int id)
-        {
-            return false;//_context.Course.Any(e => e.ID == id);
-        }
     }
 }
+
