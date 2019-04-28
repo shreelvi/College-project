@@ -110,7 +110,7 @@ namespace ClassWeb.Controllers
                     User U = DAL.UserGetByID(id);
                     if (U != null)
                     {
-                        U.Archived = status == true ? 0 : 1;
+                        U.Archived = status == true ? 1 : 0;
                         int i = DAL.UpdateUser(U);
                         if (i > 0)
                         {

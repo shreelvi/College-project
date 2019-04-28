@@ -11,9 +11,6 @@ a {
     text-decoration: none;
     color: inherit;
 }
-#UserTable:active{
-    background-color:yellow;
-}
 /* Layout */
 .s-layout {
     top: 50px;

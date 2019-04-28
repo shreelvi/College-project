@@ -70,27 +70,36 @@ namespace ClassWeb.Controllers
         public ActionResult Login(String userName, String passWord)
         {
             User loggedIn = DAL.GetUser(userName, passWord);
-            CurrentUser = loggedIn; //Sets the session for user from base controller
-
-            if (loggedIn != null)
+            if (loggedIn.Enabled != 1 || loggedIn.Archived == 1)
             {
-                HttpContext.Session.SetString("username", userName);
-                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                //Check if the user is admin
-                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
-                if (loggedIn.Role.IsAdmin)
-                {
-                    return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
-                }
-                return RedirectToAction("Dashboard");
-                //return View("Dashboard");
+                TempData["Message"] = "User Account has been terminated or Archived Please Contact System Admin";
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                ViewBag.Error = "Invalid Username and/or Password";
-                ViewBag.User = userName;
-                return RedirectToAction("Index", "Home");
+                CurrentUser = loggedIn; //Sets the session for user from base controller
+
+                if (loggedIn != null)
+                {
+                    HttpContext.Session.SetString("username", userName);
+                    HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
+                                                                         //Check if the user is admin
+                    HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
+                    if (loggedIn.Role.IsAdmin)
+                    {
+                        return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
+                    }
+                    return RedirectToAction("Dashboard");
+                    //return View("Dashboard");
+                }
+                else
+                {
+                    ViewBag.Error = "Invalid Username and/or Password";
+                    ViewBag.User = userName;
+                    return RedirectToAction("Index", "Home");
+                }
             }
+            
         }
 
         public ActionResult Dashboard()
