@@ -10,6 +10,9 @@ namespace ClassWeb.Models
 {
     public class Section : DatabaseRecord
     {
+        /// <summary>
+        /// sections are like 01,02. For example, on INFO 4482-01, 01 is section number
+        /// </summary>
         #region Constructors
         public Section()
         {
