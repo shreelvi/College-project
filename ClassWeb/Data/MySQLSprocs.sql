@@ -191,20 +191,19 @@ $$
 
 -- Author: Meshari
 -- Create date:	01 April 2019
+-- Update date: 04/26/2019
+-- Removed fks and CRN field
 -- Description:	Add a new  section to the database.
 -- =============================================
 DELIMITER $$
 
 CREATE PROCEDURE sproc_SectionAdd(
 OUT SectionID int,
-IN CRN int(11),
-IN SectionNumber INT(45),
-IN UserID INT(11),
-IN CourseID INT(11)
+IN SectionNumber INT(45)
 )
 BEGIN
-     INSERT INTO Sections(CRN,SectionNumber, UserID, CourseID)
-               VALUES(CRN,SectionNumber, UserID, CourseID);               
+     INSERT INTO Sections(SectionNumber)
+               VALUES(SectionNumber);               
      SET SectionID = LAST_INSERT_ID();
 END
 $$
@@ -212,23 +211,19 @@ $$
 -- ================================================
 -- Author: Meshari
 -- Create date:	31 March 2019
+-- Update date: 04/26/2019
+-- Removed fks and CRN field
 -- Description:	Update the  section in the database.
 -- ================================================
 
 CREATE PROCEDURE sproc_SectionUpdate(
 IN SectionID int(11),
-IN CRN int(11),
-IN SectionNumber int(45),
-IN UserID INT(11),
-IN CourseID int(11)
+IN SectionNumber int(45)
 )
 BEGIN
      UPDATE Sections
           SET
-               Sections.CRN = CRN,
-               Sections.SectionNumber = SectionNumber,
-               Sections.UserID = UserID,
-			   Sections.CourseID = CourseID
+               Sections.SectionNumber = SectionNumber
           WHERE Sections.SectionID = SectionID;
 END
 $$
@@ -376,31 +371,54 @@ END
 $$
 
  -----------------CourseSemesters---------------------------------
- 
+ -- Author: Elvis
+-- Create date:	09 April 2019
+-- Description:	Add a new  CourseSemester object to the database.
+-- =============================================
+DELIMITER $$
+
+CREATE PROCEDURE sproc_CourseSemesterAdd(
+OUT CourseSemesterID int,
+IN CRN int(11),
+IN CourseID int(11),
+IN SemesterID INT(11),
+IN YearID INT(11),
+IN SectionID INT(11)
+IN DateStart DateTime,
+IN DateEnd DateTime
+
+)
+BEGIN
+     INSERT INTO CourseSemesters(CRN, CourseID, SemesterID, YearID, SectionID, DateStart, DateEnd)
+               VALUES(CRN, CourseID, SemesterID, YearID, SectionID, DateStart, DateEnd);               
+     SET CourseSemesterID = LAST_INSERT_ID();
+END
+$$
 -- ================================================
 -- Author: Elvis
 -- Create date:	09 April 2019
+-- Update date: 04/26/2019
+-- Added CRN field
 -- Description:	Update the  CourseSemester object in the database.
 -- ================================================
 
 CREATE PROCEDURE sproc_CourseSemesterEdit(
-IN SectionID int(11),
+IN CourseSemesterID int(11),
+IN CRN int(11),
 IN CourseID int(11),
 IN SemesterID INT(11),
 IN YearID INT(11),
-IN SectionID INT(11),
-IN UserID INT(11)
+IN SectionID INT(11)
 )
 BEGIN
-     UPDATE Sections
+     UPDATE CourseSemesters
           SET
+			   CourseSemesters.CRN = CRN,
                CourseSemesters.CourseID = CourseID,
 			   CourseSemesters.SemesterID = SemesterID,
 			   CourseSemesters.YearID = YearID,
-			   CourseSemesters.SectionID = SectionID,
-			   CourseSemesters.CourseID = CourseID,
-               CourseSemesters.UserID = UserID
-          WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
+			   CourseSemesters.SectionID = SectionID
+	      WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
 END
 $$
 
@@ -644,135 +662,57 @@ END
 $$
 
 
--- -----------------Course---------------------------------
--- Description: sproc CRUD for Courses-------------------
--- Reference: PeerVal Project, Github------------------
--- ======================================================
-
--- Author: Mohan
--- sproc_CreateCourse
--- Description:	Add a new Course to the Database.
 -- =============================================
-
+-- Author:		Elvis
+-- Create date:	27 April 2019
+-- Description:	Gets the list of classes(courseSemesters) associated with the given userID
+-- =============================================
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_CreateCourse`(OUT CourseID int, IN `Subject` VARCHAR(50), IN `CourseNumber` int, IN `CourseTitle` VARCHAR(50))
+CREATE PROCEDURE sproc_GetClassForUsers(
+    IN UserID INT)
 BEGIN
-     INSERT INTO course(Subject, CourseNumber, CourseTitle)
-		VALUES(Subject, CourseNumber, CourseTitle);
-	SET CourseID = last_insert_id();
-END
-$$
+    SELECT coursesemesters.CourseSemesterID, coursesemesters.CRN, coursesemesters.CourseID, coursesemesters.SemesterID, coursesemesters.YearID, coursesemesters.SectionID from users
+    INNER JOIN coursesemesterusers
+    ON users.UserID = coursesemesterusers.UserID
+    INNER JOIN coursesemesters
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    WHERE users.UserID = UserID AND coursesemesters.DateEnd > NOW();
+END$$
 
--- Author: Mohan
--- sproc_GetCourse
--- Description:	get Course from the Database.
 -- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetCourse`(IN CourseID int)
-BEGIN
-     SELECT * FROM course
-     WHERE course.CourseID = CourseID;
-END
-$$
-
-
--- Author: Mohan
--- sproc_GetAllCourses
--- Description:	Gets all courses from the database. 
+-- Author:		Elvis
+-- Create date:	27 April 2019
+-- Description:	Add users to class by adding data to coursesemesteruser association
+-- Used when professor is adding class from the dashboard
 -- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetAllCourses`()
-BEGIN
-     SELECT * FROM course;
-END
-$$
-
-
--- Author: Mohan
--- sproc_UpdateCourse
--- Description:	Edit course. 
--- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_UpdateCourse`(IN CourseID int, IN Subject int, IN CourseName VARCHAR(50), IN CourseTitle VARCHAR(50))
-BEGIN
-     UPDATE course
-          SET
-               course.Subject = Subject,
-               course.CourseTitle = CourseTitle,
-               course.CourseName = CourseName
-          WHERE course.CourseID = CourseID;
-END
-$$
-
-
--- Author: Mohan
--- sproc_DeleteCourseByID
--- Description:	Delete a course. 
--- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_DeleteCourseByID`(IN `ID` int)
-BEGIN 
-	DELETE FROM course 
-		WHERE Course.ID = `ID`; 
-END
-$$
-
--- -----------------Course---------------------------------
--- Description: sproc CRUD for Courses-------------------
--- Reference: PeerVal Project, Github------------------
--- ======================================================
-
--- Author: Mohan
--- sproc_CreateCourse
--- Description:	Add a new Course to the Database.
--- =============================================
-
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_CreateCourse`(OUT CourseID int, IN `Subject` VARCHAR(50), IN `CourseNumber` int, IN `CourseTitle` VARCHAR(50))
+CREATE PROCEDURE sproc_AddUserToClass(
+OUT CourseSemesterUserID int,
+IN CourseSemester int(11),
+IN UserID INT(11)
+)
 BEGIN
-     INSERT INTO course(Subject, CourseNumber, CourseTitle)
-		VALUES(Subject, CourseNumber, CourseTitle);
-	SET CourseID = last_insert_id();
-END$$
+	INSERT INTO CourseSemesterUsers(CourseSemesterID, UserID)
+    			VALUES (CourseSemesterID, UserID);
+    SET CourseSemesterUserID = LAST_INSERT_ID();
+END
+$$
 
--- Author: Mohan
--- sproc_GetCourse
--- Description:	get Course from the Database.
+
 -- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetCourse`(IN CourseID int)
+-- Author:		Elvis
+-- Create date:	28 April 2019
+-- Description:	Get users(students and professor) associated with the class(coursesemester)
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_GetUsersForClass(
+    IN CourseSemesterID INT)
 BEGIN
-     SELECT * FROM course
-     WHERE course.CourseID = CourseID;
-END$$
-
-
--- Author: Mohan
--- sproc_GetAllCourses
--- Description:	Gets all courses from the database. 
--- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_GetAllCourses`()
-BEGIN
-     SELECT * FROM course;
-END$$
-
-
--- Author: Mohan
--- sproc_UpdateCourse
--- Description:	Edit course. 
--- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_UpdateCourse`(IN CourseID int, IN Subject int, IN CourseName VARCHAR(50), IN CourseTitle VARCHAR(50))
-BEGIN
-     UPDATE course
-          SET
-               course.Subject = Subject,
-               course.CourseTitle = CourseTitle,
-               course.CourseName = CourseName
-          WHERE course.CourseID = CourseID;
-END$$
-
-
--- Author: Mohan
--- sproc_DeleteCourseByID
--- Description:	Delete a course. 
--- =============================================
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sproc_DeleteCourseByID`(IN `ID` int)
-BEGIN 
-	DELETE FROM course 
-		WHERE Course.ID = `ID`; 
+    SELECT users.UserID, users.FirstName, users.LastName, users.EmailAddress 
+    FROM coursesemesters
+    INNER JOIN coursesemesterusers
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    INNER JOIN users
+    ON users.UserID = coursesemesterusers.UserID
+    WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
 END$$
