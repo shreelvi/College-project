@@ -16,6 +16,10 @@ using System.IO;
 using ClassWeb;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
+
 
 namespace ClassWeb.Controllers
 {
@@ -27,7 +31,7 @@ namespace ClassWeb.Controllers
 
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
-   
+
         #endregion
 
         #region constructor
@@ -79,11 +83,12 @@ namespace ClassWeb.Controllers
         //    }
         //    return RedirectToAction("Dashboard","Group");
         //}
-        
+
         #endregion
         //Access the data from the database
 
-
+            //for login
+            //Code By Sakshi
         public ActionResult LoginGroup(string returnUrl)
         {
             //ViewBag.ReturnUrl = returnUrl;
@@ -105,7 +110,7 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LoginGroup(String userName, String passWord)
         {
-            
+
             Group GroupLoggedIn = DAL.GetGroup(userName, passWord);
             CurrentGroup = GroupLoggedIn;
             if (GroupLoggedIn != null)
@@ -113,9 +118,9 @@ namespace ClassWeb.Controllers
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", GroupLoggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
                 HttpContext.Session.SetInt32("GroupID", GroupLoggedIn.ID); //Sets userid in the session
-              //  HttpContext.Session.SetString("UserRole",(grouploggedIn.))
-                //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
-                //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
+                                                                           //  HttpContext.Session.SetString("UserRole",(grouploggedIn.))
+                                                                           //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
+                                                                           //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
                 return RedirectToAction("Dashboard");
             }
             else
@@ -125,12 +130,14 @@ namespace ClassWeb.Controllers
                 TempData["Error"] = "Invalid Username and/or Password";
                 ViewBag.Group = userName;
                 return View();
-               // return RedirectToAction("LoginGroup", "Group");
+                // return RedirectToAction("LoginGroup", "Group");
             }
         }
-        public ActionResult Dashboard()
+        //<Summary>
+        //Group Dashboard
+        public async Task<IActionResult> Dashboard(int? id)
         {
-           
+
             var s = TempData["UserGroupAddSuccess"];
             var e = TempData["UserGroupAddError"];
 
@@ -139,13 +146,28 @@ namespace ClassWeb.Controllers
             else if (e != null)
                 ViewData["UserGroupAddError"] = e;
 
-            int? id = HttpContext.Session.GetInt32("GroupID");
+            int? gid = (int)HttpContext.Session.GetInt32("GroupID");
+            if (gid != null)
+            {
+                id = gid;
+            }
+            if (id == null)
+            {
+                return NotFound();
+            }
             string username = HttpContext.Session.GetString("UserName");
+
+            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
+            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
+
             List<Assignment> GroupAssignments = new List<Assignment>();
+            // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
+
             return View(GroupAssignments);
         }
 
         // GET: Group/AddGroup
+        //adding group through registration
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
@@ -173,10 +195,10 @@ namespace ClassWeb.Controllers
             string[] users = new string[6]; //Array to hold emails from input field
             //int countOfMembers = int.Parse( Request.Form["#numberOfStudents"]);
             int countOfMembers = int.Parse(Request.Form["Users"]);
-            for (int i = 0; i < countOfMembers  ; i++) //Verfies each email 
+            for (int i = 0; i < countOfMembers; i++) //Verfies each email 
             {
-                String email =  Request.Form["EmailAddress" + (i+1)];
-               // users[i] = NewGroup.Users[i].EmailAddress;
+                String email = Request.Form["EmailAddress" + (i + 1)];
+                // users[i] = NewGroup.Users[i].EmailAddress;
                 retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
                 if (retInt <= 0)
                 {
@@ -232,6 +254,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Group/AddUserToGroup
+        //adds user to the group after the login
         [AllowAnonymous]
         public ActionResult AddUserToGroup(string returnUrl)
         {
@@ -263,7 +286,7 @@ namespace ClassWeb.Controllers
                     }
                 }
             }
-        
+
 
             for (int i = 0; i < countOfMembers; i++)
             {
@@ -281,7 +304,7 @@ namespace ClassWeb.Controllers
                     TempData["UserGroupAddSuccess"] = "Succesfully added users.";
                 }
             }
-            
+
             if (LoggedInGroup.Name == "Anonymous")
             { return RedirectToAction("AddGroup"); } //If added users when registration.
             return RedirectToAction("Dashboard");
@@ -317,26 +340,87 @@ namespace ClassWeb.Controllers
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
 
-
-        public IActionResult Index()
+            //Index page 
+        public async Task<IActionResult> Index()
         {
+            if (UserCan<Group>(PermissionSet.Permissions.ViewAndEdit))
+            {
+                int? gid = HttpContext.Session.GetInt32("GroupID");
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                Tuple<List<Group>, List<Group>> Groups = null;
+                if(gid != null)
+                {
+                    User u = DAL.UserGetByID(uid);
+                    List<Group> g = DAL.GetAllGroups();
+                    if(u == null)
+                    {
+                        return NotFound();
+                    }
+                    if (u.Role.IsAdmin)
+                    {
+                        
+                    }
+                    else
+                    {
 
-            List<Group> g = DAL.GetAllGroups();
-            return View(g);
+                    }
+                }
+                return View();
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit User";
+                return RedirectToAction("Index", "Group");
+            }
+
         }
 
 
-    
+        //Adds a group through the index page
         public IActionResult Create()
         {
-            return RedirectToAction("AddGroup", "Group");
-        }
+            if (UserCan<Group>(PermissionSet.Permissions.Add))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (uid != null)
+                {
+                    User U = DAL.UserGetByID(uid);
+                    if (U == null)
+                    {
+                        return NotFound();
+                    }
+                    if (U.Role.IsAdmin)
+                    {
+                        return RedirectToAction("AddGroup", "Group");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                        return RedirectToAction("Index", "Group");
+                    }
+                }
+                else
+                {
+                    TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                    return RedirectToAction("Index", "Group");
+                }
+            }
+            else
+                {
+                    TempData["Error"] = "You Dont Have Enough Previlage to Create User";
+                    return RedirectToAction("Index", "Group");
+                }
+
+            }
+
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
-
+        //Edit the group information 
         public async Task<IActionResult> EditGroup(int? id)
         {
-           
+            if (UserCan<Group>(PermissionSet.Permissions.Edit))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
                 int? gid = HttpContext.Session.GetInt32("GroupID");
                 if (gid != null)
                 {
@@ -352,23 +436,31 @@ namespace ClassWeb.Controllers
                     return NotFound();
                 }
                 return View(group);
-            
-            //else
-            //{
-            //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
-            //    return RedirectToAction("Dashboard", "Group");
-            //}
+
+                //else
+                //{
+                //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
+                //    return RedirectToAction("Dashboard", "Group");
+                //}
+            }
+            else
+            {
+                TempData["error"] = "You Dont Have Enough Previlage to edit Group";
+                return RedirectToAction("Index", "Group");
+            }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditGroup(int? id, [Bind(",Name,UserName,ID")] Group group)
+        public async Task<IActionResult> EditGroup(int? id, [Bind("Name,UserName,ID")] Group group)
         {
-           
-                if (id != group.ID)
+            if (UserCan<Group>(PermissionSet.Permissions.Edit))
             {
+                if (id != group.ID)
+                {
                 return NotFound();
-            }
+                }
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (id == null && gid != null)
             {
@@ -378,54 +470,64 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    if (id == gid)
-                    {
+                    
                         int a = DAL.UpdateGroup(group);
                         if (a > 0)
                         {
-                            HttpContext.Session.SetString("UserName", group.UserName);
+                            //HttpContext.Session.SetString("UserName", group.UserName);
                             TempData["Message"] = "Group Succesfully Updated!!";
                         }
-                    }
-                    else
-                    {
-                        TempData["Message"] = "Trick!!";
-                    }
-                    return RedirectToAction("Dashboard", "Group");
-                }
+                        else
+                        {
+                            TempData["Message"] = "Trick!!";
+                            return RedirectToAction("Index", "Group");
+                        }
+                 }
+                    
                 catch (Exception ex)
                 {
 
                 }
             }
-                    return RedirectToAction("Dashboard", "Group");
+            return RedirectToAction("Index", "Group");
             }
-           
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Group";
+                return RedirectToAction("Index", "Group");
+            }
+        }
+
+        //Profile of the group with just username and group name
         public ActionResult Profile()
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
-             
-            if(gid !=null)
+
+            if (gid != null)
             {
                 Group g = DAL.GroupGetByID(gid);
-                return View(g); 
+                return View(g);
 
             }
             else
             {
-                return RedirectToAction("Index", "Home"); 
+                return RedirectToAction("Index", "Home");
 
             }
 
         }
 
-        public ActionResult ViewGroupUsers()
+       
+
+        //displays the list for users of that particular group
+        public async Task<IActionResult> ViewGroupUsers(int? id)
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (gid != null)
             {
+                id = gid;
                 List<ViewGroupUser> u = new List<ViewGroupUser>();
-                    u = DAL.GetAllGroupUsersByID(gid);
+                u = DAL.GetAllGroupUsersByID(gid);
                 return View(u);
 
             }
@@ -436,7 +538,24 @@ namespace ClassWeb.Controllers
             }
 
         }
-        
+
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (UserCan<User>(PermissionSet.Permissions.View))
+        //    {
+        //        User user = DAL.UserGetByID();
+        //        Group g = DAL.GetGroupByID(id)
+        //        List<Role> Role = DAL.GetRoles();
+        //        Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user, Role);
+        //        return View(User);
+        //    }
+        //    else
+        //    {
+        //        TempData["Error"] = "You Dont Have Enough Previlage to view Group";
+        //        return RedirectToAction("Dashboard", "Group");
+        //    }
+
+        //}
 
         //#region resetpassword
         //public ActionResult ResetPasswordEmail()
@@ -521,24 +640,33 @@ namespace ClassWeb.Controllers
         //    return View();
         //}
         //#endregion reset password
+
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteGroup(int? id)
         {
-           
-            
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            {
+
                 if (id == null)
-                {
-                    return NotFound();
-                }
+            {
+                return NotFound();
+            }
 
-                Group g = DAL.GroupGetByID(id);
-                if (g == null)
-                {
-                    return NotFound();
-                }
+            Group g = DAL.GroupGetByID(id);
+            if (g == null)
+            {
+                return NotFound();
+            }
 
-                return View(g);
-          
+            return View(g);
+
+
+        }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Group";
+                return RedirectToAction("Index", "Group");
+            }
         }
 
         // POST: Group/DeleteGroup/5
@@ -546,51 +674,68 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
+            {
                 int test = DAL.DeleteGroupByID(id);
                 if (test > 0)
                 {
-                    ViewBag.Message = "Group Succesfully Deleted!!";
+                ViewBag.Message = "Group Succesfully Deleted!!";
                 }
-                return RedirectToAction(nameof(Index));
-            
-            
+            return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
+                return RedirectToAction("Index", "Group");
+            }
         }
 
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteUsersFromGroup(int? groupId, int? userId)
         {
 
-
-            if (userId == null)
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
             {
-                return NotFound();
-            }
+                if (userId == null)
+                {
+                    return NotFound();
+                }
 
-            
-            List<ViewGroupUser> u = DAL.GetAllGroupUsersByID(groupId);
-            if (u == null)
+                List<ViewGroupUser> u = DAL.GetAllGroupUsersByID(groupId);
+                if (u == null)
+                {
+                    return NotFound();
+                }
+
+                return View(u);
+
+            }
+            else
             {
-                return NotFound();
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
+                return RedirectToAction("Index", "Group");
             }
-
-            return View(u);
-
         }
 
         // POST: Group/DeleteGroup/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmedForGroupUsers(int id)
+        public async Task<IActionResult> DeleteConfirmedForGroupUsers(int gid, int uid)
         {
-
-            int test = DAL.DeleteGroupByID(id);
-            if (test > 0)
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
             {
-                ViewBag.Message = "Group Succesfully Deleted!!";
+                int test = DAL.DeleteGroupUserByID(gid, uid);
+                if (test > 0)
+                {
+                    ViewBag.Message = "Group Succesfully Deleted!!";
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Users";
+                return RedirectToAction("Index", "Group");
+            }
 
         }
 
@@ -601,23 +746,124 @@ namespace ClassWeb.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("LoginGroup", "Group");
         }
+
         private bool GroupExists(int id)
         {
             List<Group> g = new List<Group>();
             return g.Any(e => e.ID == id);
-           
+
         }
 
-    }
 
-    internal class HttpStatusCodeResult : ActionResult
-    {
-        private object badRequest;
 
-        public HttpStatusCodeResult(object badRequest)
-        {
-            this.badRequest = badRequest;
-        }
+
+        //#region Permission 
+        //[HttpPost]
+        //public async Task<HttpResponseMessage> ChangeStatus([FromBody]JObject obj)
+        //{
+        //    if (Group<Group>(PermissionSet.Permissions.View))
+        //    {
+        //        try
+        //        {
+        //            string type = (string)obj["Type"];
+        //            int id = (int)obj["ID"];
+        //            bool status = (bool)obj["Status"];
+        //            if (type == "DisableGroup")
+        //            {
+        //                Group g = DAL.GroupGetByID(id);
+        //               // User U = DAL.UserGetByID(id);
+        //                if (g != null)
+        //                {
+        //                    g.Enabled = status == true ? 0 : 1;
+        //                    int i = DAL.UpdateGroup(g);
+        //                    if (i > 0)
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+        //                    }
+        //                    else
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+        //                    }
+
+        //                }
+
+        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+        //            }
+        //            if (type == "ArchiveGroup")
+        //            {
+        //                Group g = DAL.GroupGetByID(id);
+        //                if (g != null)
+        //                {
+        //                    g.Archived = status == true ? 1 : 0;
+        //                    int i = DAL.UpdateUser(g);
+        //                    if (i > 0)
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+        //                    }
+        //                    else
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+        //                    }
+
+        //                }
+
+        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+        //            }
+        //            if (type == "VerifyUser")
+        //            {
+        //                User U = DAL.UserGetByID(id);
+        //                if (U != null)
+        //                {
+        //                    U.VerificationCode = " ";
+        //                    int i = DAL.UpdateUser(U);
+        //                    if (i > 0)
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+        //                    }
+        //                    else
+        //                    {
+        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
+        //                    }
+
+        //                }
+
+        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
+        //            }
+
+        //            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //        }
+        //    }
+        //    return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
+        //}
+        //[HttpPost]
+        //public IActionResult ChangeRole(int? UserID, int? Role)
+        //{
+        //    if (UserID != null && Role != null)
+        //    {
+        //        User U = DAL.UserGetByID(UserID);
+        //        if (U == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            U.RoleID = (int)Role;
+        //            int i = DAL.UpdateUserRole(U);
+        //            return RedirectToAction("" + UserID, "Users/Details");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
+        //#endregion
+
+
+
     }
 }
 

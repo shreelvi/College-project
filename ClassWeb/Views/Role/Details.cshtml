@@ -57,6 +57,42 @@
                 </tbody>
             </table>
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Group)
+        </dt>
+        <dd>
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <p>Add&nbsp;</p>
+                        </th>
+                        <th>
+                            <p>Edit&nbsp;</p>
+                        </th>
+                        <th>
+                            <p>Delete&nbsp;</p>
+                        </th>
+                        <th>
+                            <p>View&nbsp;</p>
+                        </th>
+                        <th>
+                            <p>ViewEdit  </p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="Add">@Html.DisplayFor(model => model.Group.Add)</td>
+                        <td class="Edit">@Html.DisplayFor(model => model.Group.Edit)</td>
+                        <td class="delete">@Html.DisplayFor(model => model.Group.View)</td>
+                        <td class="view">@Html.DisplayFor(model => model.Group.Delete)</td>
+                        <td class="deleteView">@Html.DisplayFor(model => model.Group.ViewAndEdit)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Roles)
         </dt>
@@ -90,7 +126,7 @@
                         <td class="deleteView">@Html.DisplayFor(model => model.Roles.ViewAndEdit)</td>
                     </tr>
                 </tbody>
-            </table>        
+            </table>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Assignment)
@@ -125,8 +161,9 @@
                         <td class="deleteView">@Html.DisplayFor(model => model.Assignment.ViewAndEdit)</td>
                     </tr>
                 </tbody>
-            </table>        
+            </table>
         </dd>
+
     </dl>
 </div>
 <div>

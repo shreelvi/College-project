@@ -37,7 +37,7 @@ namespace ClassWeb.Controllers
             int userID = 0;
             userID = (int)HttpContext.Session.GetInt32("UserID");
             List<CourseSemester> activeClasses = new List<CourseSemester>();
-            activeClasses = DAL.GetCourseSemestersForUser(userID);
+          //  activeClasses = DAL.GetCourseSemestersForUser(userID);
             return View(activeClasses);
         }
 

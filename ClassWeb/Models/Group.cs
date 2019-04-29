@@ -35,6 +35,8 @@ namespace ClassWeb.Models
         private List<Assignment> _Assignments;
         private int _AssignmentID;
         private List<ViewGroupUser> _Users;
+        private int _CourseSemesterID;
+       
         #endregion
 
         #region Database String
@@ -45,8 +47,9 @@ namespace ClassWeb.Models
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
-        internal const string db_Assignments = "Assignments";
+       // internal const string db_Assignments = "Assignments";
         internal const string db_AssignmentID = "AssignmentID";
+        internal const string db_CourseSemesterID = "CourseSemesterID";
 
         #endregion
         #region Public Variables
@@ -98,6 +101,12 @@ namespace ClassWeb.Models
         {
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
+        }
+
+        public int CourseSemesterID
+        {
+            get { return _CourseSemesterID; }
+            set { _CourseSemesterID = value; }
         }
         public List<ViewGroupUser> Users
         {
@@ -161,7 +170,22 @@ namespace ClassWeb.Models
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
-            //  _AssignmentID = dr.GetInt32(db_AssignmentID);
+           if(_CourseSemesterID == 0){
+
+            }
+            else
+            {
+                _CourseSemesterID = dr.GetInt32(db_CourseSemesterID);
+            }
+            if (_CourseSemesterID == 0)
+            {
+
+            }
+            else
+            {
+                _AssignmentID = dr.GetInt32(db_AssignmentID);
+            }
+
 
         }
         #endregion

@@ -9,7 +9,6 @@ using System.Xml.Serialization;
 namespace ClassWeb.Models
 {
     /// <summary>
-    /// Created By: Elvis
     /// Copied by Sakshi for Group Login
     /// Seperate Model for Login View.
     /// This model is used to get information only required for login view.
