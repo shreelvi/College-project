@@ -13,6 +13,7 @@ using ClassWeb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace ClassWeb.Controllers
 {
@@ -32,7 +33,7 @@ namespace ClassWeb.Controllers
             _emailService = emailService;
         }
         #endregion
-        
+
         #region Login
         /// <summary>
         /// Code By: Elvis
@@ -72,81 +73,53 @@ namespace ClassWeb.Controllers
         public ActionResult Login(String userName, String passWord)
         {
             User loggedIn = DAL.GetUser(userName, passWord);
-            if (loggedIn.VerificationCode.Trim().Length>1)
+            if (loggedIn != null)
             {
-                TempData["Message"] = "Still Waiting for Verification";
-                return RedirectToAction("Index", "Home");
-            }
-
-            if (loggedIn.Enabled != 1 || loggedIn.Archived == 1)
-            {
-                TempData["Message"] = "User Account has been terminated or Archived Please Contact System Admin";
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                CurrentUser = loggedIn; //Sets the session for user from base controller
-
-                if (loggedIn != null)
+                if (loggedIn.VerificationCode.Trim().Length > 0)
                 {
-                    HttpContext.Session.SetString("username", userName);
-                    HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                                                                         //Check if the user is admin
-                    HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
-                    if (loggedIn.Role.IsAdmin)
-                    {
-                        return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
-                    }
-                    return RedirectToAction("Dashboard");
-                    //return View("Dashboard");
-                }
-                else
-                {
-                    ViewBag.Error = "Invalid Username and/or Password";
-                    ViewBag.User = userName;
+                    TempData["Message"] = "Still Waiting for Verification";
                     return RedirectToAction("Index", "Home");
                 }
+
+                if (loggedIn.Enabled != 1 || loggedIn.Archived == 1)
+                {
+                    TempData["Message"] = "User Account has been terminated or Archived Please Contact System Admin";
+                    return RedirectToAction("Index", "Home");
+                }
+                CurrentUser = loggedIn; //Sets the session for user from base controller
+                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
+                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
+                if (loggedIn.Role.IsAdmin)
+                {
+                    return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
+                }
+                return RedirectToAction("Dashboard");
             }
+            ViewBag.Error = "Invalid Username and/or Password";
+            ViewBag.User = userName;
+            return RedirectToAction("Index", "Home");
 
         }
         public ActionResult Dashboard()
         {
             User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
-
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
+            List<object> obj = new List<object>();
+            if (LoggedIn!=null)
             {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
+                Group LoggedInGroup = CurrentGroup;
+                if (LoggedInGroup.Name != "Anonymous")
+                {
+                    obj.Add(LoggedInGroup);
+                }
+                obj.Add(LoggedIn);
+                return View(obj);
             }
             else
             {
-                //Display Permission check message that is passed from Assignment index
-                var s = TempData["PermissionError"];
-                if (s != null)
-                    ViewData["PermissionErr"] = s;
-                int id = 0;
-                if (LoggedInGroup.Name == "Anonymous")
-                {
-                    id = (int)HttpContext.Session.GetInt32("UserID");
-                    string username = HttpContext.Session.GetString("username");
-                    ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
-                    ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//" + username; //Return User root directory 
-                    List<Assignment> UserAssignments = new List<Assignment>();
-                    UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-                    return View(UserAssignments);
-                }
-                else
-                {
-                    id = (int)HttpContext.Session.GetInt32("GroupID");
-                    string username = HttpContext.Session.GetString("username");
-                    List<User> users = DAL.GetGroupUsers(6);
-                    return RedirectToAction("Dashboard", "Group");
-                }
-
-
+                TempData["Error"] = "You Dont Have Enough Previlage to view User";
+                return RedirectToAction("index", "Home");
             }
-
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -317,9 +290,9 @@ namespace ClassWeb.Controllers
         {
             return View();
         }
-        
+
         [AllowAnonymous]
-#endregion
+        #endregion
 
         #region Edit Account
         // GET: Users/Edit/5

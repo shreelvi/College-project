@@ -20,8 +20,10 @@ namespace ClassWeb.Model
         /// by creating a class of data access methods that directly reference a corresponding set of database store procedures. 
         /// </summary
 
-       private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-       private static string EditOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         //private static string ReadOnlyConnectionString = "Server=MYSQL7001.site4now.net;Database=db_a47d1e_simk;Uid=a47d1e_simk;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         //private static string EditOnlyConnectionString = "Server=MYSQL7001.site4now.net;Database=db_a47d1e_simk;Uid=a47d1e_simk;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
         public static string _Pepper = "gLj23Epo084ioAnRfgoaHyskjasf";
@@ -161,7 +163,7 @@ namespace ClassWeb.Model
         /// <returns>List of Usernames string</returns>
         internal static List<User> GetAllUsers()
         {
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllUsers");
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
             List<User> retList = new List<User>();
             try
             {
@@ -940,6 +942,7 @@ namespace ClassWeb.Model
                 comm.Parameters.AddWithValue("@" + Role.db_Users, obj.Users.DAVESet);
                 comm.Parameters.AddWithValue("@" + Role.db_Role, obj.Roles.DAVESet);
                 comm.Parameters.AddWithValue("@" + Role.db_Assignment, obj.Assignment.DAVESet);
+                comm.Parameters.AddWithValue("@" + Role.db_Group, obj.Group.DAVESet);
                 return UpdateObject(comm);
             }
             catch (Exception ex)

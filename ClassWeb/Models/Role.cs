@@ -34,6 +34,7 @@ namespace ClassWeb.Models
         internal const string db_Users = "Users";
         internal const string db_Role = "Role";
         internal const string db_Assignment = "Assignment";
+        internal const string db_Group = "Group";
         #endregion
 
         #region Private Variables
@@ -41,6 +42,7 @@ namespace ClassWeb.Models
         private bool _IsAdmin;
         private PermissionSet _Users;
         private PermissionSet _Role;
+        private PermissionSet _Group;
         private PermissionSet _Assignment;
         #endregion
 
@@ -134,6 +136,19 @@ namespace ClassWeb.Models
                 _Assignment = value;
             }
         }
+        [Required]
+        [Display(Name = "Group Permissionset")]
+        public PermissionSet Group
+        {
+            get
+            {
+                return _Group;
+            }
+            set
+            {
+                _Group = value;
+            }
+        }
         #endregion
 
 
@@ -179,6 +194,7 @@ namespace ClassWeb.Models
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
             _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
+            _Group = new PermissionSet((byte)dr.GetUInt64(db_Group));
         }
         #endregion
     }

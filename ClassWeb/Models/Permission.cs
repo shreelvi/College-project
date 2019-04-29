@@ -39,7 +39,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "PermissionID";
+        internal const string db_ID = "ID";
         internal const string db_Title = "Title";
         internal const string db_Description = "Description";
         internal const string db_DateCreated = "DateCreated";

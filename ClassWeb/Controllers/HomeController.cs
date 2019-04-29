@@ -1,17 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClassWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ClassWeb.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
 
 namespace ClassWeb.Controllers
 {
     public class HomeController : BaseController
     {
+        #region Private Variables
+        //hosting Envrironment is used to create the user directory 
+        private IHostingEnvironment _hostingEnvironment;
+        #endregion
+        #region constructor
+        public HomeController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+        #endregion
         public IActionResult Index()
         {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            if (uid != null)
+            {
+                return RedirectToAction("Dashboard", "Account");
+            }
             var s = TempData["LoginError"];
             if (s != null)
                 ViewData["LoginError"] = s;

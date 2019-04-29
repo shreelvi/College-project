@@ -273,7 +273,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "CourseSemesterID";
+        internal const string db_ID = "ID";
         internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";

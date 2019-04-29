@@ -164,7 +164,7 @@ namespace ClassWeb.Controllers
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,ID")] Role role)
+        public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,Group,ID")] Role role)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")

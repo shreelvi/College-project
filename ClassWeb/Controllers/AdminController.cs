@@ -15,8 +15,8 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
-            User LoggedIn = CurrentUser;
-
+            int? id=HttpContext.Session.GetInt32("UserID");
+            User LoggedIn = DAL.UserGetByID(id);
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";

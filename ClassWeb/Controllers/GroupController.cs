@@ -137,15 +137,9 @@ namespace ClassWeb.Controllers
             else if (e != null)
                 ViewData["UserGroupAddError"] = e;
 
-            int id = (int)HttpContext.Session.GetInt32("GroupID");
+            int? id = HttpContext.Session.GetInt32("GroupID");
             string username = HttpContext.Session.GetString("UserName");
-
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
-
             List<Assignment> GroupAssignments = new List<Assignment>();
-            // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-
             return View(GroupAssignments);
         }
 

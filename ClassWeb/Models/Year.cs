@@ -20,9 +20,6 @@ namespace ClassWeb.Models
         #endregion
 
         private int _Year;
-
-
-
         public int Year1
         {
             get { return _Year; }
@@ -30,7 +27,7 @@ namespace ClassWeb.Models
         }
 
         #region Database String
-        internal const string db_ID = "YearID";
+        internal const string db_ID = "ID";
         internal const string db_Year = "Year";
         #endregion
 
