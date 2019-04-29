@@ -531,9 +531,28 @@ namespace ClassWeb.Model
 
         internal static Assignment GetAssignmentByNameLocationUserName(string name, string location, string userName)
         {
-            throw new NotImplementedException();
-        }
+            Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByNameLocationUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, name);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, location);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
 
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         #endregion
 
         #region Login
@@ -958,7 +977,6 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
         ///<summary>
         /// Created By: Mohan 
         /// Get Course 

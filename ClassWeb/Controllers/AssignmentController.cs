@@ -32,12 +32,9 @@ namespace ClassWeb.Controllers
                 {
                     User U = DAL.UserGetByID(ID);
                     if (U != null)
-                    {
-                        if (U.Role.IsAdmin)
-                        {
+                    {                       
 
-                            ViewBag.Dir = "Home" + RootDir();
-                        }
+                        ViewBag.Dir = "Home" + RootDir();
                         CurrentDir();
                         Tuple<List<Assignment>, List<string>, List<Assignment>> assignments = GetFiles();
                         return View(assignments);
@@ -51,6 +48,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("index","Home");
             }
         }
+
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
         public ActionResult FileView(string FileName)
         {
@@ -67,7 +65,7 @@ namespace ClassWeb.Controllers
                     if (U.Role.IsAdmin == true)
                     {
                         path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory").Replace("\\", "/");
-                        if (s == path)
+                        if (s == path.Replace("\\", "/"))
                         {
                             url = Url.RouteUrl("root", new { UserName = "AssignmentDirectory", FileName = FileName });
                         }
@@ -82,7 +80,7 @@ namespace ClassWeb.Controllers
                     else
                     {
                         path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName);
-                        if (s == path)
+                        if (s == path.Replace("\\", "/"))
                         {
                             url = Url.RouteUrl("root", new { UserName = U.UserName, FileName = FileName });
                         }
@@ -95,6 +93,7 @@ namespace ClassWeb.Controllers
                         }
                     }
 
+                    url =url.Replace("%20", "/");
                     return new RedirectResult(url);
                 }
                 else
@@ -163,13 +162,57 @@ namespace ClassWeb.Controllers
             }
 
         }
+        public IActionResult ChangeDir( string dir)
+        {
+            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            {
+                int? ID = HttpContext.Session.GetInt32("UserID");
+                if (ID != null)
+                {
+                    User U = DAL.UserGetByID(ID);
+                    if (U != null)
+                    {
+                        if (U.Role.IsAdmin == true)
+                        {
 
+                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
+                        }
+                        else
+                        {
+                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName));
+                        }
+                        Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(),dir));
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index", "Home");
+            }
+
+        }
+        public IActionResult ChangeRootDir(string dir)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
         public IActionResult ChangeDirUp(string dir)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
             Directory.SetCurrentDirectory(path);
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult ChangeToRootDir(string dir)
+        {
+            SetDefaultDir();
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult ChangeDirDown()
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.View))
@@ -302,7 +345,7 @@ namespace ClassWeb.Controllers
                         DirectoryInfo dir = new DirectoryInfo(file.FileName);
                         int index = dir.Parent.ToString().IndexOf("AssignmentDirectory");
                         string location = dir.Parent.ToString().Substring(index + "AssignmentDirectory".Length);
-                        location = Path.Combine("/", file.FileName);
+                        location = Path.Combine(location,file.FileName);
                         location = location.Replace("\\", "/");
                         Assignment a = new Assignment();
                         a.UserName = HttpContext.Session.GetString("username");
@@ -382,8 +425,7 @@ namespace ClassWeb.Controllers
                             }
                             assign.Add(a);
                         }
-
-                        SetDefaultDir();
+                        CurrentDir();
                     }
                     catch (Exception ex)
                     {
@@ -708,7 +750,7 @@ namespace ClassWeb.Controllers
                         FileLocation = file.FullName.ToString();
                         index = FileLocation.LastIndexOf(U.UserName);
                     }
-                    string location = Path.Combine(file.FullName.ToString().Substring(index));
+                    string location = Path.Combine("/",file.FullName.ToString().Substring(index));
                     location = location.Replace("\\", "/");
                     Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name, location, U.UserName);
                     if (assign != null)
@@ -719,6 +761,7 @@ namespace ClassWeb.Controllers
                     {
                         Assignment a = new Assignment();
                         a.FileName = file.Name;
+                        a.FileLocation = "File"+file.Length;
                         physical.Add(a);
                     }
                 }

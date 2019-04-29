@@ -137,7 +137,6 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             int retInt = DAL.RemoveSemester(id);
-
             if (retInt < 0)
                 TempData["SemesterDelete"] = "Error occured when deleting the semester";
 

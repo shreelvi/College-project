@@ -10,7 +10,7 @@
 <h2>User Dashboard</h2>
 <!-- Page content -->
 <div class="card-group">
-    <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+    <div class="card bg-success m-3" style="max-width: 18rem;">
         <div class="card-header">Assignment</div>
         <div class="card-body">
             <h5 class="card-title"></h5>
@@ -23,25 +23,24 @@
         {
             @if (typeof(ClassWeb.Models.User) == obj.GetType())
             {
-                ClassWeb.Models.User User = (ClassWeb.Models.User)obj;
-                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
-                    <div class="card-header">@User.UserName</div>
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <p class="card-text">This is User Card.</p>
+                ClassWeb.Models.User U = (ClassWeb.Models.User)obj;
+                <div class="card bg-success m-3" style="max-width: 18rem;">
+                    <div class="card-header">
+                        <a href="\Assignment\ChangeDir?dir=@U.UserName">@U.UserName</a>
                     </div>
                 </div>
             }
             @if (typeof(ClassWeb.Models.Group) == obj.GetType())
             {
-                ClassWeb.Models.Group Group = (ClassWeb.Models.Group)obj;
-                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
-                    <div class="card-header">@Group.Name</div>
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <p class="card-text">This is a Group card.</p>
+                ClassWeb.Models.Group G = (ClassWeb.Models.Group)obj;
+                <div class="card w-50">
+                    <div class="card-body bg-success m-3" style="max-width: 18rem;">
+                        <h5 class="card-title"><a href="\Assignment\ChangeDir?dir=@G.Name">@G.Name</a></h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <a href="#" class="btn btn-primary">Button</a>
                     </div>
-                </div>
+                </div>               
+                  
             }
 
         }
