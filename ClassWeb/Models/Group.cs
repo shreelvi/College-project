@@ -157,7 +157,7 @@ namespace ClassWeb.Models
 
             _ID = dr.GetInt32(db_ID);
             _Name = dr.GetString(db_Name);
-           // _EmailAddress = dr.GetString(db_EmailAddress);
+            // _EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);

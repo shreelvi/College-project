@@ -30,28 +30,28 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
-        private string _Subject;
-        private int _CourseNumber;
-        private string _CourseTitle;
+        private string _Title;
+        private int _Name;
+        private string _Description;
         
         #endregion
 
         #region Public Variables
 
-        public string Subject
+        public string Title
         {
-            get { return _Subject; }
-           set { _Subject = value; }
+            get { return _Title; }
+           set { _Title = value; }
         }
-        public int CourseNumber
+        public int Name
         {
-            get { return _CourseNumber; }
-            set { _CourseNumber = value; }
+            get { return _Name; }
+            set { _Name = value; }
         }
-        public string CourseTitle
+        public string Description
         {
-            get { return _CourseTitle; }
-            set { _CourseTitle = value; }
+            get { return _Description; }
+            set { _Description = value; }
         }
 
         #endregion
@@ -89,9 +89,9 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Subject = dr.GetString(db_Subject);
-            _CourseNumber = dr.GetInt32(db_CourseNumber);
-            _CourseTitle = dr.GetString(db_CourseTitle);
+            _Title = dr.GetString(db_Title);
+            _Name = dr.GetInt32(db_Name);
+            _Description = dr.GetString(db_Description);
         }
 
         public override string ToString()
