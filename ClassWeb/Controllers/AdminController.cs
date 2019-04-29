@@ -9,9 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClassWeb.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
-        public User CurrentUser { get; private set; }
+        #region constructor
+        public AdminController()
+        {
+
+        }
+        #endregion
 
         public IActionResult Index()
         {

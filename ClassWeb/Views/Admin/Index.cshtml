@@ -6,6 +6,58 @@
 
 <h2>Admin Dashboard</h2>
 
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 30%;
+        border-radius: 5px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        color: black;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    img {
+        border-radius: 5px 5px 0 0;
+    }
+
+
+    .sidenav {
+        width: 130px;
+        position: fixed;
+        z-index: 1;
+        top: 150px;
+        left: 10px;
+        background: #eee;
+        overflow-x: hidden;
+        padding: 8px 0;
+    }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #2196F3;
+            display: block;
+        }
+
+            .sidenav a:hover {
+                color: #064579;
+            }
+
+    .main {
+        margin-left: 140px; /* Same width as the sidebar + left position in px */
+        font-size: 28px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+    }
+</style>
+
 <div style="float:right">
     <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
     <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
@@ -20,20 +72,15 @@
 <div style="float:left; width: 500px">
     <br /><br /><br />
     <div style="height:40px; width:300px; background-color:lightcyan"><h4>&nbsp; Welcome, @Context.Session.GetString("username").</h4></div>
-    <p>Login as Admin- username: admin, pwd: test</p>
-    <br /><a asp-controller="Section" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageSections.png" /></a>
-    <a asp-controller="Semester" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageSemesters.png" /></a>
-    <a href="Default.aspx"><img style="width:15%; height:15%" src="images/ViewUsers.png" /></a><br />
-    <a href="Default.aspx"><img style="width:15%; height:15%" src="images/RegisterUser.png" /></a>
-    <a asp-controller="Role" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageRoles.png" /></a>
-    <a asp-controller="CourseSemester" asp-action="Index"><img style="width:15%; height:15%" src="images/ManageCourseSemesters.png" /></a><br />
-    <br /><a style="color:darkblue;" asp-controller="CourseSemester" asp-action="Index">Manage Classes</a>
-    <br /><a style="color:darkblue;" asp-controller="Course" asp-action="Index">Manage Courses</a>
-    <br /><a style="color:darkblue;" asp-controller="Year" asp-action="Index">Manage Year </a>
-    <br /><a style="color:darkblue;" asp-controller="Group" asp-action="Index">Manage Group </a>
-
-
-
+    <div class="classes">
+        <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
+            <div class="container">
+                <h4>Courses</h4>
+                <h4>Number of Courses: 21</h4>
+                <a asp-controller="Course" asp-action="Index">View</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="UsersDisplay" style="float:right"> 

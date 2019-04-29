@@ -697,3 +697,22 @@ BEGIN
     SET CourseSemesterUserID = LAST_INSERT_ID();
 END
 $$
+
+
+-- =============================================
+-- Author:		Elvis
+-- Create date:	28 April 2019
+-- Description:	Get users(students and professor) associated with the class(coursesemester)
+-- =============================================
+DELIMITER $$
+CREATE PROCEDURE sproc_GetUsersForClass(
+    IN CourseSemesterID INT)
+BEGIN
+    SELECT users.UserID, users.FirstName, users.LastName, users.EmailAddress 
+    FROM coursesemesters
+    INNER JOIN coursesemesterusers
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    INNER JOIN users
+    ON users.UserID = coursesemesterusers.UserID
+    WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
+END$$
