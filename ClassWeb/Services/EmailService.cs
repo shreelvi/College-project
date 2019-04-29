@@ -8,42 +8,41 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Services
 {
-    public class EmailService: IEmailService
+    public class EmailService : IEmailService
     {
-       private readonly IConfiguration _configuration;
-            public EmailService(IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        public EmailService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        public async Task SendEmail(string email, string subject, string message)
+        {
+            using (var client = new SmtpClient())
             {
-                _configuration = configuration;
-            }
-            public async Task SendEmail(string email, string subject, string message)
-            {
-                using (var client = new SmtpClient())
+                var credential = new NetworkCredential
                 {
-                    var credential = new NetworkCredential
-                    {
-                        UserName = _configuration["Email:Email"],
-                        Password = _configuration["Email:Password"]
-                    };
+                    UserName = _configuration["Email:Email"],
+                    Password = _configuration["Email:Password"]
+                };
 
-                    client.Credentials = credential;
-                    client.Host = _configuration["Email:Host"];
-                    client.Port = int.Parse(_configuration["Email:Port"]);
-                    client.EnableSsl = true;
-                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    client.UseDefaultCredentials = false;
+                client.Credentials = credential;
+                client.Host = _configuration["Email:Host"];
+                client.Port = int.Parse(_configuration["Email:Port"]);
+                client.EnableSsl = true;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.UseDefaultCredentials = false;
 
 
                 using (var emailMessage = new MailMessage())
-                    {
-                        emailMessage.To.Add(new MailAddress(email));
-                        emailMessage.From = new MailAddress(_configuration["Email:Email"]);
-                        emailMessage.Subject = subject;
-                        emailMessage.Body = message;
-                        client.Send(emailMessage);
-                    }
+                {
+                    emailMessage.To.Add(new MailAddress(email));
+                    emailMessage.From = new MailAddress(_configuration["Email:Email"]);
+                    emailMessage.Subject = subject;
+                    emailMessage.Body = message;
+                    client.Send(emailMessage);
                 }
-                await Task.CompletedTask;
             }
+            await Task.CompletedTask;
         }
     }
-
+}

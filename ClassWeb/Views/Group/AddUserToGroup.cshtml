@@ -1,9 +1,11 @@
 ﻿@using ClassWeb.Models
 @model GroupLoginModel
-@{
-    ViewData["Title"] = "AddUsersToGroup";
-}
 
+
+@{
+    ViewData["Title"] = "AddUserToGroup";
+
+}
 <p style="color:red">@ViewBag.UserAddError</p>
 <p style="color:red">@ViewBag.Error</p>
 <div class="row">
@@ -49,3 +51,37 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
+
+@*<h2>EditGroup</h2>
+
+    <h4>Group</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="AddUserToGroup">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div>
+                    <label for="Users">Number of users:</label>
+                    <input name="Users" type="number" id="numberOfStudents" />
+
+                </div>
+                <div id="DynamicEmail">
+
+                </div>
+                <input type="hidden" asp-for="ID" />
+
+
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }*@

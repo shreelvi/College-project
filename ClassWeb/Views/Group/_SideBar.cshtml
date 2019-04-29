@@ -1,0 +1,54 @@
+﻿
+@{
+
+}
+<div class="wrapper">
+    <div class="sidebar">
+        <div class="sidebar-content ">
+            <ul class="sidebar-nav">
+                <li class="sidebar-header text-capitalize text-lg">
+                    Dashboard
+                </li>
+                <li class="sidebar-item active">
+                    <a href="#User" data-toggle="collapse" class="sidebar-link" aria-expanded="true">
+                        <span class="align-middle">Manage User</span>
+                    </a>
+                    <ul id="User" class="sidebar-dropdown list-unstyled collapse show">
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Group/Index">List All Users</a></li>
+                        <li class="sidebar-item "><a class="sidebar-link" href="/Group/Index">Delete User</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Group/Adduser">Add User</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#Assignment" data-toggle="collapse" class="sidebar-link collapsed">
+                        <span class="align-middle">Assignment Management</span>
+                    </a>
+                    <ul id="Assignment" class="sidebar-dropdown list-unstyled collapse ">
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Assignments/index">List All Assignment</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Assignments/index">Delete Assignment</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#Role" data-toggle="collapse" class="sidebar-link collapsed">
+                        <span class="align-middle">Manage Role</span>
+                    </a>
+                    <ul id="Role" class="sidebar-dropdown list-unstyled collapse ">
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Role/index">Change User Role</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Role/index">Add Role</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Role/index">Delete Role</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#Permission" data-toggle="collapse" class="sidebar-link collapsed">
+                        <span class="align-middle">Manage Permission</span>
+                    </a>
+                    <ul id="Permission" class="sidebar-dropdown list-unstyled collapse ">
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Permission/index">Change User Permission</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Permission/index">Add Permission</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Permission/index">Delete Permission</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="/Permission/index">Modify Permission</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>

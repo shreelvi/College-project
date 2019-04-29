@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -13,13 +12,6 @@ namespace ClassWeb.Controllers
 {
     public class YearController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public YearController(ClassWebContext context)
-        {
-            _context = context;
-        }
-
         // GET: Year
         public async Task<IActionResult> Index()
         {
@@ -53,8 +45,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = await _context.Year
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var year = 0;// await _context.Year
+                //.FirstOrDefaultAsync(m => m.ID == id);
             if (year == null)
             {
                 return NotFound();
@@ -78,8 +70,8 @@ namespace ClassWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(year);
-                await _context.SaveChangesAsync();
+               // _context.Add(year);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(year);
@@ -93,7 +85,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = await _context.Year.FindAsync(id);
+            var year = 0;// await _context.Year.FindAsync(id);
             if (year == null)
             {
                 return NotFound();
@@ -117,8 +109,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(year);
-                    await _context.SaveChangesAsync();
+                  //  _context.Update(year);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,8 +136,8 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = await _context.Year
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var year = 0; //await _context.Year
+                //.FirstOrDefaultAsync(m => m.ID == id);
             if (year == null)
             {
                 return NotFound();
@@ -159,15 +151,15 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var year = await _context.Year.FindAsync(id);
-            _context.Year.Remove(year);
-            await _context.SaveChangesAsync();
+            var year = 0;// await _context.Year.FindAsync(id);
+            //_context.Year.Remove(year);
+           // await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool YearExists(int id)
         {
-            return _context.Year.Any(e => e.ID == id);
+            return false;// _context.Year.Any(e => e.ID == id);
         }
     }
 }

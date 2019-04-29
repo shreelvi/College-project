@@ -14,7 +14,7 @@ namespace ClassWeb.Models
     /// </summary>
     public abstract class DatabaseRecord
     {
-        protected int _ID;
+        public int _ID;
         /// <summary>
         /// The User given Name for the Object.
         /// </summary>
@@ -38,6 +38,10 @@ namespace ClassWeb.Models
     public abstract class DatabaseNamedRecord : DatabaseRecord
     {
         protected string _Name;
+        private string _EmailAddress; 
+        private DateTime _DateCreated;
+        private DateTime _DateModified;
+        private DateTime _DateDeleted;
         /// <summary>
         /// The User given Name for the Object.
         /// </summary>
@@ -49,6 +53,35 @@ namespace ClassWeb.Models
         {
             get { return _Name; }
             set { _Name = value; }
+        }
+
+        public string EmailAddress
+        {
+            get { return _EmailAddress; }
+            set { _EmailAddress = value; }
+        }
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateCreated")]
+        public DateTime DateCreated
+        {
+            get { return _DateCreated; }
+            set { _DateCreated = value; }
+        }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateModified")]
+        public DateTime DateModified
+        {
+            get { return _DateModified; }
+            set { _DateModified = value; }
+        }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "DateDeleted")]
+        public DateTime DateDeleted
+        {
+            get { return _DateDeleted; }
+            set { _DateDeleted = value; }
         }
     }
 }

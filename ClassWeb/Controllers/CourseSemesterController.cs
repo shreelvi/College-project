@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 using Microsoft.AspNetCore.Http;
@@ -19,18 +18,11 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class CourseSemesterController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseSemesterController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
             //string ss = LoggedIn.FirstName;
 
             //Gets error message to display from Create method 
@@ -43,31 +35,13 @@ namespace ClassWeb.Controllers
                 ViewData["CourseSemDelete"] = d;
 
             //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
-                {
-                    TempData["LoginError"] = "Please login to view the page.";
-                    return RedirectToAction("Index", "Home");
-                }
-
-            
-
-            List<CourseSemester> CourseSemesters = new List<CourseSemester>();
-            CourseSemesters = DAL.GetCourseSemesters();
-            return View(CourseSemesters);
-
-        }
-
-        public async Task<IActionResult> ClassViewForStudents()
-        {
-            User LoggedIn = CurrentUser;
-            Group LoggedInGroup = CurrentGroup;
-            
-            //Checks if the user is logged in
-            if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
+            if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+
 
             List<CourseSemester> CourseSemesters = new List<CourseSemester>();
             CourseSemesters = DAL.GetCourseSemesters();
@@ -106,7 +80,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             List<Course> CoursesPartial = new List<Course>();
-            CoursesPartial = DAL.GetCourses();
+            CoursesPartial = DAL.GetCourse();
             ViewBag.Courses = CoursesPartial;
 
             List<Semester> SemesterPartial = new List<Semester>();
@@ -168,6 +142,7 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
             }
             return RedirectToAction(nameof(Index));
+
         }
 
         // GET: CourseSemesters/Edit/5
@@ -178,13 +153,13 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester.FindAsync(id);
+            var courseSemester = id; //await _context.CourseSemester.FindAsync(id);
             if (courseSemester == null)
             {
                 return NotFound();
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            //ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            //ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -204,8 +179,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(courseSemester);
-                    await _context.SaveChangesAsync();
+                    // _context.Update(courseSemester);
+                    // await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -220,8 +195,8 @@ namespace ClassWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
-            ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
+            // ViewData["CourseID"] = new SelectList(_context.Set<Course>(), "ID", "ID", courseSemester.CourseID);
+            // ViewData["UserID"] = new SelectList(_context.Set<User>(), "ID", "ID", courseSemester.UserID);
             return View(courseSemester);
         }
 
@@ -259,7 +234,7 @@ namespace ClassWeb.Controllers
 
         private bool CourseSemesterExists(int id)
         {
-            return _context.CourseSemester.Any(e => e.ID == id);
+            return false;// _context.CourseSemester.Any(e => e.ID == id);
         }
     }
 }

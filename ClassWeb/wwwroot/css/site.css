@@ -1,107 +1,150 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
-for details on configuring this project to bundle and minify static web assets. */
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿/* Primary Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+em {
+    font-style: normal;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
-
-
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-/*div.content {
-    margin-left: 100px;
-    padding: 1px 16px;
-    height: 1000px;
-}*/
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
-}
-
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
-}
-
-.card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 30%;
-    border-radius: 5px;
-}
-
-.container {
-    padding: 2px 16px;
-}
-
-.card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-img {
-    border-radius: 5px 5px 0 0;
-}
-
-
-.sidenav {
-    width: 130px;
-    position: fixed;
-    z-index: 1;
-    top: 150px;
-    left: 10px;
-    background: #eee;
-    overflow-x: hidden;
-    padding: 8px 0;
-}
-
-.sidenav a {
-    padding: 6px 8px 6px 16px;
+a {
     text-decoration: none;
-    font-size: 15px;
-    color: #2196F3;
-    display: block;
+    color: inherit;
+}
+/* Layout */
+.s-layout {
+    top: 50px;
+    padding: 15px;
+    display: flex;
+    position: relative;
 }
 
-.sidenav a:hover {
-     color: #064579;
+/* Sidebar */
+.s-sidebar__trigger {
+    z-index: 2;
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: 4em;
+    background: #192b3c;
 }
 
-.main {
-    margin-left: 140px; /* Same width as the sidebar + left position in px */
-    font-size: 28px; /* Increased text to enable scrolling */
-    padding: 0px 10px;
-}
-
-/*@media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
+    .s-sidebar__trigger > i {
+        display: inline-block;
+        margin: 1.5em 0 0 1.5em;
+        color: #f07ab0;
     }
 
-        .sidenav a {
-            font-size: 18px;
+.s-sidebar__nav {
+    position: fixed;
+    top:50px;
+    left: -15em;
+    overflow: hidden;
+    transition: all .3s ease-in;
+    width: 15em;
+    height: 100%;
+    background: #243e56;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+    .s-sidebar__nav:hover,
+    .s-sidebar__nav:focus,
+    .s-sidebar__trigger:focus + .s-sidebar__nav,
+    .s-sidebar__trigger:hover + .s-sidebar__nav {
+        left: 0;
+    }
+
+    .s-sidebar__nav ul {
+        position: absolute;
+        top: 4em;
+        left: 0;
+        margin: 0;
+        padding: 0;
+        width: 15em;
+    }
+
+        .s-sidebar__nav ul li {
+            width: 100%;
         }
-}*/
 
+.s-sidebar__nav-link {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 4em;
+}
 
+    .s-sidebar__nav-link em {
+        position: absolute;
+        top: 50%;
+        left: 4em;
+        transform: translateY(-50%);
+    }
 
+    .s-sidebar__nav-link:hover {
+        background: #4d6276;
+        border: 2px solid #73AD21;
+        border-radius: 15px;
+        color: cadetblue;
+    }
+
+    .s-sidebar__nav-link > i {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: inline-block;
+        width: 4em;
+        height: 4em;
+    }
+
+        .s-sidebar__nav-link > i::before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+/* Mobile First */
+@media (min-width: 42em) {
+    .s-layout__content {
+        width:100%;
+        margin-left: 4em;
+    }
+
+    /* Sidebar */
+    .s-sidebar__trigger {
+        width: 4em;
+    }
+
+    .s-sidebar__nav {
+        width: 4em;
+        left: 0;
+    }
+
+        .s-sidebar__nav:hover,
+        .s-sidebar__nav:focus,
+        .s-sidebar__trigger:hover + .s-sidebar__nav,
+        .s-sidebar__trigger:focus + .s-sidebar__nav {
+            width: 15em;
+        }
+}
+
+@media (min-width: 68em) {
+    .s-layout__content {
+        width:100%;
+        margin-left: 15em;
+    }
+
+    /* Sidebar */
+    .s-sidebar__trigger {
+        display: none
+    }
+
+    .s-sidebar__nav {
+        width: 15em;
+    }
+
+        .s-sidebar__nav ul {
+            top: 1.3em;
+        }
+}

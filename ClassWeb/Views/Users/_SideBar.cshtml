@@ -1,0 +1,35 @@
+﻿<div class="s-layout__sidebar">
+    <a class="s-sidebar__trigger" href="">
+        <i class="fa fa-bars"></i>
+    </a>
+
+    <nav class="s-sidebar__nav">
+        <ul>
+            <li>
+                <a asp-action="Profile" asp-controller="Account" class="s-sidebar__nav-link">
+                    <i class="fas fa-users-cog "></i><em>My Profile</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Users" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users"></i><em>List Users</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Assignment" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-file-pdf "></i><em>List Assignment</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Role" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-user-tag "></i><em>List Role</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Course" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users-class"></i><em>List Course</em>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
