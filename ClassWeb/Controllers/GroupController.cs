@@ -87,7 +87,8 @@ namespace ClassWeb.Controllers
         #endregion
         //Access the data from the database
 
-
+            //for login
+            //Code By Sakshi
         public ActionResult LoginGroup(string returnUrl)
         {
             //ViewBag.ReturnUrl = returnUrl;
@@ -132,6 +133,8 @@ namespace ClassWeb.Controllers
                 // return RedirectToAction("LoginGroup", "Group");
             }
         }
+        //<Summary>
+        //Group Dashboard
         public async Task<IActionResult> Dashboard(int? id)
         {
 
@@ -164,6 +167,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Group/AddGroup
+        //adding group through registration
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
@@ -250,6 +254,7 @@ namespace ClassWeb.Controllers
         }
 
         // GET: Group/AddUserToGroup
+        //adds user to the group after the login
         [AllowAnonymous]
         public ActionResult AddUserToGroup(string returnUrl)
         {
@@ -335,7 +340,7 @@ namespace ClassWeb.Controllers
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
 
-
+            //Index page 
         public async Task<IActionResult> Index()
         {
             if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
@@ -371,7 +376,7 @@ namespace ClassWeb.Controllers
         }
 
 
-
+        //Adds a group through the index page
         public IActionResult Create()
         {
             if (UserCan<User>(PermissionSet.Permissions.Add))
@@ -410,7 +415,7 @@ namespace ClassWeb.Controllers
 
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
-
+        //Edit the group information 
         public async Task<IActionResult> EditGroup(int? id)
         {
             if (UserCan<User>(PermissionSet.Permissions.Edit))
@@ -493,6 +498,7 @@ namespace ClassWeb.Controllers
             }
         }
 
+        //Profile of the group with just username and group name
         public ActionResult Profile()
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
@@ -510,7 +516,7 @@ namespace ClassWeb.Controllers
             }
 
         }
-
+        //displays the list for users of that particular group
         public async Task<IActionResult> ViewGroupUsers(int? id)
         {
             int? gid = HttpContext.Session.GetInt32("GroupID");
@@ -631,6 +637,7 @@ namespace ClassWeb.Controllers
         //    return View();
         //}
         //#endregion reset password
+
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteGroup(int? id)
         {
