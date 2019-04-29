@@ -161,7 +161,14 @@ namespace ClassWeb.Models
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
-            //  _AssignmentID = dr.GetInt32(db_AssignmentID);
+           if( _AssignmentID == 0){
+
+            }
+            else
+            {
+                _AssignmentID = dr.GetInt32(db_AssignmentID);
+            }
+               
 
         }
         #endregion
