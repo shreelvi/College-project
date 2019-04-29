@@ -49,24 +49,24 @@ namespace ClassWeb.Controllers
 
         }
 
-        // GET: CourseSemesters/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: CourseSemesters/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var courseSemester = await _context.CourseSemester
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (courseSemester == null)
-            {
-                return NotFound();
-            }
+        //    var courseSemester = await _context.CourseSemester
+        //        .Include(c => c.Course)
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (courseSemester == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(courseSemester);
-        }
+        //    return View(courseSemester);
+        //}
 
         // GET: CourseSemesters/Create
         public IActionResult Create()
@@ -109,41 +109,41 @@ namespace ClassWeb.Controllers
         /// </summary>
         /// <param name="courseSemester"></param>
         /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID, DateStart, DateEnd")] CourseSemester courseSemester)
-        {
-            int id = (int)HttpContext.Session.GetInt32("UserID");
-            User LoggedIn = CurrentUser;
-            if (LoggedIn.FirstName == "Anonymous")
-            {
-                TempData["LoginError"] = "Please login to view the page.";
-                return RedirectToAction("Index", "Home");
-            }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("CRN,CourseID,SemesterID,YearID,SectionID,ID, DateStart, DateEnd")] CourseSemester courseSemester)
+        //{
+        //    int id = (int)HttpContext.Session.GetInt32("UserID");
+        //    User LoggedIn = CurrentUser;
+        //    if (LoggedIn.FirstName == "Anonymous")
+        //    {
+        //        TempData["LoginError"] = "Please login to view the page.";
+        //        return RedirectToAction("Index", "Home");
+        //    }
 
-            //Add the class to the coursesemester table
-            int retInt = DAL.AddCourseSemester(courseSemester);
+        //    //Add the class to the coursesemester table
+        //    int retInt = DAL.AddCourseSemester(courseSemester);
 
-            if (retInt < 0) {
-                TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
-            }
+        //    if (retInt < 0) {
+        //        TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
+        //    }
 
-            //If sucessful, assigns the class to the user that is creating
-            else {
-                int assignUser = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
-                if(assignUser < 0)
-                {
-                    TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
-                }
-                TempData["CourseSemesterAdd"] = "Class added successfully.";
-            }
-            if(LoggedIn.Role.Name == "Professor")
-            {
-                return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
-            }
-            return RedirectToAction(nameof(Index));
+        //    //If sucessful, assigns the class to the user that is creating
+        //    else {
+        //        int assignUser =  DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
+        //        if(assignUser < 0)
+        //        {
+        //            TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
+        //        }
+        //        TempData["CourseSemesterAdd"] = "Class added successfully.";
+        //    }
+        //    if(LoggedIn.Role.Name == "Professor")
+        //    {
+        //        return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
+        //    }
+        //    return RedirectToAction(nameof(Index));
 
-        }
+        //}
 
         // GET: CourseSemesters/Edit/5
         public async Task<IActionResult> Edit(int? id)

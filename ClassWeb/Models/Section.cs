@@ -23,8 +23,8 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private int _SectionNumber;
-        //private int _CRN;
-        //private int _ClassID;
+        private int _CRN;
+        private int _ClassID;
 
 
         #endregion

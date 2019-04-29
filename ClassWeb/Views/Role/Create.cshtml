@@ -34,6 +34,14 @@
                     DAVESet(Enter as decimal e.g. 15 for full DAVE control)<input asp-for="Users.DAVESet" class="form-control" />
                 </label><br /><br />
 
+                <label asp-for="Group" class="control-label"></label>
+                <input type="hidden" asp-for="Group" class="form-control" />
+                <span asp-validation-for="Group" class="text-danger"></span>
+
+                <label>
+                    DAVESet(Enter as decimal e.g. 15 for full DAVE control.)<input asp-for="Group.DAVESet" class="form-control" />
+                </label><br /><br />
+
                 <label asp-for="Roles" class="control-label"></label>
                 <input type="hidden" asp-for="Roles" class="form-control" />
                 <span asp-validation-for="Roles" class="text-danger"></span>
@@ -49,6 +57,9 @@
                 <label>
                     DAVESet(Enter as decimal e.g. 15 for full DAVE control.)<input asp-for="Assignment.DAVESet" class="form-control" />
                 </label><br /><br />
+
+
+
 
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

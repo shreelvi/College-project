@@ -20,10 +20,10 @@ namespace ClassWeb.Model
         /// by creating a class of data access methods that directly reference a corresponding set of database store procedures. 
         /// </summary
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
-        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        //private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        //private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
         //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
         //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
@@ -1139,7 +1139,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_SectionAdd");
             try
             {
-                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
+              //  comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
                 return AddObject(comm, "@" + Section.db_ID);
             }
@@ -1164,7 +1164,7 @@ namespace ClassWeb.Model
             {
                 comm.Parameters.AddWithValue("@" + Section.db_ID, obj.ID);
                 comm.Parameters.AddWithValue("@" + Section.db_Number, obj.SectionNumber);
-                comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
+              //  comm.Parameters.AddWithValue("@" + Section.db_CRN, obj.CRN);
                 return UpdateObject(comm);
             }
             catch (Exception ex)
@@ -1725,7 +1725,7 @@ namespace ClassWeb.Model
                 // now set object to Database.
 
                 comm.Parameters.AddWithValue("@" + Group.db_Name, obj.Name);
-                comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
+              //  comm.Parameters.AddWithValue("@" + Group.db_EmailAddress, obj.EmailAddress);
                 comm.Parameters.AddWithValue("@" + Group.db_UserName, obj.UserName);
                 comm.Parameters.AddWithValue("@" + Group.db_Password, obj.Password);
                 comm.Parameters.AddWithValue("@" + Group.db_Salt, obj.Salt);
@@ -1912,17 +1912,18 @@ namespace ClassWeb.Model
         /// <returns>List of Usernames string</returns>
         internal static List<Group> GetAllGroups()
         {
-            MySqlCommand comm = new MySqlCommand("get_Group");
+            
             List<Group> groupList = new List<Group>();
+            MySqlCommand comm = new MySqlCommand("get_Group");
             try
             {
                 comm.CommandType = System.Data.CommandType.StoredProcedure;
                 MySqlDataReader dr = GetDataReader(comm);
                 while (dr.Read())
                 {
-                    Group group = new Group(dr);
+                   
 
-                    groupList.Add(group);
+                    groupList.Add(new Group(dr));
                 }
                 comm.Connection.Close();
             }
