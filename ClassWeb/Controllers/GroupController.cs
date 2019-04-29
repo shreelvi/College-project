@@ -343,7 +343,7 @@ namespace ClassWeb.Controllers
             //Index page 
         public async Task<IActionResult> Index()
         {
-            if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+            if (UserCan<Group>(PermissionSet.Permissions.ViewAndEdit))
             {
                 int? gid = HttpContext.Session.GetInt32("GroupID");
                 int? uid = HttpContext.Session.GetInt32("UserID");
@@ -379,7 +379,7 @@ namespace ClassWeb.Controllers
         //Adds a group through the index page
         public IActionResult Create()
         {
-            if (UserCan<User>(PermissionSet.Permissions.Add))
+            if (UserCan<Group>(PermissionSet.Permissions.Add))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
                 if (uid != null)
@@ -418,7 +418,7 @@ namespace ClassWeb.Controllers
         //Edit the group information 
         public async Task<IActionResult> EditGroup(int? id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            if (UserCan<Group>(PermissionSet.Permissions.Edit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
                 int? gid = HttpContext.Session.GetInt32("GroupID");
@@ -453,9 +453,9 @@ namespace ClassWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditGroup(int? id, [Bind(",Name,UserName,ID")] Group group)
+        public async Task<IActionResult> EditGroup(int? id, [Bind("Name,UserName,ID")] Group group)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            if (UserCan<Group>(PermissionSet.Permissions.Edit))
             {
                 if (id != group.ID)
                 {
@@ -516,6 +516,9 @@ namespace ClassWeb.Controllers
             }
 
         }
+
+       
+
         //displays the list for users of that particular group
         public async Task<IActionResult> ViewGroupUsers(int? id)
         {
@@ -671,7 +674,7 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
             {
                 int test = DAL.DeleteGroupByID(id);
                 if (test > 0)
@@ -691,7 +694,7 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> DeleteUsersFromGroup(int? groupId, int? userId)
         {
 
-            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
             {
                 if (userId == null)
                 {
@@ -719,7 +722,7 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedForGroupUsers(int gid, int uid)
         {
-            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            if (UserCan<Group>(PermissionSet.Permissions.Delete))
             {
                 int test = DAL.DeleteGroupUserByID(gid, uid);
                 if (test > 0)

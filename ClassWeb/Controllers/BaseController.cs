@@ -136,6 +136,12 @@ namespace ClassWeb.Controllers
             {
                 return user.Role.Users >= perm;
             }
+            //else if (typeof(T) == typeof(Group))
+            //{
+            //    Role r = user.Role;
+            //    PermissionSet nn = r.Roles;
+            //    return user.Role.Roles >= perm;
+            //}
             else
                 return false;
         }

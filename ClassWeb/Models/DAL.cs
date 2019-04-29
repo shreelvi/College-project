@@ -19,10 +19,10 @@ namespace ClassWeb.Model
         /// Reference: From Professor's PeerEval Project
         /// </summary
 
-        private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
-        //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
-        //private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+       // private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+       // private static string EditOnlyConnectionString = "Server=localhost;Database=classweb; Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
+        private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
+        private static string EditOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=x129y190;";
         //private static string ReadOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
         //private static string EditOnlyConnectionString = "Server=localhost;Database=sapkgane;Uid=root;Pwd= ;";
         //private static string ReadOnlyConnectionString = "Server=MYSQL7003.site4now.net;Database=db_a458d6_shreelv;Uid=a458d6_shreelv;Pwd=elvish123;";
@@ -1759,7 +1759,7 @@ namespace ClassWeb.Model
             Group retObj = null;
             try
             {
-                comm.Parameters.AddWithValue("@" + Group.db_ID, id);
+                comm.Parameters.AddWithValue("@" + "GroupID", id);
                 MySqlDataReader dr = GetDataReader(comm);
 
                 while (dr.Read())
@@ -1984,11 +1984,11 @@ namespace ClassWeb.Model
         {
 
             MySqlCommand comm = new MySqlCommand("CheckUserExistsInGroup");
-            if (UserID == 0)
+            if (UserID != 0)
                 try
                 {
                    
-                    comm.Parameters.AddWithValue("@" + User.db_ID, UserID);
+                    comm.Parameters.AddWithValue("@" + "UserID", UserID);
                     int dr = GetIntReader(comm);
 
                     return dr;
