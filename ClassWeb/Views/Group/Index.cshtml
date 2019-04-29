@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 
 }
+@* Summary- This is a index view for the group. Created by Sakshi, edited by Elvis *@
 @{var i = 1;}
 
 <h2>Index</h2>
@@ -17,9 +18,7 @@
             <th>
                 <p>Name</p>
             </th>
-            <th>
-                <p>EmailAddress</p>
-            </th>
+            
             <th>
                 <p>UserName</p>
             </th>
@@ -49,9 +48,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
@@ -81,9 +78,9 @@
                     </td>*@
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="EditGroup" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="DetailGroup" asp-route-id="@item.ID">Detail</a> |
+                    <a asp-action="DeleteGroup" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }

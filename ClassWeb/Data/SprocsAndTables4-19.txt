@@ -215,12 +215,21 @@ CREATE TABLE `class` (
 -- Table structure for table `course`
 --
 
+-- ======================================================
+
+-- Author: Mohan
+-- Description:	Create course table in the database
+-- ======================================================
+
 CREATE TABLE `course` (
-  `ID` int(11) NOT NULL,
-  `Name` varchar(50) DEFAULT NULL,
-  `Number` varchar(10) DEFAULT NULL,
-  `ClassID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `CourseID` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `Subject` VARCHAR(50) NOT NULL,
+  `CourseNumber` INT(11)  NOT NULL,
+  `CourseTitle` VARCHAR(50) NOT NULL);
+  
+INSERT INTO course(Subject,  CourseNumber,CourseTitle) 
+	VALUES ( 'INFO', '4482', 'System Development Implementation Method');
+
 
 -- --------------------------------------------------------
 

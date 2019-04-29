@@ -26,7 +26,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -51,7 +51,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if (e != null)
+            else if(e != null)
                 ViewData["UserAddError"] = e;
 
             return RedirectToAction("Index", "Home");
@@ -126,8 +126,7 @@ namespace ClassWeb.Controllers
                 if (s != null)
                     ViewData["PermissionErr"] = s;
                 int id = 0;
-                if (LoggedInGroup.Name == "Anonymous")
-                {
+                if (LoggedInGroup.Name == "Anonymous") {
                     id = (int)HttpContext.Session.GetInt32("UserID");
                     string username = HttpContext.Session.GetString("username");
                     ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//UserDirectory//shreelvi";
@@ -136,17 +135,16 @@ namespace ClassWeb.Controllers
                     UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
                     return View(UserAssignments);
                 }
-                else
-                {
+                else {
                     id = (int)HttpContext.Session.GetInt32("GroupID");
                     string username = HttpContext.Session.GetString("username");
                     List<User> users = DAL.GetGroupUsers(6);
                     return RedirectToAction("Dashboard", "Group");
                 }
 
-
+                
             }
-
+            
         }
         /// <summary>
         /// Created on: 03/09/2019
@@ -190,7 +188,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-
+               
             }
             else
             {
