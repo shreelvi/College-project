@@ -57,9 +57,9 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var courseSemester = await _context.CourseSemester
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var courseSemester = id; //await _context.CourseSemester
+              //  .Include(c => c.Course)
+              //  .FirstOrDefaultAsync(m => m.ID == id);
             if (courseSemester == null)
             {
                 return NotFound();
@@ -217,7 +217,6 @@ namespace ClassWeb.Controllers
             }
             return View(retCourseSem);
         }
-
         // POST: CourseSemesters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

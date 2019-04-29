@@ -13,7 +13,7 @@ namespace ClassWeb.Models
     /// Created by: shreelvi
     /// Description: Association table for CourseSemester and User models
     /// </summary>
-    public class CourseSemesterUser: DatabaseRecord
+    public class CourseSemesterUser : DatabaseRecord
     {
 
         #region Constructors
@@ -65,7 +65,7 @@ namespace ClassWeb.Models
         }
 
 
-        
+
         /// <summary>
         /// Gets or sets the Semester for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
@@ -96,7 +96,7 @@ namespace ClassWeb.Models
             }
         }
 
-       
+
         /// <summary>
         /// Gets or sets the User for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
