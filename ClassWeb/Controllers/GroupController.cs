@@ -336,57 +336,126 @@ namespace ClassWeb.Controllers
         // GET: Prompt
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
+            {
+                int? gid = HttpContext.Session.GetInt32("GroupID");
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                Tuple<List<Group>, List<Group>> Groups = null;
+                if(gid != null)
+                {
+                    User u = DAL.UserGetByID(uid);
+                    List<Group> g = DAL.GetAllGroups();
+                    if(u == null)
+                    {
+                        return NotFound();
+                    }
+                    if (u.Role.IsAdmin)
+                    {
+                        
+                    }
+                    else
+                    {
 
-            List<Group> g = DAL.GetAllGroups();
-            return View(g);
+                    }
+                }
+                return View();
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit User";
+                return RedirectToAction("Index", "Group");
+            }
+
         }
 
 
 
         public IActionResult Create()
         {
-            return RedirectToAction("AddGroup", "Group");
-        }
+            if (UserCan<User>(PermissionSet.Permissions.Add))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                if (uid != null)
+                {
+                    User U = DAL.UserGetByID(uid);
+                    if (U == null)
+                    {
+                        return NotFound();
+                    }
+                    if (U.Role.IsAdmin)
+                    {
+                        return RedirectToAction("AddGroup", "Group");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                        return RedirectToAction("Index", "Group");
+                    }
+                }
+                else
+                {
+                    TempData["Error"] = "You Dont Have Enough Previlage to edit User";
+                    return RedirectToAction("Index", "Group");
+                }
+            }
+            else
+                {
+                    TempData["Error"] = "You Dont Have Enough Previlage to Create User";
+                    return RedirectToAction("Index", "Group");
+                }
+
+            }
+
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
 
         public async Task<IActionResult> EditGroup(int? id)
         {
+            if (UserCan<User>(PermissionSet.Permissions.Edit))
+            {
+                int? uid = HttpContext.Session.GetInt32("UserID");
+                int? gid = HttpContext.Session.GetInt32("GroupID");
+                if (gid != null)
+                {
+                    id = gid;
+                }
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var group = DAL.GroupGetByID(id);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                return View(group);
 
-            int? gid = HttpContext.Session.GetInt32("GroupID");
-            if (gid != null)
-            {
-                id = gid;
+                //else
+                //{
+                //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
+                //    return RedirectToAction("Dashboard", "Group");
+                //}
             }
-            if (id == null)
+            else
             {
-                return NotFound();
+                TempData["error"] = "You Dont Have Enough Previlage to edit Group";
+                return RedirectToAction("Index", "Group");
             }
-            var group = DAL.GroupGetByID(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-            return View(group);
-
-            //else
-            //{
-            //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
-            //    return RedirectToAction("Dashboard", "Group");
-            //}
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGroup(int? id, [Bind(",Name,UserName,ID")] Group group)
         {
-
-            if (id != group.ID)
+            if (UserCan<User>(PermissionSet.Permissions.Edit))
             {
+                if (id != group.ID)
+                {
                 return NotFound();
-            }
+                }
             int? gid = HttpContext.Session.GetInt32("GroupID");
             if (id == null && gid != null)
             {
@@ -396,27 +465,32 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    if (id == gid)
-                    {
+                    
                         int a = DAL.UpdateGroup(group);
                         if (a > 0)
                         {
-                            HttpContext.Session.SetString("UserName", group.UserName);
+                            //HttpContext.Session.SetString("UserName", group.UserName);
                             TempData["Message"] = "Group Succesfully Updated!!";
                         }
-                    }
-                    else
-                    {
-                        TempData["Message"] = "Trick!!";
-                    }
-                    return RedirectToAction("Dashboard", "Group");
-                }
+                        else
+                        {
+                            TempData["Message"] = "Trick!!";
+                            return RedirectToAction("Index", "Group");
+                        }
+                 }
+                    
                 catch (Exception ex)
                 {
 
                 }
             }
-            return RedirectToAction("Dashboard", "Group");
+            return RedirectToAction("Index", "Group");
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to edit Group";
+                return RedirectToAction("Index", "Group");
+            }
         }
 
         public ActionResult Profile()
@@ -456,6 +530,23 @@ namespace ClassWeb.Controllers
 
         }
 
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (UserCan<User>(PermissionSet.Permissions.View))
+        //    {
+        //        User user = DAL.UserGetByID();
+        //        Group g = DAL.GetGroupByID(id)
+        //        List<Role> Role = DAL.GetRoles();
+        //        Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user, Role);
+        //        return View(User);
+        //    }
+        //    else
+        //    {
+        //        TempData["Error"] = "You Dont Have Enough Previlage to view Group";
+        //        return RedirectToAction("Dashboard", "Group");
+        //    }
+
+        //}
 
         //#region resetpassword
         //public ActionResult ResetPasswordEmail()
@@ -543,9 +634,10 @@ namespace ClassWeb.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteGroup(int? id)
         {
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
+            {
 
-
-            if (id == null)
+                if (id == null)
             {
                 return NotFound();
             }
@@ -558,6 +650,13 @@ namespace ClassWeb.Controllers
 
             return View(g);
 
+
+        }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Group";
+                return RedirectToAction("Index", "Group");
+            }
         }
 
         // POST: Group/DeleteGroup/5
@@ -565,36 +664,47 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-
-            int test = DAL.DeleteGroupByID(id);
-            if (test > 0)
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
             {
+                int test = DAL.DeleteGroupByID(id);
+                if (test > 0)
+                {
                 ViewBag.Message = "Group Succesfully Deleted!!";
-            }
+                }
             return RedirectToAction(nameof(Index));
-
-
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
+                return RedirectToAction("Index", "Group");
+            }
         }
 
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteUsersFromGroup(int? groupId, int? userId)
         {
 
-
-            if (userId == null)
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
             {
-                return NotFound();
+                if (userId == null)
+                {
+                    return NotFound();
+                }
+
+                List<ViewGroupUser> u = DAL.GetAllGroupUsersByID(groupId);
+                if (u == null)
+                {
+                    return NotFound();
+                }
+
+                return View(u);
+
             }
-
-
-            List<ViewGroupUser> u = DAL.GetAllGroupUsersByID(groupId);
-            if (u == null)
+            else
             {
-                return NotFound();
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete User";
+                return RedirectToAction("Index", "Group");
             }
-
-            return View(u);
-
         }
 
         // POST: Group/DeleteGroup/5
@@ -602,14 +712,20 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedForGroupUsers(int gid, int uid)
         {
-
-            int test = DAL.DeleteGroupUserByID(gid, uid);
-            if (test > 0)
+            if (UserCan<User>(PermissionSet.Permissions.Delete))
             {
-                ViewBag.Message = "Group Succesfully Deleted!!";
+                int test = DAL.DeleteGroupUserByID(gid, uid);
+                if (test > 0)
+                {
+                    ViewBag.Message = "Group Succesfully Deleted!!";
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Delete Users";
+                return RedirectToAction("Index", "Group");
+            }
 
         }
 
