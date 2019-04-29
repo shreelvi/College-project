@@ -12,6 +12,11 @@ namespace ClassWeb.Controllers
 {
     public class YearController : BaseController
     {
+
+        /// <summary>
+        /// reference: http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// </summary>
+        /// <returns></returns>
         // GET: Year
         public async Task<IActionResult> Index()
         {
@@ -64,6 +69,7 @@ namespace ClassWeb.Controllers
 
             return View(year);
         }
+    
 
         // GET: Year/Create
         public IActionResult Create()
