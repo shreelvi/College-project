@@ -45,7 +45,7 @@ namespace ClassWeb.Models
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
-        internal const string db_Assignments = "Assignments";
+       // internal const string db_Assignments = "Assignments";
         internal const string db_AssignmentID = "AssignmentID";
 
         #endregion
