@@ -47,9 +47,9 @@ namespace ClassWeb.Models
 
         #region Database String
         internal const string db_ID = "ID";
-        internal const string db_Title = "CourseTitle";
-        internal const string db_Name = "CourseName";
-        internal const string db_Description = "CourseDescription";
+        internal const string db_Title = "Title";
+        internal const string db_Name = "Name";
+        internal const string db_Description = "Description";
         #endregion
 
         #region Public Functions
@@ -80,12 +80,11 @@ namespace ClassWeb.Models
             _ID = dr.GetInt32(db_ID);
             _Title = dr.GetString(db_Title);
             _Name = dr.GetString(db_Name);
-            //_Description = dr.GetString(db_Description);
+            _Description = dr.GetString(db_Description);
         }
 
-        public override string ToString()
-        {
-            throw new NotImplementedException();
+        public override string ToString() { 
+        return this.GetType().ToString();
         }
         #endregion
     }

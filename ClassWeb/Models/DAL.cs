@@ -955,6 +955,34 @@ namespace ClassWeb.Model
 
         #region Courses
         ///<summary>
+        /// Created By: Mohan 
+        /// Get Course by its ID from database 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+        internal static Course GetCourseByID(int? id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetCourseByID");
+            Course retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Course(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        ///<summary>
         ///Created by: Mohan
         ///Create/Add Course in database
         /// Reference: Professor peerVal project from github. 
@@ -1050,7 +1078,7 @@ namespace ClassWeb.Model
         internal static int UpdateCourse(Course obj)
         {
             if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_EditCourse");
+            MySqlCommand comm = new MySqlCommand("sproc_UpdateCourse");
             try
             {
                 comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
