@@ -91,6 +91,7 @@
                         <p>@item.Semester.Name @item.Year.Year1</p>
                         <p>CRN: @item.CRN</p>
                         <h4>Number of Students: 21</h4>
+                        <a asp-controller="Admin" asp-action="ActiveClassView" asp-route-id="@item.ID">View</a>
                         <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                         <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                     </div>

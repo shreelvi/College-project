@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +64,6 @@ namespace ClassWeb.Controllers
             }
 
             var course = DAL.GetCourseByID(id);
-            List<Course> Course = DAL.GetCourse();
             if (course == null)
             {
                 return NotFound();
@@ -93,7 +90,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Subject, CourseNumber,CourseTitle,ID")] Course course)
+        public IActionResult Create([Bind("Title, Name, Description")] Course course)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -127,7 +124,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("Title, Name, Description,ID")] Course course)
         {
             if (id != course.ID)
             {
@@ -142,7 +139,7 @@ namespace ClassWeb.Controllers
                     if (c > 0)
                     {
                         TempData["CourseUpdate"] = "Course Updated successfully!!!";
-                        
+
                     }
                 }
                 catch (DbUpdateConcurrencyException)

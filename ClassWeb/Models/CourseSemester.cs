@@ -11,12 +11,15 @@ namespace ClassWeb.Models
     public class CourseSemester : DatabaseRecord
     {
 
+        /// <summary>
+        /// This is the associasion between course and semester which does has the information about the courses and
+        /// the semester in that particular year, section and times. 
+        /// </summary>
         #region Constructors
         public CourseSemester()
         {
         }
-        internal CourseSemester
-(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal CourseSemester(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -273,7 +276,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "CourseSemesterID";
+        internal const string db_ID = "ID";
         internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";
@@ -316,6 +319,7 @@ namespace ClassWeb.Models
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
+
             //_DateStart = dr.GetDateTime(db_DateStart);
             //_DateEnd = dr.GetDateTime(db_DateEnd);
         }

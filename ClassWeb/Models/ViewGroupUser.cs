@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
-    public class ViewGroupUser: DatabaseRecord
+    public class ViewGroupUser : DatabaseRecord
     {
         /// <summary>
         /// Created By: Kishor Simkhada
@@ -17,63 +17,63 @@ namespace ClassWeb.Models
         /// Every user can login to the system unless deleted.
         /// </summary>
 
-       
-
-            #region Constructors
-            /// <summary>
-            /// Code By Elvis
-            /// Constructor to map results of sql query to the class
-            /// Reference: GitHub PeerVal Project
-            /// </summary>
-            public ViewGroupUser()
-            {
-            }
-            internal ViewGroupUser(MySql.Data.MySqlClient.MySqlDataReader dr)
-            {
-                Fill(dr);
-            }
-
-            #endregion
-
-            #region private variable
-            private string _FirstName;
-           // private string _MiddleName;
-            private string _LastName;
-            private string _EmailAddress;
-        
-            #endregion
-
-            #region Database String
-            internal const string db_UserID = "UserID";
-            internal const string db_FirstName = "FirstName";
-//internal const string db_MiddleName = "MiddleName";
-            internal const string db_LastName = "LastName";
-            internal const string db_EmailAddress = "EmailAddress";
-        
 
 
+        #region Constructors
+        /// <summary>
+        /// Code By Elvis
+        /// Constructor to map results of sql query to the class
+        /// Reference: GitHub PeerVal Project
+        /// </summary>
+        public ViewGroupUser()
+        {
+        }
+        internal ViewGroupUser(MySql.Data.MySqlClient.MySqlDataReader dr)
+        {
+            Fill(dr);
+        }
 
-            #endregion
+        #endregion
 
-            #region public Properites
+        #region private variable
+        private string _FirstName;
+        // private string _MiddleName;
+        private string _LastName;
+        private string _EmailAddress;
 
-            public string FirstName
-            {
-                get { return _FirstName; }
-                set { _FirstName = value; }
-            }
-           
-           
-            public string LastName
-            {
-                get { return _LastName; }
-                set { _LastName = value; }
-            }
-            public string EmailAddress
-            {
-                get { return _EmailAddress; }
-                set { _EmailAddress = value; }
-            }
+        #endregion
+
+        #region Database String
+        internal const string db_UserID = "UserID";
+        internal const string db_FirstName = "FirstName";
+        //internal const string db_MiddleName = "MiddleName";
+        internal const string db_LastName = "LastName";
+        internal const string db_EmailAddress = "EmailAddress";
+
+
+
+
+        #endregion
+
+        #region public Properites
+
+        public string FirstName
+        {
+            get { return _FirstName; }
+            set { _FirstName = value; }
+        }
+
+
+        public string LastName
+        {
+            get { return _LastName; }
+            set { _LastName = value; }
+        }
+        public string EmailAddress
+        {
+            get { return _EmailAddress; }
+            set { _EmailAddress = value; }
+        }
 
 
 
@@ -103,24 +103,20 @@ namespace ClassWeb.Models
         /// </summary>
         /// <remarks></remarks>
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
-            {
-                _ID = dr.GetInt32(db_UserID);
-                _FirstName = dr.GetString(db_FirstName);
-               
-                _LastName = dr.GetString(db_LastName);
-                _EmailAddress = dr.GetString(db_EmailAddress);
+        {
+            _ID = dr.GetInt32(db_UserID);
+            _FirstName = dr.GetString(db_FirstName);
 
-               
-            }
-            #endregion
+            _LastName = dr.GetString(db_LastName);
+            _EmailAddress = dr.GetString(db_EmailAddress);
 
-            public override string ToString()
-            {
-                return this.GetType().ToString();
-            }
+
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return this.GetType().ToString();
         }
     }
-
-
-
-
+}

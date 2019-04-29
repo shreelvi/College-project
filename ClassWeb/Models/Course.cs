@@ -30,38 +30,37 @@ namespace ClassWeb.Models
         #endregion
 
         #region Private Variables
-        private string _Subject;
-        private int _CourseNumber;
-        private string _CourseTitle;
+        private string _Title;
+        private string _Name;
+        private string _Description;
         
         #endregion
 
         #region Public Variables
 
-        public string Subject
+        public string Title
         {
-            get { return _Subject; }
-           set { _Subject = value; }
+            get { return _Title; }
+           set { _Title = value; }
         }
-        public int CourseNumber
+        public string Name
         {
-            get { return _CourseNumber; }
-            set { _CourseNumber = value; }
+            get { return _Name; }
+            set { _Name = value; }
         }
-        public string CourseTitle
+        public string Description
         {
-            get { return _CourseTitle; }
-            set { _CourseTitle = value; }
+            get { return _Description; }
+            set { _Description = value; }
         }
 
         #endregion
 
         #region Database String
         internal const string db_ID = "ID";
-        internal const string db_Subject = "Subject";
-        internal const string db_CourseNumber = "CourseNumber";
-        internal const string db_CourseTitle = "CourseTitle";
-      
+        internal const string db_Title = "Title";
+        internal const string db_Name = "Name";
+        internal const string db_Description = "Description";
         #endregion
 
         #region Public Functions
@@ -90,14 +89,13 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _Subject = dr.GetString(db_Subject);
-            _CourseNumber = dr.GetInt32(db_CourseNumber);
-            _CourseTitle = dr.GetString(db_CourseTitle);
+            _Title = dr.GetString(db_Title);
+            _Name = dr.GetString(db_Name);
+            _Description = dr.GetString(db_Description);
         }
 
-        public override string ToString()
-        {
-            return this.GetType().ToString();
+        public override string ToString() { 
+        return this.GetType().ToString();
         }
         #endregion
     }

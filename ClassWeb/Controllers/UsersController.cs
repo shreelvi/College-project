@@ -166,7 +166,7 @@ namespace ClassWeb.Controllers
                 {
                     U.RoleID = (int)Role;
                     int i = DAL.UpdateUserRole(U);
-                    return RedirectToAction("" + UserID, "Users/Details");
+                    return RedirectToAction("" + UserID, "User/Details");
                 }
             }
             else

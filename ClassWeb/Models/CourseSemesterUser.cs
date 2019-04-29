@@ -13,7 +13,7 @@ namespace ClassWeb.Models
     /// Created by: shreelvi
     /// Description: Association table for CourseSemester and User models
     /// </summary>
-    public class CourseSemesterUser: DatabaseRecord
+    public class CourseSemesterUser : DatabaseRecord
     {
 
         #region Constructors
@@ -65,7 +65,7 @@ namespace ClassWeb.Models
         }
 
 
-        
+
         /// <summary>
         /// Gets or sets the Semester for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
@@ -96,7 +96,7 @@ namespace ClassWeb.Models
             }
         }
 
-       
+
         /// <summary>
         /// Gets or sets the User for this object.
         /// Reference: Taken code from prof. Holmes Peerval Project
@@ -109,7 +109,7 @@ namespace ClassWeb.Models
             {
                 if (_User == null)
                 {
-                    _User = DAL.GetUser(_UserID);
+                    _User = DAL.UserGetByID(_UserID);
                 }
                 return _User;
             }
@@ -126,13 +126,10 @@ namespace ClassWeb.Models
                 }
             }
         }
-
-
-
         #endregion
 
         #region Database String
-        internal const string db_ID = "CourseSemesterUserID";
+        internal const string db_ID = "ID";
         internal const string db_CourseSemesterID = "CourseSemesterID";
         internal const string db_UserID = "UserID";
         #endregion

@@ -56,7 +56,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
@@ -83,8 +83,22 @@ namespace ClassWeb.Models
         }
         public string VerificationCode
         {
-            get { return _VerificationCode; }
-            set { _VerificationCode = value; }
+            get
+            {
+               
+                return
+                    _VerificationCode;
+            }
+            set {
+                if (_VerificationCode == null)
+                {
+                    _VerificationCode = "";
+                }
+                else
+                {
+                _VerificationCode = value;
+                }
+            }
         }
         public string FirstName
         {
@@ -111,11 +125,6 @@ namespace ClassWeb.Models
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-        //public string Address
-        //{
-        //    get { return _Address; }
-        //    set { _Address = value; }
-        //}
         public string UserName
         {
             get { return _UserName; }
@@ -212,35 +221,12 @@ namespace ClassWeb.Models
             set { _Assignments = value; }
         }
 
-        //public long PhoneNumber
-        //{
-        //    get { return _PhoneNumber; }
-        //    set { _PhoneNumber = value; }
-        //}
-
-        //public bool AccountExpired
-        //{
-        //    get { return _AccountExpired; }
-        //    set { _AccountExpired = value; }
-        //}
-
         public int Archived
         {
             get { return _Archived; }
             set { _Archived = value; }
         }
 
-        //public bool PasswordExpired
-        //{
-        //    get { return _PasswordExpired; }
-        //    set { _PasswordExpired = value; }
-        //}
-
-        //public bool Enabled
-        //{
-        //    get { return _Enabled; }
-        //    set { _Enabled = value; }
-        //}
         #endregion
 
         #region Public Functions
@@ -274,9 +260,9 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            //DateTime DateCreated = dr.GetDateTime(db_DateCreated);
-            DateModified = dr.GetDateTime(db_DateModified);
-           _DateModified = DateTime.Parse(DateModified.ToString());
+           // DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+            //_DateModified = dr.GetDateTime(db_DateModified);
+            // _DateModified = DateTime.Parse(DateModified.ToString());
             //_DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
