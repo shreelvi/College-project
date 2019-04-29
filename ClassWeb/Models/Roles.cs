@@ -20,7 +20,7 @@ namespace ClassWeb.Models
         {
             get
             {
-                if (_List == null)
+                if (_List==null)
                     _List = DAL.GetRoles();
                 return _List;
             }

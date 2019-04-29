@@ -212,7 +212,6 @@ namespace ClassWeb.Controllers
             }
             return View(retCourseSem);
         }
-
         // POST: CourseSemesters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -23,7 +23,7 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private int _SectionNumber;
-        //private int _CRN;
+        private int _CRN;
         //private int _ClassID;
 
 
@@ -44,6 +44,18 @@ namespace ClassWeb.Models
                 _SectionNumber = value;
             }
         }
+        public int CRN
+        {
+            get
+            {
+                return _CRN;
+            }
+
+            set
+            {
+                _CRN = value;
+            }
+        }
 
 
 
@@ -52,7 +64,8 @@ namespace ClassWeb.Models
 
         #region Database String
         internal const string db_ID = "ID";
-        internal const string db_Number = "SectionNumber";
+        internal const string db_Number = "Number";
+        internal const string db_CRN = "CRN";
         #endregion
 
         #region Public Functions
@@ -82,6 +95,7 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _SectionNumber = dr.GetInt32(db_Number);
+            _CRN = dr.GetInt32(db_CRN);
         }
         #endregion
 

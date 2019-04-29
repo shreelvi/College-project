@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Storage Application</title>
+    <script src="Script/jquery-3.3.1.js"></script>
+    <!--<link href="../Images/favicon.ico" rel="shortcut icon" />
+    <link href="../Styles/style.css" rel="stylesheet" />
+    <link href="../Styles/part3style.css" rel="stylesheet" />
+    <link href="../Styles/Storage.css" rel="stylesheet" />-->
+    <script src="../Script/Storage.js"></script>
+</head>
+<body>
+    <form id="frm_Login">
+        <fieldset>
+            <div>
+                <label>UserName</label>
+                <br />
+                <input type="text" id="UserName" name="UserName" value="" placeholder="UserName" />
+            </div>
+            <div>
+                <label>Password</label><br />
+                <input type="password" id="Password" name="Password" value="" placeholder="Password"/>
+            </div>
+            <div>
+                <input type="checkbox" id="Remember"/>
+                <lable>Remember Me</lable>
+                <button id="btn_Forget" >Forget Me</button>
+                <button id="btn_Login">Login</button>
+            </div>
+        </fieldset>
+    </form>
+    <form id="frm_SignUp">
+        <fieldset>
+            <div>
+                <label>Name</label>
+                <br />
+                <input type="text" id="Name" name="Name" value="" placeholder="Name" />
+            </div>
+            <div>
+                <label>Phone</label>
+                <br />
+                <input type="text" id="Phone" name="Phone" value="" placeholder="***-***-****" />
+            </div>
+            <div>
+                <label>Age</label>
+                <br />
+                <input type="text"id="Age" name="Age" value="" placeholder="Age" />
+            </div>
+            <fieldset>
+                <legend>Group</legend>
+                <div>
+                    <input id="Group" type="radio" name="group" value="1"/>
+                    <label>1</label>
+                </div>
+                <div>
+                    <input id="Group" type="radio" name="group" value="2"/>
+                    <label>2</label>
+                </div>
+                <div>
+                    <input id="Group" type="radio" name="group" value="3"/>
+                    <lable>3</lable>
+                </div>
+            </fieldset>
+            <button id="AddPerson">Add Person</button>
+            <button id="ClearStorage">Clear Storage</button>
+        </fieldset>
+    </form>
+    <a href="../Assignment 9/ViewStorage.html">View Storage</a>
+    <ul id="userList"></ul>
+    <a href="../Assignment 1/index.html">Back to Assignment List</a>
+</body>
+</html>

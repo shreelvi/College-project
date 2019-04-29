@@ -6,17 +6,34 @@
     ViewData["Title"] = "AddUserToGroup";
 
 }
+
+@* Summary- This is a add users to group view used to add different users in a group. Created by Sakshi, edited by Elvis *@
 <p style="color:red">@ViewBag.UserAddError</p>
 <p style="color:red">@ViewBag.Error</p>
 <div class="row">
     <div class="col-md-4">
         <form method="post">
-            <h2 style="color: darkorange">Add a new group.</h2>
+            <h2 style="color: darkorange">Add users to the group.</h2>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="Group">
+                <div>
+                    <label for="Users">Number of users:</label>
+                    <input name="Users" type="number" id="numberOfStudents" />
 
-            <div class="Users">
+                </div>
+
+                <div id="DynamicEmail">
+
+                </div>
+            </div>
+                @*<div class="Users">
                 <label>Add users by email address:</label>
+                <div>
+                    <label for="Users">Number of users:</label>
+                    <input name="Users" type="number" id="numberOfStudents" />
+                </div>
+
 
                 <input name="Users[0].ID" type="hidden" value="0" />
                 <div class="form-group">
@@ -39,10 +56,8 @@
                     <label>EmailAdress 4</label>
                     <input asp-for="Users[3].EmailAddress" class="form-control" />
                 </div>
-
-            </div>
-
-            <button type="submit" class="btn btn-default">Add</button>
+            </div>*@
+                <button type="submit" class="btn btn-default">Add</button>
         </form>
     </div>
 </div>

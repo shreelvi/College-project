@@ -27,7 +27,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -52,7 +52,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if (e != null)
+            else if(e != null)
                 ViewData["UserAddError"] = e;
 
             return RedirectToAction("Index", "Home");
@@ -163,7 +163,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-
+               
             }
             else
             {
