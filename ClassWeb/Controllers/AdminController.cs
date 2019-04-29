@@ -32,8 +32,8 @@ namespace ClassWeb.Controllers
             return View(UsersToDisplay);
         }
 
-       public IActionResult ProfessorDashboard()
-       {
+        public IActionResult ProfessorDashboard()
+        {
             int userID = 0;
             //User LoggedIn = CurrentUser;
             //if (LoggedIn.FirstName == "Anonymous")
@@ -46,6 +46,26 @@ namespace ClassWeb.Controllers
             List<CourseSemester> activeClasses = new List<CourseSemester>();
             activeClasses = DAL.GetCourseSemestersForUser(userID);
             return View(activeClasses);
-       }
-}
+        }
+
+        public IActionResult ActiveClassView(int? id)
+        {
+            List<ViewGroupUser> Students = DAL.GetUsersInClass(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var c = DAL.GetCourseSemester(id);
+            if (c == null)
+            {
+                return NotFound();
+            }
+
+            //ViewBag.ActiveClass = c;
+            ViewBag.Students = Students;
+
+            return View(c);
+        }
+    }
 }

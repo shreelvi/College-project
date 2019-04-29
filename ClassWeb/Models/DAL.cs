@@ -911,7 +911,7 @@ namespace ClassWeb.Model
             return retList;
         }
 
-        public static CourseSemester GetCourseSemester(int id)
+        public static CourseSemester GetCourseSemester(int? id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
             CourseSemester retObj = null;
@@ -1055,6 +1055,34 @@ namespace ClassWeb.Model
             return -1;
         }
         #endregion
+
+        /// <summary>
+        /// Get list of all users from the database associated with the CourseSemesterID
+        /// Returns viewgroupusers model that contains basic user infromation
+        /// </summary>
+        /// <returns></returns>
+        public static List<ViewGroupUser> GetUsersInClass(int? id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_GetUsersForClass");
+            List<ViewGroupUser> retList = new List<ViewGroupUser>();
+            try
+            {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, id);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retList.Add(new ViewGroupUser(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
 
         #region Semester
         /// <summary>
