@@ -1329,8 +1329,6 @@ namespace ClassWeb.Model
         //Reference: Prof. Holmes PeerVal Project
         //Copied code for Roles CRUD and modified to use for the section
         //</summary>
-
-
         public static CourseSemester GetCourseSemester(int id)
         {
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
