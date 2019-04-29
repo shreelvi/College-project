@@ -20,8 +20,8 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
-            int? id=HttpContext.Session.GetInt32("UserID");
-            User LoggedIn = DAL.UserGetByID(id);
+            User LoggedIn = CurrentUser;
+
             if (LoggedIn.FirstName == "Anonymous")
             {
                 TempData["LoginError"] = "Please login to view the page.";
@@ -49,7 +49,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var c = DAL.GetCourseSemester(id);
+            var c = DAL.GetCourseSemester((int)id);
             if (c == null)
             {
                 return NotFound();

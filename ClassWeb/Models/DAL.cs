@@ -1016,37 +1016,6 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
-
-        ///<summary>
-        /// Created By: Mohan 
-        /// Get Course by its ID from database 
-        /// Reference: PeerVal project by Professor
-        /// </summary>
-        /// <remarks></remarks>
-        internal static Course GetCourseByID(int? id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_GetCourseByID");
-            Course retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + Course.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-
-                while (dr.Read())
-                {
-                    retObj = new Course(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-
-
         ///<summary>
         /// Created By: Mohan 
         /// Edit Course 
@@ -1093,7 +1062,7 @@ namespace ClassWeb.Model
                 retParameter = comm.Parameters.Add("@" + Course.db_ID, MySqlDbType.Int32);
                 retParameter.Direction = System.Data.ParameterDirection.Output;
                 comm.ExecuteNonQuery();
-                retInt = (int)retParameter.Value;
+                int retInt = (int)retParameter.Value;
                 comm.Connection.Close();
             }
             catch (Exception ex)
@@ -1256,51 +1225,7 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-        public static CourseSemester GetCourseSemester(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
-            CourseSemester retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retObj = new CourseSemester(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-
-
-        /// <summary>
-        /// Attempts to delete the database entry corresponding to the CourseSemester
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int RemoveCourseSemester(int CourseSemesterID)
-        {
-            if (CourseSemesterID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                comm.CommandText = "sproc_CourseSemesterRemove";
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, CourseSemesterID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
-
+       
         /// <summary>
         /// Attempts to the database entry corresponding to the given Section
         /// </summary>
@@ -1397,81 +1322,6 @@ namespace ClassWeb.Model
             }
             return retList;
         }
-        public static CourseSemester GetCourseSemester(int? id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterGet");
-            CourseSemester retObj = null;
-            try
-            {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retObj = new CourseSemester(dr);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
-
-        /// <summary>
-        /// Attempts to add a database entry corresponding to the given CourseSemester
-        /// </summary>
-        /// <remarks></remarks>
-
-        internal static int AddCourseSemester(CourseSemester obj)
-        {
-            if (obj == null) return -1;
-            MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
-            try
-            {
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_YearID, obj.YearID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_SectionID, obj.SectionID);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_DateStart, obj.DateStart);
-                comm.Parameters.AddWithValue("@" + CourseSemester.db_DateEnd, obj.DateEnd);
-                return AddObject(comm, "@" + CourseSemester.db_ID);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-        /// <summary>
-        /// Get list of all CourseSemesters CLassweb.objects from the database associated with the userID
-        /// </summary>
-        /// <returns></returns>
-        public static List<CourseSemester> GetCourseSemestersForUser(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_GetClassesForUser");
-            List<CourseSemester> retList = new List<CourseSemester>();
-            try
-            {
-                comm.Parameters.AddWithValue("@" + User.db_ID, id);
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    retList.Add(new CourseSemester(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
-
         //<summary>
         //Created on: 04/09/2019
         //Created by: Elvis

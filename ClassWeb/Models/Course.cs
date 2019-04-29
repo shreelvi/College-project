@@ -31,7 +31,7 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private string _Title;
-        private int _Name;
+        private string _Name;
         private string _Description;
         
         #endregion
@@ -43,7 +43,7 @@ namespace ClassWeb.Models
             get { return _Title; }
            set { _Title = value; }
         }
-        public int Name
+        public string Name
         {
             get { return _Name; }
             set { _Name = value; }
