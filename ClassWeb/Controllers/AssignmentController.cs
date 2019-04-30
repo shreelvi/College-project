@@ -33,24 +33,22 @@ namespace ClassWeb.Controllers
                     User U = DAL.UserGetByID(ID);
                     if (U != null)
                     {
-                        if (U.Role.IsAdmin)
-                        {
 
-                            ViewBag.Dir = "Home" + RootDir();
-                        }
+                        ViewBag.Dir = "Home" + RootDir();
                         CurrentDir();
                         Tuple<List<Assignment>, List<string>, List<Assignment>> assignments = GetFiles();
                         return View(assignments);
                     }
                 }
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
         }
+
         //https://www.c-sharpcorner.com/article/asp-net-core-2-0-mvc-routing/
         public ActionResult FileView(string FileName)
         {
@@ -67,7 +65,7 @@ namespace ClassWeb.Controllers
                     if (U.Role.IsAdmin == true)
                     {
                         path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory").Replace("\\", "/");
-                        if (s == path)
+                        if (s == path.Replace("\\", "/"))
                         {
                             url = Url.RouteUrl("root", new { UserName = "AssignmentDirectory", FileName = FileName });
                         }
@@ -82,7 +80,7 @@ namespace ClassWeb.Controllers
                     else
                     {
                         path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName);
-                        if (s == path)
+                        if (s == path.Replace("\\", "/"))
                         {
                             url = Url.RouteUrl("root", new { UserName = U.UserName, FileName = FileName });
                         }
@@ -95,6 +93,7 @@ namespace ClassWeb.Controllers
                         }
                     }
 
+                    url = url.Replace("%20", "/");
                     return new RedirectResult(url);
                 }
                 else
@@ -105,7 +104,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -159,17 +158,61 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
+        public IActionResult ChangeDir(string dir)
+        {
+            if (UserCan<Assignment>(PermissionSet.Permissions.View))
+            {
+                int? ID = HttpContext.Session.GetInt32("UserID");
+                if (ID != null)
+                {
+                    User U = DAL.UserGetByID(ID);
+                    if (U != null)
+                    {
+                        if (U.Role.IsAdmin == true)
+                        {
 
+                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory"));
+                        }
+                        else
+                        {
+                            Directory.SetCurrentDirectory(Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName));
+                        }
+                        Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(), dir));
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
+                return RedirectToAction("index", "Home");
+            }
+
+        }
+        public IActionResult ChangeRootDir(string dir)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
         public IActionResult ChangeDirUp(string dir)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
             Directory.SetCurrentDirectory(path);
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult ChangeToRootDir(string dir)
+        {
+            SetDefaultDir();
+            string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+            Directory.SetCurrentDirectory(path);
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult ChangeDirDown()
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.View))
@@ -200,7 +243,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -214,45 +257,63 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
         }
         [HttpPost]
-        public IActionResult SaveEditedFile(string Content, string FileName)
+        public IActionResult SaveEditedFile(string Content, string FileName,int? ID)
         {
             if (UserCan<Assignment>(PermissionSet.Permissions.ViewAndEdit))
             {
-                if (Content != null && Content.Length > 0)
+                if (ID != null)
                 {
-
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
-
-                    try
+                    Assignment a = DAL.AssignmentGetByID((int)ID);
+                    a.DateModified = DateTime.Now;
+                    if (a.FileName != FileName)
                     {
-                        if (System.IO.File.Exists(path))
+                        a.FileName = FileName;
+                    }
+                    if (Content != null && Content.Length > 0)
+                    {
+
+                        string path = Path.Combine(Directory.GetCurrentDirectory(), FileName);
+
+                        try
                         {
-                            using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                            if (System.IO.File.Exists(path))
                             {
-                                fileStream.SetLength(0);
-                                fileStream.Close();
+                                using (FileStream fileStream = new FileStream(path, FileMode.Open))
+                                {
+                                    fileStream.SetLength(0);
+                                    fileStream.Close();
+                                }
+                                StreamWriter sw = new StreamWriter(path);
+                                sw.Write(Content);
+                                sw.Close();
+                                int i = DAL.UpdateAssignmentFileName(a);
+                                if (i > 0)
+                                {
+                                    TempData["Message"] = "File Has Been Modified Succesfully";
+                                }
+                                else
+                                {
+                                    TempData["Message"] = "File Has Been Modified locally there is database error!!";
+                                }
                             }
-                            StreamWriter sw = new StreamWriter(path);
-                            sw.Write(Content);
-                            sw.Close();
-                            ViewBag.Message = "File Has Been Succefully Modified";
+                        }
+                        catch (Exception ex)
+                        {
+                            //return ex;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        //return ex;
-                    }
                 }
+               
                 return RedirectToAction(nameof(Index));
             }
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -286,7 +347,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
         }
 
@@ -302,7 +363,7 @@ namespace ClassWeb.Controllers
                         DirectoryInfo dir = new DirectoryInfo(file.FileName);
                         int index = dir.Parent.ToString().IndexOf("AssignmentDirectory");
                         string location = dir.Parent.ToString().Substring(index + "AssignmentDirectory".Length);
-                        location = Path.Combine("/", file.FileName);
+                        location = Path.Combine(location, file.FileName);
                         location = location.Replace("\\", "/");
                         Assignment a = new Assignment();
                         a.UserName = HttpContext.Session.GetString("username");
@@ -382,8 +443,7 @@ namespace ClassWeb.Controllers
                             }
                             assign.Add(a);
                         }
-
-                        SetDefaultDir();
+                        CurrentDir();
                     }
                     catch (Exception ex)
                     {
@@ -394,7 +454,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                RedirectToAction("index","Home");
+                RedirectToAction("index", "Home");
             }
 
         }
@@ -437,7 +497,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to add Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -491,7 +551,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to delete Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -590,7 +650,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to edit Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
 
         }
@@ -607,7 +667,7 @@ namespace ClassWeb.Controllers
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view Assignment";
-                return RedirectToAction("index","Home");
+                return RedirectToAction("index", "Home");
             }
         }
         #endregion
@@ -708,7 +768,7 @@ namespace ClassWeb.Controllers
                         FileLocation = file.FullName.ToString();
                         index = FileLocation.LastIndexOf(U.UserName);
                     }
-                    string location = Path.Combine(file.FullName.ToString().Substring(index));
+                    string location = Path.Combine("/", file.FullName.ToString().Substring(index));
                     location = location.Replace("\\", "/");
                     Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name, location, U.UserName);
                     if (assign != null)
@@ -719,6 +779,7 @@ namespace ClassWeb.Controllers
                     {
                         Assignment a = new Assignment();
                         a.FileName = file.Name;
+                        a.FileLocation = "File" + file.Length;
                         physical.Add(a);
                     }
                 }

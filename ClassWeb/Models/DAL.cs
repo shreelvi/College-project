@@ -529,11 +529,6 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static Assignment GetAssignmentByNameLocationUserName(string name, string location, string userName)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region Login
@@ -580,6 +575,30 @@ namespace ClassWeb.Model
         #endregion
 
         #region Assignment
+        internal static Assignment GetAssignmentByNameLocationUserName(string name, string location, string userName)
+        {
+            Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByNameLocationUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, name);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, location);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         internal static int AddAssignment(Assignment obj)
         {
             if (obj == null) return -1;
@@ -608,27 +627,25 @@ namespace ClassWeb.Model
 
         internal static Assignment AssignmentGetByID(int id)
         {
-            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentByUserID");
-            Assignment retList = new Assignment();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.AddWithValue(User.db_ID, id);
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
+                MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByID");
+                Assignment retObj = null;
+                try
                 {
-                    Assignment a = new Assignment(dr);
-                    //a.User = new User(dr);
-                    retList=a;
+                    comm.Parameters.AddWithValue("@" + Assignment.db_ID, id);
+                    MySqlDataReader dr = GetDataReader(comm);
+
+                    while (dr.Read())
+                    {
+                        retObj = new Assignment(dr);
+                    }
+                    comm.Connection.Close();
                 }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
+                catch (Exception ex)
+                {
+                    comm.Connection.Close();
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+                return retObj;
         }
 
         public static Assignment GetAllAssignment()
@@ -661,8 +678,16 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
             try
             {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
-                comm.Parameters.AddWithValue("@" + Assignment.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
+                comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
                 UpdateObject(comm);
             }
             catch (Exception ex)

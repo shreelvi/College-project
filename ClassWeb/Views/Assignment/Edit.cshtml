@@ -28,12 +28,14 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="Edit">
                         <form asp-controller="Assignment" method="post">
-                            <div class="pull-right" style="margin-right:24vw">
-                                <button href="#" id="SaveFile" asp-action="SaveEditedFile" type="submit" class="btn btn-success glyphicon glyphicon-save">Save</button>
-                                <button href="#" id="Exit" type="submit" asp-action="Close" class="btn btn-danger glyphicon glyphicon-remove">Close</button>
+                            <div class="input-group">
+                                <label>FileName:</label>
+                                <input type="text" id="FileName" class="form-control" value=@ViewBag.FileName name="FileName">
+                                <input type="hidden"  name="ID" value="@Model.ID"/>
+                                <button  id="SaveFile" asp-action="SaveEditedFile" type="submit" class="btn btn-success glyphicon glyphicon-save">Save</button>
+                                <button  id="Exit" type="submit" asp-action="Close" class="btn btn-danger glyphicon glyphicon-remove">Close</button>
                             </div>
                             <div>
-                                <input type="hidden" value=@ViewBag.FileName name="FileName" />
                                 @if (ViewBag.Readable == true)
                                 {
                                     <textarea id="EditedText" name="Content" style="min-height:60vh;min-width:55vw;padding-top:20px;margin-top:10px;">@ViewBag.Data </textarea>
