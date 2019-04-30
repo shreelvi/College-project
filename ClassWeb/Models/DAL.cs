@@ -1266,6 +1266,7 @@ namespace ClassWeb.Model
 
         #region CourseSemester
         /// <summary>
+        /// Modified by Ganesh
         /// Get list of all CourseSemesters CLassweb.objects from the database associated with the userID
         /// </summary>
         /// <returns></returns>
@@ -1321,6 +1322,7 @@ namespace ClassWeb.Model
             return retList;
         }
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to add a database entry corresponding to the given CourseSemester
         /// </summary>
         /// <remarks></remarks>
@@ -1374,6 +1376,7 @@ namespace ClassWeb.Model
             return retObj;
         }
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to edit the database entry corresponding to the given CourseSemester
         /// </summary>
         /// <remarks></remarks>
@@ -1399,6 +1402,7 @@ namespace ClassWeb.Model
             return -1;
         }
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to delete the database entry corresponding to the CourseSemester
         /// </summary>
         /// <remarks></remarks>
@@ -1451,6 +1455,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Gets a list of all semester objects from the database.
         /// </summary>
         /// <remarks></remarks>
@@ -1477,6 +1482,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to add a database entry corresponding to the given Semester
         /// </summary>
         /// <remarks></remarks>
@@ -1497,6 +1503,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to edit the database entry corresponding to the given Semester
         /// </summary>
         /// <remarks></remarks>
@@ -1519,6 +1526,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to delete the database entry corresponding to the Semester
         /// </summary>
         /// <remarks></remarks>

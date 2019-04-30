@@ -11,6 +11,7 @@ namespace ClassWeb.Models
     /// <summary>
     /// Created on: 26 April 2019
     /// Created by: shreelvi
+    /// Modified by Ganesh
     /// Description: Association table for CourseSemester and User models
     /// </summary>
     public class CourseSemesterUser : DatabaseRecord
