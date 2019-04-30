@@ -11,30 +11,30 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.SemesterID)
+            Course Name
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.SemesterID)
+            @Html.DisplayFor(model => model.Course.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.YearID)
+            Semester Name
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.YearID)
+            @Html.DisplayFor(model => model.Semester.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.SectionID)
+            Academic Year
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.SectionID)
+            @Html.DisplayFor(model => model.Year.Year1)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Course)
+            Section Number
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Course.ID)
+            @Html.DisplayFor(model => model.Section.SectionNumber)
         </dd>
-       
+
     </dl>
 </div>
 <div>

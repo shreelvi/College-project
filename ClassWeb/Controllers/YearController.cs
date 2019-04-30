@@ -25,13 +25,18 @@ namespace ClassWeb.Controllers
         {
             User LoggedIn = CurrentUser;
 
-            var a = TempData["SemesterAdd"];
+            var a = TempData["YearAdd"];
             if (a != null)
-                ViewData["SemesterAdd"] = a;
+                ViewData["YearAdd"] = a;
 
-            var d = TempData["SemesterDelete"];
+            var e = TempData["YearEdit"];
+            if (e != null)
+                ViewData["YearEdit"] = e;
+
+            var d = TempData["YearDelete"];
             if (d != null)
-                ViewData["SemesterDelete"] = d;
+                ViewData["YearDelete"] = d;
+
 
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
@@ -48,13 +53,18 @@ namespace ClassWeb.Controllers
         // GET: Year/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return NotFound();
             }
 
-            var year = await _context.Year
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -76,24 +86,36 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Year1,ID")] Year year)
         {
-            if (ModelState.IsValid)
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
             {
-                _context.Add(year);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
             }
-            return View(year);
+
+            int retInt = DAL.AddYear(year);
+            if (retInt < 0)
+                TempData["YearAdd"] = "Database problem occured when adding the academic year";
+            else { TempData["YearAdd"] = "Academic year added successfully"; }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Year/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return NotFound();
             }
 
-            var year = await _context.Year.FindAsync(id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -108,6 +130,13 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Year1,ID")] Year year)
         {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
             if (id != year.ID)
             {
                 return NotFound();
@@ -117,8 +146,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(year);
-                    await _context.SaveChangesAsync();
+                    DAL.UpdateYear(year);
+                    TempData["YearEdit"] = "Successfully edited the academic year";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -128,6 +157,7 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
+                        TempData["YearEdit"] = "Database problem occured when editing the academic year";
                         throw;
                     }
                 }
@@ -139,13 +169,18 @@ namespace ClassWeb.Controllers
         // GET: Year/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return NotFound();
             }
 
-            var year = await _context.Year
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -159,15 +194,17 @@ namespace ClassWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var year = await _context.Year.FindAsync(id);
-            _context.Year.Remove(year);
-            await _context.SaveChangesAsync();
+            var year = DAL.RemoveYear(id);
+            if (year < 0) { TempData["YearDelete"] = "Database problem occured when deleting the academic year"; }
+            TempData["YearDelete"] = "Successfully deleted the academic year";
             return RedirectToAction(nameof(Index));
         }
 
         private bool YearExists(int id)
         {
-            return _context.Year.Any(e => e.ID == id);
+            Year chk = DAL.GetYear(id);
+            if (chk == null) { return false; }
+            return true;
         }
     }
 }

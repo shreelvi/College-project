@@ -13,29 +13,51 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CourseID" class="control-label"></label>
-                <select asp-for="CourseID" class="form-control" asp-items="ViewBag.CourseID"></select>
-                <span asp-validation-for="CourseID" class="text-danger"></span>
+                <label asp-for="CRN" class="control-label"></label>
+                <input asp-for="CRN" class="form-control" />
+                <span asp-validation-for="CRN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SemesterID" class="control-label"></label>
-                <input asp-for="SemesterID" class="form-control" />
-                <span asp-validation-for="SemesterID" class="text-danger"></span>
+                <label class="control-label">Course</label>
+                <select asp-for="CourseID" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Courses, "ID", "Name"))"></select>
+                <span asp-validation-for="Course.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="YearID" class="control-label"></label>
-                <input asp-for="YearID" class="form-control" />
+                <label class="control-label">Semester</label>
+                <select asp-for="SemesterID" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Semesters, "ID", "Name"))"></select>
+                <span asp-validation-for="Semester.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Year</label>
+                <select asp-for="YearID" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Years, "ID", "Year1"))"></select>
                 <span asp-validation-for="YearID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SectionID" class="control-label"></label>
-                <input asp-for="SectionID" class="form-control" />
+                <label class="control-label">Section Number</label>
+                <select asp-for="SectionID" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Sections, "ID", "SectionNumber"))"></select>
                 <span asp-validation-for="SectionID" class="text-danger"></span>
             </div>
-           
-            <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <label asp-for="DateStart" class="control-label"></label>
+                <input asp-for="DateStart" class="form-control" />
+                <span asp-validation-for="DateStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateEnd" class="control-label"></label>
+                <input asp-for="DateEnd" class="form-control" />
+                <span asp-validation-for="DateEnd" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="UserID" class="control-label"></label>
+                    <input asp-for="UserID" class="form-control" />
+                    <span asp-validation-for="UserID" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-default" />
             </div>
         </form>
     </div>

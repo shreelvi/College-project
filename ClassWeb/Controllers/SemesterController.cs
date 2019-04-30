@@ -11,6 +11,11 @@ using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
 {
+    /// <summary>
+    /// Date Modified: 04/29/2019
+    /// Modified by: shreelvi
+    /// Added code for edit and detail method
+    /// </summary>
     public class SemesterController : BaseController
     {
         private readonly ClassWebContext _context;
@@ -53,8 +58,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var semester = await _context.Semester
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var semester = DAL.GetSemester(id);
             if (semester == null)
             {
                 return NotFound();
@@ -99,7 +103,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var semester = await _context.Semester.FindAsync(id);
+            var semester = DAL.GetSemester(id);
             if (semester == null)
             {
                 return NotFound();
@@ -123,7 +127,8 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(semester);
+                    DAL.UpdateSemester(semester);
+                    TempData["SemesterEdit"] = "Successfully edited the semester";
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -134,6 +139,7 @@ namespace ClassWeb.Controllers
                     }
                     else
                     {
+                        TempData["SemesterEdit"] = "Database problem occured when editing the semester";
                         throw;
                     }
                 }
@@ -176,7 +182,9 @@ namespace ClassWeb.Controllers
 
         private bool SemesterExists(int id)
         {
-            return _context.Semester.Any(e => e.ID == id);
+            Semester sem = DAL.GetSemester(id);
+            if(sem == null) { return false; }
+            return true;
         }
     }
 }

@@ -8,6 +8,13 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
+    /// <summary>
+    /// Created by: shreelvi
+    /// Created on: 03/20/2019
+    /// CourseSemester is a unique class that holds information
+    /// about course, semester, year, section and professor & students
+    /// associated with it.
+    /// </summary>
     public class CourseSemester : DatabaseRecord
     {
                 
@@ -316,8 +323,8 @@ namespace ClassWeb.Models
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
-            //_DateStart = dr.GetDateTime(db_DateStart);
-            //_DateEnd = dr.GetDateTime(db_DateEnd);
+            _DateStart = dr.GetDateTime(db_DateStart);
+            _DateEnd = dr.GetDateTime(db_DateEnd);
         }
         #endregion
 

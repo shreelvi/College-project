@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
+    /// <summary>
+    /// Modified by:Meshari
+    /// Modified date: 04/27/2019
+    /// Added name property for selectlist in crud views
+    /// </summary>
     public class Year:DatabaseRecord
     {
 
@@ -20,8 +25,7 @@ namespace ClassWeb.Models
         #endregion
 
         private int _Year;
-
-
+        private string _Name;
 
         public int Year1
         {
@@ -29,8 +33,16 @@ namespace ClassWeb.Models
             set { _Year = value; }
         }
 
+        public string Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
+        }
+
+
         #region Database String
-        internal const string db_ID = "YearID";
+        internal const string db_ID = "ID";
+        internal const string db_Name = "Name";
         internal const string db_Year = "Year";
         #endregion
 

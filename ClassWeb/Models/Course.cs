@@ -46,10 +46,10 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "CourseID";
-        internal const string db_Title = "CourseTitle";
-        internal const string db_Name = "CourseName";
-        internal const string db_Description = "CourseDescription";
+        internal const string db_ID = "ID";
+        internal const string db_Title = "Title";
+        internal const string db_Name = "Name";
+        internal const string db_Description = "Description";
         #endregion
 
         #region Public Functions
@@ -75,14 +75,25 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Subs
+        /// <summary>
+        /// Modified date: 04/29/2019
+        /// Modified by: shreelvi
+        /// Added code to handle mysql data reader null column values
+        /// Reference: https://stackoverflow.com/questions/1772025/sql-data-reader-handling-null-column-values
+        /// </summary>
+        /// <param name="dr"></param>
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
             _Title = dr.GetString(db_Title);
             _Name = dr.GetString(db_Name);
-            //_Description = dr.GetString(db_Description);
+            if (!dr.IsDBNull(3))
+            {
+                _Description = dr.GetString(db_Description);
+            }
         }
 
+        
         public override string ToString()
         {
             throw new NotImplementedException();

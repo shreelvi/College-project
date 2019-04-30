@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 
 }
+@* Summary- This is a index view for the group. Created by Sakshi, edited by Elvis *@
 @{var i = 1;}
 
 <h2>Index</h2>
@@ -17,15 +18,13 @@
             <th>
                 <p>Name</p>
             </th>
-            <th>
-                <p>EmailAddress</p>
-            </th>
+            
             <th>
                 <p>UserName</p>
             </th>
-            <th>
+            @*<th>
                 <p>Users in Group</p>
-            </th>
+            </th>*@
             @*<th>
                         @Html.DisplayNameFor(model => model.DateCreated)
                     </th>
@@ -49,24 +48,21 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailAddress)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Users)
-                </td>
                 @*<td>
-                    @foreach (var name in item.Users)
-                    {
-                        @Html.DisplayFor(modelItem => item.Users[i].FirstName) <br />
-                        i = i + 1;
-                        <br />
-
-                    }
+                    @Html.DisplayFor(modelItem => item.Users)
                 </td>*@
+                @*<td>
+                        @foreach (var name in item.Users)
+                        {
+                            @Html.DisplayFor(modelItem => item.Users[i].FirstName) <br />
+                            i = i + 1;
+                            <br />
+                        }
+                    </td>*@
 
                 @*<td>
                         @Html.DisplayNameFor(model => model.DateCreated)
@@ -82,9 +78,10 @@
                     </td>*@
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="ViewGroupUsers" asp-route-id="@item.ID">Users in Group</a> |
+                    <a asp-action="EditGroup" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="DetailGroup" asp-route-id="@item.ID">Detail</a> |
+                    <a asp-action="DeleteGroup" asp-route-id="@item.ID">Delete</a>
                 </td>
             </tr>
         }

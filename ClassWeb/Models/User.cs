@@ -15,7 +15,7 @@ namespace ClassWeb.Models
     /// Every user can login to the system unless deleted.
     /// </summary>
 
-    public class User:DatabaseRecord
+    public class User : DatabaseRecord
     {
 
         #region Constructors
@@ -39,7 +39,7 @@ namespace ClassWeb.Models
         private string _MiddleName;
         private string _LastName;
         private string _EmailAddress;
-        //private string _Address;
+        private string _ResetCode;
         private string _UserName;
         private string _Password;
         private string _Salt;
@@ -50,48 +50,66 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private DateTime _DateModified;
         private DateTime _DateDeleted;
-
-        //private long _PhoneNumber;
-        //private DateTime _DateArchived;
-        //private bool _AccountExpired;
-        //private bool _Enabled;
-        //private bool _PasswordExpired;
-        //private bool _AccountLocked;
-
+        private int _Enabled;
+        private int _Archived;
+        private string _VerificationCode;
         #endregion
 
         #region Database String
-        internal const string db_ID = "UserID";
+        internal const string db_ID = "ID";
         internal const string db_FirstName = "FirstName";
         internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";
         internal const string db_EmailAddress = "EmailAddress";
-        //internal const string db_Address = "Address";
         internal const string db_UserName = "UserName";
-        internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
         internal const string db_Role = "RoleID";
-        internal const string db_DirectoryPath = "DirectoryPath";
-        internal const string db_Assignments = "Assignments";
-        //internal const string db_PhoneNumber = "PhoneNumber";
+        internal const string db_Password = "Password";
+        internal const string db_ResetCode = "ResetCode";
         internal const string db_DateCreated = "DateCreated";
         internal const string db_DateModified = "DateModified";
         internal const string db_DateDeleted = "DateDeleted";
-        //internal const string db_AccountExpired = "IsExpired";
-        //internal const string db_Enabled = "IsEnabled";
-        //internal const string db_PasswordExpired = "PasswordExpired";
-        //internal const string db_AccountLocked = "AccountLocked";
-        
-
-
+        internal const string db_Archived = "Archived";
+        internal const string db_Enabled = "Enabled";
+        internal const string db_VerificationCode = "VerificationCode";
         #endregion
 
         #region public Properites
 
+        public int Enabled
+        {
+            get { return _Enabled; }
+            set { _Enabled = value; }
+        }
+        public string VerificationCode
+        {
+            get
+            {
+
+                return
+                    _VerificationCode;
+            }
+            set
+            {
+                if (_VerificationCode == null)
+                {
+                    _VerificationCode = "";
+                }
+                else
+                {
+                    _VerificationCode = value;
+                }
+            }
+        }
         public string FirstName
         {
             get { return _FirstName; }
-            set { _FirstName = value; }   
+            set { _FirstName = value; }
+        }
+        public string ResetCode
+        {
+            get { return _ResetCode; }
+            set { _ResetCode = value; }
         }
         public string MiddleName
         {
@@ -108,11 +126,6 @@ namespace ClassWeb.Models
             get { return _EmailAddress; }
             set { _EmailAddress = value; }
         }
-        //public string Address
-        //{
-        //    get { return _Address; }
-        //    set { _Address = value; }
-        //}
         public string UserName
         {
             get { return _UserName; }
@@ -148,7 +161,7 @@ namespace ClassWeb.Models
                 _RoleID = value;
             }
         }
-        
+
         public DateTime DateCreated
         {
             get { return _DateCreated; }
@@ -164,13 +177,14 @@ namespace ClassWeb.Models
             get { return _DateDeleted; }
             set { _DateDeleted = value; }
         }
-       
+
 
         /// <summary>
         /// Gets or sets the Role for this User object.
         /// Reference: Taken code from prof. Holmes Peerval Project
         /// </summary>
         /// <remarks></remarks>
+
         [XmlIgnore]
         public Role Role
         {
@@ -208,35 +222,12 @@ namespace ClassWeb.Models
             set { _Assignments = value; }
         }
 
-        //public long PhoneNumber
-        //{
-        //    get { return _PhoneNumber; }
-        //    set { _PhoneNumber = value; }
-        //}
+        public int Archived
+        {
+            get { return _Archived; }
+            set { _Archived = value; }
+        }
 
-        //public bool AccountExpired
-        //{
-        //    get { return _AccountExpired; }
-        //    set { _AccountExpired = value; }
-        //}
-
-        //public bool AccountLocked
-        //{
-        //    get { return _AccountLocked; }
-        //    set { _AccountLocked = value; }
-        //}
-
-        //public bool PasswordExpired
-        //{
-        //    get { return _PasswordExpired; }
-        //    set { _PasswordExpired = value; }
-        //}
-
-        //public bool Enabled
-        //{
-        //    get { return _Enabled; }
-        //    set { _Enabled = value; }
-        //}
         #endregion
 
         #region Public Functions
@@ -266,17 +257,20 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _FirstName = dr.GetString(db_FirstName);
-            //_MiddleName = dr.GetString(db_MiddleName);
+            _ResetCode = dr.GetString(db_ResetCode);
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
-            //_Address = dr.GetString(db_Address);
-            //_UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
-            _DateCreated = dr.GetDateTime(db_DateCreated);
-            _DateModified = dr.GetDateTime(db_DateModified);
+            // DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+            //_DateModified = dr.GetDateTime(db_DateModified);
+            // _DateModified = DateTime.Parse(DateModified.ToString());
             //_DateDeleted = dr.GetDateTime(db_DateDeleted);
             _Salt = dr.GetString(db_Salt);
             _RoleID = dr.GetInt32(db_Role);
+            _UserName = dr.GetString(db_UserName);
+            _Enabled = dr.GetInt32(db_Enabled);
+            _Archived = dr.GetInt32(db_Archived);
+            _VerificationCode = dr.GetString(db_VerificationCode);
         }
         #endregion
 

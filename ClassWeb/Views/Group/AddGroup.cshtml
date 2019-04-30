@@ -3,32 +3,20 @@
 @{
     ViewData["Title"] = "AddGroup";
 }
-<style>
-    .left {
-        float: left;
-        width: 50%;
-    }
-    
-</style>
+
 <p style="color:red">@ViewData["GroupAddSuccess"]</p>
 <p style="color:red">@ViewData["UserGroupAddSuccess"]</p>
 <p style="color:red">@ViewBag.UserAddError</p>
 <p style="color:red">@ViewBag.Error</p>
 <p style="color:red">@ViewData["UserAddGroupError"]</p>
-<div class="left">
+
+<div class="row">
     <div class="col-md-4">
         <form method="post">
             <h2 style="color: darkorange">Add a new group.</h2>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
-
             <div class="Group">
-                <div class="form-group">
-                    <label asp-for="EmailAddress"></label>
-                    <input asp-for="EmailAddress" class="form-control" />
-                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
-                </div>
-
                 <div class="form-group">
                     <label asp-for="Name"></label>
                     <input asp-for="Name" class="form-control" />
@@ -50,15 +38,17 @@
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
             </div>
+            <div>
+                <label for="Users">Number of users:</label>
+                <input name="Users" type="number" id="numberOfStudents" />
+            </div>
+            <div id="DynamicEmail">
+                <input name="Users[0].ID" type="hidden" value="0" />
+            </div><br />
 
-            
-
+            <button type="submit" class="btn btn-default">Register</button>
         </form>
     </div>
-</div>
-
-<div class="left">
-    @await Html.PartialAsync("_AddUserToGroupPartial.cshtml")
 </div>
 
 @section Scripts {
