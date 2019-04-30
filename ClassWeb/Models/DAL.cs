@@ -316,6 +316,24 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        internal static int UpdateAssignmentFileName(Assignment obj)
+        {
+                if (obj == null) return -1;
+                MySqlCommand comm = new MySqlCommand("sproc_AssignmentFileNameUpdate");
+                try
+                {
+                    comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                    comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                    comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+                    UpdateObject(comm);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+                return -1;
+        }
+
         /// <summary>
         /// Created by: Mohan 
         /// get all users from the database

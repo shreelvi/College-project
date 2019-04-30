@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ClassWeb.Models
 {
@@ -103,6 +104,8 @@ namespace ClassWeb.Models
 
         [Required]
         [DataType(DataType.Password)]
+        [Compare("Password")]
+        [NotMapped]
         public string ConfirmPassword
         {
             get { return _ConfirmPassword; }

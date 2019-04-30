@@ -135,11 +135,20 @@ namespace ClassWeb.Models
             get { return _UserName; }
             set { _UserName = value; }
         }
+        [Required]
+        [DataType(DataType.Password)]
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
+
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("Password")]
+        [NotMapped]
+        public string ConfirmPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the Salt for this PeerVal.User object

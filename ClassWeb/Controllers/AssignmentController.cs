@@ -289,6 +289,8 @@ namespace ClassWeb.Controllers
                                 }
                                 StreamWriter sw = new StreamWriter(path);
                                 sw.Write(Content);
+                                a.DateModified = DateTime.Now;
+                                a.Feedback = "File Name Modified";
                                 sw.Close();
                                 int i = DAL.UpdateAssignmentFileName(a);
                                 if (i > 0)
