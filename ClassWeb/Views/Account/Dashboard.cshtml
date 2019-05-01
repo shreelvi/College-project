@@ -4,33 +4,22 @@
 }
 <div style="float:right">
     <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="Edit">Edit Profile <text>&nbsp;</text></a>
+
 </div>
 <h2>User Dashboard</h2>
 <!-- Page content -->
 <div class="card-group">
     <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
-        <div class="card-header">Assignment</div>
+        <div class="card-header"><a class="text-primary" asp-action="index" asp-controller="Assignment">Assignment List</a></div>
         <div class="card-body">
             <h5 class="card-title"></h5>
-            <p class="card-text">This is Assignment Card.</p>
+            <p class="card-text">All the assignment from all the class is viewable from here.</p>
         </div>
     </div>
     @if (Model.Count > 0)
     {
         @foreach (object obj in Model)
         {
-            @if (typeof(ClassWeb.Models.User) == obj.GetType())
-            {
-                ClassWeb.Models.User User = (ClassWeb.Models.User)obj;
-                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
-                    <div class="card-header">@User.UserName</div>
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <p class="card-text">This is User Card.</p>
-                    </div>
-                </div>
-            }
             @if (typeof(ClassWeb.Models.Group) == obj.GetType())
             {
                 ClassWeb.Models.Group Group = (ClassWeb.Models.Group)obj;
@@ -38,7 +27,18 @@
                     <div class="card-header">@Group.Name</div>
                     <div class="card-body">
                         <h5 class="card-title"></h5>
-                        <p class="card-text">This is a Group card.</p>
+                        <p class="card-text">@Group.Name file can be viewed from here</p>
+                    </div>
+                </div>
+            }
+            @if (typeof(ClassWeb.Models.Class) == obj.GetType())
+            {
+                ClassWeb.Models.Class Class = (ClassWeb.Models.Class)obj;
+                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+                    <div class="card-header">@Class.Title</div>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">This is a Class card.</p>
                     </div>
                 </div>
             }

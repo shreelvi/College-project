@@ -17,6 +17,41 @@
             margin: 20px;
         }
     </style>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+        <script src="~/js/fullscreen.js"></script>
+        <link href="~/css/fullscreen.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.jss"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css" />
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+    </environment>
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-inverse bg-dark navbar-fixed-top">
@@ -42,7 +77,7 @@
             @if (Context.Session.Get("CurrentUser") != null)
             {<ul class="nav navbar-nav pull-right">
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@Context.Session.GetString("UserName")</a>
+                        <a href="#" class="nav-link dropdown-toggle text-capitalize" data-toggle="dropdown">@Context.Session.GetString("UserName")</a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" asp-controller="account" asp-action="Edit">Edit Profile</a>
                             <a class="dropdown-item" asp-controller="account" asp-action="ResetPassword">Reset Password</a>
