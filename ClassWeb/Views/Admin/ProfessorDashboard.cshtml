@@ -4,6 +4,10 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<p style="color:blue">
+    @ViewData["CourseSemesterAdd"]
+</p>
+
 <style>
     .card {
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -67,9 +71,12 @@
     </div>
 
     <div class="sidenav">
-        <a href="ProfessorDashboard">Dashboard</a>
         <a href="/CourseSemester/Index">View all active classes</a>
         <a href="/CourseSemester/Create">Add a new Class</a>
+        <a href="/Course/Index">Manage Course</a>
+        <a href="/Semester/Index">Manage Semester</a>
+        <a href="/Year/Index">Manage Year</a>
+        <a href="/Section/Index">Manage Section</a>
         <a href="#contact">View All Students</a>
         <a href="">View All Registered Users</a>
     </div>

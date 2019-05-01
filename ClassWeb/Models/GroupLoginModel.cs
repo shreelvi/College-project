@@ -33,6 +33,7 @@ namespace ClassWeb.Models
         #region private variable
         private string _EmailAddress;
         private string _UserName;
+        private string _ClassName;
         private string _Password;
         private string _Salt;
         private string _ConfirmPassword;
@@ -118,6 +119,14 @@ namespace ClassWeb.Models
         {
             get { return _Users; }
             set { _Users = value; }
+        }
+
+        [Required]
+        [Display(Name = "Class Information")]
+        public string ClassName
+        {
+            get { return _ClassName; }
+            set { _ClassName = value; }
         }
         #endregion
 

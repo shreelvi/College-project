@@ -10,7 +10,6 @@ namespace ClassWeb.Models
     /// Modified date: 04/27/2019
     /// Added name property for selectlist in crud views
     /// </summary>
-
     public class Year:DatabaseRecord
     {
 
@@ -33,16 +32,18 @@ namespace ClassWeb.Models
             get { return _Year; }
             set { _Year = value; }
         }
+
         public string Name
         {
             get { return _Name; }
             set { _Name = value; }
         }
 
+
         #region Database String
-        internal const string db_ID = "YearID";
-        internal const string db_Year = "Year";
+        internal const string db_ID = "ID";
         internal const string db_Name = "Name";
+        internal const string db_Year = "Year";
         #endregion
 
         #region Public Functions
@@ -72,7 +73,6 @@ namespace ClassWeb.Models
         {
             _ID = dr.GetInt32(db_ID);
             _Year = dr.GetInt32(db_Year);
-            _Name = dr.GetString(db_Name);
         }
 
         public override string ToString()

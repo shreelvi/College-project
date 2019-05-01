@@ -92,6 +92,11 @@ namespace ClassWeb.Controllers
                 HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
                 if (loggedIn.Role.IsAdmin)
                 {
+                    if(loggedIn.Role.Name == "Professor")
+                    {
+                        HttpContext.Session.SetString("RoleCheck", "Professor");
+                        return RedirectToAction("ProfessorDashboard", "Admin"); //Redirects to the professor dashboard
+                    }
                     return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
                 }
                 return RedirectToAction("Dashboard");
@@ -141,20 +146,27 @@ namespace ClassWeb.Controllers
         /// Method to Add/Register user to the database.
         /// Modified on: 03/18/2019
         /// Added feature to check the username is unique
+        /// Modified on: 04/30/2019
+        /// Added code to get coursesemesters information 
+        /// and pass to the dropdown for users to enroll in class
         /// </summary>
 
         // GET: /Account/AddUser
         [AllowAnonymous]
         public ActionResult AddUser(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            List<string> ClassList = new List<string>();
+            List<CourseSemester> coursesem = new List<CourseSemester>();
+            coursesem = DAL.GetCourseSemesters();
+            coursesem.Insert(0, new CourseSemester { ID = 0, Name = "Select" });
+            ViewBag.ClassInfo = coursesem;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult AddUser(User NewUser)
+        public ActionResult AddUser(User NewUser, int ClassID)
         {
             string userPath = SetUserFolder(NewUser); //Sets the default user directory 
             NewUser.DirectoryPath = userPath;

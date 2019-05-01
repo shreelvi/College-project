@@ -119,13 +119,13 @@ namespace ClassWeb.Controllers
             try
             {
                 int retInt = DAL.UpdateSection(section);
-                ViewBag.RoleUpdate = "Role updated successfully";
+                ViewBag.SectionUpdate = "Section updated successfully";
             }
             catch //(DbUpdateConcurrencyException)
             {
-                ViewBag.RoleUpdate("Database error occured when updating the role");
+                ViewBag.SectionUpdate("Database error occured when updating the section");
             }
-            return View(section);
+            return RedirectToAction(nameof(Index));
 
         }
 
