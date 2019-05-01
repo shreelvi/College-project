@@ -785,7 +785,7 @@ namespace ClassWeb.Model
         /// Attempts to delete the database entry corresponding to the Section
         /// </summary>
         /// <remarks></remarks>
-        internal static Course GetCourse(int courseID)
+        internal static Course GetCourse(int? courseID)
         {
             MySqlCommand comm = new MySqlCommand("sproc_GetCourse");
             Course retObj = null;
@@ -856,6 +856,31 @@ namespace ClassWeb.Model
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             return retList;
+        }
+
+        ///<summary>
+        /// Created By: Mohan 
+        /// Edit Course 
+        /// Reference: PeerVal project by Professor
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int UpdateCourse(Course obj)
+        {
+            //if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_UpdateCourse");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Course.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Course.db_Name, obj.Name);
+                comm.Parameters.AddWithValue("@" + Course.db_Description, obj.Description);
+                return UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
         /// <summary>

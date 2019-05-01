@@ -13,13 +13,7 @@ namespace ClassWeb.Controllers
 {
     public class CourseController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseController(ClassWebContext context)
-        {
-            _context = context;
-        }
-
+        
         // GET: Course
         public async Task<IActionResult> Index()
         {
@@ -47,23 +41,7 @@ namespace ClassWeb.Controllers
             return View(Courses);
         }
 
-        // GET: Course/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Course
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
+       
 
         // GET: Course/Create
         public IActionResult Create()
@@ -98,18 +76,41 @@ namespace ClassWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Course/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Course/Details/5
+        public IActionResult Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var course = DAL.GetCourse(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View(course);
         }
 
-        // POST: Course/Edit/5
+        // GET: Courses/Edit/5
+        public IActionResult Edit(int? id)
+        {
+            var Course = DAL.GetCourse(id);
+            if (Course == null)
+            {
+                return NotFound();
+            }
+            return View(Course);
+        }
+
+
+        // POST: Courses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,Name,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
         {
             if (id != course.ID)
             {
@@ -120,8 +121,12 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    int c = DAL.UpdateCourse(course);
+                    if (c > 0)
+                    {
+                        TempData["CourseUpdate"] = "Course Updated successfully!!!";
+
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -178,7 +183,15 @@ namespace ClassWeb.Controllers
 
         private bool CourseExists(int id)
         {
-            return _context.Course.Any(e => e.ID == id);
+            Course c = DAL.GetCourse(id);
+            if (c == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
