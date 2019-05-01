@@ -3,7 +3,6 @@
 }
 
 <p style="color:red">@ViewData["LoginError"]</p>
-
 <div class="row">
     <div class="col-md-5">
         <h1 style="color:darkorange">Idaho State University, College of Business -- Class Web</h1><br />
@@ -18,7 +17,7 @@
             username: admin, student, grader; Pwd: test
         </p>
     </div>
-    <div style="float:right; width:600px">
+    <div>
         @await Html.PartialAsync("../Account/_LoginPartial.cshtml")
         <div class="form-group">
             <a asp-controller="Group" asp-action="LoginGroup">Group Login</a>

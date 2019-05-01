@@ -77,7 +77,7 @@
             @if (Context.Session.Get("CurrentUser") != null)
             {<ul class="nav navbar-nav pull-right">
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle text-capitalize" data-toggle="dropdown">@Context.Session.GetString("UserName")</a>
+                        <a href="#" class="nav-link dropdown-toggle text-capitalize" data-toggle="dropdown">@Context.Session.GetString("username")</a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" asp-controller="account" asp-action="Edit">Edit Profile</a>
                             <a class="dropdown-item" asp-controller="account" asp-action="ResetPassword">Reset Password</a>
