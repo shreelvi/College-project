@@ -15,7 +15,7 @@ namespace ClassWeb.Models
     /// about course, semester, year, section and professor & students
     /// associated with it.
     /// </summary>
-    public class CourseSemester : DatabaseRecord
+    public class CourseSemester : DatabaseNamedRecord
     {
                 
         #region Constructors
@@ -274,13 +274,15 @@ namespace ClassWeb.Models
             }
         }
 
-      
+
+
 
 
         #endregion
 
         #region Database String
         internal const string db_ID = "CourseSemesterID";
+        internal const string db_Name = "Name";
         internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";
@@ -318,6 +320,7 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _Name = dr.GetString(db_Name);
             _CRN = dr.GetInt32(db_CRN);
             _CourseID = dr.GetInt32(db_CourseID);
             _SemesterID = dr.GetInt32(db_SemesterID);

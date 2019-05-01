@@ -94,6 +94,7 @@ namespace ClassWeb.Controllers
                 {
                     if(loggedIn.Role.Name == "Professor")
                     {
+                        HttpContext.Session.SetString("RoleCheck", "Professor");
                         return RedirectToAction("ProfessorDashboard", "Admin"); //Redirects to the professor dashboard
                     }
                     return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
@@ -151,7 +152,11 @@ namespace ClassWeb.Controllers
         [AllowAnonymous]
         public ActionResult AddUser(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            List<string> ClassList = new List<string>();
+            List<CourseSemester> coursesem = new List<CourseSemester>();
+            coursesem = DAL.GetCourseSemesters();
+            coursesem.Insert(0, new CourseSemester { ID = 0, Name = "Select" });
+            ViewBag.ClassInfo = coursesem;
             return View();
         }
 

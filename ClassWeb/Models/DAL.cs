@@ -951,6 +951,7 @@ namespace ClassWeb.Model
             MySqlCommand comm = new MySqlCommand("sproc_CourseSemesterAdd");
             try
             {
+                comm.Parameters.AddWithValue("@" + CourseSemester.db_Name, obj.Name);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CRN, obj.CRN);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_CourseID, obj.CourseID);
                 comm.Parameters.AddWithValue("@" + CourseSemester.db_SemesterID, obj.SemesterID);

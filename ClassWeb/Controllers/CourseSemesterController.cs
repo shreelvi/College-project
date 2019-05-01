@@ -148,6 +148,10 @@ namespace ClassWeb.Controllers
         /// Method to add a class (coursesemester object) in the database
         /// Modified on: 27 April 2019
         /// Add users to the class 
+        /// Modified on: 30 April 2019
+        /// By: shreelvi
+        /// Retrieve class information from course, semester, section and store it as its name
+        /// To pass the name to selectlist when user registers.
         /// </summary>
         /// <param name="courseSemester"></param>
         /// <returns></returns>
@@ -162,6 +166,16 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+            //Creates class name
+            string course = DAL.GetCourse(courseSemester.CourseID).Name;
+            int section = DAL.GetSection(courseSemester.SectionID).SectionNumber;
+            string sem = DAL.GetSemester(courseSemester.SemesterID).Name;
+            int year = DAL.GetYear(courseSemester.YearID).Year1;
+            string classinfo = course + " " + section + " " + sem + " " + year;
+
+            courseSemester.Name = classinfo;
+
 
             //Add the class to the coursesemester table
             int retInt = DAL.AddCourseSemester(courseSemester); 
