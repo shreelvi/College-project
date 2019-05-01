@@ -59,20 +59,18 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="nav navbar-nav">
-            @if (Context.Session.Get("CurrentUser") != null)
-            {
-                <li>
-                    <a asp-controller="Account" asp-action="Dashboard">Home</a>
-                </li>
-            }
-            else
-            {
-                <li>
-                    <a asp-controller="Home" asp-action="index">Home</a>
-                </li>
-            }
-        </ul>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+
+                @*//If professor is logged in display dashboard link on menu*@
+                @if (Context.Session.GetString("RoleCheck") == "Professor")
+                {
+                    <li><a asp-area="" asp-controller="Admin" asp-action="ProfessorDashboard">Dashboard</a></li>
+                }
+
+            </ul>
+        </div>
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             @if (Context.Session.Get("CurrentUser") != null)
             {<ul class="nav navbar-nav pull-right">
