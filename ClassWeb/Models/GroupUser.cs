@@ -9,6 +9,13 @@ using System.Xml.Serialization;
 
 namespace ClassWeb.Models
 {
+
+    /// <summary>
+    /// Created By: Elvis
+        /// Seperate Model for Login View.
+    /// This model is used to get information only required for login view.
+    /// It also model for add user to the group now as I am testing to verify password using hashing. 
+    /// </summary>
     public class GroupUser: DatabaseRecord
     {
         #region Constructors
@@ -100,7 +107,7 @@ namespace ClassWeb.Models
             {
                 if (_User == null)
                 {
-                    _User = DAL.GetUser(_UserID);
+                    _User = DAL.UserGetByID(_UserID);
                 }
                 return _User;
             }
@@ -123,7 +130,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "GroupUserID";
+        internal const string db_ID = "ID";
         internal const string db_GroupID = "GroupID";
         internal const string db_UserID = "UserID";
 

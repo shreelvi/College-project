@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -18,12 +17,7 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class SemesterController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public SemesterController(ClassWebContext context)
-        {
-            _context = context;
-        }
+       
 
         // GET: Semester
         public async Task<IActionResult> Index()
@@ -129,7 +123,6 @@ namespace ClassWeb.Controllers
                 {
                     DAL.UpdateSemester(semester);
                     TempData["SemesterEdit"] = "Successfully edited the semester";
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -183,7 +176,7 @@ namespace ClassWeb.Controllers
         private bool SemesterExists(int id)
         {
             Semester sem = DAL.GetSemester(id);
-            if(sem == null) { return false; }
+            if (sem == null) { return false; }
             return true;
         }
     }

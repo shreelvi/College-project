@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassWeb.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ClassWeb.Models
 {
- /// <summary>
- /// Created By: Kishor Simkhada
- /// Role is a designated position for each user.
- /// Each role can be assigned to zero to many users.
- /// Each role user can have one to multiple permissions. 
- /// </summary>
+    /// <summary>
+    /// Created By: Kishor Simkhada
+    /// Role is a designated position for each user.
+    /// Each role can be assigned to zero to many users.
+    /// Each role user can have one to multiple permissions. 
+    /// </summary>
 
-    public class Role:DatabaseRecord
+    public class Role : DatabaseRecord
     {
         #region Constructors
         public Role()
@@ -40,6 +41,7 @@ namespace ClassWeb.Models
         private bool _IsAdmin;
         private PermissionSet _Users;
         private PermissionSet _Role;
+        private PermissionSet _Group;
         private PermissionSet _Assignment;
         #endregion
 
@@ -66,7 +68,7 @@ namespace ClassWeb.Models
         /// Gets or sets the IsAdmin for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
-        
+
         [Required]
         public bool IsAdmin
         {
@@ -84,7 +86,7 @@ namespace ClassWeb.Models
         /// Gets or sets the Users for this PeerVal.Role object.
         /// </summary>
         /// <remarks></remarks>
-        
+
         [Required]
         [Display(Name = "Users Permissionset")]
         public PermissionSet Users
@@ -135,7 +137,7 @@ namespace ClassWeb.Models
         }
         #endregion
 
-        
+
 
         #region Public Functions
 
@@ -151,16 +153,20 @@ namespace ClassWeb.Models
 
         protected override int dbAdd()
         {
-            throw new NotImplementedException();
+            _ID = DAL.AddRole(this);
+            return ID;
         }
 
         protected override int dbUpdate()
         {
-            throw new NotImplementedException();
+            return DAL.UpdateRole(this);
         }
-
+        /// <summary>
+        /// Calls DAL function to remove Role from the database.
+        /// </summary>
+        /// <remarks></remarks>
         #endregion
-        
+
         #region Public Subs
         /// <summary>
         /// Fills object from a MySqlClient Data Reader
@@ -178,4 +184,3 @@ namespace ClassWeb.Models
         #endregion
     }
 }
-

@@ -9,7 +9,7 @@
 <h4>Role</h4>
 <hr />
 
-<p style="color:red">@ViewBag.RoleUpdate</p>
+<p style="color:red">@ViewBag.RoleUpdate @TempData["Message"]</p>
 
 <div class="row">
     <div class="col-md-4">
@@ -50,12 +50,14 @@
 
                 <label>
                     DAVESet(Enter as decimal e.g. 15 for full DAVE control.)<input asp-for="Assignment.DAVESet" class="form-control" />
-                </label><br /><br />
+                </label>
+                <br /><br />
             </div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+
         </form>
     </div>
 </div>

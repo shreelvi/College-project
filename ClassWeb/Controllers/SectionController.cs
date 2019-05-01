@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -13,7 +12,6 @@ namespace ClassWeb.Controllers
 {
     public class SectionController : BaseController
     {
-
         // GET: Section
         public IActionResult Index()
         {
@@ -37,7 +35,7 @@ namespace ClassWeb.Controllers
             List<Section> Sections = new List<Section>();
             Sections = DAL.GetSections();
             return View(Sections);
-          
+
         }
 
         // GET: Section/Details/5
@@ -167,4 +165,3 @@ namespace ClassWeb.Controllers
 
     }
 }
-

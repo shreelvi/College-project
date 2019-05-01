@@ -1,21 +1,23 @@
 ﻿@model List<ClassWeb.Models.Role>
+@using Microsoft.AspNetCore.Http;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Roles and Permission</h2>
+@if (@Context.Session.GetString("UserRole") == "True")
+{
+    @await Html.PartialAsync("~/Views/Users/_SideBar.cshtml");
+}
 <p style="color:blue">
     @ViewData["RoleDelete"]
 </p>
 <p style="color:blue">
     @ViewData["RoleAdd"]
 </p>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="bg-primary">
         <tr>
             <th>
                 <p>Name</p>
@@ -31,6 +33,12 @@
             </th>
             <th>
                 <p>Assignment</p>
+            </th>
+            <th>
+                <p>Group</p>
+            </th>
+            <th>
+                <p>Action</p>
             </th>
         </tr>
     </thead>
@@ -49,29 +57,25 @@
                     <thead>
                         <tr>
                             <th>
-                                <p>Add&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>Edit&nbsp;</p>
-                            </th>
-                            <th>
                                 <p>Delete&nbsp;</p>
                             </th>
                             <th>
-                                <p>View&nbsp;</p>
+                                <p>Add&nbsp;</p>
                             </th>
                             <th>
-                                <p>ViewEdit  </p>
+                                <p>View</p>
+                            </th>
+                            <th>
+                                <p>Edit&nbsp;</p>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="Add">@Html.DisplayFor(modelItem => item.Users.Add)</td>
-                            <td class="Edit">@Html.DisplayFor(modelItem => item.Users.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Users.Delete)</td>
+                            <td class="Add">@Html.DisplayFor(modelItem => item.Users.Add)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Users.View)</td>
-                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Users.ViewAndEdit)</td>
+                            <td class="Edit">@Html.DisplayFor(modelItem => item.Users.Edit)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -80,47 +84,41 @@
                         <tr>
                             <th>AsBinary&nbsp;</th>
                             <th>DAVESet</th>
-                            @*<th>ID</th>*@
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Users.AsBinary)</td>
                             <td>@Html.DisplayFor(modelItem => item.Users.DAVESet)</td>
-                            @*<td>@Html.DisplayFor(modelItem => item.Users.ID)</td>*@
                         </tr>
                     </tbody>
                 </table>
-                
+
             </td>
             <td class="roles">
                 <table>
                     <thead>
                         <tr>
                             <th>
-                                <p>Add&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>Edit&nbsp;</p>
-                            </th>
-                            <th>
                                 <p>Delete&nbsp;</p>
+                            </th>
+                            <th>
+                                <p>Add&nbsp;</p>
                             </th>
                             <th>
                                 <p>View&nbsp;</p>
                             </th>
                             <th>
-                                <p>ViewEdit</p>
+                                <p>Edit&nbsp;</p>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="Add">@Html.DisplayFor(modelItem => item.Roles.Add)</td>
-                            <td class="Edit">@Html.DisplayFor(modelItem => item.Roles.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Roles.Delete)</td>
+                            <td class="Add">@Html.DisplayFor(modelItem => item.Roles.Add)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Roles.View)</td>
-                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Roles.ViewAndEdit)</td>
+                            <td class="Edit">@Html.DisplayFor(modelItem => item.Roles.Edit)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -144,29 +142,25 @@
                     <thead>
                         <tr>
                             <th>
-                                <p>Add&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>Edit&nbsp;</p>
-                            </th>
-                            <th>
                                 <p>Delete&nbsp;</p>
+                            </th>
+                            <th>
+                                <p>Add&nbsp;</p>
                             </th>
                             <th>
                                 <p>View&nbsp;</p>
                             </th>
                             <th>
-                                <p>ViewEdit  </p>
+                                <p>Edit&nbsp;</p>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="Add">@Html.DisplayFor(modelItem => item.Assignment.Add)</td>
-                            <td class="Edit">@Html.DisplayFor(modelItem => item.Assignment.Edit)</td>
                             <td class="delete">@Html.DisplayFor(modelItem => item.Assignment.Delete)</td>
+                            <td class="Add">@Html.DisplayFor(modelItem => item.Assignment.Add)</td>
                             <td class="view">@Html.DisplayFor(modelItem => item.Assignment.View)</td>
-                            <td class="deleteView">@Html.DisplayFor(modelItem => item.Assignment.ViewAndEdit)</td>
+                            <td class="Edit">@Html.DisplayFor(modelItem => item.Assignment.Edit)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -185,15 +179,8 @@
                     </tbody>
                 </table>
             </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Roles)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Assignment)
-            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                @*<a asp-action="Details" asp-route-id="@item.ID">Details</a> |*@
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>

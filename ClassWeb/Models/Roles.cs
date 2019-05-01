@@ -34,7 +34,7 @@ namespace ClassWeb.Models
 
         internal static Role Get(int roleID)
         {
-            return List.FirstOrDefault(r => r.ID == roleID);
+            return DAL.RoleGetByID(roleID);
         }
     }
 }

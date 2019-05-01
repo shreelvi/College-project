@@ -18,20 +18,34 @@
                 <p>Title</p>
             </th>
 
+            <th>
+                <p>CourseNumber</p>
+            </th>
+            <th>
+                <p>CourseTitle</p>
+            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var c in courses) // Print the list
         {
-            <tr>
-                <td>
-                    @c.ID
-                </td>
-                <td>
-                    @c.Title
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @c.ID
+            </td>
+            <td>
+                @c.Title
+            </td>
+            <td>
+                @c.Name
+            </td>
+
+            <td>
+                @c.Description
+            </td>
+        </tr>
         }
     </tbody>
 </table>

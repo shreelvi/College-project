@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassWeb.Models;
-using ClassWeb.Data;
 using ClassWeb.Model;
 
 namespace ClassWeb.Controllers
@@ -18,19 +17,11 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-        private readonly ClassWebContext _context;
-        public RoleController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: Role
         public IActionResult Index()
         {
             User LoggedIn = CurrentUser;
-            //string ss = LoggedIn.FirstName;
-
-            //Gets error message to display from Create method 
             var a = TempData["RoleAdd"];
             if (a != null)
                 ViewData["RoleAdd"] = a;
@@ -39,34 +30,22 @@ namespace ClassWeb.Controllers
             if (d != null)
                 ViewData["RoleDelete"] = d;
 
-            #region development code
-            //Checks if the user is logged in
-            //Commented for testing
-            //if (LoggedIn.FirstName == "Anonymous")
-            //{
-            //    TempData["LoginError"] = "Please login to view the page.";
-            //    return RedirectToAction("Index", "Home");
-            //}
-
-            //Checks if the user has permission to view
-            //if (UserCan<Role>(PermissionSet.Permissions.View))
-            //{
-            //    List<Role> Roles = new List<Role>();
-            //    Roles = DAL.GetRoles();
-            //    return View(Roles);
-            //}
-            //else
-            //{
-            //    TempData["PermissionError"] = "You don't have permission to view the page.";
-            //    return RedirectToAction("Dashboard", "Account");
-            //}
-            #endregion
-
-            #region Testing Code
-            List<Role> Roles = new List<Role>();
-            Roles = DAL.GetRoles();
-            return View(Roles);
-            #endregion
+            if (LoggedIn.FirstName == "Anonymous")
+                {
+                    TempData["LoginError"] = "Please login to view the page.";
+                    return RedirectToAction("Index", "Home");
+                }
+            if (UserCan<Role>(PermissionSet.Permissions.View))
+            {
+                List<Role> Roles = new List<Role>();
+                Roles = DAL.GetRoles();
+                return View(Roles);
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
 
         }
 
@@ -182,14 +161,18 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
+                    
                     int retInt = DAL.UpdateRole(role);
+                    if (retInt > 0)
+                    {
                     ViewBag.RoleUpdate = "Role updated successfully";
+                    }
                 }
                 catch //(DbUpdateConcurrencyException)
                 {
                     ViewBag.RoleUpdate("Database error occured when updating the role");
                 }
-                return View(role);
+                return RedirectToAction("index", "role");
             }
             else
             {
@@ -239,7 +222,6 @@ namespace ClassWeb.Controllers
             if (UserCan<Role>(PermissionSet.Permissions.Delete))
             {
                 int retInt = DAL.RemoveRole(id);
-
                 if (retInt < 0)
                     TempData["RoleDelete"] = "Error occured when deleting the role";
 

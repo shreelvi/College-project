@@ -1,60 +1,49 @@
-﻿@model List<ClassWeb.Models.Assignment>
-
-@using Microsoft.AspNetCore.Http;
+﻿@model List<object>
 @{
-    ViewData["Title"] = "Dashboard ";
+    ViewData["Title"] = "Dashboard";
 }
-<p style="color:blue">@ViewBag.folder</p>
-<p style="color:red">@ViewData["PermissionErr"]</p>
-
 <div style="float:right">
-    <a href="EditProfile"><i style="font-size: 30px; float: right" class="glyphicon glyphicon-user"></i></a>
-    <a href="Notification"><i style="font-size: 30px; float:right" class="glyphicon glyphicon-bell"></i></a>
-
-    <br /><br />
     <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="">Edit Profile <text>&nbsp;</text></a>
+
 </div>
-
-<div>
-    <h3 style="color:darkorange;display:inline-block">User Dashboard</h3><br />
-    <p class="text-danger">@TempData["Message"]</p>
-    <p class="text-danger">@TempData["Error"]</p>
-    <h4 style="color:blue; font-size: 20px">Welcome, @Context.Session.GetString("username")</h4><br />
-
-    <a style="color:blue" href="/Assignment/index" target="_blank">Browse Your Files Directory</a><br /><br />
-    <a style="color:blue" href="/CourseSemester/ClassViewForStudents">Classes Details</a><br /><br />
-    <a style="color:blue" asp-controller="Assignment" asp-action="Index"><strong>Upload Files</strong></a> <br /><br />
-</div>
-
-<table class="table">
-
-    <thead>
-        <tr>
-            <th>File Name</th>
-            <th>Assignment Description</th>
-            <th>Date Submitted</th>
-            <th>Grade</th>
-            <th>Feedback</th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
+<h2>User Dashboard</h2>
+<!-- Page content -->
+<div class="card-group">
+    <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+        <div class="card-header"><a class="text-primary" asp-action="index" asp-controller="Assignment">Assignment List</a></div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text">All the assignment from all the class is viewable from here.</p>
+        </div>
+    </div>
+    @if (Model.Count > 0)
     {
-        <tbody>
-            <tr class="mt-5">
-                <td>@Html.DisplayFor(modelItem => item.FileName)</td>
-                @*<td>@Html.DisplayFor(modelItem => item.Description)</td>*@
-                <td>@Html.DisplayFor(modelItem => item.DateSubmited)</td>
-                <td>@Html.DisplayFor(modelItem => item.Grade)</td>
-                <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
-                <td><a asp-controller="Assignment" asp-action="Download" asp-route-Name="@item.FileName"><span class="btn-outline-success btn glyphicon glyphicon-save"></span>Download</a></td>
-                <td><a asp-controller="Assignment" asp-action="Delete" asp-route-id="@item.ID"><span class=" btn-outline-danger btn glyphicon glyphicon-trash"></span>Delete</a></td>
-                <td><a asp-controller="Assignment" asp-action="View" asp-route-Name="@item.FileName"><span class="btn bg-light btn-primary text-dark glyphicon glyphicon-eye-open">View</span></a></td>
-                <td><a asp-controller="FileEditor" asp-action="Index" asp-route-Name="@item.FileName"><span class="btn-outline-success btn glyphicon glyphicon-edit">Edit</span></a></td>
+        @foreach (object obj in Model)
+        {
+            @if (typeof(ClassWeb.Models.Group) == obj.GetType())
+            {
+                ClassWeb.Models.Group Group = (ClassWeb.Models.Group)obj;
+                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+                    <div class="card-header">@Group.Name</div>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">@Group.Name file can be viewed from here</p>
+                    </div>
+                </div>
+            }
+            @if (typeof(ClassWeb.Models.Class) == obj.GetType())
+            {
+                ClassWeb.Models.Class Class = (ClassWeb.Models.Class)obj;
+                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+                    <div class="card-header">@Class.Title</div>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">This is a Class card.</p>
+                    </div>
+                </div>
+            }
 
-            </tr>
-        </tbody>
+        }
+
     }
-</table>
-
-
+</div>
