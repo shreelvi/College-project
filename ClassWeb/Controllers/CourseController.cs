@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -12,6 +13,8 @@ namespace ClassWeb.Controllers
 {
     public class CourseController : BaseController
     {
+        
+        // GET: Course
         public async Task<IActionResult> Index()
         {
             User LoggedIn = CurrentUser;
@@ -37,6 +40,8 @@ namespace ClassWeb.Controllers
             Courses = DAL.GetCourses();
             return View(Courses);
         }
+
+       
 
         // GET: Course/Create
         public IActionResult Create()
@@ -71,10 +76,72 @@ namespace ClassWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Course/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Course/Details/5
+        public IActionResult Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var course = DAL.GetCourse(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View(course);
+        }
+
+        // GET: Courses/Edit/5
+        public IActionResult Edit(int? id)
+        {
+            var Course = DAL.GetCourse(id);
+            if (Course == null)
+            {
+                return NotFound();
+            }
+            return View(Course);
+        }
+
+
+        // POST: Courses/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
+        {
+            if (id != course.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    int c = DAL.UpdateCourse(course);
+                    if (c > 0)
+                    {
+                        TempData["CourseUpdate"] = "Course Updated successfully!!!";
+
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CourseExists(course.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(course);
         }
 
         // GET: Course/Delete/5
@@ -112,6 +179,19 @@ namespace ClassWeb.Controllers
 
             TempData["CourseDelete"] = "Successfully deleted the course";
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool CourseExists(int id)
+        {
+            Course c = DAL.GetCourse(id);
+            if (c == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
