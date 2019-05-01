@@ -739,27 +739,6 @@ namespace ClassWeb.Model
             return -1;
         }
 
-        internal static List<User> UserGetAll()
-        {
-            List<User> retObj = new List<User>();
-            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
-            try
-            {
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    //
-                    retObj.Add(new User(dr));
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retObj;
-        }
 
 
         #endregion
@@ -2141,29 +2120,29 @@ namespace ClassWeb.Model
         /// Gets List of usernames from the database to check for same names
         /// </summary>
         /// <returns>List of Usernames string</returns>
-        internal static List<User> GetAllUsers()
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_GetAllUsers");
-            List<User> retList = new List<User>();
-            try
-            {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                MySqlDataReader dr = GetDataReader(comm);
-                while (dr.Read())
-                {
-                    User user = new User(dr);
-                    //a.User = new User(dr);
-                    retList.Add(user);
-                }
-                comm.Connection.Close();
-            }
-            catch (Exception ex)
-            {
-                comm.Connection.Close();
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return retList;
-        }
+        //internal static List<User> GetAllUsers()
+        //{
+        //    MySqlCommand comm = new MySqlCommand("sproc_GetAllUsers");
+        //    List<User> retList = new List<User>();
+        //    try
+        //    {
+        //        comm.CommandType = System.Data.CommandType.StoredProcedure;
+        //        MySqlDataReader dr = GetDataReader(comm);
+        //        while (dr.Read())
+        //        {
+        //            User user = new User(dr);
+        //            //a.User = new User(dr);
+        //            retList.Add(user);
+        //        }
+        //        comm.Connection.Close();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        comm.Connection.Close();
+        //        System.Diagnostics.Debug.WriteLine(ex.Message);
+        //    }
+        //    return retList;
+        //}
     }
 }
 

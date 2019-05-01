@@ -6,6 +6,14 @@
     <OutputType>Exe</OutputType>
     <UserSecretsId>71ed8cf7-e9fb-4a16-b940-489cae61ed1c</UserSecretsId>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Models\Evaluation.cs" />
+    <Compile Remove="Models\FileUpload.cs" />
+    <Compile Remove="Models\Prompt.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Views\Shared\Home\About.cshtml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
