@@ -17,14 +17,12 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
+      
 
         // GET: Role
         public IActionResult Index()
         {
             User LoggedIn = CurrentUser;
-            //string ss = LoggedIn.FirstName;
-
-            //Gets error message to display from Create method 
             var a = TempData["RoleAdd"];
             if (a != null)
                 ViewData["RoleAdd"] = a;
@@ -33,34 +31,22 @@ namespace ClassWeb.Controllers
             if (d != null)
                 ViewData["RoleDelete"] = d;
 
-            #region development code
-            //Checks if the user is logged in
-            //Commented for testing
-            //if (LoggedIn.FirstName == "Anonymous")
-            //{
-            //    TempData["LoginError"] = "Please login to view the page.";
-            //    return RedirectToAction("Index", "Home");
-            //}
-
-            //Checks if the user has permission to view
-            //if (UserCan<Role>(PermissionSet.Permissions.View))
-            //{
-            //    List<Role> Roles = new List<Role>();
-            //    Roles = DAL.GetRoles();
-            //    return View(Roles);
-            //}
-            //else
-            //{
-            //    TempData["PermissionError"] = "You don't have permission to view the page.";
-            //    return RedirectToAction("Dashboard", "Account");
-            //}
-            #endregion
-
-            #region Testing Code
-            List<Role> Roles = new List<Role>();
-            Roles = DAL.GetRoles();
-            return View(Roles);
-            #endregion
+            if (LoggedIn.FirstName == "Anonymous")
+                {
+                    TempData["LoginError"] = "Please login to view the page.";
+                    return RedirectToAction("Index", "Home");
+                }
+            if (UserCan<Role>(PermissionSet.Permissions.View))
+            {
+                List<Role> Roles = new List<Role>();
+                Roles = DAL.GetRoles();
+                return View(Roles);
+            }
+            else
+            {
+                TempData["PermissionError"] = "You don't have permission to view the page.";
+                return RedirectToAction("Dashboard", "Account");
+            }
 
         }
 
@@ -145,7 +131,7 @@ namespace ClassWeb.Controllers
             //Checks if the user has permission to edit
             if (UserCan<Role>(PermissionSet.Permissions.Edit))
             {
-                Role role = DAL.GetRoleByID(id);
+                Role role = DAL.GetRole(id);
                 if (role == null)
                 {
                     return NotFound();
@@ -164,7 +150,7 @@ namespace ClassWeb.Controllers
         //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,Group,ID")] Role role)
+        public IActionResult Edit(int id, [Bind("Name,IsAdmin,Users,Roles,Assignment,ID")] Role role)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -177,20 +163,13 @@ namespace ClassWeb.Controllers
                 try
                 {
                     int retInt = DAL.UpdateRole(role);
-                    if (retInt > 0)
-                    {
-                        TempData["Message"] = "Role updated successfully";
-                    }
-                    else
-                    {
-                        TempData["Message"] = "Role Cannot be updated";
-                    }
+                    ViewBag.RoleUpdate = "Role updated successfully";
                 }
                 catch //(DbUpdateConcurrencyException)
                 {
-                    TempData["Message"] = "Database error occured when updating the role";
+                    ViewBag.RoleUpdate("Database error occured when updating the role");
                 }
-                return RedirectToAction("index");
+                return View(role);
             }
             else
             {
@@ -239,8 +218,7 @@ namespace ClassWeb.Controllers
             }
             if (UserCan<Role>(PermissionSet.Permissions.Delete))
             {
-
-                int retInt = DAL.RoleRemoveByID(id);
+                int retInt = DAL.RemoveRole(id);
 
                 if (retInt < 0)
                     TempData["RoleDelete"] = "Error occured when deleting the role";

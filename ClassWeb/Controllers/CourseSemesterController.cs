@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +20,6 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class CourseSemesterController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public CourseSemesterController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
@@ -46,10 +39,10 @@ namespace ClassWeb.Controllers
 
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
-                {
-                    TempData["LoginError"] = "Please login to view the page.";
-                    return RedirectToAction("Index", "Home");
-                }
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
 
             List<CourseSemester> CourseSemesters = new List<CourseSemester>();
             CourseSemesters = DAL.GetCourseSemesters();
@@ -61,7 +54,7 @@ namespace ClassWeb.Controllers
         {
             User LoggedIn = CurrentUser;
             Group LoggedInGroup = CurrentGroup;
-            
+
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous" && LoggedInGroup.Name == "Anonymous")
             {
@@ -74,26 +67,6 @@ namespace ClassWeb.Controllers
             return View(CourseSemesters);
 
         }
-
-        // GET: CourseSemesters/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var courseSemester = await _context.CourseSemester
-                .Include(c => c.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (courseSemester == null)
-            {
-                return NotFound();
-            }
-
-            return View(courseSemester);
-        }
-
         /// <summary>
         /// Modified by: Meshari
         /// Date Modified: 04/27/2019
@@ -148,10 +121,6 @@ namespace ClassWeb.Controllers
         /// Method to add a class (coursesemester object) in the database
         /// Modified on: 27 April 2019
         /// Add users to the class 
-        /// Modified on: 30 April 2019
-        /// By: shreelvi
-        /// Retrieve class information from course, semester, section and store it as its name
-        /// To pass the name to selectlist when user registers.
         /// </summary>
         /// <param name="courseSemester"></param>
         /// <returns></returns>
@@ -167,27 +136,19 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            //Creates class's name combinining course, semester, year and section information
-            string course = DAL.GetCourse(courseSemester.CourseID).Name;
-            int section = DAL.GetSection(courseSemester.SectionID).SectionNumber;
-            string sem = DAL.GetSemester(courseSemester.SemesterID).Name;
-            int year = DAL.GetYear(courseSemester.YearID).Year1;
-            string classinfo = course + "-" + section + " " + sem + " " + year;
-
-            courseSemester.Name = classinfo;
-
-
             //Add the class to the coursesemester table
-            int retInt = DAL.AddCourseSemester(courseSemester); 
+            int retInt = DAL.AddCourseSemester(courseSemester);
 
-            if (retInt < 0) {
+            if (retInt < 0)
+            {
                 TempData["CourseSemesterAdd"] = "Database problem occured when adding the Courses for Semester";
             }
 
             //If sucessful, assigns the class to the user that is creating
-            else {
+            else
+            {
                 int assignUser = DAL.AddUserToClass(retInt, id); //Adds the coursesemesterid and the userid to the association table
-                if(assignUser < 0)
+                if (assignUser < 0)
                 {
                     TempData["CourseSemesterAdd"] = "Class added but problem occured when assigning user the class.";
                 }
@@ -196,7 +157,7 @@ namespace ClassWeb.Controllers
                     TempData["CourseSemesterAdd"] = "Class added successfully.";
                 }
             }
-            if(LoggedIn.Role.Name == "Professor")
+            if (LoggedIn.Role.Name == "Professor")
             {
                 return RedirectToAction("ProfessorDashboard", "Admin"); //If added by professor, redirects to the dashboard
             }
@@ -244,7 +205,7 @@ namespace ClassWeb.Controllers
             int SectionNumber = courseSemester.Section.SectionNumber;
             SectionList.Insert(0, new Section { ID = 0, SectionNumber = SectionNumber });
             ViewBag.Sections = SectionList;
-          
+
             return View(courseSemester);
         }
 
@@ -268,21 +229,14 @@ namespace ClassWeb.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseSemesterExists(courseSemester.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                   
                 }
                 //If edited from the professor dashboard
-                if(CurrentUser.Role.Name == "Professor") { return RedirectToAction("ProfessorDashboard", "Admin"); }
+                if (CurrentUser.Role.Name == "Professor") { return RedirectToAction("ProfessorDashboard", "Admin"); }
 
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(courseSemester);
         }
 
@@ -316,11 +270,6 @@ namespace ClassWeb.Controllers
 
             TempData["CourseSemDelete"] = "Successfully deleted the CourseSemester";
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseSemesterExists(int id)
-        {
-            return _context.CourseSemester.Any(e => e.ID == id);
         }
     }
 }

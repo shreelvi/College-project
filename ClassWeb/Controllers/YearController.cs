@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ClassWeb.Data;
 using ClassWeb.Models;
 using ClassWeb.Model;
 
@@ -13,12 +12,6 @@ namespace ClassWeb.Controllers
 {
     public class YearController : BaseController
     {
-        private readonly ClassWebContext _context;
-
-        public YearController(ClassWebContext context)
-        {
-            _context = context;
-        }
 
         // GET: Year
         public async Task<IActionResult> Index()
