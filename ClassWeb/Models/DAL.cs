@@ -382,9 +382,56 @@ namespace ClassWeb.Model
             return -1;
         }
 
+        /// <summary>
+        /// Attempts to delete the database entry corresponding to the Role
+        /// </summary>
+        /// <remarks></remarks>
+        internal static int RemoveRole(int roleID)
+        {
+            if (roleID == 0) return -1;
+            int retInt = 0;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleRemove");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, roleID);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                comm.ExecuteNonQuery();
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
         #endregion
 
-        #region Assignment
+        internal static Assignment GetAssignmentByNameLocationUserName(string name, string location, string userName)
+        {
+            Assignment retObj = null;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByNameLocationUserName");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, name);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, location);
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         internal static int AddAssignment(Assignment obj)
         {
             if (obj == null) return -1;
@@ -413,23 +460,16 @@ namespace ClassWeb.Model
 
         internal static User UserGetByUserName(string userName, string emailAddress)
         {
-            throw new NotImplementedException();
-        }
-
-        internal static List<Assignment> AssignmentsGetByID(int id)
-        {
-            MySqlCommand comm = new MySqlCommand("sproc_GetAssignmentsByUserID");
-            List<Assignment> retList = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByID");
+            User retObj = null;
             try
             {
-                comm.CommandType = System.Data.CommandType.StoredProcedure;
-                comm.Parameters.AddWithValue(User.db_ID, id);
+                comm.Parameters.AddWithValue("@" + User.db_UserName, userName);
                 MySqlDataReader dr = GetDataReader(comm);
+
                 while (dr.Read())
                 {
-                    Assignment a = new Assignment(dr);
-                    //a.User = new User(dr);
-                    retList.Add(a);
+                    retObj = new User(dr);
                 }
                 comm.Connection.Close();
             }
@@ -438,7 +478,7 @@ namespace ClassWeb.Model
                 comm.Connection.Close();
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-            return retList;
+            return retObj;
         }
 
         public static Assignment GetAllAssignment()
@@ -463,21 +503,31 @@ namespace ClassWeb.Model
             return retObj;
         }
 
-        internal static void UpdateAssignment(Assignment obj)
+        internal static int UpdateAssignment(Assignment obj)
         {
+            if (obj == null) return -1;
             MySqlCommand comm = new MySqlCommand("sproc_AssignmentResubmit");
             try
             {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, obj.FileLocation);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateStarted, obj.DateStarted);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateSubmited, obj.DateSubmited);
                 comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
-                comm.Parameters.AddWithValue("@" + Assignment.db_ID, obj.ID);
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileSize, obj.FileSize);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Grade, obj.Grade);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateDue, obj.DateDue);
+                comm.Parameters.AddWithValue("@" + Assignment.db_IsEditable, obj.IsEditable);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
                 UpdateObject(comm);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-
+            return -1;
         }
+
 
         internal static int ResubmitAssignment(Assignment obj)
         {
@@ -579,7 +629,6 @@ namespace ClassWeb.Model
             }
             return retObj;
         }
-        #endregion
 
         #region Login
 
