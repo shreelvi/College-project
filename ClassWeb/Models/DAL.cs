@@ -158,6 +158,144 @@ namespace ClassWeb.Model
 
         #region Role
         /// <summary>
+        /// Gets List of usernames from the database to check for same names
+        /// </summary>
+        /// <returns>List of Usernames string</returns>
+        internal static List<User> GetAllUsers()
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
+            List<User> retList = new List<User>();
+            try
+            {
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    User user = new User(dr);
+                    retList.Add(user);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retList;
+        }
+
+        internal static List<Assignment> GetAllAssignmentByUserNameAndLocation(string userName, string folderName)
+        {
+            List<Assignment> retObj = new List<Assignment>();
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetAllByUserNameAndLocation");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_UserName, userName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Location, folderName);
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static Role RoleGetByID(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_RoleGetByID");
+            Role retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Role(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static int UpdateAssignmentFileName(Assignment obj)
+        {
+            if (obj == null) return -1;
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentFileNameUpdate");
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_FileName, obj.FileName);
+                comm.Parameters.AddWithValue("@" + Assignment.db_Feedback, obj.Feedback);
+                comm.Parameters.AddWithValue("@" + Assignment.db_DateModified, obj.DateModified);
+                UpdateObject(comm);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return -1;
+        }
+        internal static Assignment AssignmentGetByID(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_AssignmentGetByID");
+            Assignment retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Assignment.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Assignment(dr);
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+        /// <summary>
+        /// Created by: Mohan 
+        /// get all users from the database
+        /// Reference: PeerVal Project by Professor from github.
+        /// </summary>
+        /// <remarks></remarks>
+        internal static List<User> UserGetAll()
+        {
+            List<User> retObj = new List<User>();
+            MySqlCommand comm = new MySqlCommand("sproc_UserGetAll");
+            try
+            {
+                MySqlDataReader dr = GetDataReader(comm);
+                while (dr.Read())
+                {
+                    //
+                    retObj.Add(new User(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
         /// Get list of all Role CLassweb.objects from the database
         /// Reference: Taken code from the peerval project
         /// </summary>
@@ -243,34 +381,6 @@ namespace ClassWeb.Model
             }
             return -1;
         }
-
-        internal static int RemoveRole(Role role)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Attempts to delete the database entry corresponding to the Role
-        /// </summary>
-        /// <remarks></remarks>
-        internal static int RemoveRole(int roleID)
-        {
-            if (roleID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand();
-            try
-            {
-                comm.CommandText = "sproc_RoleRemove";
-                comm.Parameters.AddWithValue("@" + Role.db_ID, roleID);
-                return UpdateObject(comm);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            return -1;
-        }
-
 
         #endregion
 
