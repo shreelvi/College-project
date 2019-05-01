@@ -46,7 +46,7 @@ namespace ClassWeb.Models
             _DateModified = dr.GetDateTime(db_DateModified);
             _DateSubmited = dr.GetDateTime(db_DateSubmited);
             _Feedback = dr.GetString(db_Feedback);
-            _FileSize = dr.GetInt64(db_FileSize);
+            _FileSize = dr.GetInt32(db_FileSize);
             _Grade = dr.GetInt32(db_Grade);
             _IsEditable = dr.GetBoolean(db_IsEditable);
             _UserName = dr.GetString(db_UserName);

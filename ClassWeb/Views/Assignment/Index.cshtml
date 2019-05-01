@@ -1,4 +1,4 @@
-﻿@model Tuple<List<Assignment>, List<string>,List<Assignment>>
+﻿@model Tuple<List<Assignment>, List<string>, List<Assignment>>
 @using Microsoft.AspNetCore.Http;
 <div>
     <h4 class="text-info font-weight-bold">Upload Assignment</h4>
@@ -22,8 +22,6 @@
             </div>
             <div>
                 <span class="info alert-success"> @TempData["Message"]@TempData["Error"]</span>
-                <span class="info alert-danger">  @ViewBag.Error</span>
-                <span class="info alert-danger">  @ViewBag.Message</span>
             </div>
         </form>
     </div>
@@ -181,7 +179,7 @@
             }
             @if (Model.Item3.Count > 0)
             {
-               <br />
+                <br />
                 <tr><td>File only in physical Storage</td></tr>
                 foreach (Assignment a in Model.Item3)
                 {
@@ -236,8 +234,8 @@
                         </td>
 
                     </tr>
-                    }
-                    }
-                </tbody>
+                }
+            }
+        </tbody>
     </table>
 </div>

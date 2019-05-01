@@ -1,46 +1,46 @@
-﻿<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-@model List<object>
+﻿@model List<object>
 @{
     ViewData["Title"] = "Dashboard";
 }
 <div style="float:right">
     <a style="color:darkblue; float: right" asp-controller="account" asp-action="logout">Logout</a>
-    <a style="color:darkblue; float: right" asp-controller="account" asp-action="Edit">Edit Profile <text>&nbsp;</text></a>
+
 </div>
 <h2>User Dashboard</h2>
 <!-- Page content -->
 <div class="card-group">
-    <div class="card bg-success m-3" style="max-width: 18rem;">
-        <div class="card-header">Assignment</div>
+    <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+        <div class="card-header"><a class="text-primary" asp-action="index" asp-controller="Assignment">Assignment List</a></div>
         <div class="card-body">
             <h5 class="card-title"></h5>
-            <p class="card-text">This is Assignment Card.</p>
+            <p class="card-text">All the assignment from all the class is viewable from here.</p>
         </div>
     </div>
     @if (Model.Count > 0)
     {
         @foreach (object obj in Model)
         {
-            @if (typeof(ClassWeb.Models.User) == obj.GetType())
+            @if (typeof(ClassWeb.Models.Group) == obj.GetType())
             {
-                ClassWeb.Models.User U = (ClassWeb.Models.User)obj;
-                <div class="card bg-success m-3" style="max-width: 18rem;">
-                    <div class="card-header">
-                        <a href="\Assignment\ChangeDir?dir=@U.UserName">@U.UserName</a>
+                ClassWeb.Models.Group Group = (ClassWeb.Models.Group)obj;
+                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+                    <div class="card-header">@Group.Name</div>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">@Group.Name file can be viewed from here</p>
                     </div>
                 </div>
             }
-            @if (typeof(ClassWeb.Models.Group) == obj.GetType())
+            @if (typeof(ClassWeb.Models.Class) == obj.GetType())
             {
-                ClassWeb.Models.Group G = (ClassWeb.Models.Group)obj;
-                <div class="card w-50">
-                    <div class="card-body bg-success m-3" style="max-width: 18rem;">
-                        <h5 class="card-title"><a href="\Assignment\ChangeDir?dir=@G.Name">@G.Name</a></h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Button</a>
+                ClassWeb.Models.Class Class = (ClassWeb.Models.Class)obj;
+                <div class="card text-white bg-secondary m-3" style="max-width: 18rem;">
+                    <div class="card-header">@Class.Title</div>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">This is a Class card.</p>
                     </div>
-                </div>               
-                  
+                </div>
             }
 
         }

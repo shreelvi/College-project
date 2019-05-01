@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -85,19 +86,18 @@ namespace ClassWeb.Models
         {
             get
             {
-
+               
                 return
                     _VerificationCode;
             }
-            set
-            {
+            set {
                 if (_VerificationCode == null)
                 {
                     _VerificationCode = "";
                 }
                 else
                 {
-                    _VerificationCode = value;
+                _VerificationCode = value;
                 }
             }
         }
@@ -131,11 +131,20 @@ namespace ClassWeb.Models
             get { return _UserName; }
             set { _UserName = value; }
         }
+        [Required]
+        [DataType(DataType.Password)]
         public string Password
         {
             get { return _Password; }
             set { _Password = value; }
         }
+
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("Password")]
+        [NotMapped]
+        public string ConfirmPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the Salt for this PeerVal.User object
@@ -221,13 +230,11 @@ namespace ClassWeb.Models
             get { return _Assignments; }
             set { _Assignments = value; }
         }
-
         public int Archived
         {
             get { return _Archived; }
             set { _Archived = value; }
         }
-
         #endregion
 
         #region Public Functions
@@ -261,7 +268,7 @@ namespace ClassWeb.Models
             _LastName = dr.GetString(db_LastName);
             _EmailAddress = dr.GetString(db_EmailAddress);
             _Password = dr.GetString(db_Password);
-            // DateTime DateCreated = dr.GetDateTime(db_DateCreated);
+           // DateTime DateCreated = dr.GetDateTime(db_DateCreated);
             //_DateModified = dr.GetDateTime(db_DateModified);
             // _DateModified = DateTime.Parse(DateModified.ToString());
             //_DateDeleted = dr.GetDateTime(db_DateDeleted);

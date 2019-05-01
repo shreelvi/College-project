@@ -87,7 +87,7 @@ namespace ClassWeb.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 CurrentUser = loggedIn; //Sets the session for user from base controller
-                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetString("UserName", loggedIn.UserName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
                 HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
                 if (loggedIn.Role.IsAdmin)
