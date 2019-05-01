@@ -109,7 +109,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, [Bind("Subject, CourseNumber, CourseTitle,ID")] Course course)
+        public IActionResult Edit(int? id, [Bind(" CourseNumber, CourseTitle,ID")] Course course)
         {
             if (id != course.ID)
             {
