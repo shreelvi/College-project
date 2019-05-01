@@ -172,7 +172,6 @@ namespace ClassWeb.Model
                 while (dr.Read())
                 {
                     User user = new User(dr);
-                    //a.User = new User(dr);
                     retList.Add(user);
                 }
                 comm.Connection.Close();
@@ -197,6 +196,29 @@ namespace ClassWeb.Model
                 while (dr.Read())
                 {
                     retObj.Add(new Assignment(dr));
+                }
+                comm.Connection.Close();
+            }
+            catch (Exception ex)
+            {
+                comm.Connection.Close();
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            return retObj;
+        }
+
+        internal static Role RoleGetByID(int id)
+        {
+            MySqlCommand comm = new MySqlCommand("sproc_RoleGetByID");
+            Role retObj = null;
+            try
+            {
+                comm.Parameters.AddWithValue("@" + Role.db_ID, id);
+                MySqlDataReader dr = GetDataReader(comm);
+
+                while (dr.Read())
+                {
+                    retObj = new Role(dr);
                 }
                 comm.Connection.Close();
             }
@@ -369,12 +391,16 @@ namespace ClassWeb.Model
         internal static int RemoveRole(int roleID)
         {
             if (roleID == 0) return -1;
-            MySqlCommand comm = new MySqlCommand();
+            int retInt = 0;
+            MySqlCommand comm = new MySqlCommand("sproc_RoleRemove");
             try
             {
-                comm.CommandText = "sproc_RoleRemove";
                 comm.Parameters.AddWithValue("@" + Role.db_ID, roleID);
-                return UpdateObject(comm);
+                comm.Connection = new MySqlConnection(EditOnlyConnectionString);
+                comm.CommandType = System.Data.CommandType.StoredProcedure;
+                comm.Connection.Open();
+                comm.ExecuteNonQuery();
+                comm.Connection.Close();
             }
             catch (Exception ex)
             {

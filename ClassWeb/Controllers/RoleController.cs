@@ -17,7 +17,6 @@ namespace ClassWeb.Controllers
     /// </summary>
     public class RoleController : BaseController
     {
-      
 
         // GET: Role
         public IActionResult Index()
@@ -162,14 +161,18 @@ namespace ClassWeb.Controllers
             {
                 try
                 {
+                    
                     int retInt = DAL.UpdateRole(role);
+                    if (retInt > 0)
+                    {
                     ViewBag.RoleUpdate = "Role updated successfully";
+                    }
                 }
                 catch //(DbUpdateConcurrencyException)
                 {
                     ViewBag.RoleUpdate("Database error occured when updating the role");
                 }
-                return View(role);
+                return RedirectToAction("index", "role");
             }
             else
             {
@@ -219,7 +222,6 @@ namespace ClassWeb.Controllers
             if (UserCan<Role>(PermissionSet.Permissions.Delete))
             {
                 int retInt = DAL.RemoveRole(id);
-
                 if (retInt < 0)
                     TempData["RoleDelete"] = "Error occured when deleting the role";
 
