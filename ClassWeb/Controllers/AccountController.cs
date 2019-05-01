@@ -146,6 +146,9 @@ namespace ClassWeb.Controllers
         /// Method to Add/Register user to the database.
         /// Modified on: 03/18/2019
         /// Added feature to check the username is unique
+        /// Modified on: 04/30/2019
+        /// Added code to get coursesemesters information 
+        /// and pass to the dropdown for users to enroll in class
         /// </summary>
 
         // GET: /Account/AddUser
@@ -163,7 +166,7 @@ namespace ClassWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult AddUser(User NewUser)
+        public ActionResult AddUser(User NewUser, int ClassID)
         {
             string userPath = SetUserFolder(NewUser); //Sets the default user directory 
             NewUser.DirectoryPath = userPath;

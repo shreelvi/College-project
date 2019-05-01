@@ -167,12 +167,12 @@ namespace ClassWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            //Creates class name
+            //Creates class's name combinining course, semester, year and section information
             string course = DAL.GetCourse(courseSemester.CourseID).Name;
             int section = DAL.GetSection(courseSemester.SectionID).SectionNumber;
             string sem = DAL.GetSemester(courseSemester.SemesterID).Name;
             int year = DAL.GetYear(courseSemester.YearID).Year1;
-            string classinfo = course + " " + section + " " + sem + " " + year;
+            string classinfo = course + "-" + section + " " + sem + " " + year;
 
             courseSemester.Name = classinfo;
 

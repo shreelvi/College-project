@@ -188,7 +188,14 @@ namespace ClassWeb.Controllers
                 ViewData["UserGroupAddError"] = e;
             else if (g != null)
                 ViewData["GroupAddSuccess"] = g;
-            ViewBag.ReturnUrl = returnUrl;
+
+            //Gets and pass the class name to dropdown for group registeration
+            List<string> ClassList = new List<string>();
+            List<CourseSemester> coursesem = new List<CourseSemester>();
+            coursesem = DAL.GetCourseSemesters();
+            coursesem.Insert(0, new CourseSemester { ID = 0, Name = "Select" });
+            ViewBag.ClassInfo = coursesem;
+         
             return View();
         }
 
