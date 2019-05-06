@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -47,6 +48,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Properties
+        [Required]
         public int CRN
         {
             get
@@ -60,6 +62,7 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
         public int CourseID
         {
             get
@@ -73,6 +76,7 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
         public int SemesterID
         {
             get
@@ -86,6 +90,7 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
         public int YearID
         {
             get
@@ -99,6 +104,7 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
         public int SectionID
         {
             get
@@ -112,6 +118,7 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
         public int UserID
         {
             get
@@ -125,6 +132,8 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
+        [Display(Name = "Start Date\nExample: 12/01/2019 12:00 AM")]
         public DateTime DateStart
         {
             get
@@ -138,6 +147,8 @@ namespace ClassWeb.Models
             }
         }
 
+        [Required]
+        [Display(Name = "End Date\nExample: 12/01/2019 12:00 AM")]
         public DateTime DateEnd
         {
             get
@@ -150,9 +161,6 @@ namespace ClassWeb.Models
                 _DateEnd = value;
             }
         }
-
-
-
 
         /// <summary>
         /// Gets or sets the Course for this object.
