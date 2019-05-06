@@ -1012,5 +1012,106 @@ users.ResetCode=`ResetCode`
 WHERE users.ID=`ID`;
 END$$
 
+DELIMITER $$
+CREATE PROCEDURE `add_Group` (IN `g_Name` VARCHAR(50), IN `g_EmailAddress` VARCHAR(50), IN `g_UserName` VARCHAR(50), IN `g_Password` CHAR(128), IN `g_Salt` CHAR(128), OUT `g_ID` INT)  BEGIN 
+INSERT INTO groups(Name, EmailAddress, Username, Password, Salt) values (g_Name, g_EmailAddress, g_UserName,g_Password, g_Salt); 
+SET g_ID = LAST_INSERT_ID();
+END$$
 
+DELIMITER $$
+
+CREATE PROCEDURE `CheckGroupUsernameExists` (IN `username` VARCHAR(128))  BEGIN 
+	SET @group_exists = 0; 
+	SELECT 1 INTO @group_exists 
+    FROM groups 
+    WHERE groups.UserName = username; 
+	SELECT @group_exists;
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `CheckUserExistsInGroup` (IN `GroupID` INT, IN `UserID` INT)  BEGIN 
+	SET @user_exists = 0; 
+	SELECT 1 INTO @user_exists 
+    FROM groupsusers 
+    WHERE groupsusers.GroupID = GroupID and groupsusers.UserID = UserID; 
+	SELECT @user_exists;
+END$$
+
+DELIMITER $$
+CREATE  PROCEDURE `delete_GroupByID` (IN `ID` INT)  BEGIN
+delete from groups
+where groups.ID=ID;
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `delete_GroupUserByID` (IN `GroupID` INT, IN `UserID` INT)  BEGIN 
+delete from groupsusers where groupsusers.GroupID = GroupID AND
+groupsusers.UserID = UserID;
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `get_Group` ()  BEGIN 
+SELECT * FROM groups; 
+END$$
+
+CREATE PROCEDURE `get_GroupByID` (IN `GroupID` INT)  BEGIN 
+SELECT * from groups g where g.ID = GroupID;
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `get_GroupByUserName` (IN `username` VARCHAR(128))  BEGIN 
+SELECT * from groups g where g.UserName = username; 
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `get_GroupUsersByID` (IN `GroupID` INT)  BEGIN
+SELECT  users.ID, users.FirstName, users.LastName, users.EmailAddress 
+ from groups 
+  inner join groupsusers on groups.ID = groupsusers.GroupID
+  inner join users on groupsusers.UserID = users.ID 
+where groups.ID = GroupID; 
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `sprocs_DeleteCourseByID` (IN `c_ID` INT(50))  BEGIN DELETE FROM course where ID = c_ID; 
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `sprocs_EditCourse` (IN `c_CourseTitle` VARCHAR(50), IN `c_CourseName` VARCHAR(50))  BEGIN UPDATE course SET Name = c_CourseTitle, Number = c_CourseName ();
+ END$$
+
+ DELIMITER $$
+CREATE PROCEDURE `sproc_AddGroup` (IN `Name` VARCHAR(45), IN `UserName` VARCHAR(128), IN `Password` CHAR(64), IN `Salt` CHAR(50), OUT `ID` INT)  BEGIN
+     INSERT INTO groups(Name,UserName, Password, Salt)
+     VALUES(Name,UserName, Password, Salt);
+SET ID = LAST_INSERT_ID();
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `sproc_AddUserToClass` (OUT `CourseSemesterUserID` INT, IN `CourseSemesterID` INT(11), IN `UserID` INT(11))  BEGIN
+	INSERT INTO CourseSemesterUsers(CourseSemesterID, UserID)
+    			VALUES (CourseSemesterID, UserID);
+    SET CourseSemesterUserID = LAST_INSERT_ID();
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `sproc_GetClassesForUser` (IN `ID` INT)  BEGIN
+    SELECT coursesemesters.CourseSemesterID, coursesemesters.Name, coursesemesters.CRN, coursesemesters.CourseID, coursesemesters.SemesterID, coursesemesters.YearID, coursesemesters.SectionID, coursesemesters.DateStart, coursesemesters.DateEnd from users
+    INNER JOIN coursesemesterusers
+    ON users.ID = coursesemesterusers.UserID
+    INNER JOIN coursesemesters
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    WHERE users.ID = ID AND coursesemesters.DateEnd > NOW();
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `sproc_GetUsersForClass` (IN `CourseSemesterID` INT)  BEGIN
+    SELECT users.ID, users.FirstName, users.LastName, users.EmailAddress 
+    FROM coursesemesters
+    INNER JOIN coursesemesterusers
+    ON coursesemesters.CourseSemesterID = coursesemesterusers.CourseSemesterID
+    INNER JOIN users
+    ON users.ID = coursesemesterusers.UserID
+    WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
+END$$
 
