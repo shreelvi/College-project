@@ -82,18 +82,16 @@ namespace ClassWeb.Controllers
                         path = Path.Combine(_hostingEnvironment.WebRootPath, "AssignmentDirectory", U.UserName);
                         if (s == path.Replace("\\", "/"))
                         {
-                            url = Url.RouteUrl("root", new { UserName = U.UserName, FileName = FileName });
+                            url = Url.RouteUrl("root", new {UserName = U.UserName, FileName = FileName });
                         }
                         else
                         {
                             int Index = s.IndexOf(U.UserName);
                             Index += U.UserName.Length;
                             string dir = s.Substring(Index, s.Length - Index);
-                            url = Url.RouteUrl("fileDirectory", new { UserName = U.UserName, Directory = dir, FileName = FileName });
+                            url = Url.RouteUrl("fileDirectory", new { Dir= "AssignmentDirectory", UserName = U.UserName, Directory = dir, FileName = FileName });
                         }
                     }
-
-                    url = url.Replace("%20", "/");
                     return new RedirectResult(url);
                 }
                 else
@@ -292,15 +290,8 @@ namespace ClassWeb.Controllers
                                 a.DateModified = DateTime.Now;
                                 a.Feedback = "File Name Modified";
                                 sw.Close();
-                                int i = DAL.UpdateAssignmentFileName(a);
-                                if (i > 0)
-                                {
+                                
                                     TempData["Message"] = "File Has Been Modified Succesfully";
-                                }
-                                else
-                                {
-                                    TempData["Message"] = "File Has Been Modified locally there is database error!!";
-                                }
                             }
                         }
                         catch (Exception ex)
@@ -772,7 +763,15 @@ namespace ClassWeb.Controllers
                     }
                     string location = Path.Combine("/", file.FullName.ToString().Substring(index));
                     location = location.Replace("\\", "/");
-                    Assignment assign = DAL.GetAssignmentByNameLocationUserName(file.Name, location, U.UserName);
+                    Assignment assign = null;
+                    if (U.Role.IsAdmin)
+                    {
+                     assign = DAL.AssignmentGetByNameAndLocation(file.Name, location);
+                    }
+                    else
+                    {
+                     assign = DAL.GetAssignmentByNameLocationUserName(file.Name, location, U.UserName);
+                    }
                     if (assign != null)
                     {
                         items.Add(assign);

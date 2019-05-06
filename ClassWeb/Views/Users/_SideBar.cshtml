@@ -6,18 +6,13 @@
     <nav class="s-sidebar__nav">
         <ul>
             <li>
-                <a asp-action="Profile" asp-controller="Account" class="s-sidebar__nav-link">
-                    <i class="fas fa-users-cog "></i><em>My Profile</em>
+                <a asp-controller="Assignment" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-file-pdf "></i><em>Assignments</em>
                 </a>
             </li>
             <li>
                 <a asp-controller="Users" asp-action="index" class="s-sidebar__nav-link">
                     <i class="fas fa-users"></i><em>Users</em>
-                </a>
-            </li>
-            <li>
-                <a asp-controller="Assignment" asp-action="index" class="s-sidebar__nav-link">
-                    <i class="fas fa-file-pdf "></i><em>Assignments</em>
                 </a>
             </li>
             <li>
@@ -35,7 +30,26 @@
                     <i class="fas fa-users"></i><em>Group</em>
                 </a>
             </li>
-
+            <li>
+                <a asp-controller="Course" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users"></i><em>Course</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="CourseSemester" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users"></i><em>Course Semester</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Section" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users"></i><em>Section</em>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Year" asp-action="index" class="s-sidebar__nav-link">
+                    <i class="fas fa-users"></i><em>Year</em>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>

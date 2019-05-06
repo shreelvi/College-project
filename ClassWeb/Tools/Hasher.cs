@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 /// </summary>
 
 namespace ClassWeb.Tools {
+
     /// <summary>
     /// Tool for keeping Hashing Consistent throughout the application.
     /// </summary>
@@ -55,7 +56,7 @@ namespace ClassWeb.Tools {
         }
 
         /// <summary>
-        /// 
+        /// to check the validity of password
         /// </summary>
         /// <param name="passToHash">password we need hashed</param>
         /// <param name="salt">salt to apply to hash</param>

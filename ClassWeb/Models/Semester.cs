@@ -7,7 +7,10 @@ namespace ClassWeb.Models
 {
     public class Semester : DatabaseNamedRecord
     {
-
+        /// <summary>
+        /// Modified by Ganesh
+        /// semester like Fall, Spring, Summer
+        /// </summary>
         #region Constructors
         public Semester()
         {

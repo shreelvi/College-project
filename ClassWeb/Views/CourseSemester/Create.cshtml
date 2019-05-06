@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Create";
 }
+<a style="color:blue" href='javascript:history.go(-1)'>Return back</a><br /><br />
 
 <h2>Create</h2>
 
@@ -38,7 +39,7 @@
             <div class="form-group">
                 <label class="control-label">Section Number</label>
                 <select asp-for="SectionID" class="form-control"
-                        asp-items="@(new SelectList(ViewBag.Sections, "ID", "SectionNumber"))"></select>
+                        asp-items="@(new SelectList(ViewBag.Sections, "ID", "Number"))"></select>
                 <span asp-validation-for="SectionID" class="text-danger"></span>
             </div>
             <div class="form-group">

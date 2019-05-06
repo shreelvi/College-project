@@ -64,7 +64,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SectionNumber,CRN,CourseID,UserID")] Section section)
+        public async Task<IActionResult> Create([Bind("Number,CRN,CourseID,UserID")] Section section)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -107,7 +107,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SectionNumber,CRN, CourseID, UserID, ID")] Section section)
+        public async Task<IActionResult> Edit(int id, [Bind("Number,CRN, CourseID, UserID, ID")] Section section)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")

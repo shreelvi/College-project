@@ -10,6 +10,10 @@ namespace ClassWeb.Models
 {
     public class Section : DatabaseRecord
     {
+        /// <summary>
+        /// Modified by Ganesh
+        /// sections are like 01,02. For example, on INFO 4482-01, 01 is section number
+        /// </summary>
         #region Constructors
         public Section()
         {
@@ -18,11 +22,12 @@ namespace ClassWeb.Models
         {
             Fill(dr);
         }
-
         #endregion
 
         #region Private Variables
-        private int _SectionNumber;
+        private int _Number;
+        //private int _CRN;
+        //private int _ClassID;
 
 
         #endregion
@@ -30,19 +35,23 @@ namespace ClassWeb.Models
 
         #region Public Properties
 
-        public int SectionNumber
+        public int Number
         {
             get
             {
-                return _SectionNumber;
+                return _Number;
             }
 
             set
             {
-                _SectionNumber = value;
+                _Number = value;
             }
         }
-     #endregion
+
+
+
+
+        #endregion
 
         #region Database String
         internal const string db_ID = "SectionID";
@@ -75,7 +84,7 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
-            _SectionNumber = dr.GetInt32(db_Number);
+            _Number = dr.GetInt32(db_Number);
         }
         #endregion
 

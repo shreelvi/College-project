@@ -7,7 +7,9 @@ namespace ClassWeb.Models
 {
     /// <summary>
     /// Modified by:Meshari
+    /// Modified by Ganesh
     /// Modified date: 04/27/2019
+    /// year like 2018, 2019, 2020
     /// Added name property for selectlist in crud views
     /// </summary>
     public class Year:DatabaseRecord

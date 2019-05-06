@@ -10,6 +10,7 @@
 <p style="color:red">
     @ViewData["CourseSemDelete"]
 </p>
+<a style="color:blue" href='javascript:history.go(-1)'>Return to the dashboard</a><br /><br />
 <h2>Index</h2>
 <div>
     <p>
@@ -49,9 +50,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.CRN)
                 </td>
-                <td>
+                @*<td>
                     @Html.DisplayFor(modelItem => item.Course.Title)
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Course.Name)
                 </td>
@@ -62,7 +63,7 @@
                     @Html.DisplayFor(modelItem => item.Year.Year1)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Section.SectionNumber)
+                    @Html.DisplayFor(modelItem => item.Section.Number)
                 </td>
        
                 <td>

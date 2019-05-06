@@ -44,7 +44,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_UserID = "UserID";
+        internal const string db_UserID = "ID";
         internal const string db_FirstName = "FirstName";
         //internal const string db_MiddleName = "MiddleName";
         internal const string db_LastName = "LastName";

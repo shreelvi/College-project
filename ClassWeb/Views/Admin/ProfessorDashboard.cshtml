@@ -94,10 +94,10 @@
             <div class="classes">
                 <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
                     <div class="container">
-                        <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>
+                        <h4><b>@item.Course.Title - @item.Section.Number </b></h4>
                         <p>@item.Semester.Name @item.Year.Year1</p>
                         <p>CRN: @item.CRN</p>
-                        <h4>Number of Students: 21</h4>
+                        <h4>Number of Students: </h4>
                         <a asp-controller="Admin" asp-action="ActiveClassView" asp-route-id="@item.ID">View</a>
                         <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                         <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>

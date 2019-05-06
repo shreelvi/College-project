@@ -16,13 +16,12 @@ namespace ClassWeb.Controllers
     /// Created by: Elvis
     /// CRUD controller for CourseSemester class
     /// Modified on: 30 April 2019
-    /// Modified by: Elvis
-    /// Added Edit and Details method 
-    /// Modified on: 05/06/2019
-    /// If deleted by professor, return to the professor dashboard
+    /// Modified by: Added Edit and Details method 
     /// </summary>
     public class CourseSemesterController : BaseController
     {
+
+        
 
         // GET: CourseSemesters
         public async Task<IActionResult> Index()
@@ -70,6 +69,9 @@ namespace ClassWeb.Controllers
             return View(CourseSemesters);
 
         }
+
+       
+
         /// <summary>
         /// Modified by: Meshari
         /// Date Modified: 04/27/2019
@@ -112,7 +114,7 @@ namespace ClassWeb.Controllers
             List<Section> SectionList = new List<Section>();
             SectionList = DAL.GetSections();
             int SectionNumber = 0;
-            SectionList.Insert(0, new Section { ID = 0, SectionNumber = SectionNumber });
+            SectionList.Insert(0, new Section { ID = 0, Number = SectionNumber });
             ViewBag.Sections = SectionList;
 
             return View();
@@ -124,6 +126,10 @@ namespace ClassWeb.Controllers
         /// Method to add a class (coursesemester object) in the database
         /// Modified on: 27 April 2019
         /// Add users to the class 
+        /// Modified on: 30 April 2019
+        /// By: shreelvi
+        /// Retrieve class information from course, semester, section and store it as its name
+        /// To pass the name to selectlist when user registers.
         /// </summary>
         /// <param name="courseSemester"></param>
         /// <returns></returns>
@@ -138,6 +144,16 @@ namespace ClassWeb.Controllers
                 TempData["LoginError"] = "Please login to view the page.";
                 return RedirectToAction("Index", "Home");
             }
+
+            //Creates class's name combinining course, semester, year and section information
+            string course = DAL.GetCourse(courseSemester.CourseID).Name;
+            int section = DAL.GetSection(courseSemester.SectionID).Number;
+            string sem = DAL.GetSemester(courseSemester.SemesterID).Name;
+            int year = DAL.GetYear(courseSemester.YearID).Year1;
+            string classinfo = course + "-" + section + " " + sem + " " + year;
+
+            courseSemester.Name = classinfo;
+
 
             //Add the class to the coursesemester table
             int retInt = DAL.AddCourseSemester(courseSemester);
@@ -205,8 +221,8 @@ namespace ClassWeb.Controllers
 
             List<Section> SectionList = new List<Section>();
             SectionList = DAL.GetSections();
-            int SectionNumber = courseSemester.Section.SectionNumber;
-            SectionList.Insert(0, new Section { ID = 0, SectionNumber = SectionNumber });
+            int SectionNumber = courseSemester.Section.Number;
+            SectionList.Insert(0, new Section { ID = 0, Number = SectionNumber });
             ViewBag.Sections = SectionList;
 
             return View(courseSemester);
@@ -272,13 +288,9 @@ namespace ClassWeb.Controllers
                 TempData["CourseSemDelete"] = "Error occured when deleting the CourseSemester";
 
             TempData["CourseSemDelete"] = "Successfully deleted the CourseSemester";
-
-            if(HttpContext.Session.GetString("RoleCheck") == "Professor")
-            {
-                return RedirectToAction("Admin", "ProfessorDashboard");
-            }
-
             return RedirectToAction(nameof(Index));
         }
+
+     
     }
 }

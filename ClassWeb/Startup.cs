@@ -74,7 +74,7 @@ namespace ClassWeb
                     template: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
-                    template: "{UserName}/{Directory}/{FileName}",
+                    template: "{Dir}/{UserName}/{Directory}/{FileName}",
                     defaults: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                    name: "root",
