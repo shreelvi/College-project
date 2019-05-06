@@ -1,9 +1,11 @@
--- phpMyAdmin SQL Dump
+--All the queries are combined here from everyone's work. Feel free to change those of you need to or let ganesh know. 
+
+
 -- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2019 at 09:47 PM
+-- Generation Time: Apr 25, 2019 at 05:29 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.12
 
@@ -21,409 +23,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `sapkgane`
 --
-
-DELIMITER $$
---
--- Procedures
---
-CREATE  PROCEDURE `AddGroup` (IN `g_Name` VARCHAR(50), IN `g_EmailAddress` VARCHAR(50), IN `g_UserName` VARCHAR(50), IN `g_Password` CHAR(128), IN `g_Salt` CHAR(128), OUT `g_ID` INT)  BEGIN 
-INSERT INTO groups(Name, EmailAddress, Username, Password, Salt) values (g_Name, g_EmailAddress, g_UserName,g_Password, g_Salt); 
-SET g_ID = LAST_INSERT_ID();
-END$$
-
-CREATE  PROCEDURE `get_GroupByUserName` (IN `username` VARCHAR(128))  BEGIN 
-SELECT * from groups g where g.Username = username; 
-END$$
-
-CREATE  PROCEDURE `sproc_AddUser` (OUT `UserID` INT, IN `FirstName` VARCHAR(45), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(45), IN `EmailAddress` VARCHAR(128), IN `UserName` VARCHAR(128), IN `Password` CHAR(64), IN `Salt` CHAR(50), IN `RoleID` INT, IN `DirectoryPath` VARCHAR(256))  BEGIN
-     INSERT INTO Users(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, RoleID, DirectoryPath)
-     VALUES(FirstName,MiddleName,LastName,EmailAddress,UserName, Password, Salt, RoleID, DirectoryPath);
-SET UserID = LAST_INSERT_ID();
-END$$
-
-CREATE  PROCEDURE `sproc_AddUserToGroup` (OUT `GroupUserID` INT, IN `GroupID` INT(11), IN `UserID` INT(11))  BEGIN
-	INSERT INTO GroupsUsers(GroupID, UserID)
-    			VALUES (GroupID, UserID);
-    SET GroupUserID = LAST_INSERT_ID();
-END$$
-
-CREATE  PROCEDURE `sproc_AssignmentAdd` (OUT `AssignmentID` INT, IN `Name` VARCHAR(45), IN `Feedback` VARCHAR(128), IN `UserID` INT)  BEGIN
-     INSERT INTO assignment(Name, Feedback, UserID)
-     VALUES(Name, Feedback, UserID);
-SET AssignmentID = LAST_INSERT_ID();
-END$$
-
-CREATE  PROCEDURE `sproc_AssignmentDeleteByID` (IN `ID` INT)  BEGIN
-DELETE FROM assignment
-Where Assignment.ID=`ID`;
-END$$
-
-CREATE  PROCEDURE `sproc_AssignmentGetAllByFileName` (IN `FileName` VARCHAR(45))  BEGIN
-Select * from assignment
-where  assignment.FileName=`FileName`;
-End$$
-
-CREATE  PROCEDURE `sproc_AssignmentGetAllByUserName` (IN `UserName` VARCHAR(45))  BEGIN
-Select * from assignment
-where assignment.UserName=`UserName`;
-End$$
-
-CREATE  PROCEDURE `sproc_AssignmentGetAllByUserNameAndLocation` (IN `UserName` VARCHAR(45), IN `FileLocation` VARCHAR(50))  BEGIN
-Select * from assignment
-where assignment.UserName=`UserName` AND assignment.FileLocation like CONCAT(`FileLocation` , '%');
-End$$
-
-CREATE  PROCEDURE `sproc_AssignmentGetByID` (IN `ID` INT)  BEGIN
-Select * from assignment
-where assignment.ID=`ID`;
-End$$
-
-CREATE PROCEDURE `sproc_AssignmentGetByLocation` (IN `FileLocation` VARCHAR(100))  BEGIN
-Select * from assignment
-where FileLocation LIKE assignment.FileLocation;
-End$$
-
-CREATE PROCEDURE `sproc_AssignmentGetByNameLocationUserName` (IN `FileName` VARCHAR(50), IN `FileLocation` VARCHAR(45), IN `UserName` VARCHAR(50))  BEGIN
-Select * from assignment
-where assignment.FileLocation=`FileLocation`&&assignment.FileName=`FileName`&&assignment.UserName=`UserName`;
-End$$
-
-CREATE  PROCEDURE `sproc_AssignmentResubmit` (IN `ID` INT, IN `Feedback` VARCHAR(45))  BEGIN
-update Assignment
-set Assignment.Feedback=Feedback
-where Assignment.ID=ID;
-End$$
-
-CREATE PROCEDURE `sproc_CheckUserByEmail` (IN `EmailAddress` VARCHAR(128))  BEGIN
-    SET @User_id = 0;
-    SELECT Users.UserID INTO @User_id
-    FROM `Users`
-    WHERE Users.`EmailAddress` = `EmailAddress`;
-    SELECT @User_id;
-END$$
-
-CREATE PROCEDURE `sproc_CheckUserName1` (IN `Username1` VARCHAR(128))  BEGIN
-    SET @User_exists = 0;
-    SELECT 1 INTO @User_exists
-    FROM `Users`
-    WHERE Users.`UserName` = `Username1`;
-    SELECT @User_exists;
-END$$
-
-CREATE PROCEDURE `sproc_ClassesGetAll` ()  BEGIN
-select * From Classes;
-END$$
-
-CREATE PROCEDURE `sproc_CourseAdd` (OUT `CourseID` INT, IN `CourseTitle` VARCHAR(45), IN `CourseName` VARCHAR(45), IN `CourseDescription` VARCHAR(128))  BEGIN
-     INSERT INTO courses(CourseTitle, CourseName, CourseDescription)
-               VALUES(CourseTitle, CourseName, CourseDescription);               
-     SET CourseID = LAST_INSERT_ID();
-END$$
-
-CREATE PROCEDURE `sproc_CourseSemesterEdit` (IN `CourseID` INT(11), IN `SemesterID` INT(11), IN `YearID` INT(11), IN `SectionID` INT(11), IN `UserID` INT(11))  BEGIN
-     UPDATE Sections
-          SET
-               CourseSemesters.CourseID = CourseID,
-			   CourseSemesters.SemesterID = SemesterID,
-			   CourseSemesters.YearID = YearID,
-			   CourseSemesters.SectionID = SectionID,
-			   CourseSemesters.CourseID = CourseID,
-               CourseSemesters.UserID = UserID
-          WHERE CourseSemesters.CourseSemesterID = CourseSemesterID;
-END$$
-
-CREATE PROCEDURE `sproc_CourseSemesterGet` (IN `CourseSemesterID` INT)  BEGIN
-     SELECT * FROM coursesemesters
-     WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
-END$$
-
-CREATE PROCEDURE `sproc_CourseSemesterRemove` (IN `CourseSemesterID` INT)  BEGIN
-     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM coursesemesters
-          WHERE coursesemesters.CourseSemesterID = CourseSemesterID;
-
-     -- SELECT -1 if we had an error
-END$$
-
-CREATE PROCEDURE `sproc_CourseSemestersGetAll` ()  BEGIN
-     SELECT * FROM CourseSemesters;
-END$$
-
-CREATE  PROCEDURE `sproc_CreateCourse` (OUT `CourseID` INT, IN `Subject` VARCHAR(50), IN `CourseNumber` INT, IN `CourseTitle` VARCHAR(50))  BEGIN
-     INSERT INTO course(Subject, CourseNumber, CourseTitle)
-		VALUES(Subject, CourseNumber, CourseTitle);
-	SET CourseID = last_insert_id();
-END$$
-
-CREATE PROCEDURE `sproc_DeleteCourseByID` (IN `ID` INT)  BEGIN 
-	DELETE FROM course 
-		WHERE Course.ID = `ID`; 
-END$$
-
-CREATE PROCEDURE `sproc_GetAllAssignment` ()  BEGIN
-Select * From assignment;
-END$$
-
-CREATE PROCEDURE `sproc_GetAllCourses` ()  BEGIN
-     SELECT * FROM course;
-END$$
-
-CREATE PROCEDURE `sproc_GetAllUsers` ()  BEGIN
-	 SELECT * FROM Users;
-END$$
-
-CREATE PROCEDURE `sproc_GetAssignmentsbyUserID` (IN `UserID` INT)  BEGIN 
-	SELECT * FROM assignment 
-	WHERE assignment.UserID = UserID 
-	ORDER BY assignment.AssignmentID DESC; 
-END$$
-
-CREATE PROCEDURE `sproc_GetCourse` (IN `CourseID` INT)  BEGIN
-     SELECT * FROM courses
-     WHERE courses.CourseID = CourseID;
-END$$
-
-CREATE PROCEDURE `sproc_GetSaltForUser` (IN `Username` VARCHAR(256))  BEGIN
-SELECT Salt FROM Users
-WHERE Users.UserName = Username;
-END$$
-
-CREATE  PROCEDURE `sproc_GetUsersFromGroup` (IN `GroupID` INT)  BEGIN
-    SELECT groups.id, users.UserID, users.FirstName, users.EmailAddress
-    FROM groups
-    INNER JOIN groupsusers
-    ON groups.id = groupsusers.GroupID
-    INNER JOIN users
-    ON groupsusers.UserID = users.UserID
-    WHERE groups.id = GroupID;
-END$$
-
-CREATE PROCEDURE `sproc_GetUsersWithRoles` (IN `UserID` INT(11))  BEGIN
-    SELECT u.UserName, u.RoleID, r.Name, r.IsAdmin, r.users, r.Role, r.Assignment 
-	From Users u
-    JOIN Roles r ON u.RoleID = r.RoleID
-    WHERE u.UserID = UserID;
-    END$$
-
-CREATE PROCEDURE `sproc_ResubmitAssignment` (IN `ID` INT, IN `Feedback` VARCHAR(45))  BEGIN
-update Assignment
-set Assignment.Feedback=Feedback
-where Assignment.ID=ID;
-End$$
-
-CREATE PROCEDURE `sproc_RoleAdd` (OUT `RoleID` INT, IN `Name` NVARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4), IN `Course` BIT(4), IN `Semester` BIT(4), IN `Year` BIT(4), IN `Section` BIT(4), IN `CourseSemester` BIT(4))  BEGIN
-     INSERT INTO Roles(Name,IsAdmin,Users,Role,Assignment, Course, Semester, Year, Section, CourseSemester)
-               VALUES(Name,IsAdmin,Users,Role, Assignment, Course, Semester, Year, Section, CourseSemester);               
-     SET RoleID = LAST_INSERT_ID;
-END$$
-
-CREATE PROCEDURE `sproc_RoleDeleteByID` (IN `ID` INT)  BEGIN
-delete from Users
-where Users.ID=`ID`;
-END$$
-
-CREATE PROCEDURE `sproc_RoleGet` (IN `RoleID` INT)  BEGIN
-     SELECT * FROM Roles
-     WHERE Roles.RoleID = RoleID;
-END$$
-
-CREATE PROCEDURE `sproc_RoleRemove` (IN `RoleID` INT)  BEGIN
-     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM Roles
-          WHERE Roles.RoleID = RoleID;
-
-     -- SELECT -1 if we had an error
-END$$
-
-CREATE PROCEDURE `sproc_RolesGetAll` ()  BEGIN
-     SELECT * FROM Roles;
-END$$
-
-CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4))  BEGIN
-     UPDATE Roles
-          SET
-               Roles.`Name` = `Name`,
-               Roles.`IsAdmin` = `IsAdmin`,
-               Roles.`Users` = `Users`,
-               Roles.`Role` = `Role`,
-               Roles.`Assignment` = `Assignment`
-          WHERE Roles.`ID` = `ID`;
-END$$
-
-CREATE PROCEDURE `sproc_SectionAdd` (OUT `SectionID` INT, IN `CRN` INT(11), IN `Number` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
-     INSERT INTO Sections(CRN,Number, UserID, CourseID)
-               VALUES(CRN,Number, UserID, CourseID);               
-     SET SectionID = LAST_INSERT_ID();
-END$$
-
-CREATE PROCEDURE `sproc_SectionGet` (IN `SectionID` INT)  BEGIN
-     SELECT * FROM Sections
-     WHERE Sections.SectionID = SectionID;
-END$$
-
-CREATE PROCEDURE `sproc_SectionRemove` (IN `RoleID` INT)  BEGIN
-     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM Sections
-          WHERE Sections.SectionID = SectionID;
-
-     -- SELECT -1 if we had an error
-END$$
-
-CREATE PROCEDURE `sproc_SectionsGetAll` ()  BEGIN
-     SELECT * FROM Sections;
-END$$
-
-CREATE PROCEDURE `sproc_SectionUpdate` (IN `SectionID` INT(11), IN `CRN` INT(11), IN `Number` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
-     UPDATE Sections
-          SET
-               Sections.CRN = CRN,
-               Sections.Number = Number,
-               Sections.UserID = UserID,
-			   Sections.CourseID = CourseID
-          WHERE Sections.SectionID = SectionID;
-END$$
-
-CREATE PROCEDURE `sproc_SemesterAdd` (OUT `SemesterID` INT, IN `SemesterName` VARCHAR(128))  BEGIN
-     INSERT INTO Semesters(SemesterName)
-               VALUES(SemesterName);               
-     SET SemesterID = LAST_INSERT_ID();
-END$$
-
-CREATE PROCEDURE `sproc_SemesterEdit` (IN `SemesterID` INT, IN `SemesterName` VARCHAR(128))  BEGIN
-     UPDATE Semesters
-          SET
-               Semesters.SemesterName = SemesterName
-			  
-          WHERE Semesters.SemesterID = SemesterID;
-END$$
-
-CREATE PROCEDURE `sproc_SemesterGet` (IN `SemesterID` INT)  BEGIN
-     SELECT * FROM semesters
-     WHERE semesters.SemesterID = SemesterID;
-END$$
-
-CREATE PROCEDURE `sproc_SemesterGetAll` ()  BEGIN
-     SELECT * FROM Semesters;
-END$$
-
-CREATE PROCEDURE `sproc_SemesterRemove` (IN `SemesterID` INT)  BEGIN
-     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM semesters
-          WHERE semesters.SemesterID = SemesterID;
-
-     -- SELECT -1 if we had an error
-END$$
-
-CREATE PROCEDURE `sproc_SetSaltForUser` (IN `UserID` INT, IN `Salt` CHAR)  BEGIN
-UPDATE Users
-SET Users.Salt = Salt
-WHERE Users.UserID = UserID;
-END$$
-
-CREATE PROCEDURE `sproc_UpdateCourse` (IN `CourseID` INT, IN `Subject` INT, IN `CourseName` VARCHAR(50), IN `CourseTitle` VARCHAR(50))  BEGIN
-     UPDATE course
-          SET
-               course.Subject = Subject,
-               course.CourseTitle = CourseTitle,
-               course.CourseName = CourseName
-          WHERE course.CourseID = CourseID;
-END$$
-
-CREATE PROCEDURE `sproc_UserAdd` (OUT `ID` INT, IN `FirstName` VARCHAR(50), IN `MiddleName` VARCHAR(45), IN `LastName` VARCHAR(50), IN `EmailAddress` VARCHAR(50), IN `UserName` VARCHAR(50), IN `Password` VARCHAR(100), IN `Salt` VARCHAR(50))  BEGIN
-INSERT INTO Users (`FirstName`,`MiddleName`, `LastName`,
- `EmailAddress`, `UserName`,`Password`, `Salt`)
- VALUES (`FirstName`,`MiddleName`, `LastName`,
- `EmailAddress`, `UserName`,`Password`, `Salt`);
-     SET ID = last_insert_id();
-End$$
-
-CREATE PROCEDURE `sproc_UserByID` (IN `id` INT)  BEGIN
-Select * from users
-Where users.ID=id;
-END$$
-
-CREATE PROCEDURE `sproc_UserDeleteByID` (IN `ID` INT)  BEGIN
-delete from Users
-where Users.ID=`ID`;
-END$$
-
-CREATE PROCEDURE `sproc_UserGetAll` ()  BEGIN
-Select * from users;
-END$$
-
-CREATE PROCEDURE `sproc_UserGetByEmailAddress` (IN `u_EmailAddress` VARCHAR(50))  BEGIN 
-	SELECT a.FirstName, a.MiddleName, a.LastName, a.EmailAddress, a.Address, a.UserName, a.PhoneNumber, b.RoleID, b.Title FROM user u
-	Inner JOIN userrole c on u.id = c.UserID
-	LEFT OUTER JOIN role b on c.UserID = b.ID
-	WHERE a.EmailAddress = u_EmailAddress; 
-END$$
-
-CREATE PROCEDURE `sproc_UserGetByID` (IN `ID` INT)  BEGIN
-Select * From Users
-Where Users.ID=ID;
-END$$
-
-CREATE PROCEDURE `sproc_UserGetByUsername` (IN `Username` VARCHAR(128))  BEGIN
-	 SELECT * FROM Users
-	 WHERE Users.UserName = Username;
-END$$
-
-CREATE PROCEDURE `sproc_UserPasswordUpdate` (IN `ID` INT, IN `Password` VARCHAR(70))  BEGIN UPDATE users
-SET users.Password = `Password`
-WHERE users.ID=`ID`;
-END$$
-
-CREATE PROCEDURE `sproc_UserRoleUpdate` (IN `RoleID` INT, IN `Name` NVARCHAR(45), IN `IsAdmin` BIT(1), IN `Users` BIT(4), IN `Role` BIT(4), IN `Assignment` BIT(4), IN `Course` BIT(4), IN `Semester` BIT(4), IN `Year` BIT(4), IN `Section` BIT(4), IN `CourseSemester` BIT(4))  BEGIN
-     UPDATE Roles
-          SET
-               Roles.Name = Name,
-               Roles.IsAdmin = IsAdmin,
-               Roles.Users = Users,
-               Roles.Role = Role,
-               Roles.Assignment = Assignment
-          WHERE Roles.RoleID = RoleID;
-END$$
-
-CREATE PROCEDURE `sproc_UserUpdate` (IN `ID` INT, IN `FirstName` VARCHAR(50), IN `LastName` VARCHAR(50), IN `UserName` VARCHAR(50), IN `ResetCode` VARCHAR(50))  BEGIN 
-UPDATE users
-SET users.FirstName = `FirstName`,
-users.LastName = `LastName`,users.UserName = `UserName`,users.DateModified= NOW(),
-users.ResetCode=`ResetCode`
-WHERE users.ID=`ID`;
-END$$
-
-CREATE PROCEDURE `sproc_YearAdd` (OUT `YearID` INT, IN `YEAR` INT(11))  BEGIN
-     INSERT INTO Years(Year)
-               VALUES(Year);               
-     SET YearID = LAST_INSERT_ID();
-END$$
-
-CREATE PROCEDURE `sproc_YearEdit` (IN `YearID` INT, IN `Year` INT(11))  BEGIN
-     UPDATE Years
-          SET
-               Years.Year = Year
-			  
-          WHERE Years.YearID = YearID;
-END$$
-
-CREATE PROCEDURE `sproc_YearGet` (IN `YearID` INT)  BEGIN
-     SELECT * FROM Years
-     WHERE Years.YearID = YearID;
-END$$
-
-CREATE PROCEDURE `sproc_YearGetAll` ()  BEGIN
-     SELECT * FROM Years;
-END$$
-
-CREATE PROCEDURE `sproc_YearRemove` (IN `YearID` INT)  BEGIN
-     DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT -1;
-     DELETE FROM years
-          WHERE years.YearID = YearID;
-
-     -- SELECT -1 if we had an error
-END$$
-
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -460,23 +59,29 @@ CREATE TABLE `classes` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `courses`
---
 
-CREATE TABLE `courses` (
-  `CourseID` int(11) NOT NULL,
-  `CourseTitle` varchar(45) NOT NULL,
-  `CourseName` varchar(45) DEFAULT NULL,
-  `CourseDescription` varchar(128) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table structure for table `course`
+-- Author: Mohan
+-- Description:	Create course table in the database
+-- ======================================================
+
+CREATE TABLE `course` (
+  `CourseID` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `Subject` VARCHAR(50) NOT NULL,
+  `CourseNumber` INT(11)  NOT NULL,
+  `CourseTitle` VARCHAR(50) NOT NULL);
+  
+INSERT INTO course(Subject,  CourseNumber,CourseTitle) 
+	VALUES ( 'INFO', '4482', 'System Development Implementation Method');
+
 
 --
 -- Dumping data for table `courses`
 --
 
-INSERT INTO `courses` (`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES
-(1, 'INFO 4407', 'Database Design', 'INFO Database Design');
+INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (1, 'INFO 4407', 'Database Design', 'INFO Database Design');
+ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (2, 'INFO 3307', 'System Design', 'System Design for INFO');
+ INSERT INTO `courses`(`CourseID`, `CourseTitle`, `CourseName`, `CourseDescription`) VALUES (3, 'INFO 4482', 'System Development Implementation Method', 'Informatics Course');
 
 -- --------------------------------------------------------
 
@@ -572,6 +177,11 @@ Assignment` bit(4) DEFAULT NULL
 
 -- --------------------------------------------------------
 
+INSERT INTO `Roles`(
+`RoleID`, `Name`, `IsAdmin`,`Users`, `Role`, `Assignment`) 
+VALUES ('Admin',1,b'1111',b'1111',b'1111') ,
+('Power User',1,b'0111',b'0111',b'0111') ,
+('Data Entry',1,b'0110',b'0110',b'0110');
 --
 -- Table structure for table `sections`
 --
@@ -579,12 +189,15 @@ Assignment` bit(4) DEFAULT NULL
 CREATE TABLE `sections` (
   `SectionID` int(11) NOT NULL,
   `CRN` int(11) NOT NULL,
-  `Number` int(45) DEFAULT NULL,
+  `SectionNumber` int(45) DEFAULT NULL,
   `UserID` int(11) NOT NULL,
   `CourseID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (1, 25545, 02);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (2, 36758, 01);
+INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (4, 36758, 01);
 
 --
 -- Table structure for table `semsters`
@@ -628,6 +241,9 @@ CREATE TABLE `years` (
   `Year` int(11) NOT NULL DEFAULT '2019'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE `assignment`
+  ADD PRIMARY KEY (`AssignmentID`),
+  ADD CONSTRAINT FK_AssignmentUser FOREIGN KEY (`UserID`) REFERENCES Login_users(UserID);
 --
 -- Indexes for dumped tables
 --
