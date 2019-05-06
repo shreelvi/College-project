@@ -391,36 +391,13 @@ namespace ClassWeb.Controllers
         //Index page 
         public async Task<IActionResult> Index()
         {
-            if (UserCan<Group>(PermissionSet.Permissions.ViewAndEdit))
-            {
-                int? gid = HttpContext.Session.GetInt32("GroupID");
-                int? uid = HttpContext.Session.GetInt32("UserID");
-                Tuple<List<Group>, List<Group>> Groups = null;
-                if (gid != null)
-                {
-                    User u = DAL.UserGetByID(uid);
-                    List<Group> g = DAL.GetAllGroups();
-                    if (u == null)
-                    {
-                        return NotFound();
-                    }
-                    if (u.Role.IsAdmin)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                }
-                return View();
-            }
-            else
-            {
-                TempData["Error"] = "You Dont Have Enough Previlage to View Or Edit User";
-                return RedirectToAction("Index", "Group");
-            }
-
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            Tuple<List<Group>, List<Group>> Groups = null;
+            User u = DAL.UserGetByID(uid);
+            List<Group> g = DAL.GetAllGroups();
+            
+            return View(g);
         }
 
 

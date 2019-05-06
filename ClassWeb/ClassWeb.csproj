@@ -12,10 +12,6 @@
     <Compile Remove="Models\Prompt.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Views\Classes\Create.cshtml" />
-    <Content Remove="Views\Classes\Delete.cshtml" />
-    <Content Remove="Views\Classes\Details.cshtml" />
-    <Content Remove="Views\Classes\Edit.cshtml" />
     <Content Remove="Views\Shared\Home\About.cshtml" />
   </ItemGroup>
 

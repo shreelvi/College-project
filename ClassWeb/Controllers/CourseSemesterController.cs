@@ -16,7 +16,10 @@ namespace ClassWeb.Controllers
     /// Created by: Elvis
     /// CRUD controller for CourseSemester class
     /// Modified on: 30 April 2019
-    /// Modified by: Added Edit and Details method 
+    /// Modified by: Elvis
+    /// Added Edit and Details method 
+    /// Modified on: 05/06/2019
+    /// If deleted by professor, return to the professor dashboard
     /// </summary>
     public class CourseSemesterController : BaseController
     {
@@ -269,6 +272,12 @@ namespace ClassWeb.Controllers
                 TempData["CourseSemDelete"] = "Error occured when deleting the CourseSemester";
 
             TempData["CourseSemDelete"] = "Successfully deleted the CourseSemester";
+
+            if(HttpContext.Session.GetString("RoleCheck") == "Professor")
+            {
+                return RedirectToAction("Admin", "ProfessorDashboard");
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }
