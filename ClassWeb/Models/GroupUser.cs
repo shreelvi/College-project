@@ -10,12 +10,13 @@ using System.Xml.Serialization;
 namespace ClassWeb.Models
 {
 
-    /// <summary>
-    /// Created By: Elvis
-   /// Seperate Model for Login View.
-    /// This model is used to get information only required for login view.
-    /// It also model for add user to the group now as I am testing to verify password using hashing. 
-    /// </summary>
+   /// <summary>
+   /// Created By: Elvis
+   /// Date Created: 04/07/2019
+   /// Description: An association model used to add users to the group
+   /// Composite table that stores groupID and UserID
+   /// Date Modified: 05/06/2019
+   /// Changed database string of groupuserID
     public class GroupUser: DatabaseRecord
     {
         #region Constructors
@@ -130,7 +131,7 @@ namespace ClassWeb.Models
         #endregion
 
         #region Database String
-        internal const string db_ID = "ID";
+        internal const string db_ID = "GroupUserID";
         internal const string db_GroupID = "GroupID";
         internal const string db_UserID = "UserID";
 
