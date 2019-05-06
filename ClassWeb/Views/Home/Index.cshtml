@@ -20,6 +20,7 @@
             <form asp-controller="Account" asp-action="Login" method="post">
                 <h3 style="color:darkorange">Login to ClassWeb.</h3>
                 <hr />
+
                 <p class="alert-warning">@TempData["UserAddError"]</p>
                 <p class="alert-success">@TempData["UserAddSuccess"]</p>
                 <p class="alert-info">@TempData["Message"]</p>
@@ -46,6 +47,10 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default">Log in</button>
+                </div>
+                
+                <div class="form-group">
+                    <input type="button" class="btn btn-default" value="Register new user" onclick="@("window.location.href='" + @Url.Action("AddUser", "Account"));" />
                 </div>
                 <div class="form-group">
                     <div>
