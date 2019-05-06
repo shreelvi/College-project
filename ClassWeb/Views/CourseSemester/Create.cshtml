@@ -3,12 +3,10 @@
 @{
     ViewData["Title"] = "Create";
 }
-<a style="color:blue" href='javascript:history.go(-1)'>Return back</a><br /><br />
-
 <h2>Create</h2>
 
 <h4>CourseSemester</h4>
-<p>Please make sure to create Courses, Sections, Semester and Year before creating the this class.</p>
+<p style="color: orange">Note: Please make sure to create Courses, Sections, Semester and Year before creating the this class.</p>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -47,13 +45,11 @@
                 <label asp-for="DateStart" class="control-label"></label>
                 <input asp-for="DateStart" class="form-control" />
                 <span asp-validation-for="DateStart" class="text-danger"></span>
-                <p>Please make sure to enter the date on MM/DD/YYYY HH:MM AM(PM)</p>
             </div>
             <div class="form-group">
                 <label asp-for="DateEnd" class="control-label"></label>
                 <input asp-for="DateEnd" class="form-control" />
                 <span asp-validation-for="DateEnd" class="text-danger"></span>
-                <p>Please make sure to enter the date on MM/DD/YYYY HH:MM AM(PM)</p>
             </div>
             @*<div class="form-group">
             <label asp-for="UserID" class="control-label"></label>
