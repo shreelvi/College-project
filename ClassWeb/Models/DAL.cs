@@ -16,7 +16,8 @@ namespace ClassWeb.Model
     {
         /// <summary>
         /// created by: Ganesh Sapkota
-        /// DAL for Classweb project. 
+        /// DAL for Classweb project which provides simplified access to data stored.
+        /// To process queries anda access data
         /// </summary
         //Database information for the hosting website db
          //private static string ReadOnlyConnectionString = "Server=localhost;Database=classweb;Port=3307;Uid=root;Pwd=kish1029;Convert Zero Datetime=True;Allow Zero Datetime=True";
@@ -1323,6 +1324,7 @@ namespace ClassWeb.Model
         #region Semester
         /// <summary>
         /// Gets the Classweb.Semester corresponding with the given ID
+        /// Modified by Ganesh
         /// </summary>
         /// <remarks></remarks>
 
@@ -1349,6 +1351,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Gets a list of all semester objects from the database.
         /// </summary>
         /// <remarks></remarks>
@@ -1375,6 +1378,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to add a database entry corresponding to the given Semester
         /// </summary>
         /// <remarks></remarks>
@@ -1397,6 +1401,7 @@ namespace ClassWeb.Model
         }
 
         /// <summary>
+        /// Modified by Ganesh
         /// Attempts to edit the database entry corresponding to the given Semester
         /// </summary>
         /// <remarks></remarks>
