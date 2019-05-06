@@ -8,18 +8,22 @@ using MySql.Data.MySqlClient;
 
 namespace ClassWeb.Models
 {
-    public class CourseSemester : DatabaseRecord
+    /// <summary>
+    /// Created by: shreelvi
+    /// Created on: 03/20/2019
+    /// CourseSemester is a unique class that holds information
+    /// about course, semester, year, section and professor & students
+    /// associated with it.
+    /// </summary>
+    public class CourseSemester : DatabaseNamedRecord
     {
-
-        /// <summary>
-        /// This is the associasion between course and semester which does has the information about the courses and
-        /// the semester in that particular year, section and times. 
-        /// </summary>
+                
         #region Constructors
         public CourseSemester()
         {
         }
-        internal CourseSemester(MySql.Data.MySqlClient.MySqlDataReader dr)
+        internal CourseSemester
+(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             Fill(dr);
         }
@@ -162,7 +166,7 @@ namespace ClassWeb.Models
             {
                 if (_Course == null)
                 {
-                   // _Course = DAL.GetCourse(_CourseID);
+                    _Course = DAL.GetCourse(_CourseID);
                 }
                 return _Course;
             }
@@ -270,13 +274,15 @@ namespace ClassWeb.Models
             }
         }
 
-      
+
+
 
 
         #endregion
 
         #region Database String
-        internal const string db_ID = "ID";
+        internal const string db_ID = "CourseSemesterID";
+        internal const string db_Name = "Name";
         internal const string db_CRN = "CRN";
         internal const string db_CourseID = "CourseID";
         internal const string db_SemesterID = "SemesterID";
@@ -314,14 +320,14 @@ namespace ClassWeb.Models
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
+            _Name = dr.GetString(db_Name);
             _CRN = dr.GetInt32(db_CRN);
             _CourseID = dr.GetInt32(db_CourseID);
             _SemesterID = dr.GetInt32(db_SemesterID);
             _YearID = dr.GetInt32(db_YearID);
             _SectionID = dr.GetInt32(db_SectionID);
-
-            //_DateStart = dr.GetDateTime(db_DateStart);
-            //_DateEnd = dr.GetDateTime(db_DateEnd);
+            _DateStart = dr.GetDateTime(db_DateStart);
+            _DateEnd = dr.GetDateTime(db_DateEnd);
         }
         #endregion
 

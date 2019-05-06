@@ -64,7 +64,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SectionNumber,CRN,CourseID,UserID")] Section section)
+        public async Task<IActionResult> Create([Bind("Number,CRN,CourseID,UserID")] Section section)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -107,7 +107,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SectionNumber,CRN, CourseID, UserID, ID")] Section section)
+        public async Task<IActionResult> Edit(int id, [Bind("Number,CRN, CourseID, UserID, ID")] Section section)
         {
             User LoggedIn = CurrentUser;
             if (LoggedIn.FirstName == "Anonymous")
@@ -119,13 +119,13 @@ namespace ClassWeb.Controllers
             try
             {
                 int retInt = DAL.UpdateSection(section);
-                ViewBag.RoleUpdate = "Role updated successfully";
+                ViewBag.SectionUpdate = "Section updated successfully";
             }
             catch //(DbUpdateConcurrencyException)
             {
-                ViewBag.RoleUpdate("Database error occured when updating the role");
+                ViewBag.SectionUpdate("Database error occured when updating the section");
             }
-            return View(section);
+            return RedirectToAction(nameof(Index));
 
         }
 

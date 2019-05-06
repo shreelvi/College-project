@@ -20,6 +20,11 @@ namespace ClassWeb.Controllers
 
         public IActionResult Index()
         {
+            //Gets error message to display from CourseSemester/Create method 
+            var a = TempData["CourseSemesterAdd"];
+            if (a != null)
+                ViewData["CourseSemesterAdd"] = a;
+
             User LoggedIn = CurrentUser;
 
             if (LoggedIn.FirstName == "Anonymous")
@@ -35,6 +40,13 @@ namespace ClassWeb.Controllers
         public IActionResult ProfessorDashboard()
         {
             int userID = 0;
+            User LoggedIn = CurrentUser;
+            if (LoggedIn.FirstName == "Anonymous")
+            {
+                TempData["LoginError"] = "Please login to view the page.";
+                return RedirectToAction("Index", "Home");
+            }
+
             userID = (int)HttpContext.Session.GetInt32("UserID");
             List<CourseSemester> activeClasses = new List<CourseSemester>();
           //  activeClasses = DAL.GetCourseSemestersForUser(userID);
@@ -49,7 +61,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var c = DAL.GetCourseSemester((int)id);
+            var c = DAL.GetCourseSemester(id);
             if (c == null)
             {
                 return NotFound();

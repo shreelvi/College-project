@@ -13,10 +13,6 @@ namespace ClassWeb.Controllers
     public class YearController : BaseController
     {
 
-        /// <summary>
-        /// reference: http://go.microsoft.com/fwlink/?LinkId=317598.
-        /// </summary>
-        /// <returns></returns>
         // GET: Year
         public async Task<IActionResult> Index()
         {
@@ -33,7 +29,7 @@ namespace ClassWeb.Controllers
             var d = TempData["YearDelete"];
             if (d != null)
                 ViewData["YearDelete"] = d;
-           
+
 
             //Checks if the user is logged in
             if (LoggedIn.FirstName == "Anonymous")
@@ -61,7 +57,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = DAL.GetYear((int)id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -69,7 +65,6 @@ namespace ClassWeb.Controllers
 
             return View(year);
         }
-    
 
         // GET: Year/Create
         public IActionResult Create()
@@ -113,7 +108,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = DAL.GetYear((int)id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -178,7 +173,7 @@ namespace ClassWeb.Controllers
                 return NotFound();
             }
 
-            var year = DAL.GetYear((int)id);
+            var year = DAL.GetYear(id);
             if (year == null)
             {
                 return NotFound();
@@ -193,7 +188,7 @@ namespace ClassWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var year = DAL.RemoveYear(id);
-            if(year < 0) { TempData["YearDelete"] = "Database problem occured when deleting the academic year"; }
+            if (year < 0) { TempData["YearDelete"] = "Database problem occured when deleting the academic year"; }
             TempData["YearDelete"] = "Successfully deleted the academic year";
             return RedirectToAction(nameof(Index));
         }
@@ -201,7 +196,7 @@ namespace ClassWeb.Controllers
         private bool YearExists(int id)
         {
             Year chk = DAL.GetYear(id);
-            if(chk == null) { return false; }
+            if (chk == null) { return false; }
             return true;
         }
     }

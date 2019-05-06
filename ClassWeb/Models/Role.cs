@@ -32,21 +32,17 @@ namespace ClassWeb.Models
         internal const string db_Name = "Name";
         internal const string db_IsAdmin = "IsAdmin";
         internal const string db_Users = "Users";
-        internal const string db_Group = "GroupRole";
         internal const string db_Role = "Role";
         internal const string db_Assignment = "Assignment";
-       
         #endregion
 
         #region Private Variables
         private string _Name;
         private bool _IsAdmin;
         private PermissionSet _Users;
-        private PermissionSet _Group;
         private PermissionSet _Role;
+        private PermissionSet _Group;
         private PermissionSet _Assignment;
-        
-
         #endregion
 
         #region public Properites
@@ -106,24 +102,6 @@ namespace ClassWeb.Models
         }
 
         /// <summary>
-        /// Gets or sets the Groups for this PeerVal.Role object.
-        /// </summary>
-        /// <remarks></remarks>
-
-        [Required]
-        [Display(Name = "Group Permissionset")]
-        public PermissionSet Group
-        {
-            get
-            {
-                return _Group;
-            }
-            set
-            {
-                _Group = value;
-            }
-        }
-        /// <summary>
         /// Gets or sets the Role for this Classweb.Role object.
         /// </summary>
         /// <remarks></remarks>
@@ -157,8 +135,6 @@ namespace ClassWeb.Models
                 _Assignment = value;
             }
         }
-
-      
         #endregion
 
 
@@ -202,11 +178,8 @@ namespace ClassWeb.Models
             _Name = dr.GetString(db_Name);
             _IsAdmin = dr.GetBoolean(db_IsAdmin);
             _Users = new PermissionSet((byte)dr.GetUInt64(db_Users));
-            _Group = new PermissionSet((byte)dr.GetUInt64(db_Group));
             _Role = new PermissionSet((byte)dr.GetUInt64(db_Role));
             _Assignment = new PermissionSet((byte)dr.GetUInt64(db_Assignment));
-           
-
         }
         #endregion
     }

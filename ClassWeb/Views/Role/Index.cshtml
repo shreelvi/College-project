@@ -16,6 +16,9 @@
 <p style="color:blue">
     @ViewData["RoleAdd"]
 </p>
+<p>
+    <a asp-action="Create">Create New Role</a>
+</p>
 <table class="table table-striped">
     <thead class="bg-primary">
         <tr>
@@ -33,9 +36,6 @@
             </th>
             <th>
                 <p>Assignment</p>
-            </th>
-            <th>
-                <p>Group</p>
             </th>
             <th>
                 <p>Action</p>
@@ -175,48 +175,6 @@
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Assignment.AsBinary)</td>
                             <td>@Html.DisplayFor(modelItem => item.Assignment.DAVESet)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-            <td class="Group">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <p>Delete&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>Add&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>View&nbsp;</p>
-                            </th>
-                            <th>
-                                <p>Edit&nbsp;</p>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="delete">@Html.DisplayFor(modelItem => item.Group.Delete)</td>
-                            <td class="Add">@Html.DisplayFor(modelItem => item.Group.Add)</td>
-                            <td class="view">@Html.DisplayFor(modelItem => item.Group.View)</td>
-                            <td class="Edit">@Html.DisplayFor(modelItem => item.Group.Edit)</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>AsBinary&nbsp;</th>
-                            <th>DAVESet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Group.AsBinary)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Group.DAVESet)</td>
                         </tr>
                     </tbody>
                 </table>

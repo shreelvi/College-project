@@ -73,18 +73,19 @@
     </div>
 
     <div class="sidenav">
-        <a href="ProfessorDashboard">Dashboard</a>
+        <a href="/Admin/ProfessorDashboard">Dashboard</a>
         <a href="/CourseSemester/Create">View Students</a>
         <a href="">Add Student</a>
         <a href="">Manage Assignments</a>
     </div>
 
     <div class="main">
-            <p>
-                @Html.DisplayFor(model => model.Course.Title)
+            <p style="color:orange;">
+                @Model.Course.Title - @Model.Section.Number<br />
+                @Model.Semester.Name, @Model.Year.Year1
             </p>
         <h3 style="color:cadetblue"> List of Students:</h3>
-        <table class="table">
+        <table class ="table" style="width:auto; height:auto;">
             <thead>
                 <tr>
                     <th>First Name</th>

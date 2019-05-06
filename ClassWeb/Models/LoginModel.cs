@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ClassWeb.Models
 {
@@ -8,6 +9,9 @@ namespace ClassWeb.Models
     /// Seperate Model for Login View.
     /// This model is used to get information only required for login view.
     /// It also model for add user now as I am testing to verify password using hashing. 
+    /// Modified By: shreelvi
+    /// Date modified: 04/30/2019
+    /// Added Class Name property to pass class information while registering user
     /// </summary>
 
     public class LoginModel : DatabaseRecord
@@ -38,6 +42,9 @@ namespace ClassWeb.Models
         private DateTime _DateCreated;
         private string _Salt;
         private string _DirectoryPath;
+        private string _ClassName;
+
+
 
         #endregion
 
@@ -103,6 +110,8 @@ namespace ClassWeb.Models
 
         [Required]
         [DataType(DataType.Password)]
+        [Compare("Password")]
+        [NotMapped]
         public string ConfirmPassword
         {
             get { return _ConfirmPassword; }
@@ -143,6 +152,13 @@ namespace ClassWeb.Models
         public string ReturnUrl { get; set; }
      
 
+        [Required]
+        [Display(Name = "Class Information")]
+        public string ClassName
+        {
+            get { return _ClassName; }
+            set { _ClassName = value; }
+        }
         #endregion
 
         #region Public Functions

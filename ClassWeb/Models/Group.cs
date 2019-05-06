@@ -27,39 +27,36 @@ namespace ClassWeb.Models
             Fill(dr);
         }
         #region Private Variables
-        //private string _EmailAddress;
+        private string _EmailAddress;
         private string _UserName;
         private string _Password;
         private string _Salt;
         private string _DirectoryPath;
         private List<Assignment> _Assignments;
         private int _AssignmentID;
-        private List<ViewGroupUser> _Users;
-        private int _CourseSemesterID;
-       
+        private List<User> _Users;
         #endregion
 
         #region Database String
         internal const string db_ID = "ID";
         internal const string db_Name = "Name";
-        //internal const string db_EmailAddress = "EmailAddress";
+        internal const string db_EmailAddress = "EmailAddress";
         internal const string db_UserName = "UserName";
         internal const string db_Password = "Password";
         internal const string db_Salt = "Salt";
         internal const string db_DirectoryPath = "DirectoryPath";
-       // internal const string db_Assignments = "Assignments";
+        internal const string db_Assignments = "Assignments";
         internal const string db_AssignmentID = "AssignmentID";
-        internal const string db_CourseSemesterID = "CourseSemesterID";
 
         #endregion
         #region Public Variables
-        //[Display(Name = "Group's Email-address",
-        //    Description = "Email-address used to contact the group; which all members will have access.")]
-        //public string EmailAddress
-        //{
-        //    get { return _EmailAddress; }
-        //    set { _EmailAddress = value; }
-        //}
+        [Display(Name = "Group's Email-address",
+            Description = "Email-address used to contact the group; which all members will have access.")]
+        public string EmailAddress
+        {
+            get { return _EmailAddress; }
+            set { _EmailAddress = value; }
+        }
 
         [Display(Name = "Group's Login Username",
             Description = "Username to login to group's account profile.")]
@@ -102,24 +99,20 @@ namespace ClassWeb.Models
             get { return _AssignmentID; }
             set { _AssignmentID = value; }
         }
-
-        public int CourseSemesterID
-        {
-            get { return _CourseSemesterID; }
-            set { _CourseSemesterID = value; }
-        }
-        public List<ViewGroupUser> Users
+        public List<User> Users
         {
             get
             {
                 if (_Users == null)
                 {
-                    _Users = DAL.GetAllGroupUsersByID(_ID);
+                    _Users = DAL.GetGroupUsers(_ID);
                 }
                 return _Users;
             }
             set { _Users = value; }
         }
+
+
 
         #endregion
 
@@ -163,29 +156,12 @@ namespace ClassWeb.Models
         /// <remarks></remarks>
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
-
             _ID = dr.GetInt32(db_ID);
             _Name = dr.GetString(db_Name);
-            // _EmailAddress = dr.GetString(db_EmailAddress);
+            //_EmailAddress = dr.GetString(db_EmailAddress);
             _UserName = dr.GetString(db_UserName);
             _Password = dr.GetString(db_Password);
             _Salt = dr.GetString(db_Salt);
-           if(_CourseSemesterID == 0){
-
-            }
-            else
-            {
-                _CourseSemesterID = dr.GetInt32(db_CourseSemesterID);
-            }
-            if (_CourseSemesterID == 0)
-            {
-
-            }
-            else
-            {
-                _AssignmentID = dr.GetInt32(db_AssignmentID);
-            }
-
 
         }
         #endregion

@@ -5,18 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-/// <summary>
-/// Edited By: Mohan
-/// Courses => A course is like 4430, 3307, etc.
-/// Each course can be accessible to one to many users.
-/// Each course can be taught by multiple professors, hence multiple classes.
-/// A course has a course name and a number.
-/// </summary>
+//Meshari, 02/14
+//Courses => A course is like 4430, 3307, etc.
+//Each course can be accessible to one to many users.
+//Each course can be taught by multiple professors, hence multiple classes.
 
 
 namespace ClassWeb.Models
 {
-    public class Course : DatabaseNamedRecord
+    public class Course:DatabaseNamedRecord
     {
         #region Constructors
         public Course()
@@ -31,29 +28,21 @@ namespace ClassWeb.Models
 
         #region Private Variables
         private string _Title;
-        private string _Name;
         private string _Description;
-        
         #endregion
 
         #region Public Variables
-
         public string Title
         {
             get { return _Title; }
-           set { _Title = value; }
+            set { _Title = value; }
         }
-        public string Name
-        {
-            get { return _Name; }
-            set { _Name = value; }
-        }
+
         public string Description
         {
             get { return _Description; }
-            set { _Description = value; }
+           private set { _Description = value; }
         }
-
         #endregion
 
         #region Database String
@@ -86,16 +75,28 @@ namespace ClassWeb.Models
         #endregion
 
         #region Public Subs
+        /// <summary>
+        /// Modified date: 04/29/2019
+        /// Modified by: shreelvi
+        /// Added code to handle mysql data reader null column values
+        /// Reference: https://stackoverflow.com/questions/1772025/sql-data-reader-handling-null-column-values
+        /// </summary>
+        /// <param name="dr"></param>
         public override void Fill(MySqlDataReader dr)
         {
             _ID = dr.GetInt32(db_ID);
             _Title = dr.GetString(db_Title);
             _Name = dr.GetString(db_Name);
-            _Description = dr.GetString(db_Description);
+            if (!dr.IsDBNull(3))
+            {
+                _Description = dr.GetString(db_Description);
+            }
         }
 
-        public override string ToString() { 
-        return this.GetType().ToString();
+        
+        public override string ToString()
+        {
+            return this.GetType().ToString();
         }
         #endregion
     }

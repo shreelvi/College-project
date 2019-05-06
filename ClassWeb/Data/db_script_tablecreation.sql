@@ -189,15 +189,15 @@ VALUES ('Admin',1,b'1111',b'1111',b'1111') ,
 CREATE TABLE `sections` (
   `SectionID` int(11) NOT NULL,
   `CRN` int(11) NOT NULL,
-  `SectionNumber` int(45) DEFAULT NULL,
+  `Number` int(45) DEFAULT NULL,
   `UserID` int(11) NOT NULL,
   `CourseID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (1, 25545, 02);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (2, 36758, 01);
-INSERT INTO `sections`(`SectionID`, `CRN`, `SectionNumber`) VALUES (4, 36758, 01);
+INSERT INTO `sections`(`SectionID`, `CRN`, `Number`) VALUES (1, 25545, 02);
+INSERT INTO `sections`(`SectionID`, `CRN`, `Number`) VALUES (2, 36758, 01);
+INSERT INTO `sections`(`SectionID`, `CRN`, `Number`) VALUES (4, 36758, 01);
 
 --
 -- Table structure for table `semsters`

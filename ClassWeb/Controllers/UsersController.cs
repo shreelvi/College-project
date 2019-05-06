@@ -24,7 +24,7 @@ namespace ClassWeb.Controllers
             if (UserCan<User>(PermissionSet.Permissions.ViewAndEdit))
             {
                 int? uid = HttpContext.Session.GetInt32("UserID");
-                Tuple<List<User>,List<User>>Users=null;
+                Tuple<List<User>, List<User>> Users = null;
                 if (uid != null)
                 {
                     List<User> AllUsers = null;
@@ -40,7 +40,7 @@ namespace ClassWeb.Controllers
                         AllUsers = DAL.UserGetAll();
                         ActiveUsers = AllUsers.FindAll(u => u.Enabled == 1);
                         DisabledUsers = AllUsers.FindAll(u => u.Enabled == 0);
-                        Users =Tuple.Create(ActiveUsers, DisabledUsers);
+                        Users = Tuple.Create(ActiveUsers, DisabledUsers);
                     }
                     else
                     {
@@ -89,7 +89,7 @@ namespace ClassWeb.Controllers
                         if (U != null)
                         {
                             U.Enabled = status == true ? 0 : 1;
-                            int i = DAL.UpdateUser(U);
+                            int i = DAL.UserDisableStatusUpdate(U);
                             if (i > 0)
                             {
                                 return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
@@ -109,7 +109,7 @@ namespace ClassWeb.Controllers
                         if (U != null)
                         {
                             U.Archived = status == true ? 1 : 0;
-                            int i = DAL.UpdateUser(U);
+                            int i = DAL.UserArchiveStatusUpdate(U);
                             if (i > 0)
                             {
                                 return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
@@ -129,7 +129,7 @@ namespace ClassWeb.Controllers
                         if (U != null)
                         {
                             U.VerificationCode = " ";
-                            int i = DAL.UpdateUser(U);
+                            int i = DAL.UserUpdateVerificationCode(U);
                             if (i > 0)
                             {
                                 return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
@@ -150,7 +150,7 @@ namespace ClassWeb.Controllers
                 {
                 }
             }
-           return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
+            return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
         }
         [HttpPost]
         public IActionResult ChangeRole(int? UserID, int? Role)
@@ -166,7 +166,7 @@ namespace ClassWeb.Controllers
                 {
                     U.RoleID = (int)Role;
                     int i = DAL.UpdateUserRole(U);
-                    return RedirectToAction("" + UserID, "User/Details");
+                    return RedirectToAction("Details/"+UserID, "Users");
                 }
             }
             else
@@ -245,7 +245,7 @@ namespace ClassWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,PhoneNumber,ID")] User user)
+        public async Task<IActionResult> Edit(int? id, [Bind("FirstName,LastName,UserName,ID")] User user)
         {
             if (UserCan<User>(PermissionSet.Permissions.Edit))
             {
@@ -259,28 +259,25 @@ namespace ClassWeb.Controllers
                 {
                     id = uid;
                 }
-                if (ModelState.IsValid)
+                try
                 {
-                    try
+                    int a = DAL.UpdateUser(user);
+                    if (a > 0)
                     {
-                        int a = DAL.UpdateUser(user);
-                        if (a > 0)
-                        {
-                            ViewBag.Message = "User Succesfully Updated!!";
-                        }
+                        ViewBag.Message = "User Succesfully Updated!!";
+                        return RedirectToAction(nameof(Index));
                     }
-                    catch (DbUpdateConcurrencyException)
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.ID))
                     {
-                        if (!UserExists(user.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        return NotFound();
                     }
-                    return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return View(user);
             }

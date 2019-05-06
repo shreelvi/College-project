@@ -65,12 +65,6 @@ namespace ClassWeb
                 FileProvider = new PhysicalFileProvider(
                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
             });// requred to have sessions in our application.
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "AssignmentDirectory")),
-                RequestPath = "/AssignmentDirectory"
-            });
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc(routes =>
@@ -80,7 +74,7 @@ namespace ClassWeb
                     template: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                     name: "fileDirectory",
-                    template: "{UserName}/{Directory}/{FileName}",
+                    template: "{Dir}/{UserName}/{Directory}/{FileName}",
                     defaults: "{controller=Home}/{action=index}/{id?}");
                 routes.MapRoute(
                    name: "root",

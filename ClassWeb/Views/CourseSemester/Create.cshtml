@@ -9,10 +9,15 @@
 
 <h4>CourseSemester</h4>
 <hr />
-<div style="float:left; width: 500px" class="row">
+<div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CRN" class="control-label"></label>
+                <input asp-for="CRN" class="form-control" />
+                <span asp-validation-for="CRN" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label class="control-label">Course</label>
                 <select asp-for="CourseID" class="form-control"
@@ -28,20 +33,30 @@
             <div class="form-group">
                 <label class="control-label">Year</label>
                 <select asp-for="YearID" class="form-control"
-                        asp-items="@(new SelectList(ViewBag.Years, "ID", "Name"))"></select>
+                        asp-items="@(new SelectList(ViewBag.Years, "ID", "Year1"))"></select>
                 <span asp-validation-for="YearID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Section Number</label>
                 <select asp-for="SectionID" class="form-control"
-                        asp-items="@(new SelectList(ViewBag.Sections, "ID", "SectionNumber"))"></select>
+                        asp-items="@(new SelectList(ViewBag.Sections, "ID", "Number"))"></select>
                 <span asp-validation-for="SectionID" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="DateStart" class="control-label"></label>
+                <input asp-for="DateStart" class="form-control" />
+                <span asp-validation-for="DateStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateEnd" class="control-label"></label>
+                <input asp-for="DateEnd" class="form-control" />
+                <span asp-validation-for="DateEnd" class="text-danger"></span>
+            </div>
             @*<div class="form-group">
-                    <label asp-for="UserID" class="control-label"></label>
-                    <input asp-for="UserID" class="form-control" />
-                    <span asp-validation-for="UserID" class="text-danger"></span>
-                </div>*@
+            <label asp-for="UserID" class="control-label"></label>
+            <input asp-for="UserID" class="form-control" />
+            <span asp-validation-for="UserID" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
@@ -53,4 +68,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-

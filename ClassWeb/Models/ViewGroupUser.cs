@@ -104,7 +104,7 @@ namespace ClassWeb.Models
         /// <remarks></remarks>
         public override void Fill(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
-            _ID = dr.GetInt32(db_UserID);
+            _ID = dr.GetInt32("ID");
             _FirstName = dr.GetString(db_FirstName);
 
             _LastName = dr.GetString(db_LastName);

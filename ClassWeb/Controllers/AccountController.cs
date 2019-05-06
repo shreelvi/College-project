@@ -27,7 +27,7 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region constructor
-        public AccountController(IHostingEnvironment hostingEnvironment,IEmailService emailService)
+        public AccountController(IHostingEnvironment hostingEnvironment, IEmailService emailService)
         {
             _hostingEnvironment = hostingEnvironment;
             _emailService = emailService;
@@ -52,7 +52,7 @@ namespace ClassWeb.Controllers
 
             if (s != null)
                 ViewData["UserAddSuccess"] = s;
-            else if(e != null)
+            else if (e != null)
                 ViewData["UserAddError"] = e;
 
             return RedirectToAction("Index", "Home");
@@ -87,12 +87,24 @@ namespace ClassWeb.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 CurrentUser = loggedIn; //Sets the session for user from base controller
-                HttpContext.Session.SetString("username", userName);
+                HttpContext.Session.SetString("username", loggedIn.UserName);
                 HttpContext.Session.SetInt32("UserID", loggedIn.ID); //Sets userid in the session
-                HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
-                if (loggedIn.Role.IsAdmin)
+                if (loggedIn.Role != null)
                 {
-                    return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
+                    if (loggedIn.Role.IsAdmin)
+                    {
+                        if (loggedIn.Role.Name == "Professor")
+                        {
+                            HttpContext.Session.SetString("RoleCheck", "Professor");
+                            return RedirectToAction("ProfessorDashboard", "Admin"); //Redirects to the professor dashboard
+                        }
+                        HttpContext.Session.SetString("UserRole", (loggedIn.Role.IsAdmin == true) ? "True" : "False");
+                        return RedirectToAction("Index", "Admin"); //Redirects to the admin dashboard
+                    }
+                }
+                else
+                {
+                    HttpContext.Session.SetString("UserRole", "False");
                 }
                 return RedirectToAction("Dashboard");
             }
@@ -105,16 +117,24 @@ namespace ClassWeb.Controllers
         {
             User LoggedIn = CurrentUser;
             List<object> obj = new List<object>();
-            if (LoggedIn!=null)
+            if (LoggedIn.Role != null)
             {
-                Group LoggedInGroup = CurrentGroup;
-                if (LoggedInGroup.Name != "Anonymous")
+                if (LoggedIn.Role.Name != "Anonymous")
                 {
-                    obj.Add(LoggedInGroup);
+                    Group LoggedInGroup = CurrentGroup;
+                    if (LoggedInGroup.Name != "Anonymous")
+                    {
+                        obj.Add(LoggedInGroup);
+                    }
+                    obj.Add(LoggedIn);
+                    return View(obj);
                 }
-                obj.Add(LoggedIn);
-                return View(obj);
-            }
+                else
+                {
+                    TempData["Error"] = "You Dont Have Enough Previlage to view User";
+                    return RedirectToAction("index", "Home");
+                }
+            }            
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to view User";
@@ -141,20 +161,27 @@ namespace ClassWeb.Controllers
         /// Method to Add/Register user to the database.
         /// Modified on: 03/18/2019
         /// Added feature to check the username is unique
+        /// Modified on: 04/30/2019
+        /// Added code to get coursesemesters information 
+        /// and pass to the dropdown for users to enroll in class
         /// </summary>
 
         // GET: /Account/AddUser
         [AllowAnonymous]
         public ActionResult AddUser(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            List<string> ClassList = new List<string>();
+            List<CourseSemester> coursesem = new List<CourseSemester>();
+            coursesem = DAL.GetCourseSemesters();
+            coursesem.Insert(0, new CourseSemester { ID = 0, Name = "Select" });
+            ViewBag.ClassInfo = coursesem;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult AddUser(User NewUser)
+        public ActionResult AddUser(User NewUser, int ClassID)
         {
             string userPath = SetUserFolder(NewUser); //Sets the default user directory 
             NewUser.DirectoryPath = userPath;
@@ -163,7 +190,7 @@ namespace ClassWeb.Controllers
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
                 return View(); //Redirects to add user page
-               
+
             }
             else
             {
@@ -215,7 +242,6 @@ namespace ClassWeb.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("account/SendEmail")]
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
             Task t = _emailService.SendEmail(email, subject, message);
@@ -232,6 +258,69 @@ namespace ClassWeb.Controllers
         #endregion
 
         #region Password Reset
+        public ActionResult ResetPassword(string Code, string UserName, string Email)
+        {
+            User u = DAL.UserGetByUserNameAndEmail(UserName, Email);
+            if (u == null)
+            {
+                return NotFound();
+            }
+            if (u.ResetCode == Code)
+            {
+                TempData["Message"] = "UserValidated";
+                return View(u);
+            }
+            else
+            {
+                if (Request.Headers["Referer"] != "" || !String.IsNullOrEmpty(Request.Headers["Referer"]))
+                {
+                    ViewData["Reffer"] = Request.Headers["Referer"].ToString();
+                }
+            }
+            return View();
+        }
+        public ActionResult UserResetPassword()
+        {
+            int? uid = HttpContext.Session.GetInt32("UserID");
+            int id = 0;
+            if (uid != null)
+            {
+                User U = DAL.UserGetByID(uid);
+                return View(U);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UserResetPassword(int? id, [Bind("Password,ID")] User user)
+        {
+            if (user.ID == id)
+            {
+                User u = DAL.UserGetByID(id);
+                u.FirstName = user.FirstName;
+                u.LastName = u.LastName;
+                u.Password = user.Password;
+                u.ResetCode = null;
+                int i = DAL.UpdateUserPassword(u);
+                if (i > 0)
+                {
+                    TempData["Message"] = "User Info Succesfully Modified";
+                    return RedirectToAction("Dashboard", "Account");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Message"] = "Input ID from system and Form doesnot match!";
+                return NotFound();
+            }
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ResetPassword(int? id, [Bind("FirstName,LastName,UserName,Password,ID")] User user)
@@ -247,7 +336,7 @@ namespace ClassWeb.Controllers
                 if (i > 0)
                 {
                     TempData["Message"] = "User Info Succesfully Modified";
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Dashboard", "Account");
                 }
                 else
                 {
@@ -261,9 +350,11 @@ namespace ClassWeb.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
         {
-            User u = DAL.UserGetByUserName(UserName, EmailAddress);
+            User u = DAL.UserGetByUserNameAndEmail(UserName, EmailAddress);
             if (u == null)
             {
                 TempData["Message"] = "Not a valid credentials";
@@ -274,13 +365,14 @@ namespace ClassWeb.Controllers
                 string resetCode = Guid.NewGuid().ToString();
                 string Subject = "Reset Password Classweb";
                 string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
-                     "<a href=simkkish.net/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
+                     "<a href=http://elvishrestha.com/Account/ResetPassword?Code=" + resetCode + "&UserName=" + u.UserName + "&Email=" + u.EmailAddress + "> Reset Password </a>"
                      + "<h3>ClasWeb Team</h3>";
                 Task t = SendEmailAsync(u.EmailAddress, Subject, Message);
                 if (t.IsCompleted)
                 {
                     u.ResetCode = resetCode;
-                    int ret = DAL.UpdateUser(u);
+                    int ret = DAL.SetPasswordResetCode(u);
+                    return RedirectToAction("Dashboard", "Account");
                 }
 
             }

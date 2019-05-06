@@ -16,13 +16,20 @@ using System.IO;
 using ClassWeb;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using Newtonsoft.Json;
-
 
 namespace ClassWeb.Controllers
 {
+    /// <summary>
+    /// Created By: Sakshi
+    /// Modified by: shreelvi
+    /// Date Modified: 04/17/2019
+    /// Added feature to add users in group
+    /// Finalized by:shreelvi
+    /// Date Finalized: 04/30/2019
+    /// Organized code by adding region region and made sure its working
+    /// Finalized UI views
+    /// </summary>
+    
     public class GroupController : BaseController
     {
 
@@ -31,7 +38,7 @@ namespace ClassWeb.Controllers
 
         //hosting Envrironment is used to create the user directory 
         private IHostingEnvironment _hostingEnvironment;
-
+   
         #endregion
 
         #region constructor
@@ -62,33 +69,19 @@ namespace ClassWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/SendEmail")]
-
         public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
         {
             await _emailService.SendEmail(email, subject, message);
             TempData["Message"] = "Email Successfully Sent!!";
-            return RedirectToAction("Dashboard", "Group");
+            return RedirectToAction("Dashboard","Group");
         }
         [AllowAnonymous]
-        //public async Task<IActionResult> SendEmailAsync(string email, string subject, string message)
-        //{
-        //   Task t = _emailService.SendEmail(email, subject, message);
-        //    if (t.IsCompleted)
-        //    {
-        //        TempData["Message"] = "Email Successfully Sent!!";
-        //    }
-        //    else
-        //    {
-        //        TempData["Message"] = "Email cannot be Succesfully Send!!";
-        //    }
-        //    return RedirectToAction("Dashboard","Group");
-        //}
-
         #endregion
-        //Access the data from the database
 
-            //for login
-            //Code By Sakshi
+        #region Login
+        //Access the data from the database
+        //for login
+        //Code By Sakshi
         public ActionResult LoginGroup(string returnUrl)
         {
             //ViewBag.ReturnUrl = returnUrl;
@@ -117,22 +110,27 @@ namespace ClassWeb.Controllers
             {
                 Tools.SessionHelper.Set(HttpContext, "CurrentGroup", GroupLoggedIn); //Sets the Session for the CurrentGroup object
                 HttpContext.Session.SetString("UserName", userName);
-                HttpContext.Session.SetInt32("GroupID", GroupLoggedIn.ID); //Sets userid in the session
-                                                                           //  HttpContext.Session.SetString("UserRole",(grouploggedIn.))
-                                                                           //ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//alhames5";
-                                                                           //ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + userName; //Return User root directory 
+                HttpContext.Session.SetInt32("GroupID", GroupLoggedIn.ID); //Sets userid in the session                                                                          
                 return RedirectToAction("Dashboard");
             }
             else
             {
-
-                //return RedirectToAction("Dashboard");
-                TempData["Error"] = "Invalid Username and/or Password";
-                ViewBag.Group = userName;
+                ViewBag.Error = "Invalid Username and/or Password";
                 return View();
-                // return RedirectToAction("LoginGroup", "Group");
             }
         }
+
+
+        public IActionResult Logout()
+        {
+            //await _signManager.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("LoginGroup", "Group");
+        }
+
+        #endregion
+
+        #region Dashboard
         //<Summary>
         //Group Dashboard
         public async Task<IActionResult> Dashboard(int? id)
@@ -157,17 +155,26 @@ namespace ClassWeb.Controllers
             }
             string username = HttpContext.Session.GetString("UserName");
 
-            ViewData["Sample"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//shreelvi";
-            ViewData["Directory"] = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}//GroupDirectory//" + username; //Return User root directory 
-
-            List<Assignment> GroupAssignments = new List<Assignment>();
-            // UserAssignments = DAL.GetUserAssignments(id); //Gets the Assignment list to display in the dashboard page
-
-            return View(GroupAssignments);
+            ViewBag.UserName = username;
+            return View();
         }
 
-        // GET: Group/AddGroup
-        //adding group through registration
+        #endregion
+
+        #region AddGroup
+        /// <summary>
+        /// Created by: Sakshi
+        /// GET: Group/AddGroup
+        /// Adding group through registration
+        /// Modified by: Elvis
+        /// Date Modified: 04/17/2019
+        /// Added feature to add users in the group
+        /// Verifies user is registered in classweb,
+        /// Register groups and add users to the group
+        /// Date Modified: 30 April 2019
+        /// Group must provide atleast one user's email
+        /// </summary>
+
         [AllowAnonymous]
         public ActionResult AddGroup(string returnUrl)
         {
@@ -181,10 +188,22 @@ namespace ClassWeb.Controllers
                 ViewData["UserGroupAddError"] = e;
             else if (g != null)
                 ViewData["GroupAddSuccess"] = g;
-            ViewBag.ReturnUrl = returnUrl;
+
+            //Gets and pass the class name to dropdown for group registeration
+            List<string> ClassList = new List<string>();
+            List<CourseSemester> coursesem = new List<CourseSemester>();
+            coursesem = DAL.GetCourseSemesters();
+            coursesem.Insert(0, new CourseSemester { ID = 0, Name = "Select" });
+            ViewBag.ClassInfo = coursesem;
+         
             return View();
         }
-        //copied from elvis's branch
+
+        /// <summary>
+        /// Post method to add group
+        /// copied from elvis's branch
+        /// </summary>
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
@@ -193,28 +212,29 @@ namespace ClassWeb.Controllers
             //Verifies if user is registered before adding them and registering the group
             int retInt = 0;
             string[] users = new string[6]; //Array to hold emails from input field
-            //int countOfMembers = int.Parse( Request.Form["#numberOfStudents"]);
             int countOfMembers = int.Parse(Request.Form["Users"]);
+
             for (int i = 0; i < countOfMembers; i++) //Verfies each email 
             {
                 String email = Request.Form["EmailAddress" + (i + 1)];
-                // users[i] = NewGroup.Users[i].EmailAddress;
+                if (email == "") //If email field is blank, returns error
+                {
+                    ViewBag.UserAddError = "Please provide at-least one email address.";
+                    return View();
+                }
+
                 retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
                 if (retInt <= 0)
                 {
-                    if (email != null)
-                    { //If input field is blank, doesn't display error msg
-                        ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
-                        return View();
-                    }
+                    ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                 }
             }
-
+           
             //Checks if the groupname is unique and adds the group
             int check = 0;
             int GroupAdd = 0;
             check = DAL.CheckGroupExists(NewGroup.UserName);
-            SetGroupFolder(NewGroup);
+            //SetGroupFolder(NewGroup);
             if (check > 0)
             {
                 ViewBag.Error = " Username not Unique! Please enter a new username.";
@@ -253,8 +273,12 @@ namespace ClassWeb.Controllers
             return RedirectToAction("LoginGroup");
         }
 
+        #endregion
+
+        #region AddUserToGroup
+ 
         // GET: Group/AddUserToGroup
-        //adds user to the group after the login
+        // Add user to the group after the login
         [AllowAnonymous]
         public ActionResult AddUserToGroup(string returnUrl)
         {
@@ -274,16 +298,16 @@ namespace ClassWeb.Controllers
             for (int i = 0; i < countOfMembers; i++) //Verfies each email 
             {
                 String email = Request.Form["EmailAddress" + (i + 1)];
-                // users[i] = NewGroup.Users[i].EmailAddress;
+                if (email == "") //If email field is blank, returns error
+                {
+                    ViewBag.UserAddError = "Please provide at-least one email address.";
+                    return View();
+                }
+
                 retInt = DAL.CheckUserExistsByEmail(email); //Checks user and returns user id
                 if (retInt <= 0)
                 {
-                    if (email != null)
-                    { //If input field is blank, doesn't display error msg
-                        ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
-                        if (LoggedInGroup.Name == "Anonymous") { return RedirectToAction("AddGroup"); } //If added users when registration.
-                        return View();
-                    }
+                    ViewBag.UserAddError = "User" + (i + 1) + " is not registered in ClassWeb!";
                 }
             }
 
@@ -305,11 +329,37 @@ namespace ClassWeb.Controllers
                 }
             }
 
-            if (LoggedInGroup.Name == "Anonymous")
+            if (CurrentGroup.Name == "Anonymous")
             { return RedirectToAction("AddGroup"); } //If added users when registration.
             return RedirectToAction("Dashboard");
         }
+        #endregion
 
+        #region View Group Users
+        //displays the list for users of that particular group
+        public async Task<IActionResult> ViewGroupUsers(int? id)
+        {
+            string username = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = username;
+            int? gid = HttpContext.Session.GetInt32("GroupID");
+            if (gid != null)
+            {
+                id = gid;
+                List<ViewGroupUser> u = new List<ViewGroupUser>();
+                u = DAL.GetAllGroupUsersByID(gid);
+                return View(u);
+
+            }
+            else
+            {
+                return RedirectToAction("Dashboard", "Group");
+
+            }
+
+        }
+        #endregion
+
+        #region UserDirectory
         /// <summary>
         /// Created on: 03/17/2019
         /// Created by: Elvis
@@ -318,16 +368,14 @@ namespace ClassWeb.Controllers
         /// https://docs.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=netframework-4.7.2
         /// Used the references to understand and develop the feature in our website
         /// </summary>
-        private string SetGroupFolder(Group group)
+        private void SetGroupFolder(Group group)
         {
-            string dir_Path = _hostingEnvironment.WebRootPath;// + "\\AssignmentDirectory\\";
+            string dir_Path = _hostingEnvironment.WebRootPath + "\\GroupDirectory\\";
             group.DirectoryPath = dir_Path + group.UserName;
-            //group.DirectoryPath = Path.Combine(dir_Path, "AssignmentDirectory", group.UserName);
             string path = group.DirectoryPath;
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            return path;
         }
         private void CreateGroupDirectory(string UserName)
         {
@@ -335,12 +383,12 @@ namespace ClassWeb.Controllers
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
+        #endregion
 
-        // List<Group> g = new List<Group>();
+        #region CRUD
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
         // GET: Prompt
-
-            //Index page 
+        //Index page 
         public async Task<IActionResult> Index()
         {
             if (UserCan<Group>(PermissionSet.Permissions.ViewAndEdit))
@@ -348,17 +396,17 @@ namespace ClassWeb.Controllers
                 int? gid = HttpContext.Session.GetInt32("GroupID");
                 int? uid = HttpContext.Session.GetInt32("UserID");
                 Tuple<List<Group>, List<Group>> Groups = null;
-                if(gid != null)
+                if (gid != null)
                 {
                     User u = DAL.UserGetByID(uid);
                     List<Group> g = DAL.GetAllGroups();
-                    if(u == null)
+                    if (u == null)
                     {
                         return NotFound();
                     }
                     if (u.Role.IsAdmin)
                     {
-                        
+
                     }
                     else
                     {
@@ -406,12 +454,12 @@ namespace ClassWeb.Controllers
                 }
             }
             else
-                {
-                    TempData["Error"] = "You Dont Have Enough Previlage to Create User";
-                    return RedirectToAction("Index", "Group");
-                }
-
+            {
+                TempData["Error"] = "You Dont Have Enough Previlage to Create User";
+                return RedirectToAction("Index", "Group");
             }
+
+        }
 
 
         //https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/accessing-your-models-data-from-a-controller
@@ -436,12 +484,6 @@ namespace ClassWeb.Controllers
                     return NotFound();
                 }
                 return View(group);
-
-                //else
-                //{
-                //    TempData["error"] = "You Don't Have Enough Previlage to edit Group";
-                //    return RedirectToAction("Dashboard", "Group");
-                //}
             }
             else
             {
@@ -459,18 +501,18 @@ namespace ClassWeb.Controllers
             {
                 if (id != group.ID)
                 {
-                return NotFound();
+                    return NotFound();
                 }
-            int? gid = HttpContext.Session.GetInt32("GroupID");
-            if (id == null && gid != null)
-            {
-                id = gid;
-            }
-            if (ModelState.IsValid)
-            {
-                try
+                int? gid = HttpContext.Session.GetInt32("GroupID");
+                if (id == null && gid != null)
                 {
-                    
+                    id = gid;
+                }
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+
                         int a = DAL.UpdateGroup(group);
                         if (a > 0)
                         {
@@ -482,14 +524,14 @@ namespace ClassWeb.Controllers
                             TempData["Message"] = "Trick!!";
                             return RedirectToAction("Index", "Group");
                         }
-                 }
-                    
-                catch (Exception ex)
-                {
+                    }
 
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
-            }
-            return RedirectToAction("Index", "Group");
+                return RedirectToAction("Index", "Group");
             }
             else
             {
@@ -517,130 +559,6 @@ namespace ClassWeb.Controllers
 
         }
 
-       
-
-        //displays the list for users of that particular group
-        public async Task<IActionResult> ViewGroupUsers(int? id)
-        {
-            int? gid = HttpContext.Session.GetInt32("GroupID");
-            if (gid != null)
-            {
-                id = gid;
-                List<ViewGroupUser> u = new List<ViewGroupUser>();
-                u = DAL.GetAllGroupUsersByID(gid);
-                return View(u);
-
-            }
-            else
-            {
-                return RedirectToAction("Dashboard", "Group");
-
-            }
-
-        }
-
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (UserCan<User>(PermissionSet.Permissions.View))
-        //    {
-        //        User user = DAL.UserGetByID();
-        //        Group g = DAL.GetGroupByID(id)
-        //        List<Role> Role = DAL.GetRoles();
-        //        Tuple<User, List<Role>> User = new Tuple<User, List<Role>>(user, Role);
-        //        return View(User);
-        //    }
-        //    else
-        //    {
-        //        TempData["Error"] = "You Dont Have Enough Previlage to view Group";
-        //        return RedirectToAction("Dashboard", "Group");
-        //    }
-
-        //}
-
-        //#region resetpassword
-        //public ActionResult ResetPasswordEmail()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult ResetPassword(int? id, [Bind("Name,EmailAddress, Username,Password")] Group group)
-        //{
-        //    if (group.ID == id)
-        //    {
-        //        Group g = DAL.GroupGetByID(id);
-        //        g.Name = group.Name;
-        //        g.EmailAddress = group.EmailAddress;
-        //        g.Password = group.Password;
-        //        g.ResetCode = null;
-        //        int i = DAL.UpdateGroupPassword(g);
-        //        if (i > 0)
-        //        {
-        //            TempData["Message"] = "Group password succesfully modified";
-        //            return RedirectToAction("LoginGroup");
-        //        }
-        //        else
-        //        {
-        //            return View();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        TempData["Message"] = "Input ID from System and Form doesnot match!";
-        //        return NotFound();
-        //    }
-
-        //}
-        //public ActionResult ResetPassword(string Code, string UserName, string Email)
-        //{
-        //    Group g = DAL.GetGroup(UserName, Email );
-        //    if (g == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    if (g.ResetCode == Code)
-        //    {
-        //        TempData["Message"] = "UserValidated";
-        //        return View(g);
-        //    }
-        //    else
-        //    {
-        //        if (Request.Headers["Referer"] != "" || !String.IsNullOrEmpty(Request.Headers["Referer"]))
-        //        {
-        //            ViewData["Reffer"] = Request.Headers["Referer"].ToString();
-        //        }
-        //    }
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult ResetPasswordEmail(string UserName, string EmailAddress)
-        //{
-        //    Group g = DAL.GetGroup(UserName, EmailAddress);
-        //    if (g == null)
-        //    {
-        //        TempData["Message"] = "Not a valid credentials";
-        //        return View();
-        //    }
-        //    else
-        //    {
-        //        string resetCode = Guid.NewGuid().ToString();
-        //        string Subject = "Reset Password Classweb";
-        //        string Message = "<h3>Hi " + UserName + ",</h3></br>" + "Please click the link below to reset password for classweb " +
-        //             "<a href=simkkish.net/Group/ResetPassword?Code=" + resetCode + "&UserName=" + g.UserName + "&Email=" + g.EmailAddress + "> Reset Password </a>"
-        //             + "<h3>ClasWeb Team</h3>";
-        //        Task t = SendEmailAsync(g.EmailAddress, Subject, Message);
-        //        if (t.IsCompleted)
-        //        {
-        //            g.ResetCode = resetCode;
-        //            int ret = DAL.UpdateGroup(g);
-        //        }
-
-        //    }
-        //    return View();
-        //}
-        //#endregion reset password
-
         // GET: Users/Delete/5
         public async Task<IActionResult> DeleteGroup(int? id)
         {
@@ -648,20 +566,20 @@ namespace ClassWeb.Controllers
             {
 
                 if (id == null)
-            {
-                return NotFound();
+                {
+                    return NotFound();
+                }
+
+                Group g = DAL.GroupGetByID(id);
+                if (g == null)
+                {
+                    return NotFound();
+                }
+
+                return View(g);
+
+
             }
-
-            Group g = DAL.GroupGetByID(id);
-            if (g == null)
-            {
-                return NotFound();
-            }
-
-            return View(g);
-
-
-        }
             else
             {
                 TempData["Error"] = "You Dont Have Enough Previlage to Delete Group";
@@ -679,9 +597,9 @@ namespace ClassWeb.Controllers
                 int test = DAL.DeleteGroupByID(id);
                 if (test > 0)
                 {
-                ViewBag.Message = "Group Succesfully Deleted!!";
+                    ViewBag.Message = "Group Succesfully Deleted!!";
                 }
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -739,131 +657,24 @@ namespace ClassWeb.Controllers
 
         }
 
-
-        public IActionResult Logout()
-        {
-            //await _signManager.SignOutAsync();
-            HttpContext.Session.Clear();
-            return RedirectToAction("LoginGroup", "Group");
-        }
-
         private bool GroupExists(int id)
         {
             List<Group> g = new List<Group>();
             return g.Any(e => e.ID == id);
 
         }
+        #endregion
 
+    }
 
+    internal class HttpStatusCodeResult : ActionResult
+    {
+        private object badRequest;
 
-
-        //#region Permission 
-        //[HttpPost]
-        //public async Task<HttpResponseMessage> ChangeStatus([FromBody]JObject obj)
-        //{
-        //    if (Group<Group>(PermissionSet.Permissions.View))
-        //    {
-        //        try
-        //        {
-        //            string type = (string)obj["Type"];
-        //            int id = (int)obj["ID"];
-        //            bool status = (bool)obj["Status"];
-        //            if (type == "DisableGroup")
-        //            {
-        //                Group g = DAL.GroupGetByID(id);
-        //               // User U = DAL.UserGetByID(id);
-        //                if (g != null)
-        //                {
-        //                    g.Enabled = status == true ? 0 : 1;
-        //                    int i = DAL.UpdateGroup(g);
-        //                    if (i > 0)
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-        //                    }
-        //                    else
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
-        //                    }
-
-        //                }
-
-        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
-        //            }
-        //            if (type == "ArchiveGroup")
-        //            {
-        //                Group g = DAL.GroupGetByID(id);
-        //                if (g != null)
-        //                {
-        //                    g.Archived = status == true ? 1 : 0;
-        //                    int i = DAL.UpdateUser(g);
-        //                    if (i > 0)
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-        //                    }
-        //                    else
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
-        //                    }
-
-        //                }
-
-        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
-        //            }
-        //            if (type == "VerifyUser")
-        //            {
-        //                User U = DAL.UserGetByID(id);
-        //                if (U != null)
-        //                {
-        //                    U.VerificationCode = " ";
-        //                    int i = DAL.UpdateUser(U);
-        //                    if (i > 0)
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-        //                    }
-        //                    else
-        //                    {
-        //                        return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = "Database error" };
-        //                    }
-
-        //                }
-
-        //                return new HttpResponseMessage { StatusCode = HttpStatusCode.Forbidden, ReasonPhrase = "Invalid User" };
-        //            }
-
-        //            return new HttpResponseMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "Saved" };
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //        }
-        //    }
-        //    return new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError, ReasonPhrase = $"Document could not be created" };
-        //}
-        //[HttpPost]
-        //public IActionResult ChangeRole(int? UserID, int? Role)
-        //{
-        //    if (UserID != null && Role != null)
-        //    {
-        //        User U = DAL.UserGetByID(UserID);
-        //        if (U == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            U.RoleID = (int)Role;
-        //            int i = DAL.UpdateUserRole(U);
-        //            return RedirectToAction("" + UserID, "Users/Details");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
-        //#endregion
-
-
-
+        public HttpStatusCodeResult(object badRequest)
+        {
+            this.badRequest = badRequest;
+        }
     }
 }
 

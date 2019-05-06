@@ -250,9 +250,9 @@ CREATE PROCEDURE `sproc_RoleUpdate` (IN `ID` INT, IN `Name` VARCHAR(45), IN `IsA
           WHERE Roles.`ID` = `ID`;
 END$$
 
-CREATE PROCEDURE `sproc_SectionAdd` (OUT `SectionID` INT, IN `CRN` INT(11), IN `SectionNumber` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
-     INSERT INTO Sections(CRN,SectionNumber, UserID, CourseID)
-               VALUES(CRN,SectionNumber, UserID, CourseID);               
+CREATE PROCEDURE `sproc_SectionAdd` (OUT `SectionID` INT, IN `CRN` INT(11), IN `Number` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
+     INSERT INTO Sections(CRN,Number, UserID, CourseID)
+               VALUES(CRN,Number, UserID, CourseID);               
      SET SectionID = LAST_INSERT_ID();
 END$$
 
@@ -273,11 +273,11 @@ CREATE PROCEDURE `sproc_SectionsGetAll` ()  BEGIN
      SELECT * FROM Sections;
 END$$
 
-CREATE PROCEDURE `sproc_SectionUpdate` (IN `SectionID` INT(11), IN `CRN` INT(11), IN `SectionNumber` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
+CREATE PROCEDURE `sproc_SectionUpdate` (IN `SectionID` INT(11), IN `CRN` INT(11), IN `Number` INT(45), IN `UserID` INT(11), IN `CourseID` INT(11))  BEGIN
      UPDATE Sections
           SET
                Sections.CRN = CRN,
-               Sections.SectionNumber = SectionNumber,
+               Sections.Number = Number,
                Sections.UserID = UserID,
 			   Sections.CourseID = CourseID
           WHERE Sections.SectionID = SectionID;
@@ -579,7 +579,7 @@ Assignment` bit(4) DEFAULT NULL
 CREATE TABLE `sections` (
   `SectionID` int(11) NOT NULL,
   `CRN` int(11) NOT NULL,
-  `SectionNumber` int(45) DEFAULT NULL,
+  `Number` int(45) DEFAULT NULL,
   `UserID` int(11) NOT NULL,
   `CourseID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

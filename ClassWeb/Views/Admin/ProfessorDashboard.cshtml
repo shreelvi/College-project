@@ -4,6 +4,10 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<p style="color:blue">
+    @ViewData["CourseSemesterAdd"]
+</p>
+
 <style>
     .card {
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -67,9 +71,12 @@
     </div>
 
     <div class="sidenav">
-        <a href="ProfessorDashboard">Dashboard</a>
         <a href="/CourseSemester/Index">View all active classes</a>
         <a href="/CourseSemester/Create">Add a new Class</a>
+        <a href="/Course/Index">Manage Course</a>
+        <a href="/Semester/Index">Manage Semester</a>
+        <a href="/Year/Index">Manage Year</a>
+        <a href="/Section/Index">Manage Section</a>
         <a href="#contact">View All Students</a>
         <a href="">View All Registered Users</a>
     </div>
@@ -87,10 +94,10 @@
             <div class="classes">
                 <div style="background-color: ghostwhite; height: 150%; float:left; margin: 10px;" class="card">
                     <div class="container">
-                       @* <h4><b>@item.Course.Title - @item.Section.SectionNumber </b></h4>*@
+                        <h4><b>@item.Course.Title - @item.Section.Number </b></h4>
                         <p>@item.Semester.Name @item.Year.Year1</p>
                         <p>CRN: @item.CRN</p>
-                        <h4>Number of Students: 21</h4>
+                        <h4>Number of Students: </h4>
                         <a asp-controller="Admin" asp-action="ActiveClassView" asp-route-id="@item.ID">View</a>
                         <a asp-controller="CourseSemester" asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                         <a asp-controller="CourseSemester" asp-action="Delete" asp-route-id="@item.ID">Delete</a>

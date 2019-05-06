@@ -12,12 +12,9 @@
             ClassWeb is a website where students can manage
             Assignments for classes taken each semester. It is designed
             for ISU College of Business Students and faculty members.<br /><br />
-            <br /><br />
-            Test Login for admin, students and grader with: <br />
-            username: Admin; Pwd: test
+            It is currently under development.
         </p>
     </div>
-
     <div class="col-md-6">
         <section>
             <form asp-controller="Account" asp-action="Login" method="post">
@@ -45,7 +42,6 @@
                             <input asp-for="RememberMe" />
                             @Html.DisplayNameFor(m => m.RememberMe)
                         </label>
-                        <a asp-action="ResetPasswordEmail" asp-controller="Account" class="text-danger flex-center">Forget password?</a>
                     </div>
                 </div>
                 <div class="form-group">
@@ -53,13 +49,13 @@
                 </div>
                 <div class="form-group">
                     <div>
-                        <br/>
+                        <a asp-action="ResetPasswordEmail" asp-controller="Account" class="text-danger brea">Forget password?</a>
+                    </div>
+                    <div>
                         <a asp-controller="Account" asp-action="AddUser">Register as a new user</a>
                     </div>
                     <div>
-                        <br />
                         <a asp-controller="Group" asp-action="LoginGroup">Login as a group</a><br />
-                        <br />
                         <a asp-controller="Group" asp-action="AddGroup">Register as a new group</a><br />
                     </div>
                 </div>
